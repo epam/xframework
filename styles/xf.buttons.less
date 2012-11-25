@@ -1,0 +1,162 @@
+
+/*  Buttons
+========================================== */
+
+.xf-btn() {
+	display: inline-block;
+   .border-box;
+	position: relative;
+	text-decoration: none;
+	vertical-align: middle;
+	max-width: 100%;
+	border: none;
+}
+
+/*  Big buttons
+========================================== */
+
+.xf-button {
+   .xf-btn;
+	height: 44px;
+ 	width: 100%;
+ 	padding: 8px 12px;
+ 	text-align: center;
+ 	display: block;
+ 	line-height: 28px;
+ 	font-size: 18px;
+ 	vertical-align: middle;
+ 	border-radius: 8px;
+ 	cursor: pointer;
+}
+.xf-button-text {
+    display: block;
+   .ellipsis;
+}
+
+/*  Small buttons
+========================================== */
+
+.xf-button-small,
+.xf-button-back {
+   .xf-btn;
+ 	display: inline-block;
+	height: 29px;
+	min-width: 50px;
+	padding: 4px;
+	margin-bottom: 4px;
+	line-height: 1px;/*?*/
+	border-radius: 4px;
+	font: 15px sans-serif;
+	line-height: 18px;
+
+	*margin-left: .3em;
+	&:first-child {
+		*margin-left: 0;
+	}
+
+}
+.xf-button-small-text,
+.xf-button-small .xf-button-text {
+    display: block;
+	min-width: 20px;
+	vertical-align: middle;
+    text-align: center;
+   .ellipsis;
+}
+
+.xf-button-small-icon-only {
+   .xf-button-small;
+   	min-width: 0;
+	width: 29px;
+}
+
+/* Back button */
+
+.xf-button-back {
+   .xf-button-small;
+}
+.xf-button.xf-iconpos-left {
+	padding-left: 40px;
+}
+.xf-button.xf-iconpos-right {
+	padding-right: 40px;
+}
+.xf-button.xf-iconpos-top {
+	padding-top: 40px;
+	height: 80px;
+}
+.xf-button.xf-iconpos-bottom {
+	padding-bottom: 40px;
+	height: 80px;
+}
+
+.xf-button-small.xf-iconpos-left {
+	padding-left: 25px;
+}
+.xf-button-small.xf-iconpos-right {
+	padding-right: 25px;
+}
+.xf-button-small.xf-iconpos-top {
+	padding-top: 21px;
+	height: 45px;
+}
+.xf-button-small.xf-iconpos-bottom {
+	padding-bottom: 21px;
+	height: 45px;
+}
+
+.xf-input-hidden {
+	position: absolute;
+	left: 0;
+	top:0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.01;
+	filter: ~"alpha(opacity=0)";
+	cursor: pointer;
+	font-size: 1px;
+	line-height: 1px;
+	color: transparent;
+}
+
+.xf-button,
+.xf-button-small {
+	color: @button-text-color;
+	border:1px solid @button-border-color;
+	text-shadow: 0 1px 0 @button-text-shadow-color;
+   .buttonBackground(@button-bg-color-start, @button-bg-color-end);
+   .bgclip(border-box);
+
+	&:focus /*hover*/ {
+		.background-size( 100% 140% );
+	}
+}
+.xf-button {
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 1px 2px rgba(0,0,0,.5);
+}
+
+.xf-button-small {
+}
+	.xf-button-small-text {
+	}
+
+.xf-button-active,
+.xf-button-special {
+	border: 1px solid @button-active-border-color;
+   .buttonBackground(@button-active-bg-color-start, @button-active-bg-color-end);
+    color: @button-active-text-color;
+    text-shadow: 0 1px 0 @button-active-text-shadow-color;
+}
+.xf-button-back.xf-button-active:before,
+.xf-button-back.xf-button-special:before {
+	background: @button-active-border-color;
+}
+.xf-button-back.xf-button-active:after {
+   .gradient(@button-active-bg-color-start, @button-active-bg-color-end, -45deg);
+	background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0%,@button-active-bg-color-start), color-stop(100%, @button-active-bg-color-end));
+}
+.xf-button-alert {
+   .buttonBackground(@button-alert-bg-color-start, @button-alert-bg-color-end);
+	color: @button-alert-text-color;
+	text-shadow: 0 1px 0 @button-alert-text-shadow-color;
+}

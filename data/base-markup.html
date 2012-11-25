@@ -1,0 +1,32 @@
+<p>Below is a sample of a basic page structure needed for X-Framework: </p>
+
+<pre class="brush: xml">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;My App Title&lt;/title&gt;
+	&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+	&lt;link rel="stylesheet" href="../styles/xf.css"/&gt;
+	&lt;script src="../js/xf.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div class="xf-page" id="page1-id"&gt;
+	&lt;div class="xf-header"&gt;
+		&lt;h1&gt;My Title&lt;/h1&gt;
+	&lt;/div&gt;
+
+	&lt;div class="xf-page-content"&gt;
+		&lt;p&gt;Hello world&lt;/p&gt;
+	&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+    </pre>
+
+		<p>Note that there is a meta <code>viewport</code> tag in the <code>head</code> to specify how the browser
+			should display the page zoom level and dimensions. If this isn't set, many mobile browsers will use a
+			"virtual" page width around 800-900 pixels to make it work well with existing desktop sites but mobile
+			screens may	look zoomed out and too wide.</p>
+		<p>Navigation between screens is performed by changing containers with <code>.xf-page</code> class.
+
+        </p>

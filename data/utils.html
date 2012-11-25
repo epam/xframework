@@ -1,0 +1,123 @@
+<h2>Helper functions</h2>
+
+		<h3>Cache</h3>
+
+		<p>One of this framework’s fundamental concepts is modularity and it was brought to the edge. You are able to create a complex hierarchy of components and each of them would be loaded only when it is required. However, it is common to have some parts of the application to be used more frequently than others, so it is a common need to load and prepare them before the user would get to them. Implemented caching serves this purpose.</p>
+
+		<p>First of all you should add <code>data-cache="true"</code> as an attribute to the component placeholder to make the framework process it before it is shown.</p>
+
+		<p>The other thing is to patch component definition in the following way:</p>
+
+
+<pre class="brush: js">viewClass : XF.View.extend({
+	useCache : true,
+	...
+})</pre>
+
+		<p>This is required to make the component load its template before it is required.</p>
+
+		<p>There are several things to keep in mind while working with cache:</p>
+
+		<ul>
+			<li>You should manually set each component in the hierarchy to be cached. It means that component A, which is contained by component B, would NOT be cached if there’s no appropriate customization for it – it is done to prevent caching to be applied where it is not desired.</li>
+
+			<li>Caching – means loading component definition and template (if set), so if you have several instances of some component, once one of them had been cached the others would be granted with short creation time, because component definition and template would be already in place. This relates not only the caching, but any component class reuse – component definition and template are loaded once and are available for the whole app to be used.</li>
+		</ul>
+
+
+		<p>There are 2 more interesting aspects.</p>
+
+		<p><code>XF.Cache</code> stores every component template into <code>localStorage</code> (if available) and is persistently presented on the client side until another version of the application is released. Application version is stored in <code>XF.Settings</code> and is set via <code>XF.start</code> call. It is a string and you may choose any notation for version naming.</p>
+
+		<p>Inside <code>XF.start</code> method options it is named <code>applicationVersion</code> and can be reached at execution time via the following code: <code>XF.Settings.property('applicationVersion')</code>.</p>
+
+		<p>Another setting name <code>noCache</code> is used to change caching options – it turns caching off for the whole app and is designed for development process: you set it to <code>true</code> and forget about changing <code>applicationVersion</code> each time you run it for debugging. It is also available through <code>XF.Settings</code>: <code>XF.Settings.property('noCache')</code>.</p>
+
+		<h3>Pagination</h3>
+
+		<p>One of the most common things for any application is to create several screens, which would replace each other when switched. You are able to accomplish these easily using framework abilities. Add <code>xf-page</code> class to the element you want to mark as a page and set its <code>id</code> attribute to one of the route names. When the appropriate route would be visited, the page will become active, while the rest pages would lose <code>xf-page-active</code> class. Here’s an example:</p>
+
+
+<pre class="brush: xml">&lt;div&gt;
+	&lt;div class="xf-page" id="home"&gt;
+	...
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="contacts"&gt;
+	...
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="about"&gt;
+	...
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="sitemap"&gt;
+	...
+	&lt;/div&gt;
+&lt;/div&gt;</pre>
+
+		<p>Page switching is performed by <code>XF.PageSwitcher</code> – an instance of the <code>XF.PageSwitcherClass</code>. If you want to override its properties or logic – you should do it before calling <code>XF.start()</code>. Here are the options you may want to adjust:</p>
+
+        <p>Duration and types of animations are set via CSS in <var>xf.animations.less</var> file.</p>
+
+		<dl>
+			<dt><code>activePageClass</code></dt>
+			<dd>CSS class used to identify active page</dd>
+			<dt><code>animationReverseClass</code></dt>
+			<dd>CSS class used to invoke reverse animation. Default: <code>reverse</code></dd>
+			<dt><code>animationType</code></dt>
+			<dd>Animation type for page switching. Possible values: <code>fade</code>, <code>slide</code>, <code>none</code>.</dd>
+			<dt><code>pageClass</code></dt>
+			<dd>CSS class used to identify pages</dd>
+		</dl>
+
+		<h3>Device</h3>
+
+		<p>There’s a static object XF.Device that is created to store all the necessary info about the device where the application is currently running. It includes the types you specify in settings (via <code>XF.start()</code> arguments). According to those types component templates may be loaded from different sources for different devices. You may also use this info in your own logic to determine different aspects of the environment where your application is running.</p>
+
+		<p>Here’s a brief list of want you may want to use:</p>
+
+		<dl>
+			<dt><code>isTouchable</code></dt>
+			<dd>Flag indicates whether the device is supporting Touch events or not</dd>
+			<dt><code>type</code></dt>
+			<dd>Detected device type that would be used to define template path</dd>
+			<dt><code>getNextType(fallBackFrom)</code></dt>
+			<dd>Chooses the next applicable type in case when previous one's <code>templatePath</code> could not be loaded</dd>
+			<dt><code>getOrientation()</code></dt>
+			<dd>Returns current orientation of the device (ORIENTATION_PORTRAIT | ORIENTATION_LANDSCAPE)</dd>
+			<dt><code>getScreenHeight()</code></dt>
+			<dd>Returns current screen height</dd>
+			<dt><code>getViewport()</code></dt>
+			<dd>Returns viewport jQuery object</dd>
+		</dl>
+
+		<p>Please refer to the code specification for the complete list of available properties and methods.</p>
+
+		<h3>Touchable</h3>
+
+		<p>Framework implements a jQuery-style plugin for touch events. It can be applied to whatever element you want, must however, keep in mind that custom events do not bubble – so if  you would have to define the handler at correct point of DOM tree. Here’s an example, which should clearly show how to handle some touch gestures:</p>
+
+<pre class="brush: js">$(_element_).touchable({
+	swipeLength: 100,
+	doubleTapInterval: 700,  // you may not set any of these options to use defaults
+	longTapInterval : 500
+});
+$(_element_).bind(XF.TouchGesture.TAP_EVENT, function(e, touchGesture) {
+	console.log("TAP_EVENT");
+	console.log(e.target.nodeName);
+	console.log(touchGesture.fingerID);
+});
+$(_element_).bind(XF.TouchGesture.SWIPE_EVENT, function(e, touchGesture) {
+	console.log("SWIPE_EVENT");
+	console.log(e.target.nodeName);
+	console.log(touchGesture.fingerID);
+	console.log(touchGesture.swipeDirection);
+});
+$(_element_).bind(XF.TouchGesture.LONG_TAP_EVENT, function(e, touchGesture) {
+	console.log("LONG_TAP_EVENT");
+	console.log(e.target.nodeName);
+	console.log(touchGesture.fingerID);
+});
+$(_element_).bind(XF.TouchGesture.DOUBLE_TAP_EVENT, function(e, touchGesture) {
+	console.log("DOUBLE_TAP_EVENT");
+	console.log(e.target.nodeName);
+	console.log(touchGesture.fingerID);
+});</pre>

@@ -1,0 +1,76 @@
+<h2>Enhancing UI elements</h2>
+
+			<p>X-Framework will parse your HTML and add some markup to make UI controls touch-friendly.</p>
+
+			<p>The look of form inputs, buttons will be enhanced automatically, but you can use certain attributes to
+				customize some of them. See full list of the <code>data-</code> attributes below.</p>
+
+			<p>To prevent an element from being enhanced add a <code>[data-skip-enhance]</code> attribute to it. </p>
+
+			<h3>Buttons</h3>
+
+			<p><code>Input</code>s of types <code>submit</code>, <code>reset</code>, <code>button</code>,
+				<code>&lt;button&gt;</code>s, and links with attribute <code>[data-role=button]</code>
+				will be styled as buttons. For example a usual <code>input[type=submit]</code> will
+				look like this: </p>
+
+			<div class="example">
+				<button>A button</button>
+			</div>
+
+			<p>Buttons can be of several types: normal, special and alert. They differ only in appearance.</p>
+
+			<h3>Special Button</h3>
+
+			<p>A special button is displayed in an accented color, blue by default, generally needed to highlight
+				the most important button among several. To make a button special add <code>data-special=true</code>
+				 attribute to it.
+			<p>The following code:</p>
+
+<pre><code>&lt;a <mark>data-special="true"</mark>
+   data-appearance="button" href="#"&gt;
+   A special button
+&lt;/a&gt;</code></pre>
+
+			<p>Will produce the following button:</p>
+			<div class="example">
+				<a data-role="button" data-special="true" href="#">
+				A special button
+				</a>
+			</div>
+
+			<h3>Alert Button</h3>
+
+			<p>An alert button is red by default and is recommended to be used for actions that may cause data loss,
+				e.g. for a delete button. Add <code>data-alert=true</code> attribute to get such a button: </p>
+
+
+<pre><code>&lt;button <mark>data-alert="true"</mark>&gt;An alert button&lt;/button&gt;</code></pre>
+
+			<p>Will produce the following button:</p>
+
+			<div class="example">
+				<button  data-alert="true">An alert button</button>
+			</div>
+
+			<h3>Small buttons</h3>
+
+			<p>You may need to use smaller buttons in your app. To make them, add a <code>[data-small=true]</code>
+				attribute to the necessary controls.  </p>
+
+			<p>To make a common back button use a <code>[data-back=true]</code> attribute. It will go back in
+				browser history by default.</p>
+
+
+	<div class="example">
+<pre><code>&lt;a data-appearance="button" <mark>data-small="true"</mark> href="#"&gt;A&nbsp;small&nbsp;button&lt;/a&gt;</code></pre>
+<pre><code>&lt;a <mark>data-appearance="backbtn"</mark> href="#"&gt; Back&nbsp;button&lt;/a&gt;</code></pre>
+	</div>
+
+			<div class="example">
+				<a href="" data-role="button" data-small="true">A small button</a>
+
+				<a  href="" data-role="button" data-appearance="backbtn" >
+				Back&nbsp;button
+				</a>
+			</div>

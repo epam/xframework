@@ -1,0 +1,328 @@
+/* =================================================
+   Dark theme
+==================================================== */
+
+.xf-theme-dark {
+
+@page-bg: 									#404040;
+@text-color:                                #fff;
+
+@general-border-color: 						#b2b2b2;
+
+@button-bg-color-start:                     #fff;
+@button-bg-color-end:                       #bfbfbd;
+@button-border-color: 						rgba(0,0,0,.6);
+@button-text-color: 						#555;
+@button-text-shadow-color: 					rgba(255,255,255,.7);
+
+@button-active-bg-color-start: 				#6ea5fa;
+@button-active-bg-color-end:				#2e5fb2;
+@button-active-border-color: 				#315eab;
+@button-active-text-color:					#fff;
+@button-active-text-shadow-color:			rgba(0,0,0,.7);
+
+@button-alert-bg-color-start: 				#fa6e6e;
+@button-alert-bg-color-end: 				#bc0101;
+@button-alert-text-color:					#fff;
+@button-alert-text-shadow-color: 			rgba(0,0,0,.7);
+
+@input-bg-color:							#fff;
+@input-active-bg-color:						#669cf1;
+@input-text-color: 							#294d8c;
+@input-label-color: 						#333;
+@input-placeholder-color:					#c8c8cc;
+@input-shadow-inset-color: 					#dcdede;
+
+@header-bg-color-start: 					#717a80;
+@header-bg-color-end: 						#383d40;
+@header-border-color: 						#212325;
+@header-text-color: 						#e3e3e3;
+@header-text-shadow-color: 					rgba(0,0,0,.7);
+
+/* Footer nav */
+@nav-bg-color:						#fff;
+
+@nav-item-text-color:				#555;
+@nav-item-icon-color:				#666;
+@nav-item-bg-color-start:			#fff;
+@nav-item-bg-color-end:				#bfbfbd;
+@nav-item-border-color:				#d9d9d9;
+
+@nav-item-active-text-color:		#262626;
+@nav-item-active-icon-color:		#333;
+@nav-item-active-bg-color-start:	transparent;
+@nav-item-active-bg-color-end:		transparent;
+@nav-item-active-border-color:		@nav-item-border-color;
+
+
+/* Dialogs */
+@dialog-dim-color: rgba(255,255,255,.4);
+@dialog-box-border-color: transparent;
+@dialog-box-bg-color-start: rgba(0,0,0,.7);
+@dialog-box-bg-color-end: rgba(0,0,0,.7);
+@dialog-box-text-color: #e3e3e3;
+@dialog-box-text-shadow-color: #000;
+
+@notification-bg-color: rgba(0,0,0,.7);
+@notification-text-color: #e3e3e3;
+@notification-text-shadow-color: #000;
+
+
+	/*  Page
+	=========================================== */
+	body {
+		background: @page-bg;
+		color: @text-color;
+	}
+
+	/*  Buttons
+	=========================================== */
+
+	.xf-button,
+	.xf-button-small {
+		color: @button-text-color;
+		border:1px solid @button-border-color;
+		text-shadow: 0 1px 0 @button-text-shadow-color;
+	   .gradient(@button-bg-color-start, @button-bg-color-end);
+		background-clip: border-box;
+	}
+
+
+	.xf-button-small {
+	}
+
+	.xf-button-small-text {
+	}
+
+	.xf-button-back::after {
+	   .gradient(@button-bg-color-start, @button-bg-color-end, -45deg);
+		background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0%,@button-bg-color-start), color-stop(100%,@button-bg-color-end));
+	}
+
+
+	.xf-button-back {
+		color: @button-text-color;
+		text-shadow: 0 1px 0 @button-text-shadow-color;
+	}
+
+		.xf-button-back::before {
+			background: @button-border-color;
+		}
+	.xf-button-small:hover {
+		background-size: 100% 140%;
+	}
+
+
+	/*  Tabs
+	========================================= */
+
+
+	.xf-tabs {
+		margin-top: 5px; /* when buttons have borders they are moved 1px up and left */
+		margin-bottom: 3px; /* so we compensate for the shift here */
+		padding-left: 1px;
+	}
+	.xf-tabs-button {
+		border: 1px solid @button-border-color;
+		color: @button-text-color;
+		text-shadow: 0 1px 0 @button-text-shadow-color;
+		.gradient(@button-bg-color-start, @button-bg-color-end);
+
+	}
+		.xf-tabs-button-active {
+			border-color: @button-active-border-color;
+			.gradient(@button-active-bg-color-start, @button-active-bg-color-end);
+			color: @button-active-text-color;
+			text-shadow: 0 -1px 0 @button-active-text-shadow-color;
+		}
+		.xf-tabs-button:hover {
+		-webkit-background-size: 100% 150%;
+				background-size: 100% 150%;
+		}
+		.xf-tabs-button-active:hover {
+		-webkit-background-size: auto;
+				background-size: auto;
+				cursor: default;
+		}
+	.xf-grid-unit:first-child > .xf-tabs-button {
+		border-left-width:1px;
+	}
+
+	.xf-tabs-button-text {
+		font-weight: bold;
+	}
+
+	/*  Header
+	 ========================================== */
+
+	.xf-header {
+	   .gradient(@header-bg-color-start, @header-bg-color-end);
+		border-bottom: 1px solid @header-border-color;
+	}
+
+	.xf-header-title {
+		color: @header-text-color;
+		text-shadow: 0 1px 0 @header-text-shadow-color;
+
+	}
+
+
+	/*  Footer nav
+	===================================== */
+
+	.xf-nav {
+		border-top:1px solid @nav-bg-color;
+		background: @nav-bg-color;
+		color: @nav-item-text-color;
+	}
+	.xf-nav-item {
+		color: @nav-item-text-color;
+		background: -moz-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, @nav-item-bg-color-start), color-stop(50%,@nav-item-bg-color-end));
+		background: -webkit-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+		background: -o-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+		background: -ms-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+		background: linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+		background-color: #585f63;
+		border-top: 1px solid @nav-item-border-color;
+	}
+	.xf-nav-item .xf-icon {
+		color: @nav-item-icon-color;
+	}
+
+	.xf-nav-item-active {
+	   .gradient(@nav-item-active-bg-color-start, @nav-item-active-bg-color-end);
+		border-color: @nav-item-active-border-color;
+		color: @nav-item-active-text-color;
+	}
+
+		.xf-nav-item-active  .xf-icon {
+			color: @nav-item-active-icon-color;
+		}
+	.xf-nav-item:hover {
+		background-repeat: no-repeat;
+	-webkit-background-size: 100% 130%;
+			background-size: 100% 130%;
+	}
+
+
+
+	/*  Forms
+	======================================= */
+	.xf-input-text,
+	.xf-input-split,
+	.xf-input-radio,
+	.xf-input-checkbox,
+	.xf-switch {
+		background: @input-bg-color;
+		border-color: @general-border-color;
+		color: 	@input-label-color;
+
+	}
+	.xf-input-text {
+		color: 	@input-text-color;
+		background: @input-bg-color;
+		box-shadow: inset 0 1px 2px @input-shadow-inset-color;
+	}
+		.xf-input-text:focus {
+			outline: none;
+			border-color: darken(@general-border-color, 25%);
+		}
+		input::-webkit-input-placeholder,
+		textarea::-webkit-input-placeholder {
+			color: @input-placeholder-color;
+		}
+
+	.xf-input-number-control {
+		color: @text-color;
+	}
+
+	.xf-input-split-input {
+		color: @input-text-color;
+	}
+
+	.xf-input-select select {
+		border-color: @general-border-color;
+	}
+
+
+	/*  Special classes that override others.
+	 *  Have to be last
+	 =============================================== */
+
+
+	.xf-button-active,
+	.xf-button-special {
+		border: 1px solid @button-active-border-color;
+	   .gradient(@button-active-bg-color-start, @button-active-bg-color-end);
+		color: @button-active-text-color;
+		text-shadow: 0 1px 0 @button-active-text-shadow-color;
+	}
+	.xf-button-back.xf-button-active:before,
+    .xf-button-back.xf-button-special:before  {
+		background: @button-active-border-color;
+	}
+	.xf-button-back.xf-button-active:after {
+	   .gradient(@button-active-bg-color-start, @button-active-bg-color-end, -45deg);
+		background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0%,@button-active-bg-color-start), color-stop(100%, @button-active-bg-color-end));
+	}
+	.xf-button-alert {
+		.gradient(@button-alert-bg-color-start, @button-alert-bg-color-end);
+		color: @button-alert-text-color;
+		text-shadow: 0 1px 0 @button-alert-text-shadow-color;
+	}
+	.xf-button:hover,
+	.xf-button-small:hover {
+		background-size: 100% 140%;
+	}
+
+
+
+
+	/*  Dialogs
+    =====================================  */
+
+
+	.xf-dialog {
+		background: @dialog-dim-color;
+	}
+	.xf-dialog-box {
+		border:0px solid @dialog-box-border-color;
+		.gradient(@dialog-box-bg-color-start, @dialog-box-bg-color-end);
+		text-shadow: 0 1px 0 @dialog-box-text-shadow-color;
+		color: @dialog-box-text-color;
+		//background-image: none;
+		background-color: transparent;
+	}
+
+	.xf-notification {
+		background: @notification-bg-color;
+		color: @notification-text-color;
+		text-shadow: 0 1px 0 @notification-text-shadow-color;
+	}
+
+
+	/*  Overrides specific for Dark theme
+    =====================================  */
+
+	.xf-header {
+		.border-box;
+		border: 1px solid #212325;
+		-webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2),
+					0 1px 1px rgba(0,0,0,.55);
+		        box-shadow: inset 0 1px 0 rgba(255,255,255,.2),
+					0 1px 1px rgba(0,0,0,.55);
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+

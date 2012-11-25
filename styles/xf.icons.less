@@ -1,0 +1,226 @@
+/** 
+ * @font-face Icons. Borrowed from http://entypo.com
+ */
+ 
+@font-face {
+	font-family: 'icon';
+	src: url('entypo-webfont.eot');
+	src: url('entypo-webfont.eot?#iefix') format('embedded-opentype'),
+      url('entypo-webfont.woff') format('woff'),
+      url('entypo-webfont.ttf') format('truetype'),
+      url('entypo-webfont.svg#EntypoRegular') format('svg');
+
+	font-weight: normal;
+	font-style: normal;
+}
+.xf-icon {
+    display: inline-block;
+	color: inherit;
+	border: 0;
+	background: none;
+	font-weight: normal;
+	font-style: normal;
+	font-family: 'icon';
+	text-align: center;
+}
+.xf-icon:before {
+	display: block;
+	margin: 0 auto;
+}
+.xf-icon-small {
+	width: 20px;
+	height: 20px;
+}
+	.xf-icon-small:before {
+ 		font-size: 36px;
+ 		line-height: 10px;
+ 		vertical-align: bottom;
+		height: 20px;
+ 	}
+.xf-icon-big {
+	width: 30px;
+	height: 30px;
+}
+	.xf-icon-big:before {
+		font-size: 60px;
+		line-height: 15px;
+		height: 30px;
+		text-indent: -2px;
+		vertical-align: bottom;
+	}
+.xf-icon-xl {
+	width: 64px;
+	height: 64px;
+}
+	.xf-icon-xl:before {
+		font-size: 120px;
+		line-height: 32px;
+		height: 64px;
+		text-indent: -2px;
+		vertical-align: bottom;
+	}
+
+button.xf-icon-big {
+	width: 44px;
+	height: 44px;
+}
+
+.xf-icon-torch:before { content: 'A' }
+.xf-icon-cup:before { content: 'B' }
+.xf-icon-tag:before { content: 'C' }
+.xf-icon-camera:before { content: 'D' }
+.xf-icon-moon:before { content: 'E' }
+.xf-icon-paint:before { content: 'F' }
+.xf-icon-leaf:before { content: 'G' }
+.xf-icon-note:before { content: 'H' }
+.xf-icon-bag:before { content: 'I' }
+.xf-icon-plane:before { content: 'J' }
+.xf-icon-help:before { content: 'K' }
+.xf-icon-circles:before { content: 'L' }
+.xf-icon-view:before { content: 'M' }
+.xf-icon-time:before { content: 'N' }
+.xf-icon-mic:before { content: 'O' }
+.xf-icon-calendar:before { content: 'P' }
+.xf-icon-flash:before { content: 'Q' }
+.xf-icon-wait:before { content: 'R' }
+.xf-icon-feed:before { content: 'S' }
+.xf-icon-wifi:before { content: 'T' }
+.xf-icon-lock:before { content: 'U' }
+.xf-icon-unlock:before { content: 'V' }
+.xf-icon-tick:before { content: 'W' }
+.xf-icon-cross:before { content: 'X' }
+.xf-icon-minus-circled:before { content: 'Y' }
+.xf-icon-plus-circled:before { content: 'Z' }
+.xf-icon-info-circled:before { content: '`' }
+.xf-icon-question-circled:before { content: 'b' }
+.xf-icon-important:before { content: 'c' }
+.xf-icon-reload-right:before { content: 'd' }
+.xf-icon-reload-left:before { content: 'e' }
+.xf-icon-shuffle:before { content: 'f' }
+.xf-icon-restart:before { content: 'g' }
+.xf-icon-repeat:before { content: 'h' }
+.xf-icon-list:before { content: 'i' }
+.xf-icon-list-add:before { content: 'j' }
+.xf-icon-menu:before { content: 'k' }
+.xf-icon-list-alt:before { content: 'i' }
+.xf-icon-orientation-portrait:before { content: 'm' }
+.xf-icon-screens:before { content: 'n' }
+.xf-icon-orientation-landscape:before { content: 'o' }
+.xf-icon-pictures:before { content: 'p' }
+.xf-icon-video:before { content: 'q' }
+.xf-icon-music:before { content: 'r' }
+.xf-icon-folder:before { content: 's' }
+.xf-icon-catalog:before { content: 't' }
+.xf-icon-trash:before { content: 'u' }
+.xf-icon-outbox:before { content: 'v' }
+.xf-icon-inbox:before { content: 'w' }
+.xf-icon-download:before { content: 'x' }
+.xf-icon-cloud:before { content: 'y' }
+.xf-icon-to-cloud:before { content: 'z' }
+.xf-icon-call:before { content: '!' }
+.xf-icon-phone:before { content: '"' }
+.xf-icon-mouse:before { content: '#' }
+.xf-icon-directions:before { content: '$' }
+.xf-icon-mail:before { content: '%' }
+.xf-icon-pen:before { content: '&' }
+.xf-icon-paperclip:before { content: "\'"; }
+.xf-icon-return:before { content: '(' }
+.xf-icon-return-double:before { content: ')' }
+.xf-icon-external:before { content: '*' }
+.xf-icon-user:before { content: '+' }
+.xf-icon-users:before { content: ',' }
+.xf-icon-user-add:before { content: '-' }
+.xf-icon-profile:before { content: '.' }
+.xf-icon-out:before { content: '/' }
+.xf-icon-location:before { content: '0' }
+.xf-icon-map:before { content: "1"; }
+.xf-icon-compass:before { content: '2' }
+.xf-icon-direction:before { content: '3' }
+.xf-icon-aim:before { content: '4' }
+.xf-icon-share:before { content: '5' }
+.xf-icon-heart:before { content: '6' }
+.xf-icon-star:before { content: '7' }
+.xf-icon-thumbup:before { content: '8' }
+.xf-icon-comments:before { content: '9' }
+.xf-icon-comment:before { content: ':' }
+.xf-icon-quotations:before { content: ';' }
+.xf-icon-print:before { content: '<';  }
+.xf-icon-bell:before { content: '=' }
+.xf-icon-link:before { content: '>' }
+.xf-icon-flag:before { content: '?' }
+.xf-icon-settings:before { content: '@' }
+.xf-icon-cross-circled:before { content: '[' }
+.xf-icon-plus:before { content: ']' }
+.xf-icon-na:before { content: '^' }
+.xf-icon-info:before { content: '_' }
+.xf-icon-question:before { content: 'a' }
+.xf-icon-play:before { content: '{' }
+.xf-icon-pause:before { content: '|' }
+.xf-icon-circle:before { content: '}' }
+.xf-icon-square:before { content: '~' }
+.xf-icon-left:before { content: '\e2' }
+.xf-icon-top:before { content: '\e3' }
+.xf-icon-down:before { content: '\e4' }
+.xf-icon-right:before { content: '\e5' }
+.xf-icon-left-circled:before { content: '\eb' }
+.xf-icon-top-circled:before { content: '\ec' }
+.xf-icon-down-circled:before { content: '\ed' }
+.xf-icon-right-circled:before { content: '\ee' }
+.xf-icon-home:before { content: '\ef' }
+.xf-icon-bookmark:before { content: '\f1' }
+.xf-icon-search:before { content: '\f4' }
+.xf-icon-dots:before { content: '\f6' }
+.xf-icon-minus:before { content: '\\' }
+
+
+/*  Icons
+========================================== */
+
+.xf-iconpos-left .xf-icon,
+.xf-iconpos-right .xf-icon,
+.xf-iconpos-top .xf-icon,
+.xf-iconpos-bottom .xf-icon {
+	position: absolute;
+}
+
+.xf-iconpos-left .xf-icon-big {
+	left: 5px;
+	top: 50%;
+	margin-top: -15px;
+}
+.xf-iconpos-right .xf-icon-big {
+	right: 5px;
+	top: 50%;
+	margin-top: -15px;
+}
+.xf-iconpos-top .xf-icon-big {
+	left: 50%;
+	top: 9px;
+	margin-left: -15px;
+}
+.xf-iconpos-bottom .xf-icon-big {
+	left: 50%;
+	bottom: 9px;
+	margin-left: -15px;
+}
+
+.xf-iconpos-left .xf-icon-small {
+	left: 2px;
+	top: 50%;
+	margin-top: -9px;
+}
+.xf-iconpos-right .xf-icon-small {
+	right: 2px;
+	top: 50%;
+	margin-top: -9px;
+}
+.xf-iconpos-top .xf-icon-small {
+	left: 50%;
+	top: 2px;
+	margin-left: -10px;
+}
+.xf-iconpos-bottom .xf-icon-small {
+	left: 50%;
+	bottom: 2px;
+	margin-left: -10px;
+}

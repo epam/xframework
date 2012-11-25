@@ -1,0 +1,70 @@
+<h2>Dialogs</h2>
+
+            <p>There are two kinds of dialogs a in X-Framework: interactive and simple <i>loading</i> notifications. </p>
+            <p>To show a dialog call: </p>
+
+<pre class="brush: js">
+XF.UIElements.showDialog(headerText, messageText, buttons);
+</pre>
+
+            <p>To hide it call: </p>
+
+            <pre class="brush: js">XF.UIElements.hideDialog();</pre>
+
+            <dl>
+                <dt><b><code>headerText</code></b> String</dt>
+                <dd>Text that will be shown as the dialog title</dd>
+                <dt><b><code>messageText</code></b> String</dt>
+                <dd>Text that will be shown as the dialog message text</dd>
+                <dt><b><code>buttons</code></b> Array</dt>
+                <dd>An array of buttons to show (jQuery objects or objects with button description for <code>createButton()</code> method. Each button in the <code>buttons</code> array can have the following properties:</dd>
+            </dl>
+
+            <dl class="sublist">
+                <dt><b><code>text</code></b> String</dt>
+                <dd>Button text</dd>
+                <dt><b><code>icon</code></b> String</dt>
+                <dd>Button icon name</dd>
+                <dt><b><code>iconpos</code></b> String</dt>
+                <dd>Button icon position. Possible values: "top", "bottom", "right", "left"</dd>
+                <dt><b><code>small</code></b> Boolean</dt>
+                <dd>Whether this is a small button</dd>
+                <dt><b><code>special</code></b> Boolean</dt>
+                <dd>Whether the button should be of an accented color</dd>
+                <dt><b><code>alert</code></b> Boolean</dt>
+                <dd>Whether the button should be styled as vey important, red by default</dd>
+                <dt><b><code>handler</code></b> Function</dt>
+                <dd>Function that will be called when the button is pressed</dd>
+
+            </dl>
+
+            <p>The <code>buttons</code> argument may be omitted, in this case there will be an OK button which
+				will close the dialog.</p>
+
+            <p>To show a loading dialog call</p>
+
+            <pre class="brush: js">XF.UIElements.showLoading(messageText, iconName)</pre>
+
+
+            <dl>
+                <dt><b><code>messageText</code></b> String</dt>
+                <dd>Text that will be shown as the dialog message text. default is "Loading..."</dd>
+                <dt><b><code>icon</code></b> String</dt>
+                <dd>Button icon name</dd>
+            </dl>
+
+            <p>To hide it call: </p>
+
+            <pre class="brush: js">XF.UIElements.hideLoading()</pre>
+
+            <div class="example clearfix xf-grid-padded">
+                <div class="xf-grid-unit xf-grid-unit-1of2">
+                    <button onclick="XF.UIElements.showDialog('This is a dialog', 'Press OK to close the dialog.')">Show dialog</button>
+
+                </div>
+                <div class="xf-grid-unit xf-grid-unit-1of2">
+                    <button onclick="XF.UIElements.showLoading();setTimeout(XF.UIElements.hideLoading, 2000)">Show loading message for 2 seconds</button>
+
+                </div>
+
+            </div>

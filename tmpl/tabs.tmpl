@@ -1,0 +1,9 @@
+<ul class="xf-tabs">
+	<% _.each(get('tabs'), function(tab) { %>
+	<li class="xf-grid-unit <%= get('tabsClass') + ' '+ tab.gridClass %>  ">
+		<a data-params="<%= tab.params %>" class="xf-tabs-button <%= tab.className %>" id="<%= tab.id %>">
+		<span class="xf-tabs-button-text"><%= tab.text %></span>
+		</a>
+	</li>
+	<% }); %>
+</ul>

@@ -1,0 +1,9 @@
+<ul data-role="listview">
+<% _.each(get('menu'), function(item, key) { %>
+	<% if (item.isHeader) { %>
+		<li data-role="divider"><strong><%= item.title %></strong></li>
+	<% }else{ %>
+		<li><a data-url="<%= item.url %>" href="#/<%= item.url %>/"><%= item.title %></a></li>
+	<% } %>
+<% }); %>
+</ul>

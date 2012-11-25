@@ -1,0 +1,213 @@
+<h2>Starting a Project</h2>
+
+		  <p>The very first thing you should do is  add the following scripts to your page:</p>
+
+<pre class="brush: xml">
+ &lt;script src="js/lib/jquery-1.7.1.min.js"&gt;&lt;/script&gt;
+ &lt;script src="js/lib/underscore.js"&gt;&lt;/script&gt;
+ &lt;script src="js/lib/iscroll-lite.js"&gt;&lt;/script&gt;
+ &lt;script src="js/lib/helper.js"&gt;&lt;/script&gt;
+ &lt;script src="js/xf.js"&gt;&lt;/script&gt;
+</pre>
+
+	  <p>Use your app related path or Google AJAX Libraries; just keep in mind that these scripts should
+	   be placed at the bottom of the page so that they are executed after the whole page loads.</p>
+
+	  <h3>XF.start()</h3>
+
+	  <p>Also you may want to add another JS file where you would add "launching functionality” or you may
+	   place it inline. It should contain a call to the framework that would initialize everything
+	   on your page:</p>
+
+	<pre class="brush: js">XF.start();</pre>
+
+	  <p>However this wouldn’t be enough for any app, because here you should specify and pass all the
+	   initial settings. Basically this call would look like the following snippet:</p>
+
+
+<pre class="brush: js; highlight: [3,4,5]">
+$(function(){
+    XF.start({
+    settings: {...},
+    device: {...},
+    router: {
+        routes: {...},
+        handlers: {...}
+        }
+    });
+});
+</pre>
+
+	  <h3>Settings</h3>
+
+	  <p>This object should override basic options or add your own settings in key-value pair manner.</p>
+
+
+<pre class="brush: js">settings: {
+    applicationVersion: '0.0.001',
+    noCache: true,
+    componentUrlPrefix: 'js/components/',
+    templateUrlPrefix: 'js/tmpl/',
+    dataUrlPrefix: 'js/data/',
+    dataUrlPostfix: '.php',
+    touchableSwipeLength: 10,
+    touchableDoubleTapInterval: 3000
+}</pre>
+
+	  <ul>
+	   <li><code>applicationVersion</code> and <code>noCache</code> are used for cache control;</li>
+	   <li><code>componentUrlPrefix</code>, <code>templateUrlPrefix</code>, <code>dataUrlPrefix</code>, <code>dataUrlPostfix</code>, etc. let the framework know where to look for your code, script and data files (services);</li>
+	   <li><code>touchableSwipeLength</code> and <code>touchableDoubleTapInterval</code> represent general settings for touch gestures;</li>
+	  </ul>
+
+	  <p class="msg ok">Detailed description of each property can be found in the <a href="https://svnmsq.epam.com/epmc-mob/Source Code/X-Framework/docs/index.html" target="_blank">source code generated documentation.</a></p>
+
+
+	  <h3>Device</h3>
+
+	  <p>Here’s an example of how the device object may look like:</p>
+
+
+<pre class="brush: js">device: {
+ types: [
+  {
+   name: 'desktop',
+   range: {
+    max: null,
+    min: 1024
+   },
+   templatePath: 'desktop/',
+   fallBackTo: 'mobile'
+  }, {
+   name: 'mobile',
+   range: {
+    max: 480,
+    min: null
+   },
+   templatePath: 'mobile/',
+   fallBackTo: 'default'
+  }
+ ]
+}</pre>
+
+
+	  <p>This is the default value for the <code>device</code> object. It includes <code>desktop</code>,
+	   <code>tablet</code> and <code>mobile</code> types with appropriate screen resolutions and fallback
+	   chain in the listed order. You can create your own types or remove defaults altogether.</p>
+
+	  <p>Via this setting you can configure used device types – set custom template folder for each of the types, set
+	   the type that should be used if best-choice template is not accessible.</p>
+
+	  <h3>Router.Routes</h3>
+
+	  <p>This hash-map is a part of <code>router</code> object should list all the routes that you would like to
+	   handle via the <code>XF.Router</code>, here’s an example of how it may look:</p>
+
+
+<pre class="brush: js">routes: {
+ '':         'home',
+ '/':        'home',
+ 'home':     'home',
+ 'about':    'about',
+ 'news/:id': 'news'
+},
+</pre>
+
+	  <p>Router does not have any default value – <strong>you must manually specify each route you want to
+	   have</strong>.</p>
+
+	  <h3>Router.Handlers</h3>
+
+	  <p>Here you may set handlers for each of the registered routes like this:</p>
+
+<pre class="brush: js">handlers: {
+ news: function(id) {
+  var home = XF.getComponentByID('app-home-component');
+  home.selectedNewsID = id;
+  var newsDetailsComponent =
+			 XF.getComponentByID('app-news-details-component');
+  if(newsDetailsComponent) {
+   newsDetailsComponent.refresh();
+  }
+ }
+}</pre>
+
+
+	  <p>It is not required to add a <code>handler</code> to each of the <code>routes</code> you have – you are be able to handle history	change later via <code>XF.Router</code> events listening or you can use <code>pages</code> functionality for switching the layout automatically on hash change.</p>
+
+	  <h3>XF.RootComponent</h3>
+
+	  <p><code>RootComponent</code> is a must-have top component of your app. You must create your own by extending <code>XF.RootComponent</code>. It may be just a container for other components or may have its own features that should be accessible at any moment of execution. Regardless, its presence is obligatory, all other components will reside inside it.</p>
+
+	  <p>Here’s an example of the most fundamental version of RootComponent implementation:</p>
+
+
+<pre class="brush: js">$(function(){
+ var extending = {
+  modelClass: XF.Model.extend({
+  isEmptyData: true
+  }),
+  viewClass: XF.View.extend({
+   afterLoadTemplateFailed: function() {
+	$('body').html('&lt;h1&gt;ERROR&lt;/h1&gt;');
+   }
+  })
+ };
+ XF.defineComponent(
+  'HomeComponent',
+  XF.RootComponent.extend(extending, {})
+ );
+});</pre>
+
+
+	  <p>Component creation is be discussed in <a href="#/component-creation/">Component creation</a> section
+	   but	the most important thing is that <code>XF.RootComponent</code> should be used as a parent
+	   class for your root component.</p>
+
+	  <p>Root component template may contain header and footer like this:</p>
+
+
+<pre class="brush: xml">&lt;div data-id="app-header-component" data-component="HeaderComponent"&gt;
+&lt;div data-id="app-footer-component" data-component="FooterComponent"&gt;</pre>
+
+
+	  <p>You will probably need to customize title, buttons and text for them – customization would be also discussed
+	   later.</p>
+
+	  <p>The most obvious thing that can be implemented with the root component is page switching. There can be several pages that will change according to the location hash update (goes through <code>XF.Router</code>). Here’s a short snippet showing how it can be accomplished:</p>
+
+
+<pre class="brush: xml">
+&lt;div&gt;
+	&lt;div class="xf-page" id="home"&gt;
+		&lt;div class="main-content"
+			 data-id="app-news-list-component"
+			 data-component="NewsListComponent"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="contacts"&gt;
+		&lt;div class="main-content"
+			 data-id="app-contacts-component"
+			 data-component="ContactsComponent"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="about"&gt;
+		&lt;div class="main-content"
+			 data-id="app-about-component"
+			 data-component="AboutComponent"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="sitemap"&gt;
+		&lt;div class="main-content"
+			 data-id="app-site-map-component"
+			 data-component="SiteMapComponent"
+			 data-cache="true"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="news"&gt;
+		&lt;div class="main-content"
+			 data-id="app-news-details-component"
+			 data-component="NewsDetailsComponent"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</pre>
+
+
+	  <p>As you can see there’s a container and a number of <code>div</code> elements with class <code>xf-page</code>
+	   applied – that’s almost all you need to make paging magic happen. The active page is selected according to
+	   the <code>id</code> attribute; the other pages would be hidden.</p>

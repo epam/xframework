@@ -1,0 +1,82 @@
+<h3>Tabs Component</h3>
+
+            <p>To insert tabs use the following snippet:</p>
+
+<div class="example">
+<pre class="brush: js; highlight: [1]">&lt;div data-component="TabsComponent"
+    data-id="app-tabs"&gt;
+    &lt;script&gt;
+        XF.setOptionsByID('app-tabs',
+             { tabsPerRow: 4,
+               tabsData: [{
+                  text:'Four',
+                  active: true
+                }, {
+                  text:'beautiful'
+                }, {
+                  text:'tabs'
+                }, {
+                  text:'!'
+                }]
+             }
+        );
+    &lt;/script&gt;
+&lt;/div&gt;</pre>
+</div>
+
+            <div data-component="tabs" data-id="app-tabs">
+              <script>
+                XF.setOptionsByID('app-tabs',
+                     { tabsPerRow: 4,
+                       tabsData: [{
+                          text:'Four',
+                          active: true
+                        },  {
+                          text:'beautiful'
+                        },{
+                          text:'tabs,'
+                        }, {
+                          text:'!'
+                        }]
+                     }
+                  );
+                </script>
+            </div>
+
+            <p>Using <i>tabsPerRow</i> parameter you can define how many tabs should be displayed per row. Tabs component is smart. You've no need to worry about positioning tabs elements.</p>
+            <div data-id="app-tabs3" data-component="tabs">
+              <script>
+                XF.setOptionsByID('app-tabs3',
+                     { tabsPerRow: 2,
+                       tabsData: [{
+                          text:'Five'
+                        }, {
+                          text:'tabs,'
+                        }, {
+                          text:'2'
+                        }, {
+                          text:'per'
+                        }, {
+                          text:'row'
+                        }]
+                     }
+                  );
+                </script>
+            </div>
+
+            <p>The component has the following configurable properties. </p>
+
+            <dl>
+                <dt><b><code>tabsPerRow</code></b>: 4</dt>
+                <dd>Maximum 6. How many tabs to fit int one row.</dd>
+                <dt><b><code>tabsClass</code></b>: ''</dt>
+                <dd>A custom class name to be set on every tab. </dd>
+                <dt><b><code>tabsData</code></b>: []</dt>
+                <dd>An array of objects representing individual tabs. Each one can have the following properties:</dd>
+            </dl>
+            <dl class="sublist">
+                <dt><b><code>text</code></b>: ''</dt>
+                <dd>Text to be displayed on the button</dd>
+                <dt><b><code>active</code></b>: false</dt>
+                <dd>Indicates whether the tab is active (selected).</dd>
+            </dl>

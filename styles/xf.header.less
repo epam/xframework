@@ -1,0 +1,59 @@
+
+/*  Header
+========================================== */
+
+.xf-header {
+	display: block;
+	position: relative;
+	min-height: 43px;
+	z-index: 20; /* z-index > 0 causes the rotated pseudo-el inside .xf-button-back to not be rotated on android*/
+	text-align: center;
+	border-bottom: 1px solid transparent;
+
+	.gradient(@header-bg-color-start, @header-bg-color-end);
+	border-bottom: 1px solid @header-border-color;
+	.box-shadow(rgba(0,0,0,.15), 0, 1px, 0);
+}
+.xf-header-title {
+	margin: 0 8px;
+	padding: 0;
+	font: bold 18px sans-serif;
+	line-height: 43px;
+	vertical-align: middle;
+	.ellipsis;
+
+	color: @header-text-color;
+	text-shadow: 0 1px 0 @header-text-shadow-color;
+}
+	.xf-button-header-left + .xf-header-title,
+	.xf-button-header-right + .xf-header-title	{
+		margin-left: 80px;
+		margin-right: 80px;
+	}
+
+
+.xf-button-header-left,
+.xf-button-header-right {
+	position: absolute;
+	top: 50%;
+	margin-top: -14px;
+	max-width: 66px;
+}
+	.xf-button-header-left {
+		left: 8px;
+	}
+	.xf-button-header-right {
+		right: 8px;
+	}
+
+.xf-header-fixed {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+}
+
+.xf-page-has-fixed-header .xf-page-content,
+.xf-viewport-has-fixed-header .xf-page-content {
+	margin-top: 44px;
+}

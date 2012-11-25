@@ -1,0 +1,153 @@
+<h2>Creating custom components</h2>
+
+            <p>There are a number of built-in components you may use just applying some options as it was described in the
+                <a href="#/component-customization/">Configuring components</a> section. However, you may need to add extra functionality, complex layout or whatever else that would exceed built-in component scope. In this case it is possible to create your own component. As it extends <code>XF.Component</code> general functionality, loading and rendering processes would still work without your input.</p>
+
+
+<pre class="brush: js">$(function(){
+	var extending = {
+		modelClass: XF.Model.extend({
+			isEmptyData: true
+		}),
+		viewClass: XF.View.extend({
+			afterLoadTemplateFailed: function() {
+				$('body').html('&lt;h1&gt;ERROR&lt;/h1&gt;');
+			}
+		})
+	};
+	XF.defineComponent(
+		'HomeComponent',
+		XF.RootComponent.extend(extending, {})
+	);
+});</pre>
+
+
+		<p>Let’s get back to our <code>RootComponent</code> subclass example named <code>HomeComponent</code>. First of all, you will need a JS file (its content is shown above) which defines component’s logic and may override some <code>XF.Component</code> (or <code>XF.RootComponent</code>) properties to achieve specific behavior.</p>
+
+
+<pre class="brush: js">XF.defineComponent(
+	'HomeComponent',
+	XF.RootComponent.extend(extending, {})
+);</pre>
+
+
+		<p>This call defines a new component via two arguments: <b>component name</b> and <b>component class</b>.</p>
+		<p><b>Component name</b>: used to setup a placeholder (-s) for instance (-s) of the component and should be unique within the application.</p>
+		<p><b>Component class</b>: definition is created via <code>XF.[some_base_component].extend()</code> call. Here you should pass two objects with properties and methods you want to add to the base class functionality as non-static and static part of a class respectively.</p>
+		<p>Let’s take a look at what we are passing for the <code>HomeComponent</code> as extension to&nbsp;<code>XF.RootComponent</code>:</p>
+
+
+<pre class="brush: js">{
+	modelClass: XF.Model.extend({
+		isEmptyData: true
+	}),
+	viewClass: XF.View.extend({
+		afterLoadTemplateFailed: function() {
+			$('body').html('&lt;h1&gt;ERROR&lt;/h1&gt;');
+		}
+	})
+}</pre>
+
+
+		<p>There’re only two properties that would override existing XF.Component functionality: <code>modelClass</code> and viewClass. They are also inherited from built-in classes: <code>XF.Model</code> and <code>XF.View</code> in the same manner as the whole component does.</p>
+
+		<p>You may add/override properties of the component model and view. Basically you are able to modify everything you see.</p>
+
+		<p>In the example you can see that we are overriding <code>isEmptyData</code> property value with <code>true</code> , this would prevent component model from data retrieval. To be clear that there’s no necessity to get data for the
+			<code>RootComponent</code> instead of getting specific piece of data from some smaller parts (component). This would shorten traffic
+			capacity and prevent possible bandwidth problems; also it may decrease latency and improve user experience,
+			because you don’t need to wait for data that is currently useless.</p>
+
+		<h3><code>XF.Model</code> properties</h3>
+
+		<dl>
+			<dt><code>isEmptyData</code></dt>
+			<dd>Flag that determines whether there is necessity to get data for the <code>RootComponent</code></dd>
+			<dt><code>isStaticData</code></dt>
+			<dd>Flag that determines whether the data should be loaded once</dd>
+			<dt><code>isStringData</code></dt>
+			<dd>Flag that determines whether the data type is <code>string</code> (otherwise JSON)</dd>
+			<dt><code>autoUpdateInterval</code></dt>
+			<dd>Interval in milliseconds defining how often data should be retrieved from the server; use '0' to turn <code>autoUpdate</code> off</dd>
+			<dt><code>dataURL</code></dt>
+			<dd>Data source URL</dd>
+			<dt><code>updateInBackground</code></dt>
+			<dd>Flag that determines whether the data should be updating (with <code>autoUpdate</code>) even if the component is currently hidden</dd>
+			<dt><code>updateOnShow</code></dt>
+			<dd>Flag that determines whether the data should be updated each time the component becomes visible</dd>
+		</dl>
+
+		<h3><code>XF.View</code> properties</h3>
+
+		<p> <code>XF.View</code> has several customization variables:</p>
+
+		<dl>
+			<dt><code>ignoreModelUpdate</code></dt>
+			<dd>Flag that determines whether the Model update should be ignored by the <code>View</code> (in this case you may launch <code>XF.View.refresh()</code> manually)</dd>
+			<dt><code>templateURL</code></dt>
+			<dd>Template URL</dd>
+			<dt><code>updateOnShow</code></dt>
+			<dd>Flag that determines whether the view should be rerendered each time the component becomes visible</dd>
+			<dt><code>useCache</code></dt>
+			<dd>Flag that determines whether the template should be stored into
+				<a href="#/utils/"><code>XF.Cache</code></a></dd>
+		</dl>
+
+		<p>As for the <code>viewClass</code> property, new <code>XF.View</code> subclass overrides a single method of the basic class.</p>
+
+		<h3><code>XF.Component</code> hooks</h3>
+
+		<dl>
+			<dt><code>afterConstructModel()</code></dt>
+			<dd>HOOK: override to add logic after model construction</dd>
+			<dt><code>afterConstructView()</code></dt>
+			<dd>HOOK: override to add logic after view construction</dd>
+			<dt><code>beforeConstructModel()</code></dt>
+			<dd>HOOK: override to add logic before model construction</dd>
+			<dt><code>beforeConstructView()</code></dt>
+			<dd>HOOK: override to add logic before view construction</dd>
+		</dl>
+
+
+		<p>There are a number of entry points for modification of default behavior: these hooks are called at a specific time of execution to let you add some custom code at the moment it is required. So the inside implementation looks like the following abstract algorithm:</p>
+
+		<ol>
+			<li>call "beforeConstructModel”;</li>
+			<li>create Model;</li>
+			<li>call "afterConstructModel”;</li>
+			<li>call "beforeConstructView”; </li>
+			<li>create View;</li>
+			<li>call "afterConstructView”;</li>
+		</ol>
+
+	    <p>The same logic is used for the rest of the hooks which are called if you’ve overridden them or not.</p>
+
+		<h3>Hooks for <code>XF.Model</code></h3>
+
+		<dl>
+			<dt><code>afterLoadData()</code></dt>
+			<dd>HOOK: override to add logic after data load</dd>
+			<dt><code>beforeLoadData()</code></dt>
+			<dd>HOOK: override to add logic before data load</dd>
+			<dt><code>init()</code></dt>
+			<dd>HOOK: override to add logic.</dd>
+		</dl>
+
+		<h3>Hooks for <code>XF.View</code></h3>
+
+		<dl>
+			<dt><code>afterLoadTemplate()</code></dt>
+			<dd>HOOK: override to add logic after template load</dd>
+			<dt><code>afterLoadTemplateFailed()</code></dt>
+			<dd>HOOK: override to add logic for the case when it's impossible to load template</dd>
+			<dt><code>beforeLoadTemplate()</code></dt>
+			<dd>HOOK: override to add logic before template load</dd>
+			<dt><code>init()</code></dt>
+			<dd>HOOK: override to add custom logic on init</dd>
+			<dt><code>postRender()</code></dt>
+			<dd>HOOK: override to add logic after render</dd>
+			<dt><code>preRender()</code></dt>
+			<dd>HOOK: override to add logic before render</dd>
+		</dl>
+
+		<p>In summary, you are able to override existing properties, hook (and functions) and add your own properties and methods for any subclass of <code>XF.Component</code>, <code>XF.Model</code> or <code>XF.View</code>.</p>

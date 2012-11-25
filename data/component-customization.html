@@ -1,0 +1,71 @@
+<h2>Configuring components</h2>
+
+			<p>This section describes setting up and adjusting existing components, but not modifying their
+				functionality or changing names. An	instance of a component	is created by specifying some
+				variables, which would be used by its entire logic.</p>
+
+			<p>You may want to create several instances of an object passing different options to each of them,
+				making them behave/look different. Even with these changes the global meaning of the component
+				(its logic, scope & usage) would stay identical.</p>
+
+			<p>Customization is performed by setting options for the component instance by its ID. For example:</p>
+
+<pre class="brush: xml; highlight: [3]">&lt;div data-id="app-header-component" data-component="HeaderComponent"&gt;
+&lt;script&gt;
+XF.setOptionsByID (
+    'app-header-component',
+    {
+        headerElement: 'div',
+        title: 'Test XF',
+        buttons: [{
+            isBackBtn: true
+        }, {
+            align: 'right',
+            isSpecial: true,
+            icon: 'menu',
+            tooltip: 'Go to Home page',
+            href: 'home'
+        }]
+    }
+);
+&lt;/script&gt;
+&lt;/div&gt;
+</pre>
+
+	<p><strong>The most important thing is that component settings script  should be executed before the component is created</strong>.	But it is <strong>not</strong> required to place the call to <code>XF.setOptionsByID</code> inside the component &mdash; it can be put together with other customization scripts, or can be called outside of the template or inside a logic that would define component options at runtime. </p>
+
+		<p><strong>Component creation happens at the moment the component is required:</strong></p>
+
+		<ol>
+			<li>As soon as its placeholder (any HTML tag with <code>data-component</code> attribute) becomes visible to user, component definition (JS logic) starts loading;</li>
+			<li>When it’s loaded, component instance would be initialized;</li>
+			<li>After that component template and component data (if applicable) start loading;</li>
+			<li>When they all are available on the client side the component is rendered.</li>
+		</ol>
+
+		<p>Your aim is to set all the options before the 2nd step is reached. However, the way shown in the example (place adjustment script inside component placeholder) works well.</p>
+
+	<p>Here’s a JSDoc description of the method:</p>
+
+
+		<h3>Defining component instance custom options</h3>
+
+		<p><code>&lt;static&gt; XF.<b>setOptionsByID</b>(compID, options)</code></p>
+
+		<p>Parameters:</p>
+
+		<dl>
+			<dt><code>{String} <b>compID</b></code></dt>
+			<dd>Component instance id</dd>
+
+			<dt><code>{Object} <b>options</b></code></dt>
+			<dd>Object containing custom options for appropriate component instance</dd>
+		</dl>
+
+	 <p>Parameter <code>compID</code> must be equal to the <code>data-id</code> attribute of the component placeholder. Parameter <code>options</code> is an object and is specific for each component. In the example we can see that it contains:</p>
+
+		<ol>
+			<li><code>headerElement</code> – type of tag in which header element should be wrapped;</li>
+			<li><code>title</code> – title text;</li>
+			<li><code>buttons</code> – a list of buttons that should be shown.</li>
+		</ol>

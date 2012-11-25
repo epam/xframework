@@ -1,0 +1,105 @@
+
+		<h2>Lists</h2>
+
+		<p>To make a data list add a <code>[data-role="listview"]</code> attribute to a <code>UL</code> or <code>OL</code> element. </p>
+
+		<p>If list elements must be clickable wrap all the contents of the list items in <code>A</code> elements: <code><span class="nobr">UL[data-role=listview]</span> > LI > A > <em>whatever</em></code></p>
+
+		<p>To make a divider between list items make another <code>LI</code> with a <code>data-role="divider"</code> attribute.</p>
+
+		<p>See code and result lower in this section.</p>
+
+		<h3>List items with icons</h3>
+
+		<p>Just like with buttons icons can be added to list items using <code>data-icon</code> and
+			<code>data-iconpos</code> attributes. Note that <code>[data-iconpos=top]</code> and
+			<code>[data-iconpos=bottom]</code> values are not supported on list items. </p>
+
+		<p>List elements can have a count bubble. Just add a <code>SPAN.xf-count-bubble</code>  inside them</p>
+
+
+		<h3>Lists with thumbnails</h3>
+
+		<p>If you need to have thumbnails inside list items, you don't need to do anything special, just put
+			the image inside the list item, and it will be displayed on the left hand side. The image can be
+			moved to the right side by adding <code>[data-thumbpos="right"]</code> attribute to the
+			corresponding <code>LI</code> element.</p>
+
+		<h3>Sample listview markup:</h3>
+
+<div class="example">
+<pre class="brush: xml; highlight: [1,2,7,13,20,22]">&lt;ul data-role="listview"&gt;
+	&lt;li data-role="divider"&gt;A&lt;/li&gt;
+	&lt;li&gt;
+		&lt;h2&gt;Header&lt;/h2&gt;
+		&lt;p&gt;No link&lt;/p&gt;
+	&lt;/li&gt;
+	&lt;li&gt;&lt;a href="#"&gt;Simple link&lt;/a&gt;&lt;/li&gt;
+	&lt;li data-role="divider"&gt;Divider&lt;/li&gt;
+	&lt;li&gt;&lt;a href="#"&gt;
+		&lt;h2&gt;Header&lt;/h2&gt;
+		&lt;p&gt;Header and description&lt;/p&gt;
+	&lt;/a&gt;&lt;/li&gt;
+	&lt;li data-icon="right-circled" data-iconpos="right"&gt;&lt;a href="#"&gt;
+		&lt;h2&gt;With Icon&lt;/h2&gt;
+		&lt;p&gt;List item  with icon on the right&lt;/p&gt;
+	&lt;/a&gt;&lt;/li&gt;
+	&lt;li data-icon="right-circled" data-iconpos="right"&gt;&lt;a href="#"&gt;
+		&lt;h2&gt;With Icon and Count&lt;/h2&gt;
+		&lt;p&gt;List item  with icon on the right and count&lt;/p&gt;
+		&lt;span class="xf-count-bubble"&gt;32&lt;/span&gt;
+	&lt;/a&gt;&lt;/li&gt;
+	&lt;li data-thumbpos="right"&gt;&lt;a href="#"&gt;
+		&lt;img src="../img/_thumb1.jpg" alt=""&gt;
+		&lt;h2&gt;With Thumbnail on the right&lt;/h2&gt;
+		&lt;p&gt;List item  with a thumbnail on the right&lt;/p&gt;
+	&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div>
+
+		<p>The above code will result in:</p>
+
+		<div class="example">
+			<ul  data-role="listview">
+				<li data-role="divider">
+					Divider
+				</li>
+				<li>
+					<h2>Header</h2>
+					<p>No link</p>
+				</li>
+				<li >
+					<a href="#">Simple link</a>
+				</li>
+				<li data-role="divider">
+					Divider
+				</li>
+				<li>
+					<a href="#">
+						<h2>Header</h2>
+						<p >Header and description</p>
+					</a>
+				</li>
+				<li data-iconpos=right data-icon=right-circled>
+					<a  href="#">
+							<h2>With Icon</h2>
+							<p>List item  with icon on the right</p>
+					</a>
+				</li>
+				<li data-icon="right-circled">
+					<a href="#">
+							<h2>With Icon and Count</h2>
+							<p>List item  with icon on the right and count</p>
+						<span class="xf-count-bubble">32</span>
+					</a>
+				</li>
+				<li data-thumbpos="right">
+					<a href="" >
+						<img src="img/_thumb1.jpg" alt="thumbnail" >
+						<h3>With Thumbnail on the right</h3>
+						<p>List item  with a thumbnail on the right</p>
+					</a>
+				</li>
+			</ul>
+		</div>

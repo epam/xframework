@@ -1,0 +1,49 @@
+
+/*  Layout
+========================================== */
+
+.xf-grid-unit-1of1 { width: 100%;float:none; display: block;}
+.xf-grid-unit-1of2,
+.xf-grid-unit-2of4,
+.xf-grid-unit-3of6 { width:50%;}
+.xf-grid-unit-1of3,
+.xf-grid-unit-2of6 { width:33.333333%;}
+.xf-grid-unit-2of3,
+.xf-grid-unit-4of6 { width:66.666666%;}
+.xf-grid-unit-1of4 { width:25%;}
+.xf-grid-unit-3of4 { width:75%;}
+.xf-grid-unit-1of5 { width:20%;}
+.xf-grid-unit-2of5 { width:40%;}
+.xf-grid-unit-3of5 { width:60%;}
+.xf-grid-unit-4of5 { width:80%;}
+.xf-grid-unit-1of6 { width:16.66666666%;}
+.xf-grid-unit-5of6 { width:83.33333333%;}
+
+.xf-grid-unit {
+	float: left;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	.border-box;
+}
+.xf-indented {
+	padding-top: 8px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.xf-grid-padded {
+
+  >.xf-grid-unit{
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  >.xf-grid-unit:first-child {
+    padding-left: 0;
+  }
+
+  >.xf-grid-unit:last-child {
+    padding-right: 0;
+  }
+
+}

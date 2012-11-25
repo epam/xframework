@@ -1,0 +1,150 @@
+<h2>Routing</h2>
+
+			<p>There are several ways of communication between components:</p>
+
+			<ul>
+				<li>Routing (history based)</li>
+				<li>General controller (event based)</li>
+				<li>Direct call (API based)</li>
+			</ul>
+
+			<h3>Routing</h3>
+
+			<p>You are able to navigate to another screen using predefined routes and handlers (This was described in the first chapter – <code>XF.start()</code> method is used for it). It is done by calling:</p>
+
+
+	        <pre class="brush: js">XF.Router.navigate("_route_name_", true )</pre>
+
+
+			<p>However, you may not want to add listeners to each link or button. For this purpose there are anchor hooks which are added to each item with data-href attribute.  So to make a link go to, say, news_page, you should do the following:</p>
+
+			<p>1. Add an appropriate route and handler:</p>
+
+
+<pre class="brush: js; highlight: [5,9]">XF.start({
+	settings: {...},
+	device: {...},
+	router: {
+		routes: {
+			'news_page': 'news_page',
+			...
+		},
+		handlers: {
+			'news_page': function() {
+				_current_screen_.hide();
+				_news_screen_.show();
+        },
+		...
+	}
+});</pre>
+
+			<p>2. Add a <code>data-href</code> attribute:</p>
+
+            <div class="example"><code>&lt;a <mark>data-href="news_page"</mark>&gt;News&lt;/a&gt;</code></div>
+
+			<p>Once the button is rendered framework would automatically add click listener that calls <code>XF.Router.navigate</code> with appropriate parameters. This would make the location switch and the appropriate route handler would be called. As for our example: <code>news_page</code> would be shown.</p>
+
+
+		<h3>General Controller</h3>
+
+		<p><code>XF.Component</code>, <code>XF.View</code>, <code>XF.Model</code>, <code>XF.Router</code> – all these classes extend <code>XF.Events</code>, which provides the following API:</p>
+
+			<dl>
+				<dt><code>bind(ev, callback, context)</code></dt>
+				<dd>Bind an event, specified by a string name, 'ev', to a 'callback' function.</dd>
+				<dt><code>trigger(eventName)</code></dt>
+				<dd>Trigger an event, firing all bound callbacks.</dd>
+				<dt><code>unbind(ev, callback)</code></dt>
+				<dd>Remove one or many callbacks.</dd>
+			</dl>
+
+		<p>Also these classes are made to trigger several predefined events. <code>XF.View</code>, for example has the following list of built-in events.</p>
+
+		<h3><code>XF.View</code> built-in events</h3>
+
+			<dl>
+				<dt><code>construct()</code></dt>
+				<dd>Would be dispatched once when the Component constructed</dd>
+				<dt><code>init()</code></dt>
+				<dd>Would be dispatched once when the Component initedinitiated</dd>
+				<dt><code>refresh()</code></dt>
+				<dd>Would be dispatched after each render</dd>
+				<dt><code>templateLoaded()</code></dt>
+				<dd>Would be dispatched once, when template is ready for use</dd>
+			</dl>
+
+		<p>So, you are able to bind any kind of event handler with your custom logic and it would be called at appropriate execution time. Also according to the API of <code>XF.Events</code>, you are able to trigger any custom event and have a handler or handlers for it bound.</p>
+
+		<p><code>XF.Controller</code> is an instance of <code>XF.Events</code> subclass with no additional logic. It is a singleton and is available from any point of code during the whole execution life cycle. The main purpose of this object is to provide an easily reachable point of communication between different parts of the application based on events.</p>
+
+		<p>Let’s look back at the API of <code>XF.Events</code>. Here’s an example of how you may transfer some data/event between several (possibly independent) parts of the application. By the way, there’s no need to let those parts know about each other. Here’s how you bind to the controller event:</p>
+
+
+
+<pre class="brush: js">XF.Controller.bind(
+	'something',
+	function(a, b) {
+		console.log(a, b);
+	}
+);</pre>
+
+
+		<p>A handler for ‘something’ event was added, also its notation suggests that there would be two arguments – these arguments should be passed into trigger() method. Here’s an example:</p>
+
+<pre class="brush: js">XF.Controller.trigger(
+	'something',
+	'_value_for_a',
+	'_value_for_b_'
+);</pre>
+
+		<p>Also you are able to bind listeners for all events (this is true not only for <code>XF.Controller</code>, but for any instance of <code>XF.Events</code> subclass). Here’s how you do this:</p>
+
+
+<pre class="brush: js">XF.Controller.bind(
+	'all',
+	function(eventType, a, b) {
+		console.log(eventType , a, b);
+	}
+);</pre>
+
+			<p>As you may have noticed there’s one more argument added to the handler function – this is done to make it possible to define the correct event type of the event triggered and add appropriate processing for it. It is worth mentioning that it is a good practice to use a single object to pass arguments, this would change our example to the following pattern:</p>
+
+
+<pre class="brush: js">XF.Controller.bind(
+	'something',
+	function(params) {
+		console.log(params.a, params.b);
+	}
+);
+
+XF.Controller.trigger(
+	'something',
+    {
+        a: '_value_for_a',
+        b: '_value_for_b_'
+	}
+);
+
+XF.Controller.bind(
+	'all',
+	function(eventType, params) {
+		console.log(eventType , params.a, params.b);
+	}
+);</pre>
+
+		<h3>Direct component API call</h3>
+
+		<p>You may want to bind and trigger events on a specific component instance, or event call some built-in or custom method defined in its class. This requires a pointer to the component instance, that has been received by the following framework method:</p>
+
+		<dl>
+			<dt><code>XF.getComponentByID(compID)</code></dt>
+			<dd>Returns component instance by its id</dd>
+		</dl>
+
+		<p>For example, if you want to refresh a component instance (it means refresh the data if necessary and render it again) from some point of code that can’t reach it directly (<code>XF.Model</code> and <code>XF.View</code> instances have special property "component” for this purpose) you should do the following:</p>
+
+<pre class="brush: js">XF.getComponentByID('_component_instance_id_').refresh();</pre>
+
+		<p>Note that component instance id is the value of data-id attribute of the component instance placeholder, set via the template.</p>
+
+		<p>You are able to use <code>bind()</code> and <code>trigger()</code> methods of the component to manipulate its events. Also there are <code>view</code> and <code>model</code> properties inside <code>XF.Component</code> which stores pointers to appropriate <code>XF.Model</code> and <code>XF.View</code> subclasses instances. So, using <code>XF.getComponentByID()</code> method you are able to reach any point of your application component structure.</p>

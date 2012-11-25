@@ -1,0 +1,81 @@
+<h2>Footer component</h2>
+
+			<p>X-Framework provides footer as a component.</p>
+			<p>The following snippet will insert a footer: </p>
+
+			<div class="example">
+<pre class="brush: xml">&lt;div data-component="FooterComponent" data-id="MY-COMPONENT-ID"&gt;&lt;/div&gt;</pre>
+			</div>
+
+			<p>To use one global footer for the whole application insert the snippet as a sibling of all the
+				<code>.xf-page</code> elements:  </p>
+
+
+			<div class="example">
+<pre class="brush: xml; highlight: [4]">&lt;body&gt;
+	&lt;div class="xf-page" id="page1"&gt;...&lt;/div&gt;
+	&lt;div class="xf-page" id="page2"&gt;...&lt;/div&gt;
+    &lt;div data-component="FooterComponent" data-id="MY-COMPONENT-ID"&gt;&lt;/div&gt;
+&lt;/body&gt;
+</pre>
+			</div>
+
+			<p>It is also possible to put headers inside the necessary pages:</p>
+
+			<div class="example">
+<pre class="brush: xml; highlight: [3,6]">&lt;body&gt;
+	&lt;div class="xf-page" id="page1"&gt;
+		&lt;div data-component="FooterComponent" data-id="MY-COMPONENT-ID"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="page2"&gt;
+		&lt;div data-component="FooterComponent" data-id="MY-SECOND-COMPONENT-ID"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/body&gt;
+</pre>
+			</div>
+
+            <p>Note that it is not possible to have a single non-fixed footer due to  the fact that the pages are
+                positioned absolutely and cannot account for the footer being present. </p>
+
+            <p>The Footer component has several configurable properties. They can be set using <code><a
+					href="#/component-creation/">XF.setOptionsByID</a></code> method. Here are the default values:</p>
+
+<div class="example">
+<pre class="brush: js">XF.setOptionsByID(
+    'COMPONENT-ID',
+    {
+        isFixed : true,
+        buttonsClass : '',
+        buttons : [],
+    }
+);</pre>
+</div>
+
+        <dl>
+            <dt><b><code>isFixed</code></b>: true</dt>
+            <dd>Indicates whether the footer has to be fixed at the bottom of the screen or scroll together with
+                the page</dd>
+            <dt><b><code>buttonsClass</code></b>: null,</dt>
+            <dd>custom class name to be applied on EACH button</dd>
+            <dt><b><code>buttons</code></b>: [],</dt>
+            <dd>an array of objects describing buttons. Each button has the following properties:</dd>
+        </dl>
+        <dl class="sublist">
+            <dt><b><code>buttonClass</code></b>: null</dt>
+            <dd>custom class to be applied on button</dd>
+            <dt><b><code>isBackBtn</code></b>: true</dt>
+            <dd>true | false</dd>
+            <dt><b><code>text</code></b>: null</dt>
+            <dd>text to be displayed</dd>
+            <dt><b><code>textClass</code></b>: null</dt>
+            <dd>custom class name to be applied on text</dd>
+            <dt><b><code>icon</code></b>: null</dt>
+            <dd>icon name. See <a href="#/icons/">Icons</a> section for full list of icons</dd>
+            <dt><b><code>iconClass</code></b>: null</dt>
+            <dd>custom class name for the icon</dd>
+            <dt><b><code>href</code></b>: null</dt>
+            <dd>URL to navigate to when clicked</dd>
+        </dl>
+
+        <p>If the component does not have the features your project requires, feel free to copy the component
+            definition and template files and modify them to suit your needs.</p>

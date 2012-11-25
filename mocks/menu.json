@@ -1,0 +1,93 @@
+{
+	"overview": {
+		"title": 	"Overview",
+		"url":		"about",
+		"isHeader":	true
+	},
+	"about": {
+		"title":	"What is X-Framework?",	
+		"url": 		"about"	
+	},
+	"download": {
+		"title":	"Download XF",	
+		"url": 		"download"	
+	},
+	"api": {
+		"title": 	"API",
+		"url":		"getstarted",
+		"isHeader":	true
+	},
+	"getstarted": {
+		"title":	"Starting a Project",	
+		"url": 		"getstarted"	
+	},
+	"component-wtf": {
+		"title":	"What is a component?",	
+		"url": 		"component-wtf"	
+	},
+	"component-customization": {
+		"title":	"Configuring components",	
+		"url": 		"component-customization"	
+	},
+	"component-creation": {
+		"title":	"Creating custom components",	
+		"url": 		"component-creation"	
+	},
+	"templating": {
+		"title":	"Templating",	
+		"url": 		"templating"	
+	},
+	"routing": {
+		"title":	"Routing",	
+		"url": 		"routing"	
+	},
+	"utils": {
+		"title":	"Helper functions",	
+		"url": 		"utils"	
+	},
+	"ui": {
+		"title":	"UI",
+		"url":		"base-markup",
+		"isHeader":	true
+	},
+	"base-markup": {
+		"title":	"Base markup",	
+		"url": 		"base-markup"	
+	},
+	"creating-themes": {
+		"title":	"Creating themes",	
+		"url": 		"creating-themes"	
+	},
+	"enhancing": {
+		"title":	"Buttons",
+		"url": 		"enhancing"	
+	},
+	"form-elements": {
+		"title":	"Form elements",	
+		"url": 		"form-elements"	
+	},
+	"icons": {
+		"title":	"Icons",
+		"url": 		"icons"	
+	},
+	"lists": {
+		"title":	"Lists",	
+		"url": 		"lists"	
+	},
+	"header-component": {
+		"title":	"Header component",	
+		"url": 		"header-component"	
+	},
+	"footer-component": {
+		"title":	"Footer component",	
+		"url": 		"footer-component"	
+	},
+	"tabs-component": {
+		"title":	"Tabs component",	
+		"url": 		"tabs-component"	
+	},
+	"dialogs": {
+		"title":	"Dialogs",	
+		"url": 		"dialogs"	
+	}	
+}

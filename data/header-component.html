@@ -1,0 +1,110 @@
+<h2>Header component</h2>
+
+			<p>X-Framework provides Header as a component.</p>
+			<p>The following snippet will insert a header: </p>
+
+			<div class="example">
+<pre class="brush: xml">&lt;div data-component="HeaderComponent" data-id="MY-COMPONENT-ID"&gt;&lt;/div&gt;</pre>
+			</div>
+
+			<p>To use one global header for the whole application insert the snippet as a sibling of all the
+				<code>.xf-page</code> elements:  </p>
+
+
+			<div class="example">
+<pre class="brush: xml; highlight: [2]">&lt;body&gt;
+	&lt;div data-component="HeaderComponent" data-id="MY-COMPONENT-ID"&gt;&lt;/div&gt;
+	&lt;div class="xf-page" id="page1"&gt;...&lt;/div&gt;
+	&lt;div class="xf-page" id="page2"&gt;...&lt;/div&gt;
+&lt;/body&gt;
+</pre>
+			</div>
+
+
+			<p>It is also possible to put headers inside the necessary pages:</p>
+
+			<div class="example">
+<pre class="brush: xml; highlight: [3,6]">&lt;body&gt;
+	&lt;div class="xf-page" id="page1"&gt;
+		&lt;div data-component="HeaderComponent" data-id="MY-COMPONENT-ID"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="xf-page" id="page2"&gt;
+		&lt;div data-component="HeaderComponent" data-id="MY-SECOND-COMPONENT-ID"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/body&gt;
+</pre>
+			</div>
+
+            <p>Note that it is not possible to have a single non-fixed header due to  the fact that the pages are
+                positioned absolutely and cannot account for the header being present. </p>
+            <p>The Header component has several configurable properties. They can be set using <code><a
+					href="#/component-creation/">XF.setOptionsByID</a></code> method. Here are the default values:</p>
+
+<div class="example">
+<pre class="brush: js">XF.setOptionsByID(
+    'COMPONENT-ID',
+  {
+  <b>headerElement</b>: null,
+  <b>isFixed</b>: true,
+  <b>buttonsClass</b>: null,
+  <b>title</b>: 'Page Title',
+  <b>buttons</b>: [{
+            align: 'left'
+            buttonClass: null,
+            isBackBtn: true,
+            isSpecial: false,
+            text: null,
+            textClass: null,
+            icon: null,
+            iconClass: null,
+            href: null,
+            tooltip: 'Go to previous page',
+            params: {
+                data: 'back'
+            }
+        }]
+    }
+);</pre>
+</div>
+
+        <dl>
+            <dt><b><code>isFixed</code></b>: true</dt>
+            <dd>adding 'xf-header-fixed' class</dd>
+            <dt><b><code>buttonsClass</code></b>: null,</dt>
+            <dd>custom class name to be applied on EACH button</dd>
+            <dt><b><code>title</code></b>: 'Page Title',</dt>
+            <dd>header title text</dd>
+            <dt><b><code>headerElement</code></b>: null</dt>
+            <dd>element in which <code>title</code> will be wrapped</dd>
+            <dt><b><code>buttons</code></b></dt>
+            <dd>an array of objects describing buttons, each can have the following properties:</dd>
+        </dl>
+
+            <dl class="sublist">
+                <dt><b><code>align</code></b>: 'left'</dt>
+                <dd>position: 'left' | 'right'</dd>
+                <dt><b><code>buttonClass</code></b>: null</dt>
+                <dd>custom class to be applied on button</dd>
+                <dt><b><code>isBackBtn</code></b>: true</dt>
+                <dd>true | false</dd>
+                <dt><b><code>isSpecial</code></b>: false</dt>
+                <dd>true | false - changes the view only</dd>
+                <dt><b><code>text</code></b>: null</dt>
+                <dd>text to be displayed</dd>
+                <dt><b><code>textClass</code></b>: null</dt>
+                <dd>custom class name to be applied on text</dd>
+                <dt><b><code>icon</code></b>: null</dt>
+                <dd>icon name. See <a href="#/icons/">Icons</a> section for full list of icons</dd>
+                <dt><b><code>iconClass</code></b>: null</dt>
+                <dd>custom class name for the icon</dd>
+                <dt><b><code>href</code></b>: null</dt>
+                <dd>URL to navigate to when clicked</dd>
+                <dt><b><code>tooltip:</code></b>'Go to previous page'</dt>
+                <dd>button's title  attribute</dd>
+                <dt><b><code>params</code></b>: {data: 'back'}</dt>
+                <dd>params to be passed into the dispatched event ('buttonClick')</dd>
+            </dl>
+
+
+            <p>If the component does not have the features your project requires, feel free to copy the component
+                definition and template files and modify them tou suit your needs.</p>

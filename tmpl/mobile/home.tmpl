@@ -1,0 +1,51 @@
+<div data-id="app-header-component" data-component="header">
+	<script type="text/javascript">
+
+		XF.setOptionsByID(
+			'app-header-component',
+			{
+				title: 'XF Documentation',
+				buttons: [
+					{
+						align: 'left',
+						icon: 'left',
+						tooltip: 'back',
+						href: '/'
+					},
+					{
+						align: 'right',
+						isSpecial: true,
+						icon: 'list',
+						tooltip: 'Contents',
+						href: '/'
+					}
+				]
+			}
+		);
+	</script>
+</div>
+
+<div id="home" class="xf-page">
+	<div class="xf-page-content">
+
+		<div class="xf-indented">
+			<div data-component="menu" data-id="menu">
+				<div class="xf-dialog xf-dialog-notification"><div class="xf-dialog-content"><div class="xf-notification"><div class="xf-notification-wrap"><div class="xf-notification-text">Loading...</div></div></div></div></div>
+
+				<script type="text/javascript">
+
+					XF.setOptionsByID(
+						'menu',
+						{
+							showFirstItem: false,
+							contentSelector: '#app-root',
+							defaultItem: ''
+						}
+					);
+				</script>
+			</div>
+	    </div>
+
+	</div>
+</div> <!--/.xf-page -->
+

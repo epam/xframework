@@ -1,0 +1,15 @@
+<header class="xf-header <%= get('isFixed') ? 'xf-header-fixed' : '' %>">
+	<% _.each(get('buttons'), function(button) { %>
+	<a class="xf-button <%= button.buttonClass %>" <%= button.dataHrefString %> <%= button.hasTooltip ? 'title="' + button.tooltip + '"' : '' %> id="<%= button.id %>">
+		<% if(button.hasText) { %>
+		<span class="xf-button-small-text <%= button.textClass %>"><%= button.text %></span>
+		<% } %>
+		<% if(button.hasIcon) { %>
+		<span class="xf-icon xf-icon-small <%= button.icon %> <%= button.iconClass %>"></span>
+		<% } %>
+	</a>
+	<% }); %>
+	<% if(get('hasTitle')) { %>
+	<<%= get('headerElement') %> class="xf-header-title <%= get('titleClass') %>"><%= get('title') %></<%= get('headerElement') %>>
+	<% } %>
+</header>

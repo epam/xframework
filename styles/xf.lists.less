@@ -1,0 +1,215 @@
+
+
+/*  Lists
+========================================= */
+
+
+
+.xf-listview {
+	margin: 0 0 12px 0;
+	padding: 0;
+	.xf-corner-all;
+	.box-shadow(rgba(0,0,0,.1), 0, 1px, 1px);
+	counter-reset: listnumbering;
+	list-style: none;
+}
+.xf-li {
+    position: relative;
+	background: @list-bg-color;
+	border: 1px solid @general-border-color;
+	border-top-width: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+ol.xf-listview .xf-btn-text:before,
+ol.xf-listview .xf-li-wrap:before {
+    font-size: .9em;
+    display: inline-block;
+    padding-right: .3em;
+    font-weight: normal;
+    counter-increment: listnumbering;
+    content: counter(listnumbering) ". ";
+}
+.xf-li-wrap {
+    padding: 11px;
+    font-weight: bold;
+}
+
+
+.xf-li:first-child {
+	border-top-width: 1px;
+   .xf-corner-top;
+}
+	.xf-li:first-child > a,
+	.xf-li:first-child > div {
+		.xf-corner-top;
+	}
+
+.xf-li:last-child,
+.xf-li:last-child > a,
+.xf-li:last-child > div {
+	.xf-corner-bottom;
+}
+.xf-li-divider {
+	padding: 4px 4px 4px 11px;
+	font-size: 80%;
+	font-weight: bold;
+	counter-reset: listnumbering;
+}
+.xf-li-divider:first-child {
+	border-top-color: @button-bg-color-end;
+}
+.xf-li-divider:last-child {
+	border-bottom-color: @button-bg-color-end;
+}
+.xf-li-divider {
+   .gradient(@button-bg-color-start, @button-bg-color-end);
+	color: @button-text-color;
+	border-left-color: @general-border-color;  // @button-bg-color-end;
+	border-right-color: @general-border-color; // @button-bg-color-end;
+}
+.xf-li-btn,
+.xf-li-wrap {
+	display: block;
+	padding: 11px;
+	color: @list-text-color;
+	text-decoration: none;
+    font-weight: bold;
+}
+
+.xf-li-btn {
+   .buttonBackground(@list-btn-bg-color-start, @list-btn-bg-color-end);
+	background-color: transparent;
+	color: @list-text-color;
+}
+
+.xf-li-btn-active {
+	.buttonBackground(@list-btn-active-bg-color-start, @list-btn-active-bg-color-end);
+	color: @list-btn-active-text-color;
+	text-shadow: @list-btn-active-text-shadow-color;
+	cursor: default;
+
+}
+
+/*  Buttons with icons */
+
+.xf-li-with-icon-right {
+	padding-right: 50px;
+}
+.xf-li-with-icon-left {
+	padding-left: 50px;
+}
+.xf-li-with-icon-left,
+.xf-li-with-icon-right {
+    .xf-icon {
+    	position: absolute;
+		top: 50%;
+		color: @list-icon-color;//#969699;
+    }
+    .xf-icon-big {
+    	margin-top: -15px;
+    }
+    .xf-icon-small {
+    	margin-top: -10px;
+    }
+}
+
+.xf-li-with-icon-left {
+    .xf-icon {
+    	left: 10px;
+    }
+}
+.xf-li-with-icon-right {
+    .xf-icon {
+    	right: 10px;
+    }
+}
+
+
+.xf-count-bubble {
+	display: inline-block;
+	padding: 0 .5em;
+	line-height: 24px;
+	font-size: 18px;
+	border-radius: 14px;
+	vertical-align: middle;
+	background: @count-bubble-bg-color;
+	color: @count-bubble-text-color;
+}
+.xf-li .xf-count-bubble {
+	position: absolute;
+	top: 50%;
+	margin-top: -12px;
+	right: 10px;
+}
+.xf-li-with-icon-right.xf-li-has-count {
+	padding-right: 110px;
+
+	.xf-count-bubble {
+		right: 50px
+	}
+}
+
+/*
+	list with thumbnails
+*/
+.xf-li-with-thumb-right,
+.xf-li-with-thumb-left {
+	min-height: 50px;
+}
+	.xf-li-with-thumb-left {
+		padding-left: 80px;
+	}
+	.xf-li-with-thumb-right {
+		padding-right: 80px;
+	}
+.xf-li-thumb {
+    position: absolute;
+    top: 8px;
+	max-width: 56px;
+	height: auto;
+}
+	.xf-li-thumb-left,
+	.xf-li-with-thumb-left .xf-li-thumb  {
+		left: 8px;
+	}
+	.xf-li-thumb-right,
+	.xf-li-with-thumb-right .xf-li-thumb  {
+		right: 8px;
+	}
+.xf-li-header {
+	margin: 6px 0 4px;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 1;
+
+	&:first-child {
+		margin-top: 0;
+	}
+}
+.xf-li-desc {
+	margin: .5em 0;
+	font-size: 12px;
+	font-weight: normal;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+.xf-li-btn .xf-btn-text > :last-child {
+	margin-bottom: 0;
+}
+
+.xf-indented .xf-listview-fullwidth {
+	margin-left: -8px;
+	margin-right: -8px;
+}
+.xf-listview-fullwidth > li:first-child,
+.xf-listview-fullwidth > li:first-child > a,
+.xf-listview-fullwidth > li:first-child > div,
+.xf-listview-fullwidth > li:last-child,
+.xf-listview-fullwidth > li:last-child > a,
+.xf-listview-fullwidth > li:last-child > div {
+	.border-radius(0);
+}

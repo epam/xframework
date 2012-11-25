@@ -1,0 +1,62 @@
+<h2>Templating</h2>
+
+
+			<p><code>XF.View</code> is responsible for the component appearance: template loading/compilation/render, while <code>XF.Model</code> stores data necessary for the render.</p>
+
+			<p>Template is just a string containing HTML plus some JS (if necessary). There are two basic structures you have to use inside a template to include JS code:</p>
+
+
+<pre class="brush: xml">&lt;%= some_variable_ to_print %&gt;
+&lt;% some_code_to_execute %&gt;</pre>
+
+
+			<p>Template rendering is executed with the appropriate <code>XF.Model</code> instance as a scope. So you should first set some attributes necessary for rendering inside <code>XF.Model</code> instance and then you’ll be able to use them within the template.</p>
+
+			<p>Let’s take a look at the following snippets of component definition for  a navigation bar (this code should be presented in component definition file as it was described in the
+				<a href="#/component-creation/">Component creation</a> section.</p>
+
+<pre class="brush: js">var extending = {
+	modelClass : XF.Model.extend({
+		isEmptyData : true,
+		init : function() {
+			this.set({
+				links : [
+					{title:'Home', url:'/'},
+					{title:'Contacts', url:'contacts'},
+					{title:'About', url:'about'},
+					{title:'Site Map', url:'sitemap'},
+					{title:'CL', url:'cl'}
+				]
+			});
+		}
+	}),
+	...
+};</pre>
+
+		<p>Below is an example of a template that uses this data to render navigation bar:</p>
+
+
+<pre class="brush: xml">&lt;ul&gt;
+	&lt;% _.each(get('links'), function(link) { %&gt;
+		&lt;li class="test" style="font-size:&lt;%= get('fontSize') %&gt;px; background-color:&lt;%= get('bgColor') %&gt;;"&gt;
+			&lt;a data-href="&lt;%= link.url %&gt;"&gt;&lt;%= link.title %&gt;&lt;/a&gt;
+		&lt;/li&gt;
+	&lt;% }); %&gt;
+&lt;/ul&gt;</pre>
+
+
+			<p>This snippet should look very common for those familiar with PHP or Python.</p>
+
+			<p><code>get(_attribute_name_)</code> – is a method of <code>XF.Model</code> and should be used to retrieve variables that were stored inside model instance via <code>set()</code> function.</p>
+
+			<p>Common JS statements and even library utils (like underscore <code>_.each()</code> can be
+			used inside the template. Also you are able to create any kind of branching statements and call some custom API from within the template.</p>
+
+			<p>A component can have different templates which are loaded depending on the device type. This is discussed
+				more indepth in	the <a href="#/routing/">Routing</a> section.</p>
+
+			<h3>Data</h3>
+
+			<p>The other side of the component is its data. As we have mentioned it could be retrieved from backend (or not) and stored inside <code>XF.Model</code> subclass instance.</p>
+
+			<p><i>All the properties and hooks via which you are able to adjust data retrieval and processing flow were already described, the way you put data into template was also discussed – just put it all together to get the full picture of data manipulation pattern implemented.</i></p>

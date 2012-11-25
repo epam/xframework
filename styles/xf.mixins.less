@@ -1,0 +1,152 @@
+
+.clearfix(...) {
+	*zoom: 1;
+
+	&:before,
+	&:after {
+		content: '';
+		display: table;
+		clear:   both;
+	}
+}
+.box-shadow(...) {
+    -webkit-box-shadow: @arguments;
+       -moz-box-shadow: @arguments;
+            box-shadow: @arguments;
+}
+.transform(...) {
+	-webkit-transform: @arguments;
+	   -moz-transform: @arguments;
+	    -ms-transform: @arguments;
+		 -o-transform: @arguments;
+			transform: @arguments;
+}
+.gradient(@topcolor, @bottomcolor, @angle: top) {
+	background-color: mix(@topcolor, @bottomcolor, 50%);
+	background-repeat: repeat-x;
+	background-image: -moz-linear-gradient(@angle,  @topcolor 0%, @bottomcolor 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@topcolor), color-stop(100%,@bottomcolor));
+	background-image: -webkit-linear-gradient(@angle, @topcolor 0%,@bottomcolor 100%);
+	background-image: -o-linear-gradient(@angle, @topcolor 0%,@bottomcolor 100%);
+	background-image: -ms-linear-gradient(@angle, @topcolor 0%,@bottomcolor 100%);
+	background-image: linear-gradient(@angle, @topcolor 0%,@bottomcolor 100%);
+	filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@topcolor,@bottomcolor)); // IE9 and down
+//.bgclip();
+}
+.background-size(...) {
+	-webkit-background-size: @arguments;
+	   -moz-background-size: @arguments;
+			background-size: @arguments;
+}
+.border-box {
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+			box-sizing: border-box;
+}
+.ellipsis {
+	overflow: hidden;
+	white-space: nowrap;
+	-webkit-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+}
+.bgclip(@clip: padding-box){
+	-webkit-background-clip: @clip;
+	   -moz-background-clip: @clip;
+			background-clip: @clip;
+}
+
+// Button backgrounds
+// ------------------
+.buttonBackground(@startColor, @endColor) {
+  // gradientBar will set the background to a pleasing blend of these, to support IE<=9
+  .gradient(@startColor, @endColor);
+  //*background-color: @endColor; /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+  .reset-filter();
+
+  // in these cases the gradient won't cover the background, so we override
+  &:hover, &:active, &.xf-button-active, &.disabled, &[disabled] {
+    background-color: @endColor;
+    *background-color: darken(@endColor, 5%);
+	.background-size(130%)
+  }
+
+  // IE 7 + 8 can't handle box-shadow to show active, so we darken a bit ourselves
+  &:active,
+  &.active {
+    background-color: darken(@endColor, 10%) e("\9");
+  }
+}
+
+.reset-filter() {
+  filter: e(%("progid:DXImageTransform.Microsoft.gradient(enabled = false)"));
+}
+
+/*  corner rounding classes
+--------------------------------------------*/
+.border-radius(...) {
+  -webkit-border-radius: @arguments;
+	 -moz-border-radius: @arguments;
+		  border-radius: @arguments;
+}
+.xf-corner-tl {
+	-moz-border-radius-topleft: 		8px;
+	-webkit-border-top-left-radius: 	8px;
+	border-top-left-radius: 			8px;
+}
+.xf-corner-tr {
+	-moz-border-radius-topright: 		8px;
+	-webkit-border-top-right-radius: 	8px;
+	border-top-right-radius: 			8px;
+}
+.xf-corner-bl {
+	-moz-border-radius-bottomleft: 		8px;
+	-webkit-border-bottom-left-radius: 	8px;
+	border-bottom-left-radius: 			8px;
+}
+.xf-corner-br {
+	-moz-border-radius-bottomright: 	8px;
+	-webkit-border-bottom-right-radius: 8px;
+	border-bottom-right-radius: 		8px;
+}
+.xf-corner-top {
+	-moz-border-radius-topleft: 		8px;
+	-webkit-border-top-left-radius: 	8px;
+	border-top-left-radius: 			8px;
+	-moz-border-radius-topright: 		8px;
+	-webkit-border-top-right-radius: 	8px;
+	border-top-right-radius: 			8px;
+}
+.xf-corner-bottom {
+	-moz-border-radius-bottomleft: 		8px;
+	-webkit-border-bottom-left-radius: 	8px;
+	border-bottom-left-radius: 			8px;
+	-moz-border-radius-bottomright: 	8px;
+	-webkit-border-bottom-right-radius: 8px;
+	border-bottom-right-radius: 		8px;
+	}
+.xf-corner-right {
+	-moz-border-radius-topright: 		8px;
+	-webkit-border-top-right-radius: 	8px;
+	border-top-right-radius: 			8px;
+	-moz-border-radius-bottomright: 	8px;
+	-webkit-border-bottom-right-radius: 8px;
+	border-bottom-right-radius: 		8px;
+}
+.xf-corner-left {
+	-moz-border-radius-topleft: 		8px;
+	-webkit-border-top-left-radius: 	8px;
+	border-top-left-radius: 			8px;
+	-moz-border-radius-bottomleft: 		8px;
+	-webkit-border-bottom-left-radius: 	8px;
+	border-bottom-left-radius: 			8px;
+}
+.xf-corner-all {
+	-moz-border-radius: 				8px;
+	-webkit-border-radius: 				8px;
+	border-radius: 						8px;
+}
+.xf-corner-none {
+	-moz-border-radius: 				   0;
+	-webkit-border-radius: 				   0;
+	border-radius: 						   0;
+}
