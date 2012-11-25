@@ -1,0 +1,76 @@
+
+/*  Footer Navigation
+=========================================================== */
+
+.xf-footer {
+	position: relative;
+	z-index: 20;
+}
+.xf-footer-fixed {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+.xf-nav {
+	position: relative;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+
+	border-top:1px solid @nav-bg-color;
+	background: @nav-bg-color;
+	color: @nav-item-text-color;
+}
+.xf-nav-item {
+    display: block;
+    position:relative;
+   .border-box;
+   	height: 48px;
+   	padding: 4px;
+	text-align: center;
+	text-decoration: none;
+
+	color: @nav-item-text-color;
+    background: -moz-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, @nav-item-bg-color-start), color-stop(50%,@nav-item-bg-color-end));
+    background: -webkit-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+    background: -o-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+    background: -ms-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+    background: linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
+ 	//background-color: mix( @nav-item-bg-color-start, @nav-item-bg-color-end);//#585f63
+	border-top: 1px solid @nav-item-border-color;
+}
+.xf-nav-item.xf-iconpos-top {
+	padding: 32px 4px 2px 4px;
+}
+.xf-nav-item-text {
+   .ellipsis;
+	font-size: 10px;
+}
+.xf-nav-item .xf-icon {
+    position: absolute;
+
+	color: @nav-item-icon-color;
+}
+.xf-nav-item.xf-iconpos-top .xf-icon {
+	top: 2px;
+	left:-15px;
+	margin-left: 50%;
+}
+.xf-page-has-fixed-footer .xf-page-content,
+.xf-viewport-has-fixed-footer .xf-page-content {
+	margin-bottom: 50px;
+}
+.xf-nav-item-active {
+   .gradient(@nav-item-active-bg-color-start, @nav-item-active-bg-color-end);
+    border-color: @nav-item-active-border-color;
+    color: @nav-item-active-text-color;
+}
+	.xf-nav-item-active .xf-icon {
+		color: @nav-item-active-icon-color;
+	}
+.xf-nav-item:hover {
+    background-repeat: no-repeat;
+   .background-size(100% 130%);
+}

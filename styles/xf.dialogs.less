@@ -1,0 +1,95 @@
+/*	Dialogs
+=========================================== */
+
+.xf-dialog {
+	position: fixed;
+	display: block;
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	text-align: center;
+}
+	.xf-dialog:before {
+		height: 100%;
+		content: "";
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: -4px;
+	}
+.xf-dialog-content {
+    text-align: left;
+	display: inline-block;
+	vertical-align: middle;
+	max-height: 95%;
+	max-width: 95%;
+}
+.xf-dialog-box {
+	padding: 16px;
+	margin: 16px;
+	.xf-corner-all;
+}
+.xf-dialog {
+	background: @dialog-dim-color;
+}
+.xf-dialog-box {
+	border:2px solid @dialog-box-border-color;
+	.gradient(@dialog-box-bg-color-start, @dialog-box-bg-color-end);
+	text-shadow: 0 1px 0 @dialog-box-text-shadow-color;
+	color: @dialog-box-text-color;
+}
+.xf-dialog-box-header {
+	  h1, h2, h3, h4, h5, h6 {
+		margin-top: 0;
+		margin-bottom: 18px;
+	}
+}
+.xf-dialog-box-content {
+	min-height: 2em;
+	margin: 1em 0;
+}
+.xf-dialog-box-footer {
+	.xf-grid-unit {
+		padding-left: 8px;
+		padding-right: 8px;
+
+		&:first-child {
+			padding-left:0;
+		}
+		&:last-child {
+			padding-right:0;
+		}
+	}
+}
+
+/* Loader dialog */
+
+.xf-dialog-notification {
+	background: none;
+}
+.xf-notification {
+	display: table;
+	vertical-align: middle;
+	text-align: center;
+	height: 120px;
+	width: 120px;
+	.xf-corner-all;
+}
+.xf-notification {
+	background: @notification-bg-color;
+	color: @notification-text-color;
+	text-shadow: 0 1px 0 @notification-text-shadow-color;
+}
+.xf-notification-wrap {
+	display: table-cell;
+	vertical-align: middle;
+	height: 110px;
+	width: 110px;
+	padding: 10px
+}
+
+.xf-notification-text {
+	margin-top: 2px;
+	font-weight: bold;
+}

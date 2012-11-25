@@ -1,0 +1,400 @@
+//
+//  Form elements
+//
+
+.xf-form-unit {
+	display:block;
+	margin: 24px 0;
+	padding: 0;
+	float: none;
+	.clearfix;
+}
+
+.xf-input-text,
+.xf-input-split,
+.xf-input-radio,
+.xf-input-checkbox,
+.xf-switch {
+	position: relative;
+	display: block;
+   .border-box();
+	width: 100%;
+	padding: 8px 12px;
+	font: normal 18px/1 sans-serif;
+	.xf-corner-all;
+	box-shadow: 0 1px 0 rgba(0,0,0,.1);
+
+	min-height: 44px;
+	/* ACHTUNG! need better detection */
+	/* FF has problems with border-box & min-height */
+	min-height: -moz-calc(44px - 16px - 2px);
+	min-height: 26px e('\9');
+}
+
+
+textarea.xf-input-text {
+	height: 4em;
+}
+
+/*  Input Number
+=============================================== */
+
+.xf-input-number {
+	text-align: center;
+	word-spacing: .1em;
+	white-space: nowrap;
+
+	input {
+		width: 16%;
+		min-width: 100px;
+		text-align: center;
+	}
+}
+.xf-input-number > * {
+	display: inline-block;
+	vertical-align: middle;
+	float: none;
+	.xf-corner-all;
+}
+.xf-input-number-control {
+	height: 44px;
+	width: 44px;
+	border: 0;
+	background: none;
+	padding: 0;
+
+}
+
+.xf-input-number-control-decrease {
+}
+.xf-input-number-control-increase {
+}
+
+
+/*  Slider
+======================================= */
+.xf-range {
+
+}
+.xf-input-range {
+	margin: 18px 0 0;
+}
+.xf-range .xf-input-range {
+ 	margin-top: 8px;
+ }
+.xf-range-wrap {
+	display: table;
+}
+	.xf-range-wrap > div {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	.xf-input-range-slider {
+		width: 100%;
+		position: relative;
+
+	}
+	.xf-input-range-slider:after {
+		content: "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W ";
+		display: block;
+		height: 0;
+		overflow: hidden;
+	}
+	.xf-input-range-min {
+		padding-right: 1ex;
+	}
+	.xf-input-range-max {
+		padding-left: 1ex;
+	}
+.xf-input-range-track {
+    display: block;
+    margin: 0 14px;
+	height: 8px;
+	background: @input-inactive-bg-color;
+	border-radius: 4px;
+	box-shadow: inset 0 1px 0 rgba(0,0,0,.5);
+}
+	.xf-input-range-value {
+		height: 100%;
+	    position: relative;
+		border-radius: 4px;
+		background: @input-active-bg-color;
+		box-shadow: inset 0 1px 0 rgba(0,0,0,.5);
+	}
+		.xf-input-range-control {
+			position: absolute;
+			right: 0;
+			top:50%;
+			width: 0;
+			height: 0;
+				outline: none;
+		}
+			.xf-input-range-thumb {
+			    display: block;
+				width: 24px;
+				height: 24px;
+				.border-box;
+				margin: -12px 0 0 -12px;
+			   .border-radius(999px);/* Workaround Android 2 %-radius bug*/
+			   .gradient(#fff, #bfbfbd);
+				border: 1px solid rgba(0,0,0,.5);
+			   .box-shadow( rgba(0,0,0,.4), 0, 1px, 2px);
+				outline: none;
+			}
+			.xf-input-range-thumb:hover {
+				.background-size(100% 140%);
+			}
+			.xf-input-range-control:focus .xf-input-range-thumb {
+				.box-shadow(@button-active-bg-color-end, 0, 0, 10px);
+			}
+
+@media screen and (min-width: 480px) {
+	.xf-range {
+		//display: table-row;
+	}
+	.xf-range .xf-input-number {
+	    float: left;
+		width: 200px;/* fix webkit not stretching sibling table-cell with width:100% */
+	}
+	.xf-range .xf-input-range {
+	    margin-left: 200px;
+		width: auto;
+		padding-top: 12px;
+	}
+	.xf-input-range-min {
+		padding-left: 1ex;
+	}
+}
+
+
+/*  Radio and checkboxes
+=============================================== */
+
+.xf-input-radio,
+.xf-input-checkbox {
+	padding: 0;
+}
+.xf-input-positioner {
+	position: absolute;
+	width:35px;
+	left: 0;
+	top: 0;
+	bottom: 0;
+    text-align: center;
+}
+/* help to center vertically the input */
+.xf-input-positioner:before {
+    display:inline-block;
+    vertical-align: middle;
+    height: 100%;
+    content: '';
+}
+	.xf-input-radio input,
+	.xf-input-checkbox input {
+	    position: relative;
+	 	bottom: -2px;
+	}
+.xf-input-label {
+    display: block;
+	padding: 8px 12px 8px 40px;
+	display: block;
+	font-weight: bold;
+	line-height: 26px;
+	vertical-align: middle;
+	overflow: hidden;
+}
+
+/*  .xf-input-split
+ *  Input with label inside it
+======================================= */
+
+.xf-input-split {
+	overflow: hidden;
+}
+.xf-input-split-label,
+.xf-switch-label {
+    .xf-input-label;
+    padding: 0;
+}
+.xf-input-split-input {
+	width: 99%;
+	height: 24px;
+	border: 0;
+	text-align: right;
+	outline: none;
+	-webkit-appearance: none;
+}
+	.xf-input-split-input input::-webkit-input-placeholder {
+		text-align: right;
+	}
+.xf-controlgroup-controls {
+
+	 .xf-input-radio,
+	 .xf-input-checkbox {
+		border-radius: 0;
+		border-top-width: 0;
+	}
+	 .xf-input-radio:first-child,
+	 .xf-input-checkbox:first-child {
+		border-radius: 8px 8px 0 0;
+		border-top-width: 1px;
+	}
+	 .xf-input-radio:last-child,
+	 .xf-input-checkbox:last-child {
+		border-radius: 0 0 8px 8px;
+	}
+}
+.xf-input-split-part1,
+.xf-input-split-part2 {
+	width: 50%;
+}
+
+/*  .xf-switch
+ *  ON-OFF switch
+ ================================ */
+
+.xf-switch {
+ }
+.xf-switch-control {
+		position: relative;
+		float: right;
+		width: 70px;
+		height: 28px;
+		margin: -1px 0 0 0;
+-webkit-transform: rotateZ(0);
+}
+.xf-switch-track {
+    	display: block;
+    	height: 100%;
+-webkit-border-radius: 14px;
+    	border-radius: 14px;
+-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.5), 0 0 1px rgba(0,0,0,.1); /* Android 2 */
+   -moz-box-shadow: inset 0 1px rgba(0,0,0,.5);
+        box-shadow: inset 0 1px rgba(0,0,0,.5);
+-webkit-transition: background-color .1s ease-in;
+   -moz-transition: background-color .1s ease-in;
+     -o-transition: background-color .1s ease-in;
+		transition: background-color .1s ease-in;
+}
+	.xf-switch-track-wrap {
+		position: absolute;
+		display: block;
+		top: 3px;
+		bottom: 3px;
+		left: 15px;
+		right: 15px;
+	}
+.xf-switch-thumb {
+		display: block;
+		position: absolute;
+		width: 0;
+		height: 100%;
+-webkit-transition: left .1s ease-in;
+   -moz-transition: left .1s ease-in;
+     -o-transition: left .1s ease-in;
+		transition: left .1s ease-in;
+}
+	.xf-switch-thumb:before {
+		display: block;
+		width: 22px;
+		height: 22px;
+		margin-left: -11px;
+-webkit-border-radius: 11px; /* ios4 */
+-webkit-border-radius: 50%;
+		border-radius: 50%;
+		content: '';
+		.gradient(#fff, #bfbfbd);
+-webkit-box-shadow: inset 0 0 1px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.86);
+		box-shadow: 0 1px 2px rgba(0,0,0,.86);
+	}
+.xf-switch-track {
+	background: @input-inactive-bg-color;
+}
+	.xf-switch-control input:checked + span .xf-switch-thumb {
+		left: 100%;
+	}
+	.xf-switch-control input:checked + .xf-switch-track {
+		background: @input-active-bg-color;
+	}
+
+.xf-switch-control input {
+	opacity: 0;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	outline: 0;
+}
+.xf-switch-switch input:focus {
+	outline: 0;
+
+}
+
+/*  Select
+======================================= */
+
+.xf-input-select {
+    position:relative;
+    height: 44px;
+    z-index: 0;
+}
+.xf-input-select select {
+    position: absolute;
+	z-index: 2;
+	display: block;
+	top: 0;
+	left: 0;
+	.border-box;
+	width: 100%;
+	height: 44px;
+	padding: 8px;
+	font: 18px/26px sans-serif;
+	border-radius: 8px;
+}
+
+
+
+
+/*  Theming
+======================================== */
+
+.xf-input-text,
+.xf-input-split,
+.xf-input-radio,
+.xf-input-checkbox,
+.xf-switch {
+    background: @input-bg-color;
+	border: 1px solid @general-border-color;
+	color: 	@input-label-color;
+}
+.xf-input-text {
+	color: 	@input-text-color;
+    background: @input-bg-color;
+	box-shadow: inset 0 1px 2px #dcdede;
+
+	&:focus {
+		outline: none;
+		border-color: darken(@general-border-color, 25%);
+	}
+}
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+	color: @input-placeholder-color;
+}
+
+.xf-input-number-control {
+	color: @text-color;
+}
+
+.xf-input-split-input {
+	color: @input-text-color;
+}
+
+.xf-input-select select {
+	border: 1px solid @general-border-color;
+}
+
+.xf-label {
+	display: block;
+	margin-top: 0px;
+	margin-bottom: 8px;
+}

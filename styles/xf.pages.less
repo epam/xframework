@@ -1,0 +1,49 @@
+html, body, .xf-viewport {
+	height: 100%;
+	width: 100%;
+	background: @app-bg;
+	color: @text-color;
+}
+
+.viewport,
+.xf-viewport {
+	position: relative;
+	margin: 0;
+	overflow-x: visible;
+	-webkit-text-size-adjust: none;
+	-ms-text-size-adjust: none;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-touch-callout: none;
+}
+/* .viewport is body, or an element wrapping all content inside it, e.g. form
+	https://github.com/jquery/jquery-mobile/issues/2066 */
+body.viewport,
+div.viewport,
+body.xf-viewport,
+div.xf-viewport {
+	overflow-x: hidden;
+}
+
+.xf-page {
+    position: absolute;
+    width: 100%;
+    min-height: 100%;
+    left: 0;
+    top: 0;
+	border: 0;
+	display: none;
+	outline: none; /* on ios4, setting focus on the page element causes flashing during transitions when there is an outline */
+	z-index: 0;
+
+	background: @page-bg;
+}
+.xf-page-active {
+	display: block;
+	overflow: visible;
+}
+
+.xf-page-content {
+	overflow: hidden;
+	position: relative;
+	z-index: 10;
+}

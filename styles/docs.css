@@ -1,0 +1,87 @@
+html {
+	font: 15px/1.5 sans-serif;
+}
+a {
+	color: #3866b3;
+}
+ul, ol, dl {
+	padding: 0 0 0 2em;
+}
+.example {
+	margin: 1em 0;
+}
+code {
+	color: #000070;
+	-o-tab-size: 4;
+	tab-size: 4;
+}
+h1, h2, h3, h4, .msg {
+	margin-top: 30px;
+	margin-top: 2rem;
+}
+h5, h6 {
+	margin-top: 16px;
+	margin-top: 1rem;
+
+}
+.sublist {
+	margin-left: 40px;
+}
+.data-table {
+	margin: 1em 0;
+	width: 100%;
+}
+.data-table td,
+.data-table th {
+	padding: .5em;
+}
+
+.data-table td {
+	vertical-align: middle
+}
+.col-icon {
+	width: 20px;
+}
+.col-icon-label {
+}
+.nobr {
+	white-space: nowrap;
+}
+.msg {
+    padding: .4em 1em;
+    border: 1px solid rgba(0,0,0,0.15);
+	border-radius: 3px;
+	-webkit-transition: all .5s;
+	transition: all .5s;
+	display: block;
+}
+
+.ok {
+	background: #D1EDC8;
+}
+.warning {
+	background: #EDC7C7;
+}
+.xf-page-content > :first-child {
+	margin-top: 0;
+}
+.docs-nav .xf-listview {
+	margin-top: .3em;
+}
+
+.xf-scrollable {
+	position: absolute; 
+	bottom: 0px; 
+	top: 0px; 
+	width: 100%; 
+	overflow: hidden; 
+	box-sizing: border-box;
+}
+
+.xf-scrollable .xf-scrollable-content{
+	padding-bottom: 4px;
+}
+
+.xf-scrollable .xf-scrollable-content h2:first-child {
+	margin-top: 0;
+}
