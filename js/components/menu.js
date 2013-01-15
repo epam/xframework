@@ -40,8 +40,13 @@ $(function(){
         },
 
         showMenuItem: function (item) {
-            XF.PageSwitcher.switchToPage($('#' + item));
-            SyntaxHighlighter.highlight();
+            var $item = $('#' + item);
+            if ($item[0]){
+                XF.PageSwitcher.switchToPage($item);
+                SyntaxHighlighter.highlight();
+            } else {
+                console.log('Menu item: #' + item + ' is not in the DOM');
+            }
             XF.UIElements.hideLoading();
         },
 

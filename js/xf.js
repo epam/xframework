@@ -3784,11 +3784,18 @@
 		/**
 			Executes animation sequence for switching 
 			@param $ jqPage
+			@param Object options fot the switch
 		*/
-		switchToPage : function(jqPage){
-			
+		switchToPage : function(jqPage, params){
+
+debugger;
 			// preventing animation when the page is already shown
-			if(this.activePage && jqPage.attr('id') == this.activePage.attr('id')) {
+			if(!jqPage || !jqPage[0]){
+                console.log('jqPage is ' + jqPage);
+                return;
+            }
+            else if (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) {
+                console.log('Trying to switch to already active page');
 				return;
 			}
 			

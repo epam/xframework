@@ -45,7 +45,7 @@ $(function(){
 						$('.xf-header > .xf-button-header-left').hide();
 					});
 
-					if (XF.Device.type.name !== 'mobile') XF.Controller.trigger('menu:go', {hash: 'about'});
+					if (XF.Device.type.name !== 'mobile') XF.Controller.trigger('menu:go', {hash: 'home'});
 
 				},
 
