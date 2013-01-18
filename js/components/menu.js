@@ -84,7 +84,7 @@ $(function(){
             component.refresh();
         },
 
-        go: function (data) { 
+        go: function (data) {
             var hash = data.hash.replace(/^\/|\/$/g, ''),
                 menu = this.model.get('menu');
                 

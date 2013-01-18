@@ -45,7 +45,11 @@ $(function(){
 						$('.xf-header > .xf-button-header-left').hide();
 					});
 
-					if (XF.Device.type.name !== 'mobile') XF.Controller.trigger('menu:go', {hash: 'home'});
+					//if (XF.Device.type.name !== 'mobile') XF.Controller.trigger('menu:go', {hash: 'home'});
+
+                    var pages = ['home', 'home2', 'home3'];
+
+					XF.Controller.trigger('menu:go', {hash: pages[[Math.floor(Math.random() * pages.length)]]});
 
 				},
 
@@ -53,8 +57,10 @@ $(function(){
 					if (hash == 'about' && XF.Device.type.name !== 'mobile') $('.xf-header > .xf-button-header-left').hide();
 					else $('.xf-header > .xf-button-header-left').show();
 
+                    var pages = ['home', 'home2', 'home3'];
 
-					XF.Controller.trigger('menu:go', {hash: hash});
+					XF.Controller.trigger('menu:go', {hash: pages[[Math.floor(Math.random() * pages.length)]]});
+
 				}
 			}
 		}

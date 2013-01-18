@@ -3728,6 +3728,7 @@
 			@type String
 			@default 'fade'
 		*/
+
 		animationType : 'fade',
 
 		/**
@@ -3780,7 +3781,57 @@
 				XF.PageSwitcher.switchToPage(jqPage);
 			}
 		},
-		
+
+
+        /**
+            Animation types for page switching ('fade', 'slide', 'none')
+            @type String
+            @default 'fade'
+        */
+
+        animations : {
+
+            none: {
+              from: {
+                  display: 'none'
+              },
+              to: {
+                  display: 'block'
+              }
+            },
+
+            fade: {
+              from: {
+                  opacity: 0
+              },
+              to: {
+                  opacity: 1
+              }
+            },
+
+            slide : {
+              from: {
+                  'left': '100%'
+              },
+              to: {
+                  'left': 0
+              }
+            },
+
+            slideouttoleft : {
+                  from: {
+                      'left': '100%'
+                  },
+                  to: {
+                      'left': 0
+                  }
+              },
+          },
+
+        animationDuration: 250,
+
+        animationTimingFunction: 'linear',
+
 		/**
 			Executes animation sequence for switching 
 			@param $ jqPage
@@ -3788,26 +3839,42 @@
 		*/
 		switchToPage : function(jqPage, params){
 
-debugger;
 			// preventing animation when the page is already shown
 			if(!jqPage || !jqPage[0]){
                 console.log('jqPage is ' + jqPage);
                 return;
             }
-            else if (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) {
+            else if (this.activePage && jqPage == this.activePage) {
                 console.log('Trying to switch to already active page');
 				return;
 			}
 			
 			var viewport = XF.Device.getViewport();
 			var screenHeight = XF.Device.getScreenHeight();
-			
-			var animationName = this.animationType;
-//			var reverseClass = this.animationReverseClass;
+
+            var animation = this.animations[this.animationType];
+            var dur = this.animationDuration;
+            var fn  = this.animationTimingFunction;
+            var reverse = false;
 			var activePageClass = this.activePageClass;
 			
 			var fromPage = this.activePage;
 			var toPage = jqPage;
+
+            if ($.isObject(params)) {
+                if (params.hasOwnProperty('animationType')) {
+                    animation = this.animations[params.animationType] ;
+                }
+                if (params.hasOwnProperty('reverse')) {
+                    reverse = params.reverse ;
+                }
+                if (params.hasOwnProperty('animationDuration')) {
+                    dur = params.animationDuration ;
+                }
+                if (params.hasOwnProperty('animationTimingFunction')) {
+                    fn = params.animationTimingFunction ;
+                }
+            }
 
 			this.activePage = toPage;
 
@@ -3815,11 +3882,29 @@ debugger;
 				// start transition
 				viewport.addClass('xf-viewport-transitioning');
 
-                fromPage.height(screenHeight + $(window).scrollTop()).addClass('out '+ animationName /*+ ' ' + reverseClass*/);
-                toPage.height(screenHeight + $(window).scrollTop()).addClass('in '+ animationName + ' ' + activePageClass /*+ ' ' + reverseClass*/);
+                var props = reverse ? animation.from : animation.to;
+
+                fromPage
+                    .height(screenHeight + $(window).scrollTop())
+                    .animate(props, dur, fn, function(){
+                        fromPage.height('');
+                        if(fromPage !== XF.PageSwitcher.activePage) {
+                            fromPage.removeClass(activePageClass);
+                        }
+                    })
+                ;
+
+                toPage
+                    .height(screenHeight + $(window).scrollTop())
+                    .animate(props, dur, fn, function (){
+                        toPage.height('');
+                        viewport.removeClass('xf-viewport-transitioning');
+                    });
+                    //.addClass('in '+ animationName + ' ' + activePageClass /*+ ' ' + reverseClass*/);
+/*
                 fromPage.animationComplete(function(e){
                     fromPage.height('').removeClass(animationName + ' out in reverse');
-                    if(fromPage.attr('id') != XF.PageSwitcher.activePage.attr('id')) {
+                    if(fromPage !== XF.PageSwitcher.activePage) {
                         fromPage.removeClass(activePageClass);
                     }
                 });
@@ -3828,7 +3913,9 @@ debugger;
                     toPage.height('').removeClass(animationName + ' out in reverse');
                     viewport.removeClass('xf-viewport-transitioning');
 
-                });
+                });*/
+
+
 			} else {
 				// just making it active
 				this.activePage.addClass(activePageClass);
