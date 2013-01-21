@@ -58,8 +58,13 @@ $(function(){
 					else $('.xf-header > .xf-button-header-left').show();
 
                     var pages = ['home', 'home2', 'home3'];
+                    var target = pages[[Math.floor(Math.random() * pages.length)]];
 
-					XF.Controller.trigger('menu:go', {hash: pages[[Math.floor(Math.random() * pages.length)]]});
+                    XF.PageSwitcher.switchToPage($('#'+target));
+
+
+
+					//XF.Controller.trigger('menu:go', {hash: target });
 
 				}
 			}

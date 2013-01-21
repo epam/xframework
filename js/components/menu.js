@@ -1,5 +1,4 @@
 $(function(){
-
 	var extending = {
         getMenuItem: function (item) {
             var component = this,
@@ -43,9 +42,8 @@ $(function(){
             var $item = $('#' + item);
             if ($item[0]){
                 XF.PageSwitcher.switchToPage($item);
-                SyntaxHighlighter.highlight();
             } else {
-                console.log('Menu item: #' + item + ' is not in the DOM');
+                console.log('Menu item: #' + item + ' is not in the DOM11');
             }
             XF.UIElements.hideLoading();
         },
@@ -87,7 +85,7 @@ $(function(){
         go: function (data) {
             var hash = data.hash.replace(/^\/|\/$/g, ''),
                 menu = this.model.get('menu');
-                
+
             if (menu !== undefined) {
                 if (menu[hash] !== undefined) {
                     this.getMenuItem(hash);

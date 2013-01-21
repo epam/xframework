@@ -3724,14 +3724,6 @@
 		activePageClass : 'xf-page-active',
 
 		/**
-			Animation type for page switching ('fade', 'slide', 'none')
-			@type String
-			@default 'fade'
-		*/
-
-		animationType : 'fade',
-
-		/**
 			Saves current active page
 			@type $
 			@private
@@ -3782,6 +3774,14 @@
 			}
 		},
 
+        /**
+      			Animation type for page switching ('fade', 'slide', 'none')
+      			@type String
+      			@default 'fade'
+      		*/
+
+      		animationType : 'slide',
+
 
         /**
             Animation types for page switching ('fade', 'slide', 'none')
@@ -3810,22 +3810,44 @@
             },
 
             slide : {
-              from: {
-                  'left': '100%'
-              },
-              to: {
-                  'left': 0
-              }
-            },
+                left: {
+                    in: {
+                        from: {
+                            'translateX': '100%'
+                        },
+                        to: {
+                            'translateX': '0'
+                        }
+                    },
+                    out: {
+                        from: {
+                            'translateX': '0'
+                        },
+                        to: {
+                            'translateX': '-100%'
+                        }
+                    }
+                },
+                right: {
+                    in: {
+                        from: {
+                            'translateX': '-100%'
+                        },
+                        to: {
+                            'translateX': '0'
+                        }
+                    },
+                    out: {
+                        from: {
+                            'translateX': '0'
+                        },
+                        to: {
+                            'translateX': '100%'
+                        }
+                    }
+                }
+            }
 
-            slideouttoleft : {
-                  from: {
-                      'left': '100%'
-                  },
-                  to: {
-                      'left': 0
-                  }
-              },
           },
 
         animationDuration: 250,
@@ -3837,8 +3859,9 @@
 			@param $ jqPage
 			@param Object options fot the switch
 		*/
-		switchToPage : function(jqPage, params){
+		switchToPage : function(jqPage, options){
 
+            //debugger;
 			// preventing animation when the page is already shown
 			if(!jqPage || !jqPage[0]){
                 console.log('jqPage is ' + jqPage);
@@ -3851,42 +3874,40 @@
 			
 			var viewport = XF.Device.getViewport();
 			var screenHeight = XF.Device.getScreenHeight();
-
+/*
             var animation = this.animations[this.animationType];
             var dur = this.animationDuration;
             var fn  = this.animationTimingFunction;
-            var reverse = false;
+            var reverse = false;*/
 			var activePageClass = this.activePageClass;
 			
 			var fromPage = this.activePage;
 			var toPage = jqPage;
 
-            if ($.isObject(params)) {
-                if (params.hasOwnProperty('animationType')) {
-                    animation = this.animations[params.animationType] ;
-                }
-                if (params.hasOwnProperty('reverse')) {
-                    reverse = params.reverse ;
-                }
-                if (params.hasOwnProperty('animationDuration')) {
-                    dur = params.animationDuration ;
-                }
-                if (params.hasOwnProperty('animationTimingFunction')) {
-                    fn = params.animationTimingFunction ;
-                }
-            }
+            var defAanim = {
+                animationType : this.animationType,
+                animation:  this.animations[this.animationType],
+                dur:        this.animationDuration,
+                fn:         this.animationTimingFunction,
+                reverse:    false
+            };
 
+            var params = $.extend(defAanim, options);
 			this.activePage = toPage;
 
 			if(fromPage) {
 				// start transition
 				viewport.addClass('xf-viewport-transitioning');
+                var props = params.reverse ? params.animation.from : params.animation.to;
 
-                var props = reverse ? animation.from : animation.to;
-
+                if (params.animationType == 'slide') {
+                    props = params.reverse ? params.animation['right'] : params.animation['left'];
+                }
+//debugger;
                 fromPage
                     .height(screenHeight + $(window).scrollTop())
-                    .animate(props, dur, fn, function(){
+                    .css(props['out']['from'])
+                    .animate(props['out']['to'], params.dur, params.fn, function(){
                         fromPage.height('');
                         if(fromPage !== XF.PageSwitcher.activePage) {
                             fromPage.removeClass(activePageClass);
@@ -3895,8 +3916,10 @@
                 ;
 
                 toPage
+                    .addClass(activePageClass)
                     .height(screenHeight + $(window).scrollTop())
-                    .animate(props, dur, fn, function (){
+                    .css(props['in']['from'])
+                    .animate(props['in']['to'], params.dur, params.fn, function (){
                         toPage.height('');
                         viewport.removeClass('xf-viewport-transitioning');
                     });
