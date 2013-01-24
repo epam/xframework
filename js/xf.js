@@ -3708,7 +3708,57 @@
 	XF.PageSwitcherClass = function() {};
 	
 	_.extend(XF.PageSwitcherClass.prototype, /** @lends XF.PageSwitcherClass.prototype */{
-		
+
+        /**
+         * Todo: fire page switch events
+         *
+         * */
+
+        /**
+         Initialises PageSwitcher: get current active page and binds necessary routes handling
+         @private
+         */
+        start : function() {
+
+            $.fn.animationComplete = function( callback ) {
+                if( "WebKitTransitionEvent" in window || "transitionEvent" in window ) {
+                    return $( this ).one( 'webkitAnimationEnd animationend', callback );
+                }
+                else{
+                    // defer execution for consistency between webkit/non webkit
+                    setTimeout( callback, 0 );
+                    return $( this );
+                }
+            };
+
+            var pages = $(XF.RootComponentInstance.selector() + ' .' + this.pageClass);
+            if (pages.length) {
+                var preselectedAP = pages.filter('.' + this.activePageClass);
+                if(preselectedAP.length) {
+                    this.activePage = preselectedAP;
+                } else {
+                    //this.activePage = pages.first();
+                    //this.activePage.addClass(this.activePageClass);
+                    this.switchToPage(pages.first());
+                }
+                XF.Router.bindAnyRoute(this.routeHandler);
+            }
+        },
+
+        /**
+         Handles every XF.Router 'route:*' event and invokes page switching if necessary
+         @param String eventName
+         @private
+         */
+        routeHandler : function(eventName) {
+            var routeName = XF.Router.getRouteByEventName(eventName);
+            var jqPage = $('.' + XF.PageSwitcher.pageClass + '#' + routeName);
+            if(jqPage.length) {
+                XF.PageSwitcher.switchToPage(jqPage);
+            }
+        },
+
+
 		/**
 			CSS class used to identify pages
 			@type String
@@ -3724,89 +3774,76 @@
 		activePageClass : 'xf-page-active',
 
 		/**
+			CSS class used to to add to viewport while page switching is running
+			@type String
+			@default 'xf-viewport-transitioning'
+		*/
+		viewportTransitioningClass : 'xf-viewport-transitioning',
+
+		/**
+			CSS class used to mark a page while transitioning
+			@type String
+			@default 'xf-page-transitioning'
+		*/
+		pageTransitioningClass : 'xf-page-transitioning',
+
+		/**
 			Saves current active page
 			@type $
 			@private
 		*/
 		activePage : null,
-		
-		/**
-			Initialises PageSwitcher: get current active page and binds necessary routes handling
-			@private
-		*/
-		start : function() {
-
-            $.fn.animationComplete = function( callback ) {
-          		if( "WebKitTransitionEvent" in window || "transitionEvent" in window ) {
-          			return $( this ).one( 'webkitAnimationEnd animationend', callback );
-          		}
-          		else{
-          			// defer execution for consistency between webkit/non webkit
-          			setTimeout( callback, 0 );
-          			return $( this );
-          		}
-          	};
-
-			var pages = $(XF.RootComponentInstance.selector() + ' .' + this.pageClass);
-			if (pages.length) {
-				var preselectedAP = pages.filter('.' + this.activePageClass);
-				if(preselectedAP.length) {
-					this.activePage = preselectedAP;
-				} else {
-					//this.activePage = pages.first();
-					//this.activePage.addClass(this.activePageClass);
-					this.switchToPage(pages.first());
-				}
-				XF.Router.bindAnyRoute(this.routeHandler);
-			}
-		},
-		
-		/**
-			Handles every XF.Router 'route:*' event and invokes page switching if necessary
-			@param String eventName
-			@private
-		*/
-		routeHandler : function(eventName) {
-			var routeName = XF.Router.getRouteByEventName(eventName);
-			var jqPage = $('.' + XF.PageSwitcher.pageClass + '#' + routeName);
-			if(jqPage.length) {
-				XF.PageSwitcher.switchToPage(jqPage);
-			}
-		},
-
-        /**
-      			Animation type for page switching ('fade', 'slide', 'none')
-      			@type String
-      			@default 'fade'
-      		*/
-
-      		animationType : 'slide',
 
 
         /**
-            Animation types for page switching ('fade', 'slide', 'none')
-            @type String
-            @default 'fade'
+            Animation definitions for page switching
+            @type Object
+
         */
 
         animations : {
 
+            /**
+             * Todo : refactor animation definitions to avoid mandatory in & out props
+             * */
+
             none: {
-              from: {
-                  display: 'none'
-              },
-              to: {
-                  display: 'block'
-              }
+                in : {
+                    from: {
+                        display: 'none'
+                    },
+                    to: {
+                        display: 'block'
+                    }
+                },
+                out : {
+                    from: {
+                        display: 'block'
+                    },
+                    to: {
+                        display: 'none'
+                    }
+
+                }
             },
 
             fade: {
-              from: {
-                  opacity: 0
-              },
-              to: {
-                  opacity: 1
-              }
+                in: {
+                    from: {
+                        opacity: 0
+                    },
+                    to: {
+                        opacity: 1
+                    }
+                },
+                out : {
+                    from: {
+                        opacity: 1
+                    },
+                    to: {
+                        opacity: 0
+                    }
+                }
             },
 
             slide : {
@@ -3850,98 +3887,130 @@
 
           },
 
+
+        /**
+         Animation type for page switching ('fade', 'slide', 'none')
+         @type String
+         @default 'fade'
+         */
+        animationType : 'none',
+
+
+        /**
+         Animation duration for page switching
+         @type Number
+         @default 250
+         */
         animationDuration: 250,
 
-        animationTimingFunction: 'linear',
+
+        /**
+         Animation timing function for page switching. See jQuery or zepto docs for correct types
+         @type String
+         @default 'linear'
+         */
+        easing: 'linear',
 
 		/**
 			Executes animation sequence for switching 
-			@param $ jqPage
-			@param Object options fot the switch
+			@param $ jqPage The page to switch to
+			@param Object options for the switch
+			@param Object options.animationType The name of the animation. Defaults to XF.PageSwitcher.animationType
+			@param Object options.animation The properties of the animation.
+                          Defaults to XF.PageSwitcher.animations[XF.PageSwitcher.animationType]
+            @param Object options.duration Animation duration. Defaults to XF.PageSwitcher.animationDuration
+            @param Object options.easing Animation timing function name. Defaults to XF.PageSwitcher.easing
+            @param Boolean options.reverse Indicates if the animation should run in reverse direction
+
 		*/
 		switchToPage : function(jqPage, options){
-
-            //debugger;
 			// preventing animation when the page is already shown
 			if(!jqPage || !jqPage[0]){
                 console.log('jqPage is ' + jqPage);
                 return;
             }
-            else if (this.activePage && jqPage == this.activePage) {
-                console.log('Trying to switch to already active page');
+            else if (this.activePage && this.activePage[0] &&  this.activePage[0] == jqPage[0]) {
+                console.log('Trying to switch to already active page: '+ this.activePage[0].id);
 				return;
 			}
-			
-			var viewport = XF.Device.getViewport();
-			var screenHeight = XF.Device.getScreenHeight();
-/*
-            var animation = this.animations[this.animationType];
-            var dur = this.animationDuration;
-            var fn  = this.animationTimingFunction;
-            var reverse = false;*/
-			var activePageClass = this.activePageClass;
-			
-			var fromPage = this.activePage;
-			var toPage = jqPage;
 
-            var defAanim = {
-                animationType : this.animationType,
-                animation:  this.animations[this.animationType],
-                dur:        this.animationDuration,
-                fn:         this.animationTimingFunction,
-                reverse:    false
+            var switcher = this;
+			var viewport = XF.Device.getViewport();
+            var pageHeightWhileTransitioning = XF.Device.getScreenHeight() + $(window).scrollTop();
+			var fromPage = this.activePage;
+			var toPage =  jqPage;
+            this.activePage = toPage;
+
+            var defAnim = {
+                animationType:   this.animationType,
+                animation:       this.animations[this.animationType],
+                duration:        this.animationDuration,
+                easing:          this.easing,
+                reverse:         false
             };
 
-            var params = $.extend(defAanim, options);
-			this.activePage = toPage;
+            var params = $.extend(defAnim, options);
 
 			if(fromPage) {
 				// start transition
-				viewport.addClass('xf-viewport-transitioning');
-                var props = params.reverse ? params.animation.from : params.animation.to;
-
+				viewport.addClass(switcher.viewportTransitioningClass);
+                var animationProps = /*params.reverse ? params.animation :*/ params.animation;
                 if (params.animationType == 'slide') {
-                    props = params.reverse ? params.animation['right'] : params.animation['left'];
+                    animationProps = params.reverse ? params.animation['right'] : params.animation['left'];
                 }
-//debugger;
                 fromPage
-                    .height(screenHeight + $(window).scrollTop())
-                    .css(props['out']['from'])
-                    .animate(props['out']['to'], params.dur, params.fn, function(){
-                        fromPage.height('');
-                        if(fromPage !== XF.PageSwitcher.activePage) {
-                            fromPage.removeClass(activePageClass);
-                        }
-                    })
-                ;
+                    .addClass(switcher.pageTransitioningClass)
+                    .height(pageHeightWhileTransitioning) // needed for better performance
+                    .animate(animationProps['out']['from'],
+                        {
+                            // resetting state
+                            duration: 0,
+                            complete: function(){
+                                fromPage.animate(animationProps['out']['to'],
+                                    {
+                                        // actual page animation
+                                        duration: params.animation == 'none' ? 0 : params.duration,
+                                        easing: params.easing,
+                                        complete: function(){
+                                            fromPage
+                                                .height('')
+                                                .removeClass(switcher.activePageClass +' '+ switcher.pageTransitioningClass)
+                                        }
+                                    }
+                                );
+                            }
+                        });
+
 
                 toPage
-                    .addClass(activePageClass)
-                    .height(screenHeight + $(window).scrollTop())
-                    .css(props['in']['from'])
-                    .animate(props['in']['to'], params.dur, params.fn, function (){
-                        toPage.height('');
-                        viewport.removeClass('xf-viewport-transitioning');
-                    });
-                    //.addClass('in '+ animationName + ' ' + activePageClass /*+ ' ' + reverseClass*/);
-/*
-                fromPage.animationComplete(function(e){
-                    fromPage.height('').removeClass(animationName + ' out in reverse');
-                    if(fromPage !== XF.PageSwitcher.activePage) {
-                        fromPage.removeClass(activePageClass);
-                    }
-                });
+                    .addClass(switcher.activePageClass +' '+ switcher.pageTransitioningClass)
+                    .height(pageHeightWhileTransitioning)
+                    .animate(animationProps['in']['from'],
+                        {
+                            // resetting state
+                            duration: 0,
+                            complete: function(){
+                                toPage.animate(animationProps['in']['to'],
+                                    {
+                                        // actual page animation
+                                        duration: params.animation == 'none' ? 0 : params.duration,
+                                        easing: params.easing,
+                                        complete: function (){
+                                            toPage
+                                                .height('')
+                                                .removeClass(switcher.pageTransitioningClass);
+                                            viewport.removeClass(switcher.viewportTransitioningClass);
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                    )
 
-                toPage.animationComplete(function(e){
-                    toPage.height('').removeClass(animationName + ' out in reverse');
-                    viewport.removeClass('xf-viewport-transitioning');
 
-                });*/
-
-
-			} else {
+            } else {
 				// just making it active
-				this.activePage.addClass(activePageClass);
+				this.activePage.addClass(switcher.activePageClass);
 			}
 
 

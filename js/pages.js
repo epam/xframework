@@ -33,6 +33,7 @@ $(function(){
 		router: {
 			routes: {
 				'': 			'home',
+				'/': 			'home',
 				'home2': 			'home2',
 				'home3': 			'home3',
 				'/*action/':	'action'
@@ -47,24 +48,29 @@ $(function(){
 
 					//if (XF.Device.type.name !== 'mobile') XF.Controller.trigger('menu:go', {hash: 'home'});
 
-                    var pages = ['home', 'home2', 'home3'];
+                    //var pages = ['home', 'home2', 'home3'];
+                    //var target = pages[[Math.floor(Math.random() * pages.length)]];
 
-					XF.Controller.trigger('menu:go', {hash: pages[[Math.floor(Math.random() * pages.length)]]});
+                    //XF.PageSwitcher.switchToPage($('#'+target));
+
+					XF.Controller.trigger('menu:go', {hash: 'home' /*pages[[Math.floor(Math.random() * pages.length)]]*/});
 
 				},
 
 				action : function(hash) {
 					if (hash == 'about' && XF.Device.type.name !== 'mobile') $('.xf-header > .xf-button-header-left').hide();
 					else $('.xf-header > .xf-button-header-left').show();
+/*
 
                     var pages = ['home', 'home2', 'home3'];
                     var target = pages[[Math.floor(Math.random() * pages.length)]];
 
                     XF.PageSwitcher.switchToPage($('#'+target));
 
+*/
 
 
-					//XF.Controller.trigger('menu:go', {hash: target });
+					XF.Controller.trigger('menu:go', {hash: hash });
 
 				}
 			}

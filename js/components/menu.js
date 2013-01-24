@@ -15,11 +15,11 @@ $(function(){
             if (!$('#' + item).length) {
                 $.get(
                     this.getItemURL(item),
-                    function (data, status) {  
+                    function (data, status) {
                         component.constructMenuItem(item, data);
                     }
                 );
-            }else{
+            } else {
                 this.showMenuItem(item);
             }
 
@@ -27,9 +27,16 @@ $(function(){
         },
 
         constructMenuItem: function (item, data) {
-            var html  = '<div id="' + item + '" class="xf-page"><div class="xf-page-content xf-indented">' + data + '</div></div>'; 
-            if (this.options.contentSelector.length) $(this.options.contentSelector).append(html);
-            else $(XF.RootComponentInstance.selector()).append(html);
+            var html  = '<div id="' + item + '" class="xf-page"><div class="xf-page-content xf-indented">' + data + '</div></div>';
+
+            var parent = $(this.options.contentSelector);
+            if (parent[0]) {
+                parent.append(html);
+            }
+            else {
+                $(XF.RootComponentInstance.selector()).append(html);
+            }
+
             XF.UIElements.enhanceView($('#' + item));
             this.showMenuItem(item);
         },
@@ -65,7 +72,7 @@ $(function(){
             itemURL: 'data/',
             itemURLPostfix: '.html',
             contentSelector: '#content',
-            defaultItem: 'about'
+            defaultItem: 'home'
         },
 
         init: function () {
