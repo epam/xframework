@@ -3959,7 +3959,7 @@
                     animationProps = params.reverse ? params.animation['right'] : params.animation['left'];
                 }
                 fromPage
-                    .addClass(switcher.pageTransitioningClass)
+                    .addClass(switcher.pageTransitioningClass + ' ' + switcher.pageTransitioningClass + '-out')
                     .height(pageHeightWhileTransitioning) // needed for better performance
                     .animate(animationProps['out']['from'],
                         {
@@ -3974,7 +3974,7 @@
                                         complete: function(){
                                             fromPage
                                                 .height('')
-                                                .removeClass(switcher.activePageClass +' '+ switcher.pageTransitioningClass)
+                                                .removeClass(switcher.activePageClass +' '+ switcher.pageTransitioningClass + ' ' + switcher.pageTransitioningClass + '-out')
                                         }
                                     }
                                 );
@@ -3983,7 +3983,7 @@
 
 
                 toPage
-                    .addClass(switcher.activePageClass +' '+ switcher.pageTransitioningClass)
+                    .addClass(switcher.activePageClass +' '+ switcher.pageTransitioningClass + ' ' + switcher.pageTransitioningClass + '-in')
                     .height(pageHeightWhileTransitioning)
                     .animate(animationProps['in']['from'],
                         {
@@ -3998,7 +3998,7 @@
                                         complete: function (){
                                             toPage
                                                 .height('')
-                                                .removeClass(switcher.pageTransitioningClass);
+                                                .removeClass(switcher.pageTransitioningClass + ' ' + switcher.pageTransitioningClass + '-in');
                                             viewport.removeClass(switcher.viewportTransitioningClass);
                                         }
                                     }
