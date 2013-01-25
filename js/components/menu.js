@@ -1,5 +1,4 @@
 $(function(){
-
 	var extending = {
         getMenuItem: function (item) {
             var component = this,
@@ -16,11 +15,11 @@ $(function(){
             if (!$('#' + item).length) {
                 $.get(
                     this.getItemURL(item),
-                    function (data, status) {  
+                    function (data, status) {
                         component.constructMenuItem(item, data);
                     }
                 );
-            }else{
+            } else {
                 this.showMenuItem(item);
             }
 
@@ -28,9 +27,16 @@ $(function(){
         },
 
         constructMenuItem: function (item, data) {
-            var html  = '<div id="' + item + '" class="xf-page"><div class="xf-page-content xf-indented">' + data + '</div></div>'; 
-            if (this.options.contentSelector.length) $(this.options.contentSelector).append(html);
-            else $(XF.RootComponentInstance.selector()).append(html);
+            var html  = '<div id="' + item + '" class="xf-page"><div class="xf-page-content xf-indented">' + data + '</div></div>';
+
+            var parent = $(this.options.contentSelector);
+            if (parent[0]) {
+                parent.append(html);
+            }
+            else {
+                $(XF.RootComponentInstance.selector()).append(html);
+            }
+
             XF.UIElements.enhanceView($('#' + item));
             this.showMenuItem(item);
         },
@@ -40,8 +46,13 @@ $(function(){
         },
 
         showMenuItem: function (item) {
-            XF.PageSwitcher.switchToPage($('#' + item));
-            SyntaxHighlighter.highlight();
+            var $item = $('#' + item);
+            if ($item[0]){
+                XF.PageSwitcher.switchToPage($item);
+                SyntaxHighlighter.highlight();
+            } else {
+                console.log('Menu item: #' + item + ' is not in the DOM');
+            }
             XF.UIElements.hideLoading();
         },
 
@@ -79,10 +90,10 @@ $(function(){
             component.refresh();
         },
 
-        go: function (data) { 
+        go: function (data) {
             var hash = data.hash.replace(/^\/|\/$/g, ''),
                 menu = this.model.get('menu');
-                
+
             if (menu !== undefined) {
                 if (menu[hash] !== undefined) {
                     this.getMenuItem(hash);
