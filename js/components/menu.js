@@ -49,8 +49,9 @@ $(function(){
             var $item = $('#' + item);
             if ($item[0]){
                 XF.PageSwitcher.switchToPage($item);
+                SyntaxHighlighter.highlight();
             } else {
-                console.log('Menu item: #' + item + ' is not in the DOM11');
+                console.log('Menu item: #' + item + ' is not in the DOM');
             }
             XF.UIElements.hideLoading();
         },
@@ -72,7 +73,7 @@ $(function(){
             itemURL: 'data/',
             itemURLPostfix: '.html',
             contentSelector: '#content',
-            defaultItem: 'home'
+            defaultItem: 'about'
         },
 
         init: function () {
