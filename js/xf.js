@@ -3234,7 +3234,7 @@
 				if(!this.component) {
 					throw 'XF.Model "component" linkage lost';
 				}
-				this.dataURL = XF.Settings.property('dataUrlFormatter')(this.component.name);
+				this.dataURL = _.bind(XF.Settings.property('dataUrlFormatter'), this)(this.component.name);
 			}
 			return this.dataURL;
 		},
