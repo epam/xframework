@@ -67,9 +67,9 @@ $(function(){
 
         init: function () {
             var component = this,
-                fragment = (XF.History.fragment !== '' && XF.History.fragment !== '/') ? 
-                            XF.History.fragment : 
-                            ((component.options.showFirstItem) ? XF.History.fragment : component.options.defaultItem);
+                fragment = (XF.history.fragment !== '' && XF.history.fragment !== '/') ?
+                            XF.history.fragment :
+                            ((component.options.showFirstItem) ? XF.history.fragment : component.options.defaultItem);
 
             XF.Controller.bind('menu:go', _.bind(component.go, this));
             component.ready(function () {

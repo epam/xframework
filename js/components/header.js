@@ -96,7 +96,7 @@ $(function(){
 						retBut.dataHrefString = ' data-href="' + button.href + '" ';
 						component.buttonHrefIDMap[retBut.id] = button.href;
 					} else if(button.isBackBtn) {
-						retBut.dataHrefString = ' href="javascript:XF.History.goBack();" ';
+						retBut.dataHrefString = ' href="javascript:XF.history.goBack();" ';
 					}
 					
 					return retBut;
@@ -135,16 +135,16 @@ $(function(){
 					}
 				);
 				
-				_.each(component.buttonHrefIDMap, function(value, key, list) {
+				/*_.each(component.buttonHrefIDMap, function(value, key, list) {
 					XF.Router.bindRoute(
 						value,
 						function() {
 							component.selectButton($(component.selector() + ' #' + key));
 						}
 					);
-				});
+				}); */
 
-				if (XF.History.fragment == "") { 
+				if (XF.history.fragment == "") {
 					console.log(component.selector());
 					$('.xf-button-back', component.selector()).hide();
 				}
