@@ -4,3 +4,7 @@
 *.sublime-workspace
 
 /.idea
+node_modules
+.bowerrc
+
+bower.json
