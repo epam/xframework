@@ -130,7 +130,6 @@
         options = options || {};
 
         // Creating static singletones
-        XF.Settings = new XF.SettingsClass();
         XF.Cache = new XF.CacheClass();
         XF.Controller = new XF.ControllerClass();
         XF.Device = new XF.DeviceClass();
@@ -160,55 +159,6 @@
         }
         loadChildComponents(rootDOMObject);
     };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     The self-propagating extend function that XF classes use.
-     @memberOf XF
-     @private
-     @param {Object} protoProps Prototype extending properties
-     @param {Object} staticProps Static extending properties
-     */
-    var extend = function (protoProps, classProps) {
-        var child = inherits(this, protoProps, classProps);
-        child.extend = this.extend;
-        return child;
-    };
-
-    var ctor = function(){};
-
-    /**
-     Helper function to correctly set up the prototype chain, for subclasses. Similar to 'goog.inherits', but uses a hash of prototype properties and class properties to be extended.
-     @memberOf XF
-     @private
-     @param {Object} parent Class to be extended
-     @param {Object} protoProps Prototype extending properties
-     @param {Object} staticProps Static extending properties
-     */
-    var inherits = function(parent, protoProps, staticProps) {
-        var child;
-        if (protoProps && protoProps.hasOwnProperty('constructor')) {
-            child = protoProps.constructor;
-        } else {
-            child = function(){ return parent.apply(this, arguments); };
-        }
-        _.extend(child, parent);
-        ctor.prototype = parent.prototype;
-        child.prototype = new ctor();
-        if (protoProps) _.extend(child.prototype, protoProps);
-        if (staticProps) _.extend(child, staticProps);
-        child.prototype.constructor = child;
-        child.__super__ = parent.prototype;
-
-        return child;
-    };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     /**
      @namespace Holds all the reusable util functions
@@ -1508,7 +1458,7 @@
         if(XF.Router) {
             throw 'XF.createRouter can be called only ONCE!';
         } else {
-            XF.Router = new (BB.Router.extend(options))();
+            XF.Router = new (XF.RouterClass.extend(options))();
         }
     };
 
@@ -1757,77 +1707,7 @@
      Implements basic Events dispatching logic.
      @class
      */
-    XF.Events = {};
-
-    _.extend(XF.Events, /** @lends XF.Events# */ {
-
-        /**
-         Bind an event, specified by a string name, 'ev', to a 'callback' function. Passing 'all' will bind the callback to all events fired.
-         @param {String} ev event name
-         @param {Function} callback function to be called on event trigger
-         @param {Object} context context for function call
-         @return {XF.Events}
-         */
-        bind : function(ev, callback, context) {
-            var calls = this._callbacks || (this._callbacks = {});
-            var list  = calls[ev] || (calls[ev] = []);
-            list.push([callback, context]);
-            return this;
-        },
-
-        /**
-         Remove one or many callbacks. If 'callback' is null, removes all callbacks for the event. If 'ev' is null, removes all bound callbacks for all events.
-         @param {String} ev event name
-         @param {Function} callback function to be called on event trigger
-         @return {XF.Events}
-         */
-        unbind : function(ev, callback) {
-            var calls;
-            if (!ev) {
-                this._callbacks = {};
-            } else if (calls = this._callbacks) {
-                if (!callback) {
-                    calls[ev] = [];
-                } else {
-                    var list = calls[ev];
-                    if (!list) return this;
-                    for (var i = 0, l = list.length; i < l; i++) {
-                        if (list[i] && callback === list[i][0]) {
-                            list[i] = null;
-                            break;
-                        }
-                    }
-                }
-            }
-            return this;
-        },
-
-        /**
-         Trigger an event, firing all bound callbacks. Callbacks are passed the same arguments as 'trigger' is, apart from the event name. Listening for 'all' passes the true event name as the first argument.
-         @param {String} eventName event name
-         @return {XF.Events}
-         */
-        trigger : function(eventName) {
-            var list, calls, ev, callback, args;
-            var both = 2;
-            if (!(calls = this._callbacks)) return this;
-            while (both--) {
-                ev = both ? 'all' : eventName;
-                if (list = calls[ev]) {
-                    for (var i = 0, l = list.length; i < l; i++) {
-                        if (!(callback = list[i])) {
-                            list.splice(i, 1); i--; l--;
-                        } else {
-                            args = both ? arguments : Array.prototype.slice.call(arguments, 1);
-                            callback[0].apply(callback[1] || this, args);
-                        }
-                    }
-                }
-            }
-            return this;
-        }
-
-    });
+    XF.Events = BB.Events;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1846,138 +1726,132 @@
     /**
      Instance of {@link XF.SettingsClass}
      @static
-     @type {XF.SettingsClass}
+     @type {Object}
      */
-    XF.Settings = null;
+    XF.Settings = {
 
-    /**
-     Takes care of all global application settings
-     @class
-     @private
-     @param {Object} settings Custom settings hash
-     */
-    XF.SettingsClass = function(settings) {
-        /**
-         Contains name-value pairs of all application settings
-         @name XF.Settings#options
-         @type Object
-         @private
-         */
-        this.options = /** @lends XF.Settings#options */ {
-
-            /**
-             Used for {@link XF.Cache} clearance when new version released
-             @memberOf XF.Settings.prototype
-             @default '1.0.0'
-             @type String
-             */
-            applicationVersion: '1.0.0',
-            /**
-             Deactivates cache usage for the whole app (usefull for developement)
-             @memberOf XF.Settings.prototype
-             @default false
-             @type String
-             */
-            noCache: false,
-            /**
-             Used by default Component URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            componentUrlPrefix: '',
-            /**
-             Used by default Component URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.js'
-             @type String
-             */
-            componentUrlPostfix: '.js',
-            /**
-             Default Component URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @memberOf XF.Settings.prototype
-             @returns {String} Component URL
-             @type Function
-             */
-            componentUrlFormatter: function(compName) {
-                return XF.Settings.property('componentUrlPrefix') + compName + XF.Settings.property('componentUrlPostfix');
-            },
-
-            /**
-             Used by default Template URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            templateUrlPrefix: '',
-            /**
-             Used by default Template URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.tmpl'
-             @type String
-             */
-            templateUrlPostfix: '.tmpl',
-            /**
-             Default Template URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @returns {String} Template URL
-             @memberOf XF.Settings.prototype
-             @type Function
-             */
-            templateUrlFormatter: function(compName, templatePath) {
-                return XF.Settings.property('templateUrlPrefix') + templatePath + compName + XF.Settings.property('templateUrlPostfix');
-            },
-
-            /**
-             Used by default Data URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            dataUrlPrefix: '',
-            /**
-             Used by default Data URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.json'
-             @type String
-             */
-            dataUrlPostfix: '.json',
-            /**
-             Default Data URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @returns {String} Template URL
-             @memberOf XF.Settings.prototype
-             @type Function
-             */
-            dataUrlFormatter: function(compName) {
-                return XF.Settings.property('dataUrlPrefix') + compName + XF.Settings.property('dataUrlPostfix');
-            },
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 100
-             @type Number
-             */
-            touchableSwipeLength: 100,
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 700
-             @type Number
-             */
-            touchableDoubleTapInterval: 700,
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 300
-             @type Number
-             */
-            touchableLongTapInterval: 500
-        };
     };
 
-    _.extend(XF.SettingsClass.prototype, /** @lends XF.SettingsClass.prototype */ {
+    _.extend(XF.Settings, /** @lends XF.SettingsClass.prototype */ {
+            /**
+             Contains name-value pairs of all application settings
+             @name XF.Settings#options
+             @type Object
+             @private
+             */
+            options: /** @lends XF.Settings#options */ {
+
+                /**
+                 Used for {@link XF.Cache} clearance when new version released
+                 @memberOf XF.Settings.prototype
+                 @default '1.0.0'
+                 @type String
+                 */
+                applicationVersion: '1.0.0',
+                /**
+                 Deactivates cache usage for the whole app (usefull for developement)
+                 @memberOf XF.Settings.prototype
+                 @default false
+                 @type String
+                 */
+                noCache: false,
+                /**
+                 Used by default Component URL formatter: prefix + component_name + postfix
+                 @memberOf XF.Settings.prototype
+                 @default ''
+                 @type String
+                 */
+                componentUrlPrefix: '',
+                /**
+                 Used by default Component URL formatter: prefix + component_name + postfix
+                 @memberOf XF.Settings.prototype
+                 @default '.js'
+                 @type String
+                 */
+                componentUrlPostfix: '.js',
+                /**
+                 Default Component URL formatter: prefix + component_name + postfix
+                 @param {String} compName Component name
+                 @memberOf XF.Settings.prototype
+                 @returns {String} Component URL
+                 @type Function
+                 */
+                componentUrlFormatter: function(compName) {
+                    return XF.Settings.property('componentUrlPrefix') + compName + XF.Settings.property('componentUrlPostfix');
+                },
+
+                /**
+                 Used by default Template URL formatter: prefix + component_name + postfix
+                 @memberOf XF.Settings.prototype
+                 @default ''
+                 @type String
+                 */
+                templateUrlPrefix: '',
+                /**
+                 Used by default Template URL formatter: prefix + component_name + postfix
+                 @memberOf XF.Settings.prototype
+                 @default '.tmpl'
+                 @type String
+                 */
+                templateUrlPostfix: '.tmpl',
+                /**
+                 Default Template URL formatter: prefix + component_name + postfix
+                 @param {String} compName Component name
+                 @returns {String} Template URL
+                 @memberOf XF.Settings.prototype
+                 @type Function
+                 */
+                templateUrlFormatter: function(compName, templatePath) {
+                    return XF.Settings.property('templateUrlPrefix') + templatePath + compName + XF.Settings.property('templateUrlPostfix');
+                },
+
+                /**
+                 Used by default Data URL formatter: prefix + component_name + postfix
+                 @memberOf XF.Settings.prototype
+                 @default ''
+                 @type String
+                 */
+                dataUrlPrefix: '',
+                /**
+                 Used by default Data URL formatter: prefix + component_name + postfix
+                 @memberOf XF.Settings.prototype
+                 @default '.json'
+                 @type String
+                 */
+                dataUrlPostfix: '.json',
+                /**
+                 Default Data URL formatter: prefix + component_name + postfix
+                 @param {String} compName Component name
+                 @returns {String} Template URL
+                 @memberOf XF.Settings.prototype
+                 @type Function
+                 */
+                dataUrlFormatter: function(compName) {
+                    return XF.Settings.property('dataUrlPrefix') + compName + XF.Settings.property('dataUrlPostfix');
+                },
+                /**
+                 Used by {@link XF.Touchable}
+                 @memberOf XF.Settings.prototype
+                 @default 100
+                 @type Number
+                 */
+                touchableSwipeLength: 100,
+                /**
+                 Used by {@link XF.Touchable}
+                 @memberOf XF.Settings.prototype
+                 @default 700
+                 @type Number
+                 */
+                touchableDoubleTapInterval: 700,
+                /**
+                 Used by {@link XF.Touchable}
+                 @memberOf XF.Settings.prototype
+                 @default 300
+                 @type Number
+                 */
+                touchableLongTapInterval: 500
+            },
+
             /**
              Gives a way to set a number of options at a time
              @param options an object containing properties which would override original ones
@@ -2189,7 +2063,7 @@
      */
     XF.RouterClass = BB.Router;
 
-    _.extend(BB.Router.prototype, /** @lends XF.RouterClass.prototype */{
+    _.extend(XF.RouterClass.prototype, /** @lends XF.RouterClass.prototype */{
 
 
         /**
@@ -2513,7 +2387,7 @@
      @function
      @static
      */
-    XF.Component.extend = extend;
+    XF.Component.extend = BB.Model.extend;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2570,7 +2444,7 @@
      @augments XF.Events
      @param {Object} attributes list of predefined attributes
      */
-    XF.Model = function(attributes) {
+    XF.Model = BB.Model.extend({
         /**
          Would be dispatched once when the Component inited
          @name XF.Model#init
@@ -2599,53 +2473,13 @@
          Link to the {@link XF.Component} instance
          @type XF.Component
          */
-        this.component = null;
+        component: null,
 
         /**
          Object that contains plan data recieved from server
          @type Object
          */
-        this.rawData = null;
-
-        /**
-         Object that contains all nema-value pairs for properties created via {@link XF.Model#set} or passed to constructor
-         @type Object
-         */
-        this.attributes = {};
-
-        /**
-         Object that contains a snapshot of {@link XF.Model#attributes} created before some attribute was changed
-         @type Object
-         */
-        this._previousAttributes = {};
-
-        /**
-         A flag that indicates whether any of attributes has been changed
-         @type Boolean
-         @default false
-         @private
-         */
-        this._changed = false;
-
-
-        // getting initial attrbute values
-        attributes || (attributes = {});
-        var defaults = this.defaults;
-        if (defaults) {
-            if (_.isFunction(defaults)) {
-                defaults = defaults.call(this);
-            }
-            attributes = _.extend({}, defaults, attributes);
-        }
-        this.set(attributes, {silent : true});
-        this._changed = false;
-        this._previousAttributes = _.clone(this.attributes);
-
-    };
-
-    _.extend(XF.Model.prototype, XF.Events);
-
-    _.extend(XF.Model.prototype, /** @lends XF.Model.prototype */{
+        rawData: null,
 
         /**
          Data source URL
@@ -2708,171 +2542,11 @@
         defaults : null,
 
         /**
-         Get the value of an attribute.
-         @param {String} attribute name
-         @return {Object} attribute value
-         */
-        get : function(attr) {
-            return this.attributes[attr];
-        },
-
-        /**
-         Returns 'true' if the attribute contains a value that is not null or undefined.
-         @param {String} attribute name
-         @return {Boolean} existance identifier
-         */
-        has : function(attr) {
-            return this.attributes[attr] != null;
-        },
-
-        /**
-         Set a hash of model attributes on the object, firing 'change' unless you choose to silence it.
-         @param {Object} attributes hash (name-value pairs)
-         @param {Object} options hash (name-value pairs)
-         @return {XF.Model} object instance
-         */
-        set : function(attrs, options) {
-
-            // Extract attributes and options.
-            options || (options = {});
-            if (!attrs) return this;
-            if (attrs.attributes) attrs = attrs.attributes;
-            var now = this.attributes, escaped = this._escapedAttributes;
-
-            // Check for changes of 'id'.
-            if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
-
-            // We're about to start triggering change events.
-            var alreadyChanging = this._changing;
-            this._changing = true;
-
-            // Update attributes.
-            for (var attr in attrs) {
-                var val = attrs[attr];
-                if (!_.isEqual(now[attr], val)) {
-                    now[attr] = val;
-                    this._changed = true;
-                    if (!options.silent) this.trigger('change:' + attr, this, val, options);
-                }
-            }
-
-            if(this._changed && !options.silent) {
-                this.trigger('changed');
-            }
-
-            // Fire the 'change' event, if the model has been changed.
-            if (!alreadyChanging && !options.silent && this._changed) this.change(options);
-            this._changing = false;
-            return this;
-        },
-
-        /**
-         Remove an attribute from the model, firing 'change' unless you choose to silence it. 'unset' is a noop if the attribute doesn't exist.
-         @param {String} attribute name
-         @param {Object} options hash (name-value pairs)
-         @return {XF.Model} object instance
-
-         */
-        unset : function(attr, options) {
-            if (!(attr in this.attributes)) return this;
-            options || (options = {});
-            var value = this.attributes[attr];
-
-            // Remove the attribute.
-            delete this.attributes[attr];
-            if (attr == this.idAttribute) delete this.id;
-            this._changed = true;
-            if (!options.silent) {
-                this.trigger('change:' + attr, this, void 0, options);
-                this.change(options);
-            }
-            return this;
-        },
-
-        /**
-         Clear all attributes on the model, firing 'change' unless you choose to silence it.
-         @param {Object} options hash (name-value pairs)
-         @return {XF.Model} object instance
-         */
-        clear : function(options) {
-            options || (options = {});
-            var attr;
-            var old = this.attributes;
-
-            this.attributes = {};
-            this._changed = true;
-            if (!options.silent) {
-                for (attr in old) {
-                    this.trigger('change:' + attr, this, void 0, options);
-                }
-                this.change(options);
-            }
-            return this;
-        },
-
-        /**
-         Call this method to manually fire a 'change' event for this model. Calling this will cause all objects observing the model to update.
-         @param {Object} options hash (name-value pairs)
-         */
-        change : function(options) {
-            this.trigger('change', this, options);
-            this._previousAttributes = _.clone(this.attributes);
-            this._changed = false;
-        },
-
-        /**
-         Determine if the model has changed since the last 'change' event. If you specify an attribute name, determine if that attribute has changed.
-         @param {String} attribute name
-         @return {Boolean} change identifier
-         */
-        hasChanged : function(attr) {
-            if (attr) return this._previousAttributes[attr] != this.attributes[attr];
-            return this._changed;
-        },
-
-        /**
-         Return an object containing all the attributes that have changed, or false if there are no changed attributes. Useful for determining what parts of a view need to be updated and/or what attributes need to be persisted to the server.
-         @param {Object} new attribute values hash
-         @return {Object} list of changed attributes;
-
-         */
-        changedAttributes : function(now) {
-            now || (now = this.attributes);
-            var old = this._previousAttributes;
-            var changed = false;
-            for (var attr in now) {
-                if (!_.isEqual(old[attr], now[attr])) {
-                    changed = changed || {};
-                    changed[attr] = now[attr];
-                }
-            }
-            return changed;
-        },
-
-        /**
-         Get the previous value of an attribute, recorded at the time the last 'change' event was fired.
-         @param {String} attribute name
-         @return {Object} previous attribute value
-         */
-        previous : function(attr) {
-            if (!attr || !this._previousAttributes) return null;
-            return this._previousAttributes[attr];
-        },
-
-        /**
-         Get all of the attributes of the model at the time of the previous 'change' event.
-         @return {Object} previous attributes hash copy
-         */
-        previousAttributes : function() {
-            return _.clone(this._previousAttributes);
-        },
-
-        /**
          Constructs model instance
          @private
          */
         construct : function() {
-            this.init();
+            this.initialize();
             this.trigger('init');
             if(this.autoUpdateInterval > 0) {
                 var autoUpdateFunc = _.bind(function() {
@@ -2889,11 +2563,6 @@
             }
             this.trigger('construct');
         },
-
-        /**
-         HOOK: override to add logic. Default behavior is noop
-         */
-        init: function() {},
 
         /**
          Refreshes data from backend if necessary
@@ -2991,14 +2660,8 @@
          */
         afterLoadData : function() {}
 
-    },{});
+    });
 
-    /**
-     This method allows to extend XF.Model with saving the whole prototype chain
-     @function
-     @static
-     */
-    XF.Model.extend = extend;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3010,22 +2673,8 @@
      @static
      @augments XF.Events
      */
-    XF.View = function() {};
 
-    /**
-     Compiles component template if necessary & executes it with current component instance model
-     @static
-     */
-    XF.View.getMarkup = function() {
-        if(!this.component.constructor.compiledTemplate) {
-            this.component.constructor.compiledTemplate = _.template(this.component.constructor.template);
-        }
-        return this.component.constructor.compiledTemplate(this.component.model);
-    };
-
-    _.extend(XF.View.prototype, XF.Events);
-
-    _.extend(XF.View.prototype, /** @lends XF.View.prototype */{
+    XF.View = BB.View.extend({
 
         /**
          Would be dispatched once when the Component inited
@@ -3106,9 +2755,7 @@
                 this.unbind('templateLoaded', templateLoaded);
                 this.afterLoadTemplate();
 
-                this.getMarkup = _.bind(XF.View.getMarkup, this);
-
-                this.init();
+                this.initialize();
                 this.trigger('init');
 
                 if(!this.ignoreModelUpdate) {
@@ -3162,6 +2809,17 @@
                 this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.name, templatePath);
             }
             return this.templateURL;
+        },
+
+        /**
+         Compiles component template if necessary & executes it with current component instance model
+         @static
+         */
+        getMarkup: function() {
+            if(!this.component.constructor.compiledTemplate) {
+                this.component.constructor.compiledTemplate = _.template(this.component.constructor.template);
+            }
+            return this.component.constructor.compiledTemplate(this.component.model);
         },
 
         /**
@@ -3270,11 +2928,6 @@
         },
 
         /**
-         HOOK: override to add custom logic on init
-         */
-        init: function() {},
-
-        /**
          Renders component into placeholder + calling all the necessary hooks & events
          */
         refresh : function() {
@@ -3313,13 +2966,6 @@
         postRender : function() {}
 
     });
-
-    /**
-     This method allows to extend XF.View with saving the whole prototype chain
-     @function
-     @static
-     */
-    XF.View.extend = extend;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
