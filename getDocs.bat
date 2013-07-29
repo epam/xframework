@@ -1,1 +1,0 @@
-java -jar jsdoc-toolkit/jsrun.jar jsdoc-toolkit/app/run.js -a -c=jsdoc-toolkit/conf/mixer.conf
