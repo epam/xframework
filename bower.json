@@ -1,0 +1,9 @@
+{
+  "name": "x-framework",
+  "version": "0.0.0",
+  "commit": "e63114c10b5fae4f1eb13581b83053cccb398657",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/epam/x-framework.git"
+  }
+}
