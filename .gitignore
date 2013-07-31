@@ -14,3 +14,7 @@ js/lib/underscore.js
 js/lib/backbone.js
 
 js/lib/jquery.js
+
+index.html
+
+js/app.js

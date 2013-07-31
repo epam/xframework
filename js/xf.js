@@ -51,6 +51,17 @@
         return res;
     };
 
+    $.fn.animationComplete = function( callback ) {
+        if( "WebKitTransitionEvent" in window || "transitionEvent" in window ) {
+            return $( this ).one( 'webkitAnimationEnd animationend', callback );
+        }
+        else{
+            // defer execution for consistency between webkit/non webkit
+            setTimeout( callback, 0 );
+            return $( this );
+        }
+    };
+
     if (!_.isFunction($.fn.detach)) {
         $.fn.detach = function(a) {
             return this.remove(a,!0);
@@ -93,6 +104,22 @@
      */
     XF = window.XF = window.XF || {};
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     Implements basic Events dispatching logic.
+     @class
+     */
+    XF.Events = BB.Events;
+    _.extend(XF, XF.Events);
+
+    // TODO: comments
+    XF.navigate = function (fragment) {
+        XF.Router.navigate(fragment, {trigger: true});
+    };
+
+    XF.on('navigate', XF.navigate);
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -113,12 +140,9 @@
 
         // Creating static singletones
         XF.Cache = new XF.CacheClass();
-        XF.Controller = new XF.ControllerClass();
-        XF.Device = new XF.DeviceClass();
-        XF.PageSwitcher = new XF.PageSwitcherClass();
 
         // options.settings
-        XF.Settings.bulkSet(options.settings);
+        _.extend(XF.Settings.options, options.settings);
 
         // initializing XF.Cache
         XF.Cache.init();
@@ -134,14 +158,17 @@
         placeAnchorHooks();
         bindHideShowListeners();
 
+        XF.Router.start();
+
         // options.root
         rootDOMObject = options.root;
         if(!rootDOMObject) {
             rootDOMObject = $('body');
         }
 
-        XF.Router.start();
-        XF.PageSwitcher.start();
+        XF.Pages.start();
+
+        //XF.Pages.start();
         loadChildComponents(rootDOMObject);
     };
 
@@ -156,7 +183,6 @@
     XF.Utils.AddressBar = {};
 
     _.extend(XF.Utils.AddressBar, /** @lends XF.Utils.AddressBar */{
-        isMobile: (/iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase())),
 
         /**
          Saves scroll value in order to not re-calibrate everytime we call the hide url bar
@@ -269,7 +295,7 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('[data-href]').live('click',function() {
+        $('body').on('click', '[data-href]', function() {
             XF.Router.navigate( $(this).attr('data-href'), {trigger: true} );
             _.delay(function() { window.scrollTo(0,0); }, 250);
         });
@@ -313,7 +339,7 @@
      @private
      */
     var bindHideShowListeners = function() {
-        $('[data-component]').live('show', function(evt) {
+        $('[data-component]').on('show', function(evt) {
             if(evt.currentTarget == evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
@@ -332,7 +358,7 @@
          selector += ', ' + enhancement.selector;
          }
          });
-         $(selector).live('show', function() {
+         $(selector).on('show', function() {
          XF.UIElements.enhanceView($(this));
          });
          */
@@ -504,16 +530,6 @@
 
 
     /**
-     Implements basic Events dispatching logic.
-     @class
-     */
-    XF.Events = BB.Events;
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
      Instance of {@link XF.HistoryClass}
      @static
      @type {XF.HistoryClass}
@@ -652,13 +668,6 @@
                 touchableLongTapInterval: 500
             },
 
-            /**
-             Gives a way to set a number of options at a time
-             @param options an object containing properties which would override original ones
-             */
-            bulkSet: function(options) {
-                _.extend(this.options, options);
-            },
             /**
              Gets property value by name
              @param {String} propName
@@ -826,27 +835,6 @@
 
 
     /**
-     Instance of {@link XF.ControllerClass}
-     @static
-     @type {XF.ControllerClass}
-     */
-    XF.Controller = null;
-
-    /**
-     Represents general Application settings. Extends {@link XF.Events}
-     @class
-     @static
-     @augments XF.Events
-     */
-    XF.ControllerClass = function() {}
-
-    _.extend(XF.ControllerClass.prototype, XF.Events);
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
      Instance of {@link XF.RouterClass}
      @static
      @type {XF.Router}
@@ -871,6 +859,7 @@
          @private
          */
         start : function() {
+            this.bindAnyRoute();
             XF.history.start();
         },
 
@@ -879,23 +868,21 @@
          Binds a callback to any route
          @param {Function} callback A function to be called when any route is visited
          */
-        bindAnyRoute : function(callback) {
-            debugger;
-            this.on('all', callback);
-            debugger;
-            if(this.mostRecentCalled) {
-                callback(this.mostRecentCalled.name);
-            }
+        bindAnyRoute : function() {
+            this.on('route', function (e) {
+                console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
+                XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+            });
         },
 
         /**
-         Returns route string by givven router event name
-         @param String eventName
+         Returns page name string by fragment
+         @param String fragment
          @return String
          */
-        getRouteByEventName : function(eventName) {
-            debugger;
-            return eventName.replace('route:', '');
+        getPageNameFromFragment : function(fragment) {
+            var parts = fragment.replace(/^\/+/,'').replace(/\/+$/,'').split('/');
+            return parts[0];
         }
     });
 
@@ -1050,7 +1037,7 @@
                 this.trigger('init');
 
                 this.trigger('construct');
-                XF.Controller.trigger(this.id + ':constructed');
+                XF.trigger(this.id + ':constructed');
             };
             /** @ignore */
             var modelConstructed = function() {
@@ -1683,13 +1670,13 @@
                             $this.component.constructor.templateLoading = false;
                             $this.component.constructor.templateLoaded = true;
                             $this.trigger('templateLoaded');
-                            XF.Controller.trigger('templateLoaded', {url: url, template:template});
+                            XF.trigger('templateLoaded', {url: url, template:template});
                         } else {
                             $this.component.constructor.template = null;
                             $this.component.constructor.templateLoading = false;
                             $this.component.constructor.templateLoaded = false;
                             $this.trigger('templateLoaded');
-                            XF.Controller.trigger('templateLoaded', {url: url, template : null});
+                            XF.trigger('templateLoaded', {url: url, template : null});
                         }
                     }
                 });
@@ -1702,12 +1689,12 @@
                 /** ignore */
                 var templateLoadedAsync = function(params) {
                     if(params.url == url) {
-                        XF.Controller.unbind('templateLoaded', templateLoadedAsync);
+                        XF.unbind('templateLoaded', templateLoadedAsync);
                         $this.trigger('templateLoaded');
                     }
                 };
 
-                XF.Controller.bind('templateLoaded', templateLoadedAsync);
+                XF.bind('templateLoaded', templateLoadedAsync);
 
             } else {
                 this.trigger('templateLoaded');
@@ -1772,21 +1759,11 @@
 
 
     /**
-     Instance of {@link XF.PageSwitcherClass}
+     XF.Pages
      @static
-     @private
-     @type {XF.PageSwitcherClass}
+     @public
      */
-    XF.PageSwitcher = null;
-
-    /**
-     Root Component.
-     @class
-     @static
-     */
-    XF.PageSwitcherClass = function() {};
-
-    _.extend(XF.PageSwitcherClass.prototype, /** @lends XF.PageSwitcherClass.prototype */{
+    XF.Pages = {
 
         /**
          CSS class used to identify pages
@@ -1817,47 +1794,26 @@
         activePage : null,
 
         /**
-         Initialises PageSwitcher: get current active page and binds necessary routes handling
+         Saves current active page name
+         @type $
+         @private
+         */
+        activePageName: '',
+
+        /**
+         Initialises Pages: get current active page and binds necessary routes handling
          @private
          */
         start : function() {
-
-            $.fn.animationComplete = function( callback ) {
-                if( "WebKitTransitionEvent" in window || "transitionEvent" in window ) {
-                    return $( this ).one( 'webkitAnimationEnd animationend', callback );
-                }
-                else{
-                    // defer execution for consistency between webkit/non webkit
-                    setTimeout( callback, 0 );
-                    return $( this );
-                }
-            };
-
             var pages =  rootDOMObject.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
                 if(preselectedAP.length) {
                     this.activePage = preselectedAP;
+                    this.activePageName = preselectedAP.attr('id');
                 } else {
-                    this.activePage = pages.first();
-                    this.activePage.addClass(this.activePageClass);
-                    this.switchToPage(this.activePage);
+                    this.show(pages.first());
                 }
-                XF.Router.bindAnyRoute(this.routeHandler);
-            }
-        },
-
-        /**
-         Handles every XF.Router 'route:*' event and invokes page switching if necessary
-         @param String eventName
-         @private
-         */
-        routeHandler : function(eventName) {
-            debugger;
-            var routeName = XF.Router.getRouteByEventName(eventName);
-            var jqPage = $('.' + XF.PageSwitcher.pageClass + '#' + routeName);
-            if(jqPage.length) {
-                XF.PageSwitcher.switchToPage(jqPage);
             }
         },
 
@@ -1865,14 +1821,18 @@
          Executes animation sequence for switching
          @param $ jqPage
          */
-        switchToPage : function(jqPage){
-            debugger;
-
-            // preventing animation when the page is already shown
-            if(this.activePage && jqPage.attr('id') == this.activePage.attr('id')) {
+        show : function(page){
+            if (page === '' || page === this.activePageName) {
                 return;
             }
 
+            var jqPage = (page instanceof $) ? page : $('.' + XF.Pages.pageClass + '#' + page);
+
+            // preventing animation when the page is already shown
+            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
+                return;
+            }
+            console.log('XF.Pages :: showing to page', jqPage.attr('id'));
             var viewport = XF.Device.getViewport();
             var screenHeight = XF.Device.getScreenHeight();
 
@@ -1884,6 +1844,7 @@
             var toPage = jqPage;
 
             this.activePage = toPage;
+            this.activePageName = jqPage.attr('id');
 
             if(fromPage) {
                 // start transition
@@ -1893,7 +1854,7 @@
                 toPage.height(screenHeight + $(window).scrollTop()).addClass('in '+ animationName + ' ' + activePageClass /*+ ' ' + reverseClass*/);
                 fromPage.animationComplete(function(e){
                     fromPage.height('').removeClass(animationName + ' out in reverse');
-                    if(fromPage.attr('id') != XF.PageSwitcher.activePage.attr('id')) {
+                    if(fromPage.attr('id') != XF.Pages.activePage.attr('id')) {
                         fromPage.removeClass(activePageClass);
                     }
                 });
@@ -1915,9 +1876,10 @@
             // looking for components inside the page
             loadChildComponents(this.activePage[0]);
         }
-    });
+    };
 
 
+    XF.on('page:show', _.bind(XF.Pages.show, XF.Pages));
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1925,37 +1887,33 @@
      Instance of {@link XF.DeviceClass}
      @static
      @private
-     @type {XF.DeviceClass}
+     @type {Object}
      */
-    XF.Device = null;
-
-    /**
-     Represents some basic testing/verification api letting you know what device the app is started on.
-     @class
-     @static
-     */
-    XF.DeviceClass = function() {
+    XF.Device = {
 
         /**
          Contains device viewport size: {width; height}
          @type Object
          */
-        this.size = {
+        size: {
             width: 0,
             height: 0
-        };
+        },
+
+        isMobile: ( /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test((navigator.userAgent||navigator.vendor||window.opera).toLowerCase() ) ),
+
 
         /**
          Array of device types to be chosen from (can be set via {@link XF.start} options)
          @type Object
          @private
          */
-        this.types = [
+        types: [
             {
                 name : 'desktop',
                 range : {
                     max : null,
-                    min : 1024
+                    min : 1025
                 },
                 templatePath : 'desktop/',
                 fallBackTo : 'tablet'
@@ -1976,14 +1934,14 @@
                 templatePath : 'mobile/',
                 fallBackTo : 'default'
             }
-        ];
+        ],
 
         /**
          Default device type that would be used when none other worked (covers all the viewport sizes)
          @type Object
          @private
          */
-        this.defaultType = {
+        defaultType: {
             name : 'default',
             range : {
                 min : null,
@@ -1991,23 +1949,20 @@
             },
             templatePath : '',
             fallBackTo : null
-        };
+        },
 
         /**
          Detected device type that would be used to define template path
          @type Object
          @private
          */
-        this.type = this.defaultType;
+        type: this.defaultType,
 
         /**
          A flag indicates whether the device is supporting Touch events or not
          @type Boolean
          */
-        this.isTouchable = false;
-    };
-
-    _.extend(XF.DeviceClass.prototype, /** @lends XF.DeviceClass.prototype */{
+        isTouchable: false,
 
         /**
          Initializes {@link XF.Device} instance (runs detection methods)
@@ -2263,7 +2218,7 @@
             }
             return vp.eq(0)
         }
-    });
+    };
 
 
     // TBDeleted : temp stuff for testApp.html
