@@ -3,20 +3,20 @@ module.exports = (function(grunt) {
     grunt.registerTask('build', "X-Framework build", function() {
         console.log('Adding core elements');
         var sources = [
-            'js/modules/xf.core.js',
-            'js/modules/xf.touch.js',
-            'js/modules/xf.zepto.support.js',
-            'js/modules/xf.ui.js'
+            'js/xf/modules/xf.core.js',
+            'js/xf/modules/xf.touch.js',
+            'js/xf/modules/xf.zepto.support.js',
+            'js/xf/modules/xf.ui.js'
         ];
 
         if (arguments.length === 0) {
             console.log('Adding all UI components');
-            sources.push('js/ui/*.js');
+            sources.push('js/xf/ui/*.js');
         } else {
 
             for (var i in arguments) {
                 console.log('Adding UI for "' + arguments[i] + '"');
-                sources.push('js/ui/xf.ui.' + arguments[i] + '.js');
+                sources.push('js/xf/ui/xf.ui.' + arguments[i] + '.js');
             }
         }
         sources.push('js/xf.js');
