@@ -268,7 +268,7 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('[data-href]').live('click',function() {
+        $('[data-href]').on('click',function() {
             XF.Router.navigate( $(this).attr('data-href'), {trigger: true} );
             _.delay(function() { window.scrollTo(0,0); }, 250);
         });
@@ -312,7 +312,7 @@
      @private
      */
     var bindHideShowListeners = function() {
-        $('[data-component]').live('show', function(evt) {
+        $('[data-component]').on('show', function(evt) {
             if(evt.currentTarget == evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
