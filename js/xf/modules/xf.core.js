@@ -1956,7 +1956,7 @@
                 name : 'desktop',
                 range : {
                     max : null,
-                    min : 1024
+                    min : 1025
                 },
                 templatePath : 'desktop/',
                 fallBackTo : 'tablet'
