@@ -1,9 +1,12 @@
 {
-  "name": "x-framework",
-  "version": "0.0.0",
-  "commit": "e63114c10b5fae4f1eb13581b83053cccb398657",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/epam/x-framework.git"
-  }
+    "name": "Bower pkg",
+    "version": "0.1.0",
+    "dependencies": {
+        "x-framework" : "https://github.com/epam/x-framework.git"
+    },
+    "devDependencies" : {
+        "jquery" : "http://code.jquery.com/jquery-latest.js",
+        "backbone" : "http://backbonejs.org/backbone.js",
+        "underscore" : "http://underscorejs.org/underscore.js"
+    }
 }

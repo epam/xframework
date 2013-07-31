@@ -8,3 +8,9 @@ node_modules
 .bowerrc
 
 bower.json
+
+js/lib/underscore.js
+
+js/lib/backbone.js
+
+js/lib/jquery.js
