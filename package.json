@@ -17,6 +17,10 @@
   "dependencies": {
     "grunt-cli": "~0.1.9"
   },
-  "author": "EPAM",
-  "license": "BSD"
+  "author": "Ilya Pukhalski and Mikhail Larchanka, EPAM Systems Inc.",
+  "license": "TBD",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/epam/x-framework.git"
+  }
 }
