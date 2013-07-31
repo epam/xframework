@@ -6,6 +6,8 @@
 
 (function (window, BB) {
 
+    var rootDOMObject = null;
+
     /* $ hooks */
 
     var _oldhide = $.fn.hide;
@@ -137,6 +139,9 @@
         if(!rootDOMObject) {
             rootDOMObject = $('body');
         }
+
+        XF.Router.start();
+        XF.PageSwitcher.start();
         loadChildComponents(rootDOMObject);
     };
 
@@ -1767,66 +1772,6 @@
 
 
     /**
-     Instance of {@link XF.RootComponent}
-     @static
-     @private
-     @type {XF.RootComponent}
-     */
-    XF.RootComponentInstance = null;
-
-    /**
-     Root Component.
-     @class
-     @static
-     @augments XF.Component
-     */
-    XF.RootComponent = XF.Component.extend(/** @lends XF.RootComponent.prototype */{
-
-        /**
-         HOOK: override to add logic before starting routing
-         */
-        beforeStart : function() {},
-
-        /**
-         Launches Routing & automated PageSwitcher
-         @private
-         */
-        start: function() {
-            XF.Router.start();
-            XF.PageSwitcher.start();
-        },
-
-        /**
-         HOOK: override to add logic after starting routing
-         */
-        afterStart : function() {},
-
-        /**
-         Overrides {@link XF.Component} constructor in order to add Routing start call
-         @param {String} name Name of the component
-         @param {String} id ID of the component instance
-         @private
-         */
-        constructor: function(name, id) {
-            if(XF.RootComponentInstance) {
-                throw 'XF.RootComponent can be only ONE!';
-            }
-            XF.RootComponentInstance = this;
-
-            this.ready(function() {
-                XF.RootComponentInstance.beforeStart();
-                XF.RootComponentInstance.start();
-                XF.RootComponentInstance.afterStart();
-            });
-
-            XF.Component.apply(this, arguments);
-        }
-    });
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
      Instance of {@link XF.PageSwitcherClass}
      @static
      @private
@@ -1888,15 +1833,15 @@
                 }
             };
 
-            var pages = $(XF.RootComponentInstance.selector() + ' .' + this.pageClass);
+            var pages =  rootDOMObject.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
                 if(preselectedAP.length) {
                     this.activePage = preselectedAP;
                 } else {
-                    //this.activePage = pages.first();
-                    //this.activePage.addClass(this.activePageClass);
-                    this.switchToPage(pages.first());
+                    this.activePage = pages.first();
+                    this.activePage.addClass(this.activePageClass);
+                    this.switchToPage(this.activePage);
                 }
                 XF.Router.bindAnyRoute(this.routeHandler);
             }
