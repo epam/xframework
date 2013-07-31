@@ -216,7 +216,7 @@
             }
 
 
-            if (this.isMobile) {
+            if (XF.Device.isMobile) {
                 var css = document.documentElement.style;
 
                 css.height = '200%';
