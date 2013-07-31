@@ -23,29 +23,29 @@ module.exports = (function(grunt) {
 
         grunt.initConfig({
             pkg: grunt.file.readJSON('package.json'),
-            uglify: {
-                beautyFile: {
-                    options: {
-                        banner: '/*!     <%= pkg.name %>     <%= grunt.template.today("yyyy-mm-dd") %>     */\n',
-                        preserveComments: 'all',
-                        beautify: true
-                    },
-                    files : {
-                        'js/xf.js' : sources
-                    }
+            concat: {
+                options: {
+                    separator: '\n\n//New file\n\n'
                 },
-                minFile: {
-                    options: {
-                        banner: '/*!     <%= pkg.name %>     <%= grunt.template.today("yyyy-mm-dd") %>     */\n'
-                    },
-                    files : {
-                        'js/xf.min.js' : sources
+                dist: {
+                    src: sources,
+                    dest: 'js/xf.js'
+                }
+            },
+            uglify: {
+                options: {
+                    banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+                },
+                dist: {
+                    files: {
+                        'js/xf.min.js': ['<%= concat.dist.dest %>']
                     }
                 }
-            }
+            },
         });
         grunt.loadNpmTasks('grunt-contrib-uglify');
-        grunt.task.run(['uglify']);
+        grunt.loadNpmTasks('grunt-contrib-concat');
+        grunt.task.run(['concat', 'uglify']);
     });
 
     grunt.registerTask('default', ['build']);
