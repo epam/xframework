@@ -1782,7 +1782,8 @@
          @default 'fade'
          */
         animations: {
-            default: 'slideleft',
+            default: 'slideleft ',
+            next: null,
 
             types : {
                 'fade': {
@@ -1843,13 +1844,17 @@
             if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
                 return;
             }
-            console.log('XF.Pages :: showing to page', jqPage.attr('id'));
+            console.log('XF.Pages :: showing page', jqPage.attr('id'));
 
             var viewport = XF.Device.getViewport();
             var screenHeight = XF.Device.getScreenHeight();
 
-
-            animationType = (this.animations.types[animationType] ? animationType : this.animations.default) ;
+            if (this.animations.next) {
+                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
+                this.animations.next = null;
+            }else {
+                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
+            }
 
             var fromPage = this.activePage;
             var toPage = jqPage;
