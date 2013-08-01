@@ -1,3 +1,14 @@
+.box-sizing-border-box {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.overflow-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  -webkit-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
 /*  corner rounding classes
 --------------------------------------------*/
 .xf-corner-tl {
