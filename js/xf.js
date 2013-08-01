@@ -51,15 +51,12 @@
         return res;
     };
 
-    $.fn.animationComplete = function( callback ) {
-        if( "WebKitTransitionEvent" in window || "transitionEvent" in window ) {
-            return $( this ).one( 'webkitAnimationEnd animationend', callback );
-        }
-        else{
-            // defer execution for consistency between webkit/non webkit
-            setTimeout( callback, 0 );
-            return $( this );
-        }
+    $.fn.animationEnd = function (callback) {
+        var animationEndEvents = 'webkitAnimationEnd oAnimationEnd msAnimationEnd animationend';
+
+        $(this).one(animationEndEvents, callback);
+
+        return this;
     };
 
     if (!_.isFunction($.fn.detach)) {
@@ -661,7 +658,12 @@
              @default 300
              @type Number
              */
-            touchableLongTapInterval: 500
+            touchableLongTapInterval: 500,
+
+
+
+            //TODO merge with animation types
+            animations: {}
         },
 
         /**
@@ -1775,11 +1777,25 @@
         activePageClass : 'xf-page-active',
 
         /**
-         Animation type for page switching ('fade', 'slide', 'none')
+         Animation types for page switching ('fade', 'slide', 'none')
          @type String
          @default 'fade'
          */
-        animationType : 'fade',
+        animations: {
+            default: 'slideleft',
+
+            types : {
+                'fade': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'slideleft': {
+                    fallback: function () {}
+                },
+                'slideright': {
+                    fallback: function () {}
+                }
+            }
+        },
 
         /**
          Saves current active page
@@ -1816,7 +1832,7 @@
          Executes animation sequence for switching
          @param $ jqPage
          */
-        show : function(page){
+        show : function(page, animationType){
             if (page === '' || page === this.activePageName) {
                 return;
             }
@@ -1828,12 +1844,12 @@
                 return;
             }
             console.log('XF.Pages :: showing to page', jqPage.attr('id'));
+
             var viewport = XF.Device.getViewport();
             var screenHeight = XF.Device.getScreenHeight();
 
-            var animationName = this.animationType;
-//			var reverseClass = this.animationReverseClass;
-            var activePageClass = this.activePageClass;
+
+            animationType = (this.animations.types[animationType] ? animationType : this.animations.default) ;
 
             var fromPage = this.activePage;
             var toPage = jqPage;
@@ -1841,27 +1857,31 @@
             this.activePage = toPage;
             this.activePageName = jqPage.attr('id');
 
-            if(fromPage) {
-                // start transition
+            if (!XF.Device.hasAnimation) {
+                if (_.isFunction(this.animations.types[animationType]['fallback'])) {
+                    toPage.addClass(this.activePageClass);
+                    this.animations.types[animationType].fallback(fromPage, toPage);
+                    return;
+                }
+            }
+
+            if (fromPage) {
                 viewport.addClass('xf-viewport-transitioning');
 
-                fromPage.height(screenHeight + $(window).scrollTop()).addClass('out '+ animationName /*+ ' ' + reverseClass*/);
-                toPage.height(screenHeight + $(window).scrollTop()).addClass('in '+ animationName + ' ' + activePageClass /*+ ' ' + reverseClass*/);
-                fromPage.animationComplete(function(e){
-                    fromPage.height('').removeClass(animationName + ' out in reverse');
-                    if(fromPage.attr('id') != XF.Pages.activePage.attr('id')) {
-                        fromPage.removeClass(activePageClass);
-                    }
+                fromPage.height(screenHeight + $(window).scrollTop()).addClass('out '+ animationType);
+                toPage.height(screenHeight + $(window).scrollTop()).addClass('in '+ animationType + ' ' + this.activePageClass);
+                fromPage.animationEnd(function(){
+                    fromPage.height('').removeClass(animationType + ' out in');
+                    fromPage.removeClass(XF.Pages.activePageClass);
                 });
 
-                toPage.animationComplete(function(e){
-                    toPage.height('').removeClass(animationName + ' out in reverse');
+                toPage.animationEnd(function(){
+                    toPage.height('').removeClass(animationType + ' out in');
                     viewport.removeClass('xf-viewport-transitioning');
-
                 });
             } else {
                 // just making it active
-                this.activePage.addClass(activePageClass);
+                this.activePage.addClass(this.activePageClass);
             }
 
 
@@ -2096,6 +2116,28 @@
             console.log('XF.Device :: detectTouchable - device IS ' + (this.isTouchable ? '' : 'NOT ') + 'touchable');
 
         },
+
+        hasAnimation: (function () {
+            var domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+                elm = document.createElement('div');
+
+            if( elm.style.animationName ) {
+                return {
+                    prefix: ''
+                };
+            };
+
+            for( var i = 0; i < domPrefixes.length; i++ ) {
+                if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+                    return {
+                        prefix: '-' + domPrefixes[i].toLowerCase() + '-'
+                    };
+                }
+            }
+
+            return false;
+
+        }()),
 
 
         /**

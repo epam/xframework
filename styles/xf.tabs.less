@@ -7,7 +7,7 @@
 	position: relative;
 	margin: 5px 0 3px;  /* 5&3 to we compensate for the shift when buttons have borders and are moved 1px up and left */
 	padding: 0 0 0 1px;
-   .border-box;
+   .box-sizing-border-box;
 	list-style: none;
 
 	margin-top: 5px; /*  */
@@ -18,7 +18,7 @@
 .xf-tabs-button {
 	display: block;
 	position: relative;
-   .border-box;
+   .box-sizing-border-box;
 	height: 44px;
 	padding: 10px;
 	margin: -1px 0 0 -1px; /* needed to hide adjacent borders */
@@ -29,7 +29,7 @@
 	border: 1px solid @button-border-color;
 	color: @button-text-color;
 	text-shadow: 0 1px 0 @button-text-shadow-color;
-   .gradient(@button-bg-color-start, @button-bg-color-end);
+   //.gradient(@button-bg-color-start, @button-bg-color-end);
 
 	&:hover {
     -webkit-background-size: 100% 150%;
@@ -51,14 +51,14 @@
 	min-height: 24px;
 	line-height: 24px;
 	vertical-align: middle;
-   .ellipsis;
+   .overflow-ellipsis;
 	font-weight: bold;
 }
 
 .xf-tabs-button-active {
 	z-index: 1;
 	border-color: @button-active-border-color;
-	.gradient(@button-active-bg-color-start, @button-active-bg-color-end);
+	//.gradient(@button-active-bg-color-start, @button-active-bg-color-end);
 	color: @button-active-text-color;
 	text-shadow: 0 -1px 0 @button-active-text-shadow-color;
 

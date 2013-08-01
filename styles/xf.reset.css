@@ -101,15 +101,13 @@ hr {
   padding: 0;
 }
 ins {
-  background: #ff9;
+  background: #f0ff9d;
   color: #000;
   text-decoration: none;
 }
 mark {
-  background: #ff0;
-  color: #000;
-  font-style: italic;
-  font-weight: bold;
+  background: #f0ff9d;
+  /*color: #000; font-weight: bold;*/
 }
 /* Redeclare monospace font family: h5bp.com/j */
 pre,
@@ -254,6 +252,10 @@ input[type="submit"],
 [role="button"] {
   cursor: pointer;
   -webkit-appearance: button;
+}
+a div,
+a p {
+  cursor: pointer;
 }
 /*
  * Consistent box sizing and appearance
