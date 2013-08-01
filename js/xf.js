@@ -247,7 +247,7 @@
                     if( doc.body ) {
                         clearInterval( bodycheck );
                         XF.Utils.AddressBar.BODY_SCROLL_TOP = XF.Utils.AddressBar.getScrollTop();
-                        XF.Utils.AddressBar.hide();
+                        //XF.Utils.AddressBar.hide();
                     }
                 }, 15);
 
@@ -257,7 +257,7 @@
                             //at load, if user hasn't scrolled more than 20 or so...
                             if( XF.Utils.AddressBar.getScrollTop() < 20 ) {
                                 //reset to hide addr bar at onload
-                                XF.Utils.AddressBar.hide();
+                                //XF.Utils.AddressBar.hide();
                             }
                         }, 0);
                     }
@@ -1888,8 +1888,8 @@
             if (fromPage) {
                 viewport.addClass('xf-viewport-transitioning');
 
-                fromPage.height(screenHeight + $(window).scrollTop()).addClass('out '+ animationType);
-                toPage.height(screenHeight + $(window).scrollTop()).addClass('in '+ animationType + ' ' + this.activePageClass);
+                fromPage.addClass('out '+ animationType);
+                toPage.addClass('in '+ animationType + ' ' + this.activePageClass);
                 fromPage.animationEnd(function(){
                     fromPage.height('').removeClass(animationType + ' out in');
                     fromPage.removeClass(XF.Pages.activePageClass);
