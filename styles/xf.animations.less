@@ -86,6 +86,9 @@
     .animation-name(fadein);
 }
 
+
+
+
 @-webkit-keyframes slideleftout {
   from { -webkit-transform: translateX(0); }
   to   { -webkit-transform: translateX(-100%); }
@@ -136,24 +139,56 @@
     .animation-name(slideleftin);
     .animation-timing-function(linear);
 }
-.slide.out.reverse {
-	-webkit-animation-name: slideouttoright;
-	   -moz-animation-name: slideouttoright;
-	     -o-animation-name: slideouttoright;
-	        animation-name: slideouttoright;
-	-webkit-transform: translateX(100%);
-	   -moz-transform: translateX(100%);
-	     -o-transform: translateX(100%);
-	        transform: translateX(100%);
+
+
+
+@-webkit-keyframes sliderightout {
+  from { -webkit-transform: translateX(0); }
+  to   { -webkit-transform: translateX(100%); }
+}
+@-moz-keyframes sliderightout {
+  from { -moz-transform: translateX(0); }
+  to   { -moz-transform: translateX(100%); }
+}
+@-o-keyframes sliderightout {
+  from { -o-transform: translateX(0); }
+  to   { -o-transform: translateX(100%); }
+}
+@keyframes sliderightout {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
 }
 
-.slide.in.reverse {
-	-webkit-animation-name: slideinfromleft;
-	   -moz-animation-name: slideinfromleft;
-	     -o-animation-name: slideinfromleft;
-	        animation-name: slideinfromleft;
-	-webkit-transform: translateX(0);
-	   -moz-transform: translateX(0);
-	     -o-transform: translateX(0);
-	        transform: translateX(0);
+
+@-webkit-keyframes sliderightin {
+  from { -webkit-transform: translateX(-100%); }
+  to   { -webkit-transform: translateX(0); }
+}
+@-moz-keyframes sliderightin {
+  from { -moz-transform: translateX(-100%); }
+  to   { -moz-transform: translateX(0); }
+}
+@-o-keyframes sliderightin {
+  from { -o-transform: translateX(-100%); }
+  to   { -o-transform: translateX(0); }
+}
+@keyframes sliderightin {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+.slideright.out {
+  z-index: 10;
+  .transform(~"translateX(0)");
+  .animation-duration(.4s);
+  .animation-name(sliderightout);
+  .animation-timing-function(linear);
+}
+
+.slideright.in {
+  z-index: 10;
+  .transform(~"translateX(-100%)");
+  .animation-duration(.4s);
+  .animation-name(sliderightin);
+  .animation-timing-function(linear);
 }
