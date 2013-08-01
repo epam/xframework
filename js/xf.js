@@ -295,7 +295,7 @@
         $('body').on('tap click', '[data-href]', function() {
             var animationType = $(this).data('animation') || null;
             if (animationType) {
-                XF.trigger('page:animation:next', animationType);
+                XF.trigger('pages:animation:next', animationType);
             }
             XF.Router.navigate( $(this).data('href'), {trigger: true} );
         });
@@ -871,7 +871,9 @@
         bindAnyRoute : function() {
             this.on('route', function (e) {
                 console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
-                XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                if (XF.Pages) {
+                     XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                }
             });
         },
 
@@ -1820,8 +1822,8 @@
          @private
          */
         start : function() {
-            XF.on('page:show', _.bind(XF.Pages.show, XF.Pages));
-            XF.on('page:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
+            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
+            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
 
             var pages =  rootDOMObject.find(' .' + this.pageClass);
             if (pages.length) {
