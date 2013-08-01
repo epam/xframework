@@ -1,6 +1,6 @@
 <header class="xf-header <%= get('isFixed') ? 'xf-header-fixed' : '' %>">
 	<% _.each(get('buttons'), function(button) { %>
-	<a class="xf-button <%= button.buttonClass %>" <%= button.dataHrefString %> <%= button.hasTooltip ? 'title="' + button.tooltip + '"' : '' %> id="<%= button.id %>">
+	<a class="xf-button <%= button.buttonClass %>" <% _.each(button['data'], function(value, prop) { %> data-<%=prop%>="<%=value%>" <% }); %> <%= button.dataHrefString %> <%= button.hasTooltip ? 'title="' + button.tooltip + '"' : '' %> id="<%= button.id %>">
 		<% if(button.hasText) { %>
 		<span class="xf-button-small-text <%= button.textClass %>"><%= button.text %></span>
 		<% } %>

@@ -292,9 +292,12 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('body').on('click', '[data-href]', function() {
-            XF.Router.navigate( $(this).attr('data-href'), {trigger: true} );
-            _.delay(function() { window.scrollTo(0,0); }, 250);
+        $('body').on('tap click', '[data-href]', function() {
+            var animationType = $(this).data('animation') || null;
+            if (animationType) {
+                XF.trigger('page:animation:next', animationType);
+            }
+            XF.Router.navigate( $(this).data('href'), {trigger: true} );
         });
     };
 
@@ -1817,6 +1820,9 @@
          @private
          */
         start : function() {
+            XF.on('page:show', _.bind(XF.Pages.show, XF.Pages));
+            XF.on('page:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
+
             var pages =  rootDOMObject.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
@@ -1826,6 +1832,13 @@
                 } else {
                     this.show(pages.first());
                 }
+            }
+        },
+
+
+        setNextAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.next = animationType;
             }
         },
 
@@ -1899,7 +1912,7 @@
     };
 
 
-    XF.on('page:show', _.bind(XF.Pages.show, XF.Pages));
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
