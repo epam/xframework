@@ -10,9 +10,7 @@
 	text-align: center;
 	border-bottom: 1px solid transparent;
 
-	.gradient(@header-bg-color-start, @header-bg-color-end);
 	border-bottom: 1px solid @header-border-color;
-	.box-shadow(rgba(0,0,0,.15), 0, 1px, 0);
 }
 .xf-header-title {
 	margin: 0 8px;
@@ -20,7 +18,7 @@
 	font: bold 18px sans-serif;
 	line-height: 43px;
 	vertical-align: middle;
-	.ellipsis;
+	.overflow-ellipsis;
 
 	color: @header-text-color;
 	text-shadow: 0 1px 0 @header-text-shadow-color;
