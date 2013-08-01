@@ -864,25 +864,115 @@ div.xf-viewport {
   -ms-animation-timing-function: linear;
   animation-timing-function: linear;
 }
-.slide.out.reverse {
-  -webkit-animation-name: slideouttoright;
-  -moz-animation-name: slideouttoright;
-  -o-animation-name: slideouttoright;
-  animation-name: slideouttoright;
-  -webkit-transform: translateX(100%);
-  -moz-transform: translateX(100%);
-  -o-transform: translateX(100%);
-  transform: translateX(100%);
+@-webkit-keyframes sliderightout {
+  from {
+    -webkit-transform: translateX(0);
+  }
+  to {
+    -webkit-transform: translateX(100%);
+  }
 }
-.slide.in.reverse {
-  -webkit-animation-name: slideinfromleft;
-  -moz-animation-name: slideinfromleft;
-  -o-animation-name: slideinfromleft;
-  animation-name: slideinfromleft;
+@-moz-keyframes sliderightout {
+  from {
+    -moz-transform: translateX(0);
+  }
+  to {
+    -moz-transform: translateX(100%);
+  }
+}
+@-o-keyframes sliderightout {
+  from {
+    -o-transform: translateX(0);
+  }
+  to {
+    -o-transform: translateX(100%);
+  }
+}
+@keyframes sliderightout {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@-webkit-keyframes sliderightin {
+  from {
+    -webkit-transform: translateX(-100%);
+  }
+  to {
+    -webkit-transform: translateX(0);
+  }
+}
+@-moz-keyframes sliderightin {
+  from {
+    -moz-transform: translateX(-100%);
+  }
+  to {
+    -moz-transform: translateX(0);
+  }
+}
+@-o-keyframes sliderightin {
+  from {
+    -o-transform: translateX(-100%);
+  }
+  to {
+    -o-transform: translateX(0);
+  }
+}
+@keyframes sliderightin {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.slideright.out {
+  z-index: 10;
   -webkit-transform: translateX(0);
   -moz-transform: translateX(0);
   -o-transform: translateX(0);
+  -ms-transform: translateX(0);
   transform: translateX(0);
+  -webkit-animation-duration: 0.4s;
+  -moz-animation-duration: 0.4s;
+  -o-animation-duration: 0.4s;
+  -ms-animation-duration: 0.4s;
+  animation-duration: 0.4s;
+  -webkit-animation-name: sliderightout;
+  -moz-animation-name: sliderightout;
+  -o-animation-name: sliderightout;
+  -ms-animation-name: sliderightout;
+  animation-name: sliderightout;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  -ms-animation-timing-function: linear;
+  animation-timing-function: linear;
+}
+.slideright.in {
+  z-index: 10;
+  -webkit-transform: translateX(-100%);
+  -moz-transform: translateX(-100%);
+  -o-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  transform: translateX(-100%);
+  -webkit-animation-duration: 0.4s;
+  -moz-animation-duration: 0.4s;
+  -o-animation-duration: 0.4s;
+  -ms-animation-duration: 0.4s;
+  animation-duration: 0.4s;
+  -webkit-animation-name: sliderightin;
+  -moz-animation-name: sliderightin;
+  -o-animation-name: sliderightin;
+  -ms-animation-name: sliderightin;
+  animation-name: sliderightin;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  -ms-animation-timing-function: linear;
+  animation-timing-function: linear;
 }
 /*  Layout
 ========================================== */

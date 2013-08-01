@@ -292,9 +292,12 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('body').on('click', '[data-href]', function() {
-            XF.Router.navigate( $(this).attr('data-href'), {trigger: true} );
-            _.delay(function() { window.scrollTo(0,0); }, 250);
+        $('body').on('tap click', '[data-href]', function() {
+            var animationType = $(this).data('animation') || null;
+            if (animationType) {
+                XF.trigger('pages:animation:next', animationType);
+            }
+            XF.Router.navigate( $(this).data('href'), {trigger: true} );
         });
     };
 
@@ -868,7 +871,9 @@
         bindAnyRoute : function() {
             this.on('route', function (e) {
                 console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
-                XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                if (XF.Pages) {
+                     XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                }
             });
         },
 
@@ -1782,17 +1787,18 @@
          @default 'fade'
          */
         animations: {
-            default: 'slideleft',
+            default: 'slideleft ',
+            next: null,
 
             types : {
                 'fade': {
                     fallback: function (fromPage, toPage) {}
                 },
                 'slideleft': {
-                    fallback: function () {}
+                    fallback: function (fromPage, toPage) {}
                 },
                 'slideright': {
-                    fallback: function () {}
+                    fallback: function (fromPage, toPage) {}
                 }
             }
         },
@@ -1816,6 +1822,9 @@
          @private
          */
         start : function() {
+            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
+            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
+
             var pages =  rootDOMObject.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
@@ -1825,6 +1834,13 @@
                 } else {
                     this.show(pages.first());
                 }
+            }
+        },
+
+
+        setNextAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.next = animationType;
             }
         },
 
@@ -1843,14 +1859,18 @@
             if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
                 return;
             }
-            console.log('XF.Pages :: showing to page', jqPage.attr('id'));
+            console.log('XF.Pages :: showing page', jqPage.attr('id'));
 
             var viewport = XF.Device.getViewport();
             var screenHeight = XF.Device.getScreenHeight();
 
-
-            animationType = (this.animations.types[animationType] ? animationType : this.animations.default) ;
-
+            if (this.animations.next) {
+                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
+                this.animations.next = null;
+            }else {
+                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
+            }
+                             console.log(animationType);
             var fromPage = this.activePage;
             var toPage = jqPage;
 
@@ -1894,7 +1914,7 @@
     };
 
 
-    XF.on('page:show', _.bind(XF.Pages.show, XF.Pages));
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
