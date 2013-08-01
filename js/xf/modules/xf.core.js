@@ -1793,10 +1793,10 @@
                     fallback: function (fromPage, toPage) {}
                 },
                 'slideleft': {
-                    fallback: function () {}
+                    fallback: function (fromPage, toPage) {}
                 },
                 'slideright': {
-                    fallback: function () {}
+                    fallback: function (fromPage, toPage) {}
                 }
             }
         },
@@ -1868,7 +1868,7 @@
             }else {
                 animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
             }
-
+                             console.log(animationType);
             var fromPage = this.activePage;
             var toPage = jqPage;
 
