@@ -25,7 +25,7 @@
 .xf-nav-item {
     display: block;
     position:relative;
-   .border-box;
+   .box-sizing-border-box;
    	height: 48px;
    	padding: 4px;
 	text-align: center;
@@ -38,14 +38,14 @@
     background: -o-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
     background: -ms-linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
     background: linear-gradient(top, @nav-item-bg-color-start 0%, @nav-item-bg-color-end 50%);
- 	//background-color: mix( @nav-item-bg-color-start, @nav-item-bg-color-end);//#585f63
+
 	border-top: 1px solid @nav-item-border-color;
 }
 .xf-nav-item.xf-iconpos-top {
 	padding: 32px 4px 2px 4px;
 }
 .xf-nav-item-text {
-   .ellipsis;
+   .overflow-ellipsis;
 	font-size: 10px;
 }
 .xf-nav-item .xf-icon {
@@ -58,12 +58,11 @@
 	left:-15px;
 	margin-left: 50%;
 }
-.xf-page-has-fixed-footer .xf-page-content,
-.xf-viewport-has-fixed-footer .xf-page-content {
+.xf-page-has-fixed-footer .xf-page-content, .xf-viewport-has-fixed-footer .xf-page-content {
 	margin-bottom: 50px;
 }
 .xf-nav-item-active {
-   .gradient(@nav-item-active-bg-color-start, @nav-item-active-bg-color-end);
+   //.gradient(@nav-item-active-bg-color-start, @nav-item-active-bg-color-end);
     border-color: @nav-item-active-border-color;
     color: @nav-item-active-text-color;
 }
