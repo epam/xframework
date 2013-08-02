@@ -51,15 +51,12 @@
         return res;
     };
 
-    $.fn.animationComplete = function( callback ) {
-        if( "WebKitTransitionEvent" in window || "transitionEvent" in window ) {
-            return $( this ).one( 'webkitAnimationEnd animationend', callback );
-        }
-        else{
-            // defer execution for consistency between webkit/non webkit
-            setTimeout( callback, 0 );
-            return $( this );
-        }
+    $.fn.animationEnd = function (callback) {
+        var animationEndEvents = 'webkitAnimationEnd oAnimationEnd msAnimationEnd animationend';
+
+        $(this).one(animationEndEvents, callback);
+
+        return this;
     };
 
     if (!_.isFunction($.fn.detach)) {
@@ -138,9 +135,6 @@
 
         options = options || {};
 
-        // Creating static singletones
-        XF.Cache = new XF.CacheClass();
-
         // options.settings
         _.extend(XF.Settings.options, options.settings);
 
@@ -166,7 +160,10 @@
             rootDOMObject = $('body');
         }
 
-        XF.Pages.start();
+        options.animations = options.animations || {};
+        options.animations.default = options.animations.default || '';
+
+        XF.Pages.start(options.animations);
 
         //XF.Pages.start();
         loadChildComponents(rootDOMObject);
@@ -250,7 +247,7 @@
                     if( doc.body ) {
                         clearInterval( bodycheck );
                         XF.Utils.AddressBar.BODY_SCROLL_TOP = XF.Utils.AddressBar.getScrollTop();
-                        XF.Utils.AddressBar.hide();
+                        //XF.Utils.AddressBar.hide();
                     }
                 }, 15);
 
@@ -260,7 +257,7 @@
                             //at load, if user hasn't scrolled more than 20 or so...
                             if( XF.Utils.AddressBar.getScrollTop() < 20 ) {
                                 //reset to hide addr bar at onload
-                                XF.Utils.AddressBar.hide();
+                                //XF.Utils.AddressBar.hide();
                             }
                         }, 0);
                     }
@@ -295,9 +292,12 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('body').on('click', '[data-href]', function() {
-            XF.Router.navigate( $(this).attr('data-href'), {trigger: true} );
-            _.delay(function() { window.scrollTo(0,0); }, 250);
+        $('body').on('tap click', '[data-href]', function() {
+            var animationType = $(this).data('animation') || null;
+            if (animationType) {
+                XF.trigger('pages:animation:next', animationType);
+            }
+            XF.Router.navigate( $(this).data('href'), {trigger: true} );
         });
     };
 
@@ -617,6 +617,7 @@
                 return XF.Settings.property('templateUrlPrefix') + templatePath + compName + XF.Settings.property('templateUrlPostfix');
             },
 
+<<<<<<< HEAD
             /**
              Used by default Data URL formatter: prefix + component_name + postfix
              @memberOf XF.Settings.prototype
@@ -638,6 +639,29 @@
              @memberOf XF.Settings.prototype
              @type Function
              */
+=======
+            /**
+             Used by default Data URL formatter: prefix + component_name + postfix
+             @memberOf XF.Settings.prototype
+             @default ''
+             @type String
+             */
+            dataUrlPrefix: '',
+            /**
+             Used by default Data URL formatter: prefix + component_name + postfix
+             @memberOf XF.Settings.prototype
+             @default '.json'
+             @type String
+             */
+            dataUrlPostfix: '.json',
+            /**
+             Default Data URL formatter: prefix + component_name + postfix
+             @param {String} compName Component name
+             @returns {String} Template URL
+             @memberOf XF.Settings.prototype
+             @type Function
+             */
+>>>>>>> 68167fe4b10751259ad752603fd18d2480dd3e27
             dataUrlFormatter: function(compName) {
                 return XF.Settings.property('dataUrlPrefix') + compName + XF.Settings.property('dataUrlPostfix');
             },
@@ -661,7 +685,16 @@
              @default 300
              @type Number
              */
+<<<<<<< HEAD
             touchableLongTapInterval: 500
+=======
+            touchableLongTapInterval: 500,
+
+
+
+            //TODO merge with animation types
+            animations: {}
+>>>>>>> 68167fe4b10751259ad752603fd18d2480dd3e27
         },
 
         /**
@@ -701,31 +734,21 @@
      Instance of {@link XF.CacheClass}
      @static
      @private
-     @type {XF.CacheClass}
+     @type {Object}
      */
-    XF.Cache = null;
-
-    /**
-     Provides localStorage caching API
-     @class
-     @static
-     */
-    XF.CacheClass = function() {
+    XF.Cache = {
 
         /**
          Local reference to the localStorage
          @type {Object}
          */
-        this.storage = null;
+        storage: null,
 
         /**
          Indicates whether accessibility test for localStorage was passed at launch time
          @type {Object}
          */
-        this.available = false;
-    };
-
-    _.extend(XF.CacheClass.prototype, /** @lends XF.CacheClass.prototype */{
+        available: false,
 
         /**
          Runs accessibility test for localStorage & clears it if the applicationVersion is too old
@@ -823,7 +846,7 @@
             return result;
         }
 
-    });
+    };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -866,7 +889,9 @@
         bindAnyRoute : function() {
             this.on('route', function (e) {
                 console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
-                XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                if (XF.Pages) {
+                     XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                }
             });
         },
 
@@ -1775,11 +1800,29 @@
         activePageClass : 'xf-page-active',
 
         /**
-         Animation type for page switching ('fade', 'slide', 'none')
+         Animation types for page switching ('fade', 'slide', 'none')
          @type String
          @default 'fade'
          */
-        animationType : 'fade',
+        animations: {
+            default: 'slideleft',
+            next: null,
+
+            types : {
+                'none': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'fade': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'slideleft': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'slideright': {
+                    fallback: function (fromPage, toPage) {}
+                }
+            }
+        },
 
         /**
          Saves current active page
@@ -1799,7 +1842,19 @@
          Initialises Pages: get current active page and binds necessary routes handling
          @private
          */
-        start : function() {
+        start : function(animations) {
+            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
+            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
+            XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
+
+            if (_.has(animations, 'types') ) {
+                _.extend(this.animations.types, animations.types);
+            }
+
+            if (_.has(animations, 'default') ) {
+                this.setDefaultAnimationType(animations.default);
+            }
+
             var pages =  rootDOMObject.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
@@ -1812,11 +1867,23 @@
             }
         },
 
+        setDefaultAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.default = animationType;
+            }
+        },
+
+        setNextAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.next = animationType;
+            }
+        },
+
         /**
          Executes animation sequence for switching
          @param $ jqPage
          */
-        show : function(page){
+        show : function(page, animationType){
             if (page === '' || page === this.activePageName) {
                 return;
             }
@@ -1827,41 +1894,49 @@
             if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
                 return;
             }
-            console.log('XF.Pages :: showing to page', jqPage.attr('id'));
+            console.log('XF.Pages :: showing page', jqPage.attr('id'));
+
             var viewport = XF.Device.getViewport();
             var screenHeight = XF.Device.getScreenHeight();
 
-            var animationName = this.animationType;
-//			var reverseClass = this.animationReverseClass;
-            var activePageClass = this.activePageClass;
-
+            if (this.animations.next) {
+                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
+                this.animations.next = null;
+            }else {
+                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
+            }
+                             console.log(animationType);
             var fromPage = this.activePage;
             var toPage = jqPage;
 
             this.activePage = toPage;
             this.activePageName = jqPage.attr('id');
 
-            if(fromPage) {
-                // start transition
+            if (!XF.Device.hasAnimation) {
+                if (_.isFunction(this.animations.types[animationType]['fallback'])) {
+                    toPage.addClass(this.activePageClass);
+                    this.animations.types[animationType].fallback(fromPage, toPage);
+                    return;
+                }
+            }
+
+            if (fromPage) {
                 viewport.addClass('xf-viewport-transitioning');
 
-                fromPage.height(screenHeight + $(window).scrollTop()).addClass('out '+ animationName /*+ ' ' + reverseClass*/);
-                toPage.height(screenHeight + $(window).scrollTop()).addClass('in '+ animationName + ' ' + activePageClass /*+ ' ' + reverseClass*/);
-                fromPage.animationComplete(function(e){
-                    fromPage.height('').removeClass(animationName + ' out in reverse');
-                    if(fromPage.attr('id') != XF.Pages.activePage.attr('id')) {
-                        fromPage.removeClass(activePageClass);
-                    }
+                fromPage.addClass('out '+ animationType);
+                toPage.addClass('in '+ animationType + ' ' + this.activePageClass);
+                fromPage.animationEnd(function(){
+                    fromPage.height('').removeClass(animationType + ' out in');
+                    fromPage.removeClass(XF.Pages.activePageClass);
                 });
 
-                toPage.animationComplete(function(e){
-                    toPage.height('').removeClass(animationName + ' out in reverse');
+                toPage.animationEnd(function(){
+                    toPage.height('').removeClass(animationType + ' out in');
                     viewport.removeClass('xf-viewport-transitioning');
-
                 });
             } else {
                 // just making it active
-                this.activePage.addClass(activePageClass);
+                this.activePage.addClass(this.activePageClass);
             }
 
 
@@ -1874,7 +1949,7 @@
     };
 
 
-    XF.on('page:show', _.bind(XF.Pages.show, XF.Pages));
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -2096,6 +2171,28 @@
             console.log('XF.Device :: detectTouchable - device IS ' + (this.isTouchable ? '' : 'NOT ') + 'touchable');
 
         },
+
+        hasAnimation: (function () {
+            var domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+                elm = document.createElement('div');
+
+            if( elm.style.animationName ) {
+                return {
+                    prefix: ''
+                };
+            };
+
+            for( var i = 0; i < domPrefixes.length; i++ ) {
+                if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+                    return {
+                        prefix: '-' + domPrefixes[i].toLowerCase() + '-'
+                    };
+                }
+            }
+
+            return false;
+
+        }()),
 
 
         /**

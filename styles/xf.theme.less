@@ -83,7 +83,7 @@
 		color: @button-text-color;
 		border:1px solid @button-border-color;
 		text-shadow: 0 1px 0 @button-text-shadow-color;
-	   .gradient(@button-bg-color-start, @button-bg-color-end);
+	   //.gradient(@button-bg-color-start, @button-bg-color-end);
 		background-clip: border-box;
 	}
 
@@ -95,7 +95,7 @@
 	}
 
 	.xf-button-back::after {
-	   .gradient(@button-bg-color-start, @button-bg-color-end, -45deg);
+	   //.gradient(@button-bg-color-start, @button-bg-color-end, -45deg);
 		background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0%,@button-bg-color-start), color-stop(100%,@button-bg-color-end));
 	}
 
@@ -126,12 +126,12 @@
 		border: 1px solid @button-border-color;
 		color: @button-text-color;
 		text-shadow: 0 1px 0 @button-text-shadow-color;
-		.gradient(@button-bg-color-start, @button-bg-color-end);
+		//.gradient(@button-bg-color-start, @button-bg-color-end);
 
 	}
 		.xf-tabs-button-active {
 			border-color: @button-active-border-color;
-			.gradient(@button-active-bg-color-start, @button-active-bg-color-end);
+			//.gradient(@button-active-bg-color-start, @button-active-bg-color-end);
 			color: @button-active-text-color;
 			text-shadow: 0 -1px 0 @button-active-text-shadow-color;
 		}
@@ -156,7 +156,7 @@
 	 ========================================== */
 
 	.xf-header {
-	   .gradient(@header-bg-color-start, @header-bg-color-end);
+	   //.gradient(@header-bg-color-start, @header-bg-color-end);
 		border-bottom: 1px solid @header-border-color;
 	}
 
@@ -191,7 +191,7 @@
 	}
 
 	.xf-nav-item-active {
-	   .gradient(@nav-item-active-bg-color-start, @nav-item-active-bg-color-end);
+	   //.gradient(@nav-item-active-bg-color-start, @nav-item-active-bg-color-end);
 		border-color: @nav-item-active-border-color;
 		color: @nav-item-active-text-color;
 	}
@@ -254,7 +254,7 @@
 	.xf-button-active,
 	.xf-button-special {
 		border: 1px solid @button-active-border-color;
-	   .gradient(@button-active-bg-color-start, @button-active-bg-color-end);
+	   //.gradient(@button-active-bg-color-start, @button-active-bg-color-end);
 		color: @button-active-text-color;
 		text-shadow: 0 1px 0 @button-active-text-shadow-color;
 	}
@@ -263,11 +263,11 @@
 		background: @button-active-border-color;
 	}
 	.xf-button-back.xf-button-active:after {
-	   .gradient(@button-active-bg-color-start, @button-active-bg-color-end, -45deg);
+	   //.gradient(@button-active-bg-color-start, @button-active-bg-color-end, -45deg);
 		background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0%,@button-active-bg-color-start), color-stop(100%, @button-active-bg-color-end));
 	}
 	.xf-button-alert {
-		.gradient(@button-alert-bg-color-start, @button-alert-bg-color-end);
+		//.gradient(@button-alert-bg-color-start, @button-alert-bg-color-end);
 		color: @button-alert-text-color;
 		text-shadow: 0 1px 0 @button-alert-text-shadow-color;
 	}
@@ -288,7 +288,7 @@
 	}
 	.xf-dialog-box {
 		border:0px solid @dialog-box-border-color;
-		.gradient(@dialog-box-bg-color-start, @dialog-box-bg-color-end);
+		//.gradient(@dialog-box-bg-color-start, @dialog-box-bg-color-end);
 		text-shadow: 0 1px 0 @dialog-box-text-shadow-color;
 		color: @dialog-box-text-color;
 		//background-image: none;

@@ -1,20 +1,28 @@
 
 .xf-viewport-transitioning,
 .xf-viewport-transitioning .xf-page {
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    .backface-visibility(hidden);
+    .transform(~"translateZ(0)");
+    .transform-style(preserve-3d);
 }
+
+.xf-viewport-transitioning {
+  position: relative;
+}
+
 .in {
 	-webkit-animation-timing-function: ease-out;
 	   -moz-animation-timing-function: ease-out;
 	     -o-animation-timing-function: ease-out;
 	        animation-timing-function: ease-out;
-	-webkit-animation-duration: 250ms;
-	   -moz-animation-duration: 250ms;
-	     -o-animation-duration: 250ms;
-	        animation-duration: 250ms;
 			z-index: 3;
+    .transform(~"translateZ(0)");
 }
 
 .out {
@@ -22,95 +30,14 @@
 	   -moz-animation-timing-function: ease-in;
 	     -o-animation-timing-function: ease-in;
 	        animation-timing-function: ease-in;
-	-webkit-animation-duration: 225ms;
-	   -moz-animation-duration: 225ms;
-	     -o-animation-duration: 225ms;
-	        animation-duration: 225ms;
 	        z-index: 2;
+    .transform(~"translateZ(0)");
 }
 
-.out:after {
-	content: '';
-	display: block;
-	position: absolute;
-	z-index: 19; /* 6 */
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,.3);
-}
-
-/* keyframes for slideout to sides */
-@-webkit-keyframes slideouttoleft {
-    from { -webkit-transform: translateX(0); }
-    to   { -webkit-transform: translateX(-100%); }
-	}
-	@-moz-keyframes slideouttoleft {
-		from { -moz-transform: translateX(0); }
-		to   { -moz-transform: translateX(-100%); }
-	}
-	@-o-keyframes slideouttoleft {
-		from { -o-transform: translateX(0); }
-		to   { -o-transform: translateX(-100%); }
-	}
-	@keyframes slideouttoleft {
-		from { transform: translateX(0); }
-		to   { transform: translateX(-100%); }
-	}
-
-@-webkit-keyframes slideouttoright {
-    from { -webkit-transform: translateX(0); }
-    to   { -webkit-transform: translateX(100%); }
-	}
-	@-moz-keyframes slideouttoright {
-		from { -moz-transform: translateX(0); }
-		to   { -moz-transform: translateX(100%); }
-	}
-	@-o-keyframes slideouttoright {
-		from { -o-transform: translateX(0); }
-		to   { -o-transform: translateX(100%); }
-	}
-	@keyframes slideouttoright {
-		from { transform: translateX(0); }
-		to   { transform: translateX(100%); }
-	}
-
-/* keyframes for slidein from sides */
-@-webkit-keyframes slideinfromright {
-    from { -webkit-transform: translateX(100%); }
-    to   { -webkit-transform: translateX(0); }
-	}
-	@-moz-keyframes slideinfromright {
-		from { -moz-transform: translateX(100%); }
-		to   { -moz-transform: translateX(0); }
-	}
-	@-o-keyframes slideinfromright {
-		from { -o-transform: translateX(100%); }
-		to   { -o-transform: translateX(0); }
-	}
-	@keyframes slideinfromright {
-		from { transform: translateX(100%); }
-		to   { transform: translateX(0); }
-	}
 
 
-@-webkit-keyframes slideinfromleft {
-    from { -webkit-transform: translateX(-100%); }
-    to   { -webkit-transform: translateX(0); }
-	}
-	@-moz-keyframes slideinfromleft {
-		from { -moz-transform: translateX(-100%); }
-		to   { -moz-transform: translateX(0); }
-	}
-	@-o-keyframes slideinfromleft {
-		from { -o-transform: translateX(-100%); }
-		to   { -o-transform: translateX(0); }
-	}
-	@keyframes slideinfromleft {
-		from { transform: translateX(-100%); }
-		to   { transform: translateX(0); }
-	}
+
+
 
 
 @-webkit-keyframes fadein {
@@ -149,77 +76,133 @@
 	}
 
 .fade.out {
-	opacity: 0;
-	-webkit-animation-duration: 125ms;
-	   -moz-animation-duration: 125ms;
-	     -o-animation-duration: 125ms;
-	        animation-duration: 125ms;
-	-webkit-animation-name: fadeout;
-	   -moz-animation-name: fadeout;
-	     -o-animation-name: fadeout;
-	        animation-name: fadeout;
+    opacity: 1;
+    .animation-duration(.2s);
+    .animation-name(fadeout);
 }
 
 .fade.in {
-	opacity: 1;
-	-webkit-animation-duration: 225ms;
-	   -moz-animation-duration: 225ms;
-	     -o-animation-duration: 225ms;
-	        animation-duration: 225ms;
-	-webkit-animation-name: fadein;
-	   -moz-animation-name: fadein;
-	     -o-animation-name: fadein;
-	        animation-name: fadein;
+    opacity: 0;
+    .animation-delay(.3s);
+    .animation-duration(.4s);
+    .animation-name(fadein);
 }
-.slide.out,
-.slide.in {
-	-webkit-animation-timing-function: ease-out;
-	   -moz-animation-timing-function: ease-out;
-	     -o-animation-timing-function: ease-out;
-	        animation-timing-function: ease-out;
-	-webkit-animation-duration: 350ms;
-	   -moz-animation-duration: 350ms;
-	     -o-animation-duration: 350ms;
-	        animation-duration: 350ms;
+
+
+
+
+@-webkit-keyframes slideleftout {
+  from { -webkit-transform: translateX(0); }
+  to   { -webkit-transform: translateX(-100%); }
 }
-.slide.out {
+@-moz-keyframes slideleftout {
+  from { -moz-transform: translateX(0); }
+  to   { -moz-transform: translateX(-100%); }
+}
+@-o-keyframes slideleftout {
+  from { -o-transform: translateX(0); }
+  to   { -o-transform: translateX(-100%); }
+}
+@keyframes slideleftout {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+
+@-webkit-keyframes slideleftin {
+  from { -webkit-transform: translateX(100%); }
+  to   { -webkit-transform: translateX(0); }
+}
+@-moz-keyframes slideleftin {
+  from { -moz-transform: translateX(100%); }
+  to   { -moz-transform: translateX(0); }
+}
+@-o-keyframes slideleftin {
+  from { -o-transform: translateX(100%); }
+  to   { -o-transform: translateX(0); }
+}
+@keyframes slideleftin {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+.slideleft.out {
     z-index: 10;
-/*	-webkit-transform: translateX(-100%);
-	-webkit-animation-name: slideouttoleft;
-	-moz-transform: translateX(-100%);
-	-moz-animation-name: slideouttoleft;
-*/
+    .transform(~"translateX(0)");
+    .animation-duration(.25s);
+    .animation-name(slideleftout);
+    .animation-timing-function(linear);
 }
 
-.slide.in {
-    z-index: 20;
-	-webkit-animation-name: slideinfromright;
-	   -moz-animation-name: slideinfromright;
-	     -o-animation-name: slideinfromright;
-	        animation-name: slideinfromright;
-	-webkit-transform: translateX(0);
-	   -moz-transform: translateX(0);
-	     -o-transform: translateX(0);
-	        transform: translateX(0);
-}
-.slide.out.reverse {
-	-webkit-animation-name: slideouttoright;
-	   -moz-animation-name: slideouttoright;
-	     -o-animation-name: slideouttoright;
-	        animation-name: slideouttoright;
-	-webkit-transform: translateX(100%);
-	   -moz-transform: translateX(100%);
-	     -o-transform: translateX(100%);
-	        transform: translateX(100%);
+.slideleft.in {
+    z-index: 10;
+    .transform(~"translateX(100%)");
+    .animation-duration(.25s);
+    .animation-name(slideleftin);
+    .animation-timing-function(linear);
 }
 
-.slide.in.reverse {
-	-webkit-animation-name: slideinfromleft;
-	   -moz-animation-name: slideinfromleft;
-	     -o-animation-name: slideinfromleft;
-	        animation-name: slideinfromleft;
-	-webkit-transform: translateX(0);
-	   -moz-transform: translateX(0);
-	     -o-transform: translateX(0);
-	        transform: translateX(0);
+
+
+@-webkit-keyframes sliderightout {
+  from { -webkit-transform: translateX(0); }
+  to   { -webkit-transform: translateX(100%); }
+}
+@-moz-keyframes sliderightout {
+  from { -moz-transform: translateX(0); }
+  to   { -moz-transform: translateX(100%); }
+}
+@-o-keyframes sliderightout {
+  from { -o-transform: translateX(0); }
+  to   { -o-transform: translateX(100%); }
+}
+@keyframes sliderightout {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+
+@-webkit-keyframes sliderightin {
+  from { -webkit-transform: translateX(-100%); }
+  to   { -webkit-transform: translateX(0); }
+}
+@-moz-keyframes sliderightin {
+  from { -moz-transform: translateX(-100%); }
+  to   { -moz-transform: translateX(0); }
+}
+@-o-keyframes sliderightin {
+  from { -o-transform: translateX(-100%); }
+  to   { -o-transform: translateX(0); }
+}
+@keyframes sliderightin {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+.slideright.out {
+  z-index: 10;
+  .transform(~"translateX(0)");
+  .animation-duration(.25s);
+  .animation-name(sliderightout);
+  .animation-timing-function(linear);
+}
+
+.slideright.in {
+  z-index: 10;
+  .transform(~"translateX(-100%)");
+  .animation-duration(.25s);
+  .animation-name(sliderightin);
+  .animation-timing-function(linear);
+}
+
+.none.out {
+  .animation-duration(.0001s);
+  .animation-name(fadeout);
+  .animation-timing-function(linear);
+}
+
+.none.in {
+  .animation-duration(.0001s);
+  .animation-name(fadein);
+  .animation-timing-function(linear);
 }

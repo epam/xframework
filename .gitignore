@@ -18,3 +18,5 @@ js/lib/jquery.js
 index.html
 
 js/app.js
+
+package.json
