@@ -651,6 +651,11 @@ div.xf-viewport {
   -o-animation-timing-function: ease-out;
   animation-timing-function: ease-out;
   z-index: 3;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .out {
   -webkit-animation-timing-function: ease-in;
@@ -658,6 +663,11 @@ div.xf-viewport {
   -o-animation-timing-function: ease-in;
   animation-timing-function: ease-in;
   z-index: 2;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
 }
 @-webkit-keyframes fadein {
   from {
@@ -825,11 +835,11 @@ div.xf-viewport {
   -o-transform: translateX(0);
   -ms-transform: translateX(0);
   transform: translateX(0);
-  -webkit-animation-duration: 0.4s;
-  -moz-animation-duration: 0.4s;
-  -o-animation-duration: 0.4s;
-  -ms-animation-duration: 0.4s;
-  animation-duration: 0.4s;
+  -webkit-animation-duration: 0.25s;
+  -moz-animation-duration: 0.25s;
+  -o-animation-duration: 0.25s;
+  -ms-animation-duration: 0.25s;
+  animation-duration: 0.25s;
   -webkit-animation-name: slideleftout;
   -moz-animation-name: slideleftout;
   -o-animation-name: slideleftout;
@@ -848,11 +858,11 @@ div.xf-viewport {
   -o-transform: translateX(100%);
   -ms-transform: translateX(100%);
   transform: translateX(100%);
-  -webkit-animation-duration: 0.4s;
-  -moz-animation-duration: 0.4s;
-  -o-animation-duration: 0.4s;
-  -ms-animation-duration: 0.4s;
-  animation-duration: 0.4s;
+  -webkit-animation-duration: 0.25s;
+  -moz-animation-duration: 0.25s;
+  -o-animation-duration: 0.25s;
+  -ms-animation-duration: 0.25s;
+  animation-duration: 0.25s;
   -webkit-animation-name: slideleftin;
   -moz-animation-name: slideleftin;
   -o-animation-name: slideleftin;
@@ -935,11 +945,11 @@ div.xf-viewport {
   -o-transform: translateX(0);
   -ms-transform: translateX(0);
   transform: translateX(0);
-  -webkit-animation-duration: 0.4s;
-  -moz-animation-duration: 0.4s;
-  -o-animation-duration: 0.4s;
-  -ms-animation-duration: 0.4s;
-  animation-duration: 0.4s;
+  -webkit-animation-duration: 0.25s;
+  -moz-animation-duration: 0.25s;
+  -o-animation-duration: 0.25s;
+  -ms-animation-duration: 0.25s;
+  animation-duration: 0.25s;
   -webkit-animation-name: sliderightout;
   -moz-animation-name: sliderightout;
   -o-animation-name: sliderightout;
@@ -958,11 +968,11 @@ div.xf-viewport {
   -o-transform: translateX(-100%);
   -ms-transform: translateX(-100%);
   transform: translateX(-100%);
-  -webkit-animation-duration: 0.4s;
-  -moz-animation-duration: 0.4s;
-  -o-animation-duration: 0.4s;
-  -ms-animation-duration: 0.4s;
-  animation-duration: 0.4s;
+  -webkit-animation-duration: 0.25s;
+  -moz-animation-duration: 0.25s;
+  -o-animation-duration: 0.25s;
+  -ms-animation-duration: 0.25s;
+  animation-duration: 0.25s;
   -webkit-animation-name: sliderightin;
   -moz-animation-name: sliderightin;
   -o-animation-name: sliderightin;
