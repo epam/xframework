@@ -21,29 +21,18 @@
 		 -o-transform: @arguments;
 			transform: @arguments;
 }
-.gradient(@topcolor, @bottomcolor, @angle: top) {
-	background-color: mix(@topcolor, @bottomcolor, 50%);
-	background-repeat: repeat-x;
-	background-image: -moz-linear-gradient(@angle,  @topcolor 0%, @bottomcolor 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@topcolor), color-stop(100%,@bottomcolor));
-	background-image: -webkit-linear-gradient(@angle, @topcolor 0%,@bottomcolor 100%);
-	background-image: -o-linear-gradient(@angle, @topcolor 0%,@bottomcolor 100%);
-	background-image: -ms-linear-gradient(@angle, @topcolor 0%,@bottomcolor 100%);
-	background-image: linear-gradient(@angle, @topcolor 0%,@bottomcolor 100%);
-	filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@topcolor,@bottomcolor)); // IE9 and down
-//.bgclip();
-}
+
 .background-size(...) {
 	-webkit-background-size: @arguments;
 	   -moz-background-size: @arguments;
 			background-size: @arguments;
 }
-.border-box {
+.box-sizing-border-box {
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 			box-sizing: border-box;
 }
-.ellipsis {
+.overflow-ellipsis {
 	overflow: hidden;
 	white-space: nowrap;
 	-webkit-text-overflow: ellipsis;
@@ -59,7 +48,7 @@
 // ------------------
 .buttonBackground(@startColor, @endColor) {
   // gradientBar will set the background to a pleasing blend of these, to support IE<=9
-  .gradient(@startColor, @endColor);
+
   //*background-color: @endColor; /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   .reset-filter();
 

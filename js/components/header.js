@@ -39,6 +39,8 @@ $(function(){
 					if(align !== 'right') {
 						align = 'left';
 					}
+
+                    retBut.data = button.data || {};
 					
 					retBut.buttonClass = buttonsClass + ' ';
 					if(button.buttonClass && button.buttonClass != '') {
