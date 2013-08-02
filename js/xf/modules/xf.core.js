@@ -597,7 +597,6 @@
              @memberOf XF.Settings.prototype
              @default ''
              @type String
-<<<<<<< HEAD
              */
             templateUrlPrefix: '',
             /**
@@ -614,24 +613,6 @@
              @memberOf XF.Settings.prototype
              @type Function
              */
-=======
-             */
-            templateUrlPrefix: '',
-            /**
-             Used by default Template URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.tmpl'
-             @type String
-             */
-            templateUrlPostfix: '.tmpl',
-            /**
-             Default Template URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @returns {String} Template URL
-             @memberOf XF.Settings.prototype
-             @type Function
-             */
->>>>>>> 68167fe4b10751259ad752603fd18d2480dd3e27
             templateUrlFormatter: function(compName, templatePath) {
                 return XF.Settings.property('templateUrlPrefix') + templatePath + compName + XF.Settings.property('templateUrlPostfix');
             },
@@ -680,16 +661,12 @@
              @default 300
              @type Number
              */
-<<<<<<< HEAD
-            touchableLongTapInterval: 500
-=======
             touchableLongTapInterval: 500,
 
 
 
             //TODO merge with animation types
             animations: {}
->>>>>>> 68167fe4b10751259ad752603fd18d2480dd3e27
         },
 
         /**
