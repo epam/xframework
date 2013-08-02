@@ -651,6 +651,11 @@ div.xf-viewport {
   -o-animation-timing-function: ease-out;
   animation-timing-function: ease-out;
   z-index: 3;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .out {
   -webkit-animation-timing-function: ease-in;
@@ -658,6 +663,11 @@ div.xf-viewport {
   -o-animation-timing-function: ease-in;
   animation-timing-function: ease-in;
   z-index: 2;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
 }
 @-webkit-keyframes fadein {
   from {
