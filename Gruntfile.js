@@ -5,6 +5,7 @@ module.exports = (function(grunt) {
         var sources = [
             'js/xf/modules/xf.core.js',
             'js/xf/modules/xf.touch.js',
+            'js/xf/modules/xf.jquery.hooks.js',
             'js/xf/modules/xf.zepto.support.js',
             'js/xf/modules/xf.ui.js'
         ];
