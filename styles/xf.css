@@ -984,6 +984,40 @@ div.xf-viewport {
   -ms-animation-timing-function: linear;
   animation-timing-function: linear;
 }
+.none.out {
+  -webkit-animation-duration: 0.0001s;
+  -moz-animation-duration: 0.0001s;
+  -o-animation-duration: 0.0001s;
+  -ms-animation-duration: 0.0001s;
+  animation-duration: 0.0001s;
+  -webkit-animation-name: fadeout;
+  -moz-animation-name: fadeout;
+  -o-animation-name: fadeout;
+  -ms-animation-name: fadeout;
+  animation-name: fadeout;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  -ms-animation-timing-function: linear;
+  animation-timing-function: linear;
+}
+.none.in {
+  -webkit-animation-duration: 0.0001s;
+  -moz-animation-duration: 0.0001s;
+  -o-animation-duration: 0.0001s;
+  -ms-animation-duration: 0.0001s;
+  animation-duration: 0.0001s;
+  -webkit-animation-name: fadein;
+  -moz-animation-name: fadein;
+  -o-animation-name: fadein;
+  -ms-animation-name: fadein;
+  animation-name: fadein;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  -ms-animation-timing-function: linear;
+  animation-timing-function: linear;
+}
 /*  Layout
 ========================================== */
 .xf-grid-unit-1of1 {

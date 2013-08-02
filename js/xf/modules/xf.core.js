@@ -1781,6 +1781,9 @@
             next: null,
 
             types : {
+                'none': {
+                    fallback: function (fromPage, toPage) {}
+                },
                 'fade': {
                     fallback: function (fromPage, toPage) {}
                 },
