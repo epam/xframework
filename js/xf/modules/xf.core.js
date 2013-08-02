@@ -135,9 +135,6 @@
 
         options = options || {};
 
-        // Creating static singletones
-        XF.Cache = new XF.CacheClass();
-
         // options.settings
         _.extend(XF.Settings.options, options.settings);
 
@@ -163,7 +160,10 @@
             rootDOMObject = $('body');
         }
 
-        XF.Pages.start();
+        options.animations = options.animations || {};
+        options.animations.default = options.animations.default || '';
+
+        XF.Pages.start(options.animations);
 
         //XF.Pages.start();
         loadChildComponents(rootDOMObject);
@@ -706,31 +706,21 @@
      Instance of {@link XF.CacheClass}
      @static
      @private
-     @type {XF.CacheClass}
+     @type {Object}
      */
-    XF.Cache = null;
-
-    /**
-     Provides localStorage caching API
-     @class
-     @static
-     */
-    XF.CacheClass = function() {
+    XF.Cache = {
 
         /**
          Local reference to the localStorage
          @type {Object}
          */
-        this.storage = null;
+        storage: null,
 
         /**
          Indicates whether accessibility test for localStorage was passed at launch time
          @type {Object}
          */
-        this.available = false;
-    };
-
-    _.extend(XF.CacheClass.prototype, /** @lends XF.CacheClass.prototype */{
+        available: false,
 
         /**
          Runs accessibility test for localStorage & clears it if the applicationVersion is too old
@@ -828,7 +818,7 @@
             return result;
         }
 
-    });
+    };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1787,7 +1777,7 @@
          @default 'fade'
          */
         animations: {
-            default: 'slideleft ',
+            default: 'slideleft',
             next: null,
 
             types : {
@@ -1821,9 +1811,18 @@
          Initialises Pages: get current active page and binds necessary routes handling
          @private
          */
-        start : function() {
+        start : function(animations) {
             XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
             XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
+            XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
+
+            if (_.has(animations, 'types') ) {
+                _.extend(this.animations.types, animations.types);
+            }
+
+            if (_.has(animations, 'default') ) {
+                this.setDefaultAnimationType(animations.default);
+            }
 
             var pages =  rootDOMObject.find(' .' + this.pageClass);
             if (pages.length) {
@@ -1837,6 +1836,11 @@
             }
         },
 
+        setDefaultAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.default = animationType;
+            }
+        },
 
         setNextAnimationType: function (animationType) {
             if (XF.Pages.animations.types[animationType]) {
