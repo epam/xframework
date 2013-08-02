@@ -522,7 +522,7 @@
      @returns {Object} Object containing custom options for appropriate component instance
      @private
      */
-    var getOptionsByID = function(compID) {
+    XF.getOptionsByID = function(compID) {
         return componentOptions[compID] || {};
     };
 
@@ -940,7 +940,7 @@
 
         // merging defaults with custom instance options
         var defaultOptions = this.options;
-        var instanceOptions = getOptionsByID(this.id);
+        var instanceOptions = XF.getOptionsByID(this.id);
         this.options = _.defaults(instanceOptions, defaultOptions);
     };
 
