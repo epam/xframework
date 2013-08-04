@@ -1739,6 +1739,7 @@
                 this.setDefaultAnimationType(animations.default);
             }
 
+            //TODO: move it to Pages.show and make showing first page by triggering empty route (should work withour routes!)
             var pages =  rootDOMObject.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
