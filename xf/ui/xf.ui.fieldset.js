@@ -1,4 +1,4 @@
-(function(window, BB) {
+
     XF.UIElements.enhancementList.fieldset = {
         selector : 'fieldset[data-role=controlgroup]',
         enhanceMethod : 'enhanceFieldset'
@@ -45,4 +45,3 @@
             legend.outerHtml(legendDiv.outerHtml());
         }
     };
-}).call(this, window, Backbone);
