@@ -1,12 +1,11 @@
-/**
+/*! X-Framework 05-08-2013 */
+;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
  - wrapInner for Zepto
  **/
 
-(function (window, BB) {
-
-    var rootDOMObject = null;
+    var rootDOMObject = $('body');
 
     /**
      @namespace Holds visible functionality of the framework
@@ -66,12 +65,6 @@
 
         XF.Router.start();
 
-        // options.root
-        rootDOMObject = options.root;
-        if(!rootDOMObject) {
-            rootDOMObject = $('body');
-        }
-
         options.animations = options.animations || {};
         options.animations.default = options.animations.default || '';
 
@@ -80,104 +73,6 @@
         //XF.Pages.start();
         loadChildComponents(rootDOMObject);
     };
-
-    /**
-     @namespace Holds all the reusable util functions
-     */
-    XF.Utils = {};
-
-    /**
-     @namespace Holds all the reusable util functions related to Adress Bar
-     */
-    XF.Utils.AddressBar = {};
-
-    _.extend(XF.Utils.AddressBar, /** @lends XF.Utils.AddressBar */{
-
-        /**
-         Saves scroll value in order to not re-calibrate everytime we call the hide url bar
-         @type Boolean
-         @private
-         */
-        BODY_SCROLL_TOP : false,
-
-        /**
-         Calculates current scroll value
-         @return Number
-         @private
-         */
-        getScrollTop : function(){
-            var win = window,
-                doc = document;
-
-            return win.pageYOffset || doc.compatMode === 'CSS1Compat' && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
-        },
-
-        /**
-         Hides adress bar
-         */
-        hide : function(){
-            console.log('XF :: Utils :: AddressBar :: hide');
-            var win = window;
-
-            // if there is a hash, or XF.Utils.AddressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
-            if( !location.hash && XF.Utils.AddressBar.BODY_SCROLL_TOP !== false){
-                win.scrollTo( 0, XF.Utils.AddressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
-            }
-
-
-            if (XF.Device.isMobile) {
-                var css = document.documentElement.style;
-
-                css.height = '200%';
-                css.overflow = 'visible';
-
-                window.scrollTo(0, 1);
-
-                css.height = window.innerHeight + 'px';
-
-                return true;
-            }
-        },
-
-        /**
-         Hides adress bar on page load
-         */
-        hideOnLoad : function () {
-            console.log('XF :: Utils :: AddressBar :: hideOnLoad');
-            var win = window,
-                doc = win.document;
-
-            // If there's a hash, or addEventListener is undefined, stop here
-            if( !location.hash && win.addEventListener ) {
-
-                //scroll to 1
-                window.scrollTo( 0, 1 );
-                XF.Utils.AddressBar.BODY_SCROLL_TOP = 1;
-
-                //reset to 0 on bodyready, if needed
-                bodycheck = setInterval(function() {
-                    if( doc.body ) {
-                        clearInterval( bodycheck );
-                        XF.Utils.AddressBar.BODY_SCROLL_TOP = XF.Utils.AddressBar.getScrollTop();
-                        //XF.Utils.AddressBar.hide();
-                    }
-                }, 15);
-
-                win.addEventListener( 'load',
-                    function() {
-                        setTimeout(function() {
-                            //at load, if user hasn't scrolled more than 20 or so...
-                            if( XF.Utils.AddressBar.getScrollTop() < 20 ) {
-                                //reset to hide addr bar at onload
-                                //XF.Utils.AddressBar.hide();
-                            }
-                        }, 0);
-                    }
-                );
-            }
-        }
-    });
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -448,7 +343,9 @@
      */
     XF.history = BB.history;
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 
     /**
@@ -457,7 +354,7 @@
      @type {Object}
      */
     XF.Settings = {
-       /**
+        /**
          Contains name-value pairs of all application settings
          @name XF.Settings#options
          @type Object
@@ -609,191 +506,6 @@
             }
         }
     };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     Instance of {@link XF.CacheClass}
-     @static
-     @private
-     @type {Object}
-     */
-    XF.Cache = {
-
-        /**
-         Local reference to the localStorage
-         @type {Object}
-         */
-        storage: null,
-
-        /**
-         Indicates whether accessibility test for localStorage was passed at launch time
-         @type {Object}
-         */
-        available: false,
-
-        /**
-         Runs accessibility test for localStorage & clears it if the applicationVersion is too old
-         */
-        init : function() {
-
-            this.storage = window.localStorage;
-
-            // checking availability
-            try {
-                this.storage.setItem('check', 'check');
-                this.storage.removeItem('check');
-                this.available = true;
-            } catch(e) {
-                this.available = false;
-            }
-
-            // clearing localStorage if stored version is different from current
-            var appVersion = this.get('applicationVersion');
-            if(XF.Settings.property('noCache')) {
-                // cache is disable for the whole site manualy
-                console.log('XF.Cache :: init - cache is disable for the whole app manually - clearing storage');
-                this.clear();
-                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
-            } else if(appVersion && appVersion == XF.Settings.property('applicationVersion')) {
-                // same version is cached - useing it as much as possible
-                console.log('XF.Cache :: init - same version is cached - useing it as much as possible');
-            } else {
-                // wrong or no version cached - clearing storage
-                console.log('XF.Cache :: init - wrong or no version cached - clearing storage');
-                this.clear();
-                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
-            }
-        },
-
-        /**
-         Returns a value stored in cache under appropriate key
-         @param {String} key
-         @return {String}
-         */
-        get : function(key) {
-            var result;
-            if(this.available) {
-                try {
-                    result = this.storage.getItem(key);
-                    console.log('XF.Cache :: get - "' + key + '" = "' + result + '"');
-                } catch(e) {
-                    result = null;
-                }
-            } else {
-                result = null;
-            }
-            return result;
-        },
-
-        /**
-         Sets a value stored in cache under appropriate key
-         @param {String} key
-         @param {String} value
-         @return {Boolean} success indicator
-         */
-        set : function(key, value) {
-            var result;
-            if(this.available) {
-                try {
-                    this.storage.setItem(key, value);
-                    result = true;
-                    console.log('XF.Cache :: set - "' + key + '" = "' + value + '"');
-                } catch(e) {
-                    result = false;
-                }
-            } else {
-                result = false;
-            }
-            return result;
-        },
-
-        /**
-         Clears localStorage
-         @return {Boolean} success indicator
-         */
-        clear : function() {
-            var result;
-            if(this.available) {
-                try {
-                    this.storage.clear();
-                    result = true;
-                    console.log('XF.Cache :: clear');
-                } catch(e) {
-                    result = false;
-                }
-            } else {
-                result = false;
-            }
-            return result;
-        }
-
-    };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     Instance of {@link XF.RouterClass}
-     @static
-     @type {XF.Router}
-     */
-    XF.Router = null;
-
-    /**
-     Implements Routing.
-     @class
-     @static
-     @augments XF.Events
-     @param {Object} routes routes has map
-     @param {Object} handlers handlers has map
-     */
-    XF.RouterClass = BB.Router;
-
-    _.extend(XF.RouterClass.prototype, /** @lends XF.RouterClass.prototype */{
-
-
-        /**
-         Initiates Rounting & history listening
-         @private
-         */
-        start : function() {
-            this.bindAnyRoute();
-            XF.history.start();
-        },
-
-
-        /**
-         Binds a callback to any route
-         @param {Function} callback A function to be called when any route is visited
-         */
-        bindAnyRoute : function() {
-            this.on('route', function (e) {
-                console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
-                if (XF.Pages) {
-                     XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
-                }
-            });
-        },
-
-        /**
-         Returns page name string by fragment
-         @param String fragment
-         @return String
-         */
-        getPageNameFromFragment : function(fragment) {
-            var parts = fragment.replace(/^\/+/,'').replace(/\/+$/,'').split('/');
-            return parts[0];
-        }
-    });
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     /**
      Base Component.
      @class
@@ -1123,721 +835,123 @@
          */
         this.callbacks = [];
     };
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     /**
-     Implements data workaround flow.
-     @class
+     Instance of {@link XF.CacheClass}
      @static
-     @augments XF.Events
-     @param {Object} attributes list of predefined attributes
+     @private
+     @type {Object}
      */
-    XF.Model = BB.Model.extend({
-        /**
-         Would be dispatched once when the Component inited
-         @name XF.Model#init
-         @event
-         */
+    XF.Cache = {
 
         /**
-         Would be dispatched once when the Component constructed
-         @name XF.Model#construct
-         @event
+         Local reference to the localStorage
+         @type {Object}
          */
+        storage: null,
 
         /**
-         Would be dispatched after each data update
-         @name XF.Model#dataLoaded
-         @event
+         Indicates whether accessibility test for localStorage was passed at launch time
+         @type {Object}
          */
+        available: false,
 
         /**
-         Would be dispatched after each update
-         @name XF.Model#refresh
-         @event
+         Runs accessibility test for localStorage & clears it if the applicationVersion is too old
          */
+        init : function() {
 
-        /**
-         Link to the {@link XF.Component} instance
-         @type XF.Component
-         */
-        component: null,
+            this.storage = window.localStorage;
 
-        /**
-         Object that contains plan data recieved from server
-         @type Object
-         */
-        rawData: null,
-
-        /**
-         Data source URL
-         @type String
-         */
-        dataURL : null,
-
-        /**
-         Settings for $ AJAX data request
-         @type String
-         */
-        dataRequestSettings : null,
-
-        /**
-         Flag that determines whether the data should not be loaded at all
-         @default false
-         @type Boolean
-         */
-        isEmptyData : false,
-
-        /**
-         Flag that determines whether the data should be loaded once
-         @default false
-         @type Boolean
-         */
-        isStaticData : false,
-
-        /**
-         Flag that determines whether the data type is string (otherwise JSON)
-         @default false
-         @type Boolean
-         */
-        isStringData : false,
-
-        /**
-         Interval in milliseconds defining how often data should be retrived from the server; use '0' to turn autoUpdate off
-         @default 0
-         @type Number
-         */
-        autoUpdateInterval: 0,
-
-        /**
-         Flag that determines whether the data should be updateing (with autoUpdate) even if the component is currentyl hidden
-         @default false
-         @type Boolean
-         */
-        updateInBackground: false,
-
-        /**
-         Flag that determines whether the data should be updated each time the component becomes visible
-         @default false
-         @type Boolean
-         */
-        updateOnShow: false,
-
-        /**
-         Object that contains default values for attributes - should be overriden to be used
-         @type Object
-         */
-        defaults : null,
-
-        /**
-         Constructs model instance
-         @private
-         */
-        construct : function() {
-            this.initialize();
-            this.trigger('init');
-            if(this.autoUpdateInterval > 0) {
-                var autoUpdateFunc = _.bind(function() {
-                    if($(this.component.selector()).is(':visible')) {
-                        this.refresh();
-                    } else if(this.updateInBackground) {
-                        this.refresh();
-                    }
-                }, this);
-                setInterval(autoUpdateFunc, this.autoUpdateInterval);
+            // checking availability
+            try {
+                this.storage.setItem('check', 'check');
+                this.storage.removeItem('check');
+                this.available = true;
+            } catch(e) {
+                this.available = false;
             }
-            if(this.updateOnShow) {
-                $(this.component.selector()).bind('show', _.bind(this.refresh, this));
-            }
-            this.trigger('construct');
-        },
 
-        /**
-         Refreshes data from backend if necessary
-         @private
-         */
-        refresh : function() {
-            /** ignore */
-            var dataLoaded = function() {
-                this.unbind('dataLoaded', dataLoaded);
-                var renderVersion = this.component.view.renderVersion;
-                this.afterLoadData();
-
-                //TODO: uncomment this and try to find why 'refresh' not working for menu component
-                //if(this.component.view.renderVersion == renderVersion) {
-                this.trigger('refresh');
-                //}
-            };
-
-            this.bind('dataLoaded', dataLoaded);
-
-            this.beforeLoadData();
-            this.loadData();
-        },
-
-        /**
-         Generates data url - override if custom format is required and {@link XF.Settings} has no appropriate way to handle it
-         @private
-         */
-        getDataURL : function() {
-            if(!this.dataURL) {
-                if(!this.component) {
-                    throw 'XF.Model "component" linkage lost';
-                }
-                this.dataURL = _.bind(XF.Settings.property('dataUrlFormatter'), this)(this.component.name);
-            }
-            return this.dataURL;
-        },
-
-        /**
-         Returns settings for AddressBar AJAX data request or empty object is it is not set - override to add extra functionality
-         @private
-         */
-        getDataRequestSettings : function() {
-            return this.dataRequestSettings || {};
-        },
-
-        /**
-         HOOK: override to add logic before data load
-         */
-        beforeLoadData : function() {},
-
-        /**
-         Loads data
-         @private
-         */
-        loadData : function() {
-
-            if(!this.isEmptyData && (!this.rawData || !this.isStaticData || this.autoUpdate > 0)) {
-
-                var $this = this;
-                var url = this.getDataURL();
-
-                $.ajax(
-                    _.extend(this.getDataRequestSettings(), {
-                        url: url,
-                        complete : function(jqXHR, textStatus) {
-                            if(!$this.component) {
-                                throw 'XF.Model "component" linkage lost';
-                            }
-                            if(textStatus == 'success') {
-                                if($this.isStringData) {
-                                    $this.rawData = jqXHR.responseText;
-                                } else {
-                                    $this.rawData = JSON.parse(jqXHR.responseText);
-                                }
-                            } else {
-                                if($this.isStringData) {
-                                    $this.rawData = {};
-                                } else {
-                                    $this.rawData = '';
-                                }
-                            }
-                            $this.trigger('dataLoaded');
-                        }
-                    })
-                );
-
+            // clearing localStorage if stored version is different from current
+            var appVersion = this.get('applicationVersion');
+            if(XF.Settings.property('noCache')) {
+                // cache is disable for the whole site manualy
+                console.log('XF.Cache :: init - cache is disable for the whole app manually - clearing storage');
+                this.clear();
+                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
+            } else if(appVersion && appVersion == XF.Settings.property('applicationVersion')) {
+                // same version is cached - useing it as much as possible
+                console.log('XF.Cache :: init - same version is cached - useing it as much as possible');
             } else {
-                this.trigger('dataLoaded');
+                // wrong or no version cached - clearing storage
+                console.log('XF.Cache :: init - wrong or no version cached - clearing storage');
+                this.clear();
+                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
             }
         },
 
         /**
-         HOOK: override to add logic after data load
+         Returns a value stored in cache under appropriate key
+         @param {String} key
+         @return {String}
          */
-        afterLoadData : function() {}
-
-    });
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     Implements view workaround flow.
-     @class
-     @static
-     @augments XF.Events
-     */
-
-    XF.View = BB.View.extend({
-
-        /**
-         Would be dispatched once when the Component inited
-         @name XF.View#init
-         @event
-         */
-
-        /**
-         Would be dispatched once when the Component constructed
-         @name XF.View#construct
-         @event
-         */
-
-        /**
-         Would be dispatched once, when template is ready for use
-         @name XF.View#templateLoaded
-         @event
-         */
-
-        /**
-         Would be dispatched after each render
-         @name XF.View#refresh
-         @event
-         */
-
-        /**
-         Link to the {@link XF.Component} instance
-         @type XF.Component
-         */
-        component : null,
-
-        /**
-         Template URL
-         @type String
-         */
-        templateURL : null,
-
-        /**
-         Flag that determines whether the Model update should be ignored by the View (in this case you may launch {@link XF.View#refresh} manualy)
-         @default false
-         @type Boolean
-         */
-        ignoreModelUpdate : false,
-
-        /**
-         Flag that determines whether the view should be rerendered each time the component becomes visible
-         @default false
-         @type Boolean
-         */
-        updateOnShow: false,
-
-        /**
-         Flag that determines whether the template should be stored into {@link XF.Cache}
-         @default false
-         @type Boolean
-         */
-        useCache: false,
-
-        /**
-         Constructs view instance
-         @private
-         */
-        construct : function() {
-            /** ignore */
-            var templateLoaded = function() {
-
-                if(this.loadTemplateFailed) {
-                    this.unbind('templateLoaded', templateLoaded);
-                    this.afterLoadTemplateFailed();
-                    return;
+        get : function(key) {
+            var result;
+            if(this.available) {
+                try {
+                    result = this.storage.getItem(key);
+                    console.log('XF.Cache :: get - "' + key + '" = "' + result + '"');
+                } catch(e) {
+                    result = null;
                 }
-
-                if(!this.component.constructor.templateLoaded) {
-                    this.loadTemplate();
-                    return;
-                }
-
-                this.unbind('templateLoaded', templateLoaded);
-                this.afterLoadTemplate();
-
-                this.initialize();
-                this.trigger('init');
-
-                if(!this.ignoreModelUpdate) {
-                    this.component.model.bind('changed', this.refresh, this);
-                }
-                if(this.updateOnShow) {
-                    $(this.component.selector()).bind('show', _.bind(this.refresh, this));
-                }
-
-                this.trigger('construct');
-            };
-
-            this.bind('templateLoaded', templateLoaded);
-
-            this.beforeLoadTemplate();
-            this.loadTemplate();
-        },
-
-        /**
-         Stores last device type that was used for template url generation
-         @type String
-         @private
-         */
-        lastDeviceType : null,
-
-        /**
-         Generates template url - override if custom format is required and {@link XF.Settings} has no appropriate way to handle it
-         @private
-         */
-        getTemplateURL : function() {
-            // clearing saved template URL - it was erroneous
-            if(this.lastDeviceType) {
-                this.templateURL = null;
-            }
-            if(!this.templateURL) {
-                if(!this.component) {
-                    throw 'XF.View "component" linkage lost';
-                }
-
-                this.lastDeviceType = XF.Device.getNextType(this.lastDeviceType);
-
-                // preventing from infinit cycle
-                if(!this.lastDeviceType) {
-                    return null;
-                }
-
-                var templatePath = '';
-                if(this.lastDeviceType && this.lastDeviceType.templatePath) {
-                    templatePath = this.lastDeviceType.templatePath;
-                }
-                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.name, templatePath);
-            }
-            return this.templateURL;
-        },
-
-        /**
-         Compiles component template if necessary & executes it with current component instance model
-         @static
-         */
-        getMarkup: function() {
-            if(!this.component.constructor.compiledTemplate) {
-                this.component.constructor.compiledTemplate = _.template(this.component.constructor.template);
-            }
-            return this.component.constructor.compiledTemplate(this.component.model);
-        },
-
-        /**
-         HOOK: override to add logic before template load
-         */
-        beforeLoadTemplate : function() {},
-
-        /**
-         A flag that indicates whether the template loading failed
-         @type Boolean
-         @private
-         */
-        loadTemplateFailed : false,
-
-        /**
-         Loads template
-         @private
-         */
-        loadTemplate : function() {
-
-            var url = this.getTemplateURL();
-            if(url == null) {
-                this.loadTemplateFailed = true;
-                this.trigger('templateLoaded');
-                return;
-            }
-
-            // trying to get template from cache
-            if(this.useCache) {
-                var cachedTemplate = XF.Cache.get(url);
-                if(cachedTemplate) {
-                    this.component.constructor.template = cachedTemplate;
-                    this.component.constructor.templateLoaded = true;
-                    this.trigger('templateLoaded');
-                    return;
-                }
-            }
-
-            if(!this.component.constructor.templateLoaded && !this.component.constructor.templateLoading) {
-
-                this.component.constructor.templateURL = url;
-                this.component.constructor.templateLoading = true;
-
-                var $this = this;
-
-                $.ajax({
-                    url: url,
-                    complete : function(jqXHR, textStatus) {
-                        if(!$this.component) {
-                            throw 'XF.View "component" linkage lost';
-                        }
-                        if(textStatus == 'success') {
-                            var template = jqXHR.responseText;
-
-                            // saving template into cache if the option is turned on
-                            if($this.useCache) {
-                                XF.Cache.set(url, template);
-                            }
-
-                            $this.component.constructor.template = jqXHR.responseText;
-                            $this.component.constructor.templateLoading = false;
-                            $this.component.constructor.templateLoaded = true;
-                            $this.trigger('templateLoaded');
-                            XF.trigger('templateLoaded', {url: url, template:template});
-                        } else {
-                            $this.component.constructor.template = null;
-                            $this.component.constructor.templateLoading = false;
-                            $this.component.constructor.templateLoaded = false;
-                            $this.trigger('templateLoaded');
-                            XF.trigger('templateLoaded', {url: url, template : null});
-                        }
-                    }
-                });
-
-            } else if(this.component.constructor.templateLoading) {
-
-                var $this = this;
-                url = this.component.constructor.templateURL;
-
-                /** ignore */
-                var templateLoadedAsync = function(params) {
-                    if(params.url == url) {
-                        XF.unbind('templateLoaded', templateLoadedAsync);
-                        $this.trigger('templateLoaded');
-                    }
-                };
-
-                XF.bind('templateLoaded', templateLoadedAsync);
-
             } else {
-                this.trigger('templateLoaded');
+                result = null;
             }
+            return result;
         },
 
         /**
-         HOOK: override to add logic after template load
+         Sets a value stored in cache under appropriate key
+         @param {String} key
+         @param {String} value
+         @return {Boolean} success indicator
          */
-        afterLoadTemplate : function() {},
-
-        /**
-         HOOK: override to add logic for the case when it's impossible to load template
-         */
-        afterLoadTemplateFailed : function() {
-            console.log('XF.View :: afterLoadTemplateFailed - could not load template for "' + this.component.id + '"');
-            console.log('XF.View :: afterLoadTemplateFailed - @dev: verify XF.Device.types settings & XF.View :: getTemplate URL overrides');
-        },
-
-        /**
-         Renders component into placeholder + calling all the necessary hooks & events
-         */
-        refresh : function() {
-            this.preRender();
-            this.render();
-            this.postRender();
-            this.trigger('refresh');
-        },
-
-        /**
-         HOOK: override to add logic before render
-         */
-        preRender : function() {},
-
-
-        /**
-         Identifies current render vesion
-         @private
-         */
-        renderVersion : 0,
-
-        /**
-         Renders component into placeholder
-         @private
-         */
-        render : function() {
-            this.renderVersion++;
-            var DOMObject = $('[data-id=' + this.component.id + ']');
-            DOMObject.html(this.getMarkup());
-            loadChildComponents(DOMObject);
-        },
-
-        /**
-         HOOK: override to add logic after render
-         */
-        postRender : function() {}
-
-    });
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     XF.Pages
-     @static
-     @public
-     */
-    XF.Pages = {
-
-        /**
-         CSS class used to identify pages
-         @type String
-         @default 'xf-page'
-         */
-        pageClass : 'xf-page',
-
-        /**
-         CSS class used to identify active page
-         @type String
-         @default 'xf-page-active'
-         */
-        activePageClass : 'xf-page-active',
-
-        /**
-         Animation types for page switching ('fade', 'slide', 'none')
-         @type String
-         @default 'fade'
-         */
-        animations: {
-            default: 'slideleft',
-            next: null,
-
-            types : {
-                'none': {
-                    fallback: function (fromPage, toPage) {}
-                },
-                'fade': {
-                    fallback: function (fromPage, toPage) {}
-                },
-                'slideleft': {
-                    fallback: function (fromPage, toPage) {}
-                },
-                'slideright': {
-                    fallback: function (fromPage, toPage) {}
+        set : function(key, value) {
+            var result;
+            if(this.available) {
+                try {
+                    this.storage.setItem(key, value);
+                    result = true;
+                    console.log('XF.Cache :: set - "' + key + '" = "' + value + '"');
+                } catch(e) {
+                    result = false;
                 }
-            }
-        },
-
-        /**
-         Saves current active page
-         @type $
-         @private
-         */
-        activePage : null,
-
-        /**
-         Saves current active page name
-         @type $
-         @private
-         */
-        activePageName: '',
-
-        /**
-         Initialises Pages: get current active page and binds necessary routes handling
-         @private
-         */
-        start : function(animations) {
-            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
-            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
-            XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
-
-            if (_.has(animations, 'types') ) {
-                _.extend(this.animations.types, animations.types);
-            }
-
-            if (_.has(animations, 'default') ) {
-                this.setDefaultAnimationType(animations.default);
-            }
-
-            //TODO: move it to Pages.show and make showing first page by triggering empty route (should work withour routes!)
-            var pages =  rootDOMObject.find(' .' + this.pageClass);
-            if (pages.length) {
-                var preselectedAP = pages.filter('.' + this.activePageClass);
-                if(preselectedAP.length) {
-                    this.activePage = preselectedAP;
-                    this.activePageName = preselectedAP.attr('id');
-                } else {
-                    this.show(pages.first());
-                }
-            }
-        },
-
-        setDefaultAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.default = animationType;
-            }
-        },
-
-        setNextAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.next = animationType;
-            }
-        },
-
-        /**
-         Executes animation sequence for switching
-         @param $ jqPage
-         */
-        show : function(page, animationType){
-            if (page === '' || page === this.activePageName) {
-                return;
-            }
-
-            var jqPage = (page instanceof $) ? page : $('.' + XF.Pages.pageClass + '#' + page);
-
-            // preventing animation when the page is already shown
-            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
-                return;
-            }
-            console.log('XF.Pages :: showing page', jqPage.attr('id'));
-
-            var viewport = XF.Device.getViewport();
-            var screenHeight = XF.Device.getScreenHeight();
-
-            if (this.animations.next) {
-                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
-                this.animations.next = null;
-            }else {
-                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
-            }
-
-            var fromPage = this.activePage;
-            var toPage = jqPage;
-
-            this.activePage = toPage;
-            this.activePageName = jqPage.attr('id');
-
-            if (!XF.Device.supports.cssAnimations) {
-                if (_.isFunction(this.animations.types[animationType]['fallback'])) {
-                    toPage.addClass(this.activePageClass);
-                    this.animations.types[animationType].fallback(fromPage, toPage);
-                    return;
-                }
-            }
-
-            if (fromPage) {
-                viewport.addClass('xf-viewport-transitioning');
-
-                fromPage.addClass('out '+ animationType);
-                toPage.addClass('in '+ animationType + ' ' + this.activePageClass);
-                fromPage.animationEnd(function(){
-                    fromPage.height('').removeClass(animationType + ' out in');
-                    fromPage.removeClass(XF.Pages.activePageClass);
-                });
-
-                toPage.animationEnd(function(){
-                    toPage.height('').removeClass(animationType + ' out in');
-                    viewport.removeClass('xf-viewport-transitioning');
-                });
             } else {
-                // just making it active
-                this.activePage.addClass(this.activePageClass);
+                result = false;
             }
+            return result;
+        },
 
-
-            // scroll to top of page ofter page switch
-            window.scrollTo( 0, 1 );
-
-            // looking for components inside the page
-            loadChildComponents(this.activePage[0]);
+        /**
+         Clears localStorage
+         @return {Boolean} success indicator
+         */
+        clear : function() {
+            var result;
+            if(this.available) {
+                try {
+                    this.storage.clear();
+                    result = true;
+                    console.log('XF.Cache :: clear');
+                } catch(e) {
+                    result = false;
+                }
+            } else {
+                result = false;
+            }
+            return result;
         }
+
     };
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     /**
      Instance of {@link XF.DeviceClass}
      @static
@@ -2211,16 +1325,848 @@
             return vp.eq(0)
         }
     };
+    /**
+     Implements data workaround flow.
+     @class
+     @static
+     @augments XF.Events
+     @param {Object} attributes list of predefined attributes
+     */
+    XF.Model = BB.Model.extend({
+        /**
+         Would be dispatched once when the Component inited
+         @name XF.Model#init
+         @event
+         */
+
+        /**
+         Would be dispatched once when the Component constructed
+         @name XF.Model#construct
+         @event
+         */
+
+        /**
+         Would be dispatched after each data update
+         @name XF.Model#dataLoaded
+         @event
+         */
+
+        /**
+         Would be dispatched after each update
+         @name XF.Model#refresh
+         @event
+         */
+
+        /**
+         Link to the {@link XF.Component} instance
+         @type XF.Component
+         */
+        component: null,
+
+        /**
+         Object that contains plan data recieved from server
+         @type Object
+         */
+        rawData: null,
+
+        /**
+         Data source URL
+         @type String
+         */
+        dataURL : null,
+
+        /**
+         Settings for $ AJAX data request
+         @type String
+         */
+        dataRequestSettings : null,
+
+        /**
+         Flag that determines whether the data should not be loaded at all
+         @default false
+         @type Boolean
+         */
+        isEmptyData : false,
+
+        /**
+         Flag that determines whether the data should be loaded once
+         @default false
+         @type Boolean
+         */
+        isStaticData : false,
+
+        /**
+         Flag that determines whether the data type is string (otherwise JSON)
+         @default false
+         @type Boolean
+         */
+        isStringData : false,
+
+        /**
+         Interval in milliseconds defining how often data should be retrived from the server; use '0' to turn autoUpdate off
+         @default 0
+         @type Number
+         */
+        autoUpdateInterval: 0,
+
+        /**
+         Flag that determines whether the data should be updateing (with autoUpdate) even if the component is currentyl hidden
+         @default false
+         @type Boolean
+         */
+        updateInBackground: false,
+
+        /**
+         Flag that determines whether the data should be updated each time the component becomes visible
+         @default false
+         @type Boolean
+         */
+        updateOnShow: false,
+
+        /**
+         Object that contains default values for attributes - should be overriden to be used
+         @type Object
+         */
+        defaults : null,
+
+        /**
+         Constructs model instance
+         @private
+         */
+        construct : function() {
+            this.initialize();
+            this.trigger('init');
+            if(this.autoUpdateInterval > 0) {
+                var autoUpdateFunc = _.bind(function() {
+                    if($(this.component.selector()).is(':visible')) {
+                        this.refresh();
+                    } else if(this.updateInBackground) {
+                        this.refresh();
+                    }
+                }, this);
+                setInterval(autoUpdateFunc, this.autoUpdateInterval);
+            }
+            if(this.updateOnShow) {
+                $(this.component.selector()).bind('show', _.bind(this.refresh, this));
+            }
+            this.trigger('construct');
+        },
+
+        /**
+         Refreshes data from backend if necessary
+         @private
+         */
+        refresh : function() {
+            /** ignore */
+            var dataLoaded = function() {
+                this.unbind('dataLoaded', dataLoaded);
+                var renderVersion = this.component.view.renderVersion;
+                this.afterLoadData();
+
+                //TODO: uncomment this and try to find why 'refresh' not working for menu component
+                //if(this.component.view.renderVersion == renderVersion) {
+                this.trigger('refresh');
+                //}
+            };
+
+            this.bind('dataLoaded', dataLoaded);
+
+            this.beforeLoadData();
+            this.loadData();
+        },
+
+        /**
+         Generates data url - override if custom format is required and {@link XF.Settings} has no appropriate way to handle it
+         @private
+         */
+        getDataURL : function() {
+            if(!this.dataURL) {
+                if(!this.component) {
+                    throw 'XF.Model "component" linkage lost';
+                }
+                this.dataURL = _.bind(XF.Settings.property('dataUrlFormatter'), this)(this.component.name);
+            }
+            return this.dataURL;
+        },
+
+        /**
+         Returns settings for AddressBar AJAX data request or empty object is it is not set - override to add extra functionality
+         @private
+         */
+        getDataRequestSettings : function() {
+            return this.dataRequestSettings || {};
+        },
+
+        /**
+         HOOK: override to add logic before data load
+         */
+        beforeLoadData : function() {},
+
+        /**
+         Loads data
+         @private
+         */
+        loadData : function() {
+
+            if(!this.isEmptyData && (!this.rawData || !this.isStaticData || this.autoUpdate > 0)) {
+
+                var $this = this;
+                var url = this.getDataURL();
+
+                $.ajax(
+                    _.extend(this.getDataRequestSettings(), {
+                        url: url,
+                        complete : function(jqXHR, textStatus) {
+                            if(!$this.component) {
+                                throw 'XF.Model "component" linkage lost';
+                            }
+                            if(textStatus == 'success') {
+                                if($this.isStringData) {
+                                    $this.rawData = jqXHR.responseText;
+                                } else {
+                                    $this.rawData = JSON.parse(jqXHR.responseText);
+                                }
+                            } else {
+                                if($this.isStringData) {
+                                    $this.rawData = {};
+                                } else {
+                                    $this.rawData = '';
+                                }
+                            }
+                            $this.trigger('dataLoaded');
+                        }
+                    })
+                );
+
+            } else {
+                this.trigger('dataLoaded');
+            }
+        },
+
+        /**
+         HOOK: override to add logic after data load
+         */
+        afterLoadData : function() {}
+
+    });
+    /**
+     XF.Pages
+     @static
+     @public
+     */
+    XF.Pages = {
+
+        /**
+         CSS class used to identify pages
+         @type String
+         @default 'xf-page'
+         */
+        pageClass : 'xf-page',
+
+        /**
+         CSS class used to identify active page
+         @type String
+         @default 'xf-page-active'
+         */
+        activePageClass : 'xf-page-active',
+
+        /**
+         Animation types for page switching ('fade', 'slide', 'none')
+         @type String
+         @default 'fade'
+         */
+        animations: {
+            default: 'slideleft',
+            next: null,
+
+            types : {
+                'none': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'fade': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'slideleft': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'slideright': {
+                    fallback: function (fromPage, toPage) {}
+                }
+            }
+        },
+
+        /**
+         Saves current active page
+         @type $
+         @private
+         */
+        activePage : null,
+
+        /**
+         Saves current active page name
+         @type $
+         @private
+         */
+        activePageName: '',
+
+        /**
+         Initialises Pages: get current active page and binds necessary routes handling
+         @private
+         */
+        start : function(animations) {
+            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
+            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
+            XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
+
+            if (_.has(animations, 'types') ) {
+                _.extend(this.animations.types, animations.types);
+            }
+
+            if (_.has(animations, 'default') ) {
+                this.setDefaultAnimationType(animations.default);
+            }
+
+            //TODO: move it to Pages.show and make showing first page by triggering empty route (should work withour routes!)
+            var pages =  rootDOMObject.find(' .' + this.pageClass);
+            if (pages.length) {
+                var preselectedAP = pages.filter('.' + this.activePageClass);
+                if(preselectedAP.length) {
+                    this.activePage = preselectedAP;
+                    this.activePageName = preselectedAP.attr('id');
+                } else {
+                    this.show(pages.first());
+                }
+            }
+        },
+
+        setDefaultAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.default = animationType;
+            }
+        },
+
+        setNextAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.next = animationType;
+            }
+        },
+
+        /**
+         Executes animation sequence for switching
+         @param $ jqPage
+         */
+        show : function(page, animationType){
+            if (page === '' || page === this.activePageName) {
+                return;
+            }
+
+            var jqPage = (page instanceof $) ? page : $('.' + XF.Pages.pageClass + '#' + page);
+
+            // preventing animation when the page is already shown
+            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
+                return;
+            }
+            console.log('XF.Pages :: showing page', jqPage.attr('id'));
+
+            var viewport = XF.Device.getViewport();
+            var screenHeight = XF.Device.getScreenHeight();
+
+            if (this.animations.next) {
+                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
+                this.animations.next = null;
+            }else {
+                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
+            }
+
+            var fromPage = this.activePage;
+            var toPage = jqPage;
+
+            this.activePage = toPage;
+            this.activePageName = jqPage.attr('id');
+
+            if (!XF.Device.supports.cssAnimations) {
+                if (_.isFunction(this.animations.types[animationType]['fallback'])) {
+                    toPage.addClass(this.activePageClass);
+                    this.animations.types[animationType].fallback(fromPage, toPage);
+                    return;
+                }
+            }
+
+            if (fromPage) {
+                viewport.addClass('xf-viewport-transitioning');
+
+                fromPage.addClass('out '+ animationType);
+                toPage.addClass('in '+ animationType + ' ' + this.activePageClass);
+                fromPage.animationEnd(function(){
+                    fromPage.height('').removeClass(animationType + ' out in');
+                    fromPage.removeClass(XF.Pages.activePageClass);
+                });
+
+                toPage.animationEnd(function(){
+                    toPage.height('').removeClass(animationType + ' out in');
+                    viewport.removeClass('xf-viewport-transitioning');
+                });
+            } else {
+                // just making it active
+                this.activePage.addClass(this.activePageClass);
+            }
 
 
-    return XF;
+            // scroll to top of page ofter page switch
+            window.scrollTo( 0, 1 );
 
-}).call(this, window, Backbone);
+            // looking for components inside the page
+            loadChildComponents(this.activePage[0]);
+        }
+    };
+    /**
+     Instance of {@link XF.RouterClass}
+     @static
+     @type {XF.Router}
+     */
+    XF.Router = null;
 
-//New file
+    /**
+     Implements Routing.
+     @class
+     @static
+     @augments XF.Events
+     @param {Object} routes routes has map
+     @param {Object} handlers handlers has map
+     */
+    XF.RouterClass = BB.Router;
 
-;(function(window, document, $){
-    'use strict';
+    _.extend(XF.RouterClass.prototype, /** @lends XF.RouterClass.prototype */{
+
+
+        /**
+         Initiates Rounting & history listening
+         @private
+         */
+        start : function() {
+            this.bindAnyRoute();
+            XF.history.start();
+        },
+
+
+        /**
+         Binds a callback to any route
+         @param {Function} callback A function to be called when any route is visited
+         */
+        bindAnyRoute : function() {
+            this.on('route', function (e) {
+                console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
+                if (XF.Pages) {
+                    XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                }
+            });
+        },
+
+        /**
+         Returns page name string by fragment
+         @param String fragment
+         @return String
+         */
+        getPageNameFromFragment : function(fragment) {
+            var parts = fragment.replace(/^\/+/,'').replace(/\/+$/,'').split('/');
+            return parts[0];
+        }
+    });
+    /**
+     @namespace Holds all the reusable util functions
+     */
+    XF.Utils = {};
+
+    /**
+     @namespace Holds all the reusable util functions related to Adress Bar
+     */
+    XF.Utils.AddressBar = {};
+
+    _.extend(XF.Utils.AddressBar, /** @lends XF.Utils.AddressBar */{
+
+        /**
+         Saves scroll value in order to not re-calibrate everytime we call the hide url bar
+         @type Boolean
+         @private
+         */
+        BODY_SCROLL_TOP : false,
+
+        /**
+         Calculates current scroll value
+         @return Number
+         @private
+         */
+        getScrollTop : function(){
+            var win = window,
+                doc = document;
+
+            return win.pageYOffset || doc.compatMode === 'CSS1Compat' && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
+        },
+
+        /**
+         Hides adress bar
+         */
+        hide : function(){
+            console.log('XF :: Utils :: AddressBar :: hide');
+            var win = window;
+
+            // if there is a hash, or XF.Utils.AddressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
+            if( !location.hash && XF.Utils.AddressBar.BODY_SCROLL_TOP !== false){
+                win.scrollTo( 0, XF.Utils.AddressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
+            }
+
+
+            if (XF.Device.isMobile) {
+                var css = document.documentElement.style;
+
+                css.height = '200%';
+                css.overflow = 'visible';
+
+                window.scrollTo(0, 1);
+
+                css.height = window.innerHeight + 'px';
+
+                return true;
+            }
+        },
+
+        /**
+         Hides adress bar on page load
+         */
+        hideOnLoad : function () {
+            console.log('XF :: Utils :: AddressBar :: hideOnLoad');
+            var win = window,
+                doc = win.document;
+
+            // If there's a hash, or addEventListener is undefined, stop here
+            if( !location.hash && win.addEventListener ) {
+
+                //scroll to 1
+                window.scrollTo( 0, 1 );
+                XF.Utils.AddressBar.BODY_SCROLL_TOP = 1;
+
+                //reset to 0 on bodyready, if needed
+                bodycheck = setInterval(function() {
+                    if( doc.body ) {
+                        clearInterval( bodycheck );
+                        XF.Utils.AddressBar.BODY_SCROLL_TOP = XF.Utils.AddressBar.getScrollTop();
+                        //XF.Utils.AddressBar.hide();
+                    }
+                }, 15);
+
+                win.addEventListener( 'load',
+                    function() {
+                        setTimeout(function() {
+                            //at load, if user hasn't scrolled more than 20 or so...
+                            if( XF.Utils.AddressBar.getScrollTop() < 20 ) {
+                                //reset to hide addr bar at onload
+                                //XF.Utils.AddressBar.hide();
+                            }
+                        }, 0);
+                    }
+                );
+            }
+        }
+    });
+    /**
+     Implements view workaround flow.
+     @class
+     @static
+     @augments XF.Events
+     */
+
+    XF.View = BB.View.extend({
+
+        /**
+         Would be dispatched once when the Component inited
+         @name XF.View#init
+         @event
+         */
+
+        /**
+         Would be dispatched once when the Component constructed
+         @name XF.View#construct
+         @event
+         */
+
+        /**
+         Would be dispatched once, when template is ready for use
+         @name XF.View#templateLoaded
+         @event
+         */
+
+        /**
+         Would be dispatched after each render
+         @name XF.View#refresh
+         @event
+         */
+
+        /**
+         Link to the {@link XF.Component} instance
+         @type XF.Component
+         */
+        component : null,
+
+        /**
+         Template URL
+         @type String
+         */
+        templateURL : null,
+
+        /**
+         Flag that determines whether the Model update should be ignored by the View (in this case you may launch {@link XF.View#refresh} manualy)
+         @default false
+         @type Boolean
+         */
+        ignoreModelUpdate : false,
+
+        /**
+         Flag that determines whether the view should be rerendered each time the component becomes visible
+         @default false
+         @type Boolean
+         */
+        updateOnShow: false,
+
+        /**
+         Flag that determines whether the template should be stored into {@link XF.Cache}
+         @default false
+         @type Boolean
+         */
+        useCache: false,
+
+        /**
+         Constructs view instance
+         @private
+         */
+        construct : function() {
+            /** ignore */
+            var templateLoaded = function() {
+
+                if(this.loadTemplateFailed) {
+                    this.unbind('templateLoaded', templateLoaded);
+                    this.afterLoadTemplateFailed();
+                    return;
+                }
+
+                if(!this.component.constructor.templateLoaded) {
+                    this.loadTemplate();
+                    return;
+                }
+
+                this.unbind('templateLoaded', templateLoaded);
+                this.afterLoadTemplate();
+
+                this.initialize();
+                this.trigger('init');
+
+                if(!this.ignoreModelUpdate) {
+                    this.component.model.bind('changed', this.refresh, this);
+                }
+                if(this.updateOnShow) {
+                    $(this.component.selector()).bind('show', _.bind(this.refresh, this));
+                }
+
+                this.trigger('construct');
+            };
+
+            this.bind('templateLoaded', templateLoaded);
+
+            this.beforeLoadTemplate();
+            this.loadTemplate();
+        },
+
+        /**
+         Stores last device type that was used for template url generation
+         @type String
+         @private
+         */
+        lastDeviceType : null,
+
+        /**
+         Generates template url - override if custom format is required and {@link XF.Settings} has no appropriate way to handle it
+         @private
+         */
+        getTemplateURL : function() {
+            // clearing saved template URL - it was erroneous
+            if(this.lastDeviceType) {
+                this.templateURL = null;
+            }
+            if(!this.templateURL) {
+                if(!this.component) {
+                    throw 'XF.View "component" linkage lost';
+                }
+
+                this.lastDeviceType = XF.Device.getNextType(this.lastDeviceType);
+
+                // preventing from infinit cycle
+                if(!this.lastDeviceType) {
+                    return null;
+                }
+
+                var templatePath = '';
+                if(this.lastDeviceType && this.lastDeviceType.templatePath) {
+                    templatePath = this.lastDeviceType.templatePath;
+                }
+                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.name, templatePath);
+            }
+            return this.templateURL;
+        },
+
+        /**
+         Compiles component template if necessary & executes it with current component instance model
+         @static
+         */
+        getMarkup: function() {
+            if(!this.component.constructor.compiledTemplate) {
+                this.component.constructor.compiledTemplate = _.template(this.component.constructor.template);
+            }
+            return this.component.constructor.compiledTemplate(this.component.model);
+        },
+
+        /**
+         HOOK: override to add logic before template load
+         */
+        beforeLoadTemplate : function() {},
+
+        /**
+         A flag that indicates whether the template loading failed
+         @type Boolean
+         @private
+         */
+        loadTemplateFailed : false,
+
+        /**
+         Loads template
+         @private
+         */
+        loadTemplate : function() {
+
+            var url = this.getTemplateURL();
+            if(url == null) {
+                this.loadTemplateFailed = true;
+                this.trigger('templateLoaded');
+                return;
+            }
+
+            // trying to get template from cache
+            if(this.useCache) {
+                var cachedTemplate = XF.Cache.get(url);
+                if(cachedTemplate) {
+                    this.component.constructor.template = cachedTemplate;
+                    this.component.constructor.templateLoaded = true;
+                    this.trigger('templateLoaded');
+                    return;
+                }
+            }
+
+            if(!this.component.constructor.templateLoaded && !this.component.constructor.templateLoading) {
+
+                this.component.constructor.templateURL = url;
+                this.component.constructor.templateLoading = true;
+
+                var $this = this;
+
+                $.ajax({
+                    url: url,
+                    complete : function(jqXHR, textStatus) {
+                        if(!$this.component) {
+                            throw 'XF.View "component" linkage lost';
+                        }
+                        if(textStatus == 'success') {
+                            var template = jqXHR.responseText;
+
+                            // saving template into cache if the option is turned on
+                            if($this.useCache) {
+                                XF.Cache.set(url, template);
+                            }
+
+                            $this.component.constructor.template = jqXHR.responseText;
+                            $this.component.constructor.templateLoading = false;
+                            $this.component.constructor.templateLoaded = true;
+                            $this.trigger('templateLoaded');
+                            XF.trigger('templateLoaded', {url: url, template:template});
+                        } else {
+                            $this.component.constructor.template = null;
+                            $this.component.constructor.templateLoading = false;
+                            $this.component.constructor.templateLoaded = false;
+                            $this.trigger('templateLoaded');
+                            XF.trigger('templateLoaded', {url: url, template : null});
+                        }
+                    }
+                });
+
+            } else if(this.component.constructor.templateLoading) {
+
+                var $this = this;
+                url = this.component.constructor.templateURL;
+
+                /** ignore */
+                var templateLoadedAsync = function(params) {
+                    if(params.url == url) {
+                        XF.unbind('templateLoaded', templateLoadedAsync);
+                        $this.trigger('templateLoaded');
+                    }
+                };
+
+                XF.bind('templateLoaded', templateLoadedAsync);
+
+            } else {
+                this.trigger('templateLoaded');
+            }
+        },
+
+        /**
+         HOOK: override to add logic after template load
+         */
+        afterLoadTemplate : function() {},
+
+        /**
+         HOOK: override to add logic for the case when it's impossible to load template
+         */
+        afterLoadTemplateFailed : function() {
+            console.log('XF.View :: afterLoadTemplateFailed - could not load template for "' + this.component.id + '"');
+            console.log('XF.View :: afterLoadTemplateFailed - @dev: verify XF.Device.types settings & XF.View :: getTemplate URL overrides');
+        },
+
+        /**
+         Renders component into placeholder + calling all the necessary hooks & events
+         */
+        refresh : function() {
+            this.preRender();
+            this.render();
+            this.postRender();
+            this.trigger('refresh');
+        },
+
+        /**
+         HOOK: override to add logic before render
+         */
+        preRender : function() {},
+
+
+        /**
+         Identifies current render vesion
+         @private
+         */
+        renderVersion : 0,
+
+        /**
+         Renders component into placeholder
+         @private
+         */
+        render : function() {
+            this.renderVersion++;
+            var DOMObject = $('[data-id=' + this.component.id + ']');
+            DOMObject.html(this.getMarkup());
+            loadChildComponents(DOMObject);
+        },
+
+        /**
+         HOOK: override to add logic after render
+         */
+        postRender : function() {}
+
+    });
 
     // Default values and device events detection
     var touchHandler = {},
@@ -2323,11 +2269,8 @@
         };
     });
 
-})(window, document, jQuery);
 
-//New file
 
-(function(window, BB) {
 
     /* $ hooks */
 
@@ -2379,12 +2322,9 @@
 
         return this;
     };
-}).call(this, window, Backbone);
 
 
-//New file
 
-(function(window, BB) {
 
     if (!_.isFunction($.fn.detach)) {
         $.fn.detach = function(a) {
@@ -2439,11 +2379,8 @@
         tmp_node.remove();
         return markup;
     };
-}).call(this, window, Backbone);
 
-//New file
 
-(function(window, BB) {
 
     /**
      @namespace Holds all the logic related to UI elements enhancement
@@ -2498,9 +2435,6 @@
         enhanced : []
 
     });
-}).call(this, window, Backbone);
-
-//New file
 
 (function(window, BB) {
     XF.UIElements.enhancementList.button = {
@@ -2665,9 +2599,6 @@
         return jQButton;
     };
 }).call(this, window, Backbone);
-
-//New file
-
 (function(window, BB) {
     XF.UIElements.enhancementList.checkboxRadio = {
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
@@ -2751,9 +2682,6 @@
         }
     };
 }).call(this, window, Backbone);
-
-//New file
-
 (function(window, BB) {
     XF.UIElements.enhancementList.fieldset = {
         selector : 'fieldset[data-role=controlgroup]',
@@ -2802,9 +2730,6 @@
         }
     };
 }).call(this, window, Backbone);
-
-//New file
-
 (function(window, BB) {
     XF.UIElements.enhancementList.list = {
         selector : 'UL[data-role=listview], OL[data-role=listview]',
@@ -2907,9 +2832,6 @@
         });
     };
 }).call(this, window, Backbone);
-
-//New file
-
 (function(window, BB) {
 
     /**
@@ -3161,9 +3083,6 @@
         }
     };
 }).call(this, window, Backbone);
-
-//New file
-
 (function(window, BB) {
     XF.UIElements.enhancementList.scrollable = {
         selector : '[data-scrollable=true]',
@@ -3236,9 +3155,6 @@
         bindHanlders();
     };
 }).call(this, window, Backbone);
-
-//New file
-
 (function(window, BB) {
     XF.UIElements.enhancementList.textinput = {
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
@@ -3656,4 +3572,4 @@
             }
         }
     };
-}).call(this, window, Backbone);
+}).call(this, window, Backbone);}).call(this, window, $, Backbone);
