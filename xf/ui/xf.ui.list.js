@@ -1,4 +1,4 @@
-(function(window, BB) {
+
     XF.UIElements.enhancementList.list = {
         selector : 'UL[data-role=listview], OL[data-role=listview]',
         enhanceMethod : 'enhanceList'
@@ -99,4 +99,3 @@
             $(this).wrapInner('<div class=xf-li-wrap />');
         });
     };
-}).call(this, window, Backbone);

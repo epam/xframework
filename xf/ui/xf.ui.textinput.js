@@ -1,4 +1,4 @@
-(function(window, BB) {
+
     XF.UIElements.enhancementList.textinput = {
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
                     'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
@@ -415,4 +415,3 @@
             }
         }
     };
-}).call(this, window, Backbone);

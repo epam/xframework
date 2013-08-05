@@ -48,10 +48,6 @@ module.exports = (function(grunt) {
                 }
             },
             uglify: {
-                options: {
-                    banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n;(function (window, $, BB) {',
-                    footer: '}).call(this, window, $, Backbone);'
-                },
                 dist: {
                     files: {
                         'js/xf.min.js': ['<%= concat.dist.dest %>']
