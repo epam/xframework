@@ -1,4 +1,4 @@
-(function(window, BB) {
+
     XF.UIElements.enhancementList.button = {
             selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button] [data-appearance=backbtn]',
             enhanceMethod : 'enhanceButton'
@@ -160,4 +160,3 @@
 
         return jQButton;
     };
-}).call(this, window, Backbone);

@@ -2436,7 +2436,7 @@
 
     });
 
-(function(window, BB) {
+
     XF.UIElements.enhancementList.button = {
             selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button] [data-appearance=backbtn]',
             enhanceMethod : 'enhanceButton'
@@ -2598,8 +2598,8 @@
 
         return jQButton;
     };
-}).call(this, window, Backbone);
-(function(window, BB) {
+
+
     XF.UIElements.enhancementList.checkboxRadio = {
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
         enhanceMethod : 'enhanceCheckboxRadio'
@@ -2681,8 +2681,8 @@
              })*/
         }
     };
-}).call(this, window, Backbone);
-(function(window, BB) {
+
+
     XF.UIElements.enhancementList.fieldset = {
         selector : 'fieldset[data-role=controlgroup]',
         enhanceMethod : 'enhanceFieldset'
@@ -2729,8 +2729,8 @@
             legend.outerHtml(legendDiv.outerHtml());
         }
     };
-}).call(this, window, Backbone);
-(function(window, BB) {
+
+
     XF.UIElements.enhancementList.list = {
         selector : 'UL[data-role=listview], OL[data-role=listview]',
         enhanceMethod : 'enhanceList'
@@ -2831,8 +2831,7 @@
             $(this).wrapInner('<div class=xf-li-wrap />');
         });
     };
-}).call(this, window, Backbone);
-(function(window, BB) {
+
 
     /**
      Generates basic popup container
@@ -3082,8 +3081,8 @@
             XF.UIElements.hidePopup(XF.UIElements.dialog);
         }
     };
-}).call(this, window, Backbone);
-(function(window, BB) {
+
+
     XF.UIElements.enhancementList.scrollable = {
         selector : '[data-scrollable=true]',
         enhanceMethod : 'enhanceScrollable'
@@ -3154,8 +3153,8 @@
 
         bindHanlders();
     };
-}).call(this, window, Backbone);
-(function(window, BB) {
+
+
     XF.UIElements.enhancementList.textinput = {
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
                     'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
@@ -3572,4 +3571,4 @@
             }
         }
     };
-}).call(this, window, Backbone);}).call(this, window, $, Backbone);
+}).call(this, window, $, Backbone)

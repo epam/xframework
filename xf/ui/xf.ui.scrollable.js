@@ -1,4 +1,4 @@
-(function(window, BB) {
+
     XF.UIElements.enhancementList.scrollable = {
         selector : '[data-scrollable=true]',
         enhanceMethod : 'enhanceScrollable'
@@ -69,4 +69,3 @@
 
         bindHanlders();
     };
-}).call(this, window, Backbone);

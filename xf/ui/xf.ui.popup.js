@@ -1,4 +1,3 @@
-(function(window, BB) {
 
     /**
      Generates basic popup container
@@ -248,4 +247,3 @@
             XF.UIElements.hidePopup(XF.UIElements.dialog);
         }
     };
-}).call(this, window, Backbone);
