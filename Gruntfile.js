@@ -3,12 +3,14 @@ module.exports = (function(grunt) {
     grunt.registerTask('build', "X-Framework build", function() {
         console.log('Adding core elements');
         var sources = [
-            'js/xf/modules/xf.core.js',
-            'js/xf/modules/xf.touch.js',
-            'js/xf/modules/xf.jquery.hooks.js',
-            'js/xf/modules/xf.zepto.support.js',
-            'js/xf/modules/xf.ui.js'
+            'js/xf/src/xf.core.js',
+            'js/xf/src/xf.touch.js',
+            'js/xf/src/xf.jquery.hooks.js',
+            'js/xf/src/xf.zepto.support.js',
+            'js/xf/src/xf.ui.js'
         ];
+
+        // TODO modules to add
 
         if (arguments.length === 0) {
             console.log('Adding all UI components');
@@ -20,7 +22,8 @@ module.exports = (function(grunt) {
                 sources.push('js/xf/ui/xf.ui.' + arguments[i] + '.js');
             }
         }
-        sources.push('js/xf.js');
+
+        sources.push();
 
         grunt.initConfig({
             pkg: grunt.file.readJSON('package.json'),
