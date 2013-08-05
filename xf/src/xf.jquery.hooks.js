@@ -1,4 +1,4 @@
-(function(window, BB) {
+
 
     /* $ hooks */
 
@@ -50,4 +50,4 @@
 
         return this;
     };
-}).call(this, window, Backbone);
+

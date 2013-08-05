@@ -1,4 +1,4 @@
-(function(window, BB) {
+
 
     /**
      @namespace Holds all the logic related to UI elements enhancement
@@ -53,4 +53,3 @@
         enhanced : []
 
     });
-}).call(this, window, Backbone);
