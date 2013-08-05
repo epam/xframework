@@ -1,21 +1,27 @@
-;(function($){
+;(function(window, document, $){
     'use strict';
 
     // Default values and device events detection
     var touchHandler = {},
         eventsHandler = {
+
+            // Events for desktop browser, old ios, old android
             mouse : {
                 start : "mousedown",
                 move : "mousemove",
                 end : "mouseup",
                 cancel : "mouseup"
             },
+
+            // Events for modern Windows devices (IE10+)
             pointer : {
                 start : "MSPointerDown",
                 move : "MSPointerMove",
                 end : "MSPointerUp",
                 cancel : "MSPointerCancel"
             },
+
+            // Events for touchable devices
             touch : {
                 start : "touchstart",
                 move : "touchmove",
@@ -23,7 +29,7 @@
                 cancel : "touchcancel"
             }
         },
-        swipeDelta = 30,
+        swipeDelta = 30, // Amount of pixels for swipe event
         isTouch,
         eventType;
 
@@ -96,4 +102,4 @@
         };
     });
 
-})(jQuery);
+})(window, document, jQuery);
