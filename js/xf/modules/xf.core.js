@@ -1790,7 +1790,7 @@
             }else {
                 animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
             }
-                             console.log(animationType);
+
             var fromPage = this.activePage;
             var toPage = jqPage;
 
