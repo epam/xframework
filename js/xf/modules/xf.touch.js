@@ -1,45 +1,49 @@
 ;(function($){
     'use strict';
+
+    // Default values and device events detection
     var touchHandler = {},
         eventsHandler = {
-            touchstart : "mousedown",
-            touchmove : "mousemove",
-            touchend : "mouseup",
-            touchcancel : "mouseup",
-            istouch : false
+            mouse : {
+                start : "mousedown",
+                move : "mousemove",
+                end : "mouseup",
+                cancel : "mouseup"
+            },
+            pointer : {
+                start : "MSPointerDown",
+                move : "MSPointerMove",
+                end : "MSPointerUp",
+                cancel : "MSPointerCancel"
+            },
+            touch : {
+                start : "touchstart",
+                move : "touchmove",
+                end : "touchend",
+                cancel : "touchcancel"
+            }
         },
         swipeDelta = 30,
-        isPointerEvents = window.navigator.msPointerEnabled,
-        isTouchEvents = !isPointerEvents && (window.propertyIsEnumerable('ontouchstart') || window.document.hasOwnProperty('ontouchstart'));
+        isTouch,
+        eventType;
 
-    if (isPointerEvents) {
-        eventsHandler.touchstart = "MSPointerDown";
-        eventsHandler.touchmove = "MSPointerMove";
-        eventsHandler.touchend = "MSPointerUp";
-        eventsHandler.touchcancel = "MSPointerCancel";
-        eventsHandler.istouch = false;
-    } else {
+    // Changing events depending on detected data
+    isTouch = (XF.Device.pointerEvents) ? false : (XF.Device.touchEvents ? true : false);
+    eventType = (XF.Device.pointerEvents) ? 'pointer' : (XF.Device.touchEvents ? 'touch' : 'mouse');
 
-        if (isTouchEvents) {
-            eventsHandler.touchstart = "touchstart";
-            eventsHandler.touchmove = "touchmove";
-            eventsHandler.touchend = "touchend";
-            eventsHandler.touchcancel = "touchcancel";
-            eventsHandler.istouch = true;
-        }
-    }
-
-    function parentIfText(node) {
+    // If target is text
+    var parentIfText = function (node) {
         return 'tagName' in node ? node : node.parentNode;
     }
 
-    function swipeDirection(x1, x2, y1, y2) {
+    // Detecting swipe direction
+    var swipeDirection = function (x1, x2, y1, y2) {
         var xDelta = Math.abs(x1 - x2),
             yDelta = Math.abs(y1 - y2);
         return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
     }
 
-    function cancelAll() {
+    var cancelAll = function () {
         touchHandler = {};
     }
 
@@ -47,39 +51,48 @@
         var now,
             delta;
 
-        $(document.body).bind(eventsHandler.touchstart, function(e){
+        $(document.body).bind(eventsHandler[eventType].start, function(e){
             now = Date.now();
             delta = now - (touchHandler.last || now);
             touchHandler.el = $(parentIfText(e.target));
-            touchHandler.x1 = eventsHandler.istouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-            touchHandler.y1 = eventsHandler.istouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+            touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+            touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
             touchHandler.last = now;
-        }).bind(eventsHandler.touchmove, function (e) {
-            touchHandler.x2 = eventsHandler.istouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-            touchHandler.y2 = eventsHandler.istouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+        }).bind(eventsHandler[eventType].move, function (e) {
+            touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+            touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
 
             if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
                 e.preventDefault();
             }
-        }).bind(eventsHandler.touchend, function(e){
+        }).bind(eventsHandler[eventType].end, function(e){
 
             if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
                 || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
                 touchHandler.direction = swipeDirection(touchHandler.x1, touchHandler.x2, touchHandler.y1, touchHandler.y2);
+
+                // Trigger swipe event
                 touchHandler.el.trigger('swipe');
+
+                // Trigger swipe event by it's direction
                 touchHandler.el.trigger('swipe' + touchHandler.direction);
                 touchHandler = {};
             } else if ('last' in touchHandler) {
                 touchHandler.el.trigger('tap');
+
+                // Unbind click event if tap
                 touchHandler.el.unbind('click');
             }
-        }).bind(eventsHandler.touchcancel, cancelAll);
+        }).bind(eventsHandler[eventType].cancel, cancelAll);
 
         $(window).bind('scroll', cancelAll);
     });
 
-    ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function(m){
-        $.fn[m] = function(callback){ return this.bind(m, callback) }
+    // List of new events
+    ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
+        $.fn[i] = function (callback) {
+            return this.bind(i, callback)
+        };
     });
 
 })(jQuery);
