@@ -204,7 +204,7 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('body').on('tap click', '[data-href]', function() {
+        $('body').on('click tap', '[data-href]', function() {
             var animationType = $(this).data('animation') || null;
             if (animationType) {
                 XF.trigger('pages:animation:next', animationType);
