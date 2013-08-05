@@ -81,6 +81,7 @@
                 touchHandler.el.trigger('tap');
 
                 // Unbind click event if tap
+                $(document.body).unbind('click');
                 touchHandler.el.unbind('click');
             }
         }).bind(eventsHandler[eventType].cancel, cancelAll);
