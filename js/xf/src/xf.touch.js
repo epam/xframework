@@ -1,5 +1,4 @@
-;(function($){
-    'use strict';
+
 
     // Default values and device events detection
     var touchHandler = {},
@@ -96,4 +95,3 @@
         };
     });
 
-})(jQuery);
