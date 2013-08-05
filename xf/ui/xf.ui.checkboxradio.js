@@ -1,4 +1,4 @@
-(function(window, BB) {
+
     XF.UIElements.enhancementList.checkboxRadio = {
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
         enhanceMethod : 'enhanceCheckboxRadio'
@@ -80,4 +80,3 @@
              })*/
         }
     };
-}).call(this, window, Backbone);
