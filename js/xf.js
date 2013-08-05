@@ -8,98 +8,10 @@
 
     var rootDOMObject = null;
 
-    /* $ hooks */
-
-    var _oldhide = $.fn.hide;
-    /** @ignore */
-    $.fn.hide = function(speed, callback) {
-        var res = _oldhide.apply(this,arguments);
-        $(this).trigger('hide');
-        return res;
-    };
-
-    var _oldshow = $.fn.show;
-    /** @ignore */
-    $.fn.show = function(speed, callback) {
-        var res = _oldshow.apply(this,arguments);
-        $(this).trigger('show');
-        return res;
-    };
-
-    var _oldhtml = $.fn.html;
-    /** @ignore */
-    $.fn.html = function(a) {
-        var res = _oldhtml.apply(this,arguments);
-        $(this).trigger('show');
-        $(this).trigger('html');
-        return res;
-    };
-
-    var _oldappend = $.fn.append;
-    /** @ignore */
-    $.fn.append = function() {
-        var res = _oldappend.apply(this,arguments);
-        $(this).trigger('append');
-        return res;
-    };
-
-    var _oldprepend = $.fn.prepend;
-    /** @ignore */
-    $.fn.prepend = function() {
-        var res = _oldprepend.apply(this,arguments);
-        $(this).trigger('prepend');
-        return res;
-    };
-
-    $.fn.animationEnd = function (callback) {
-        var animationEndEvents = 'webkitAnimationEnd oAnimationEnd msAnimationEnd animationend';
-
-        $(this).one(animationEndEvents, callback);
-
-        return this;
-    };
-
-    if (!_.isFunction($.fn.detach)) {
-        $.fn.detach = function(a) {
-            return this.remove(a,!0);
-        }
-    }
-
-    if (!_.isFunction($.fn.wrapInner)) {
-        $.fn.wrapInner = function( html ) {
-            if ( _.isFunction( html ) ) {
-                return this.each(function(i) {
-                    $(this).wrapInner( html.call(this, i) );
-                });
-            }
-
-            return this.each(function() {
-                var self = $( this ),
-                    contents = self.contents();
-
-                if ( contents.length ) {
-                    contents.wrapAll( html );
-
-                } else {
-                    self.append( html );
-                }
-            });
-        }
-    }
-
-    var _olddetach = $.fn.detach;
-    /** @ignore */
-    $.fn.detach = function() {
-        var parent = $(this).parent();
-        var res = _olddetach.apply(this,arguments);
-        parent.trigger('detach');
-        return res;
-    };
-
     /**
      @namespace Holds visible functionality of the framework
      */
-    XF = window.XF = window.XF || {};
+    var XF = window.XF = window.XF || {};
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1885,7 +1797,7 @@
             this.activePage = toPage;
             this.activePageName = jqPage.attr('id');
 
-            if (!XF.Device.hasAnimation) {
+            if (!XF.Device.supports.cssAnimations) {
                 if (_.isFunction(this.animations.types[animationType]['fallback'])) {
                     toPage.addClass(this.activePageClass);
                     this.animations.types[animationType].fallback(fromPage, toPage);
@@ -2001,11 +1913,7 @@
          */
         type: this.defaultType,
 
-        /**
-         A flag indicates whether the device is supporting Touch events or not
-         @type Boolean
-         */
-        isTouchable: false,
+
 
         /**
          Initializes {@link XF.Device} instance (runs detection methods)
@@ -2015,6 +1923,46 @@
             this.types = types || this.types;
             this.detectType();
             this.detectTouchable();
+        },
+
+        supports: {
+            /**
+             A flag indicates whether the device is supporting Touch events or not
+             @type Boolean
+             */
+            touchEvents: false,
+
+            /**
+             A flag indicates whether the device is supporting pointer events or not
+             @type Boolean
+             */
+            pointerEvents: window.navigator.msPointerEnabled,
+
+            /**
+             A flag indicates whether the device is supporting CSS3 animations or not
+             @type Boolean
+             */
+            cssAnimations: (function () {
+                var domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+                    elm = document.createElement('div');
+
+                if( elm.style.animationName ) {
+                    return {
+                        prefix: ''
+                    };
+                };
+
+                for( var i = 0; i < domPrefixes.length; i++ ) {
+                    if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+                        return {
+                            prefix: '-' + domPrefixes[i].toLowerCase() + '-'
+                        };
+                    }
+                }
+
+                return false;
+
+            }())
         },
 
         /**
@@ -2137,35 +2085,14 @@
                     children = node.childNodes,
                     hashTouch = children[0];
 
-                $this.isTouchable = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch || (hashTouch && hashTouch.offsetTop) === 9;
+                $this.supports.touchEvents = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch || (hashTouch && hashTouch.offsetTop) === 9;
 
             }, 1, ['touch']);
 
-            console.log('XF.Device :: detectTouchable - device IS ' + (this.isTouchable ? '' : 'NOT ') + 'touchable');
+            console.log('XF.Device :: detectTouchable - device IS ' + (this.supports.touchEvents ? '' : 'NOT ') + 'touchable');
 
         },
 
-        hasAnimation: (function () {
-            var domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
-                elm = document.createElement('div');
-
-            if( elm.style.animationName ) {
-                return {
-                    prefix: ''
-                };
-            };
-
-            for( var i = 0; i < domPrefixes.length; i++ ) {
-                if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
-                    return {
-                        prefix: '-' + domPrefixes[i].toLowerCase() + '-'
-                    };
-                }
-            }
-
-            return false;
-
-        }()),
 
 
         /**
@@ -2286,12 +2213,7 @@
     };
 
 
-    // TBDeleted : temp stuff for testApp.html
-    XF.trace = function(message) {
-        $('#tracer').html(message + '<br/>' + $('#tracer').html());
-    };
-
-    return window.XF = XF;
+    return XF;
 
 }).call(this, window, Backbone);
 
@@ -2386,6 +2308,100 @@
 //New file
 
 (function(window, BB) {
+
+    /* $ hooks */
+
+    var _oldhide = $.fn.hide;
+    /** @ignore */
+    $.fn.hide = function(speed, callback) {
+        var res = _oldhide.apply(this,arguments);
+        $(this).trigger('hide');
+        return res;
+    };
+
+    var _oldshow = $.fn.show;
+    /** @ignore */
+    $.fn.show = function(speed, callback) {
+        var res = _oldshow.apply(this,arguments);
+        $(this).trigger('show');
+        return res;
+    };
+
+    var _oldhtml = $.fn.html;
+    /** @ignore */
+    $.fn.html = function(a) {
+        var res = _oldhtml.apply(this,arguments);
+        $(this).trigger('show');
+        $(this).trigger('html');
+        return res;
+    };
+
+    var _oldappend = $.fn.append;
+    /** @ignore */
+    $.fn.append = function() {
+        var res = _oldappend.apply(this,arguments);
+        $(this).trigger('append');
+        return res;
+    };
+
+    var _oldprepend = $.fn.prepend;
+    /** @ignore */
+    $.fn.prepend = function() {
+        var res = _oldprepend.apply(this,arguments);
+        $(this).trigger('prepend');
+        return res;
+    };
+
+    $.fn.animationEnd = function (callback) {
+        var animationEndEvents = 'webkitAnimationEnd oAnimationEnd msAnimationEnd animationend';
+
+        $(this).one(animationEndEvents, callback);
+
+        return this;
+    };
+}).call(this, window, Backbone);
+
+
+//New file
+
+(function(window, BB) {
+
+    if (!_.isFunction($.fn.detach)) {
+        $.fn.detach = function(a) {
+            return this.remove(a,!0);
+        }
+    }
+
+    if (!_.isFunction($.fn.wrapInner)) {
+        $.fn.wrapInner = function( html ) {
+            if ( _.isFunction( html ) ) {
+                return this.each(function(i) {
+                    $(this).wrapInner( html.call(this, i) );
+                });
+            }
+
+            return this.each(function() {
+                var self = $( this ),
+                    contents = self.contents();
+
+                if ( contents.length ) {
+                    contents.wrapAll( html );
+
+                } else {
+                    self.append( html );
+                }
+            });
+        }
+    }
+
+    var _olddetach = $.fn.detach;
+    /** @ignore */
+    $.fn.detach = function() {
+        var parent = $(this).parent();
+        var res = _olddetach.apply(this,arguments);
+        parent.trigger('detach');
+        return res;
+    };
 
     /** @ignore */
     /** Cannot use $.fn.extend because of Zepto support **/
