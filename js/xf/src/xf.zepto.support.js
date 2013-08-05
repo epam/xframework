@@ -1,4 +1,4 @@
-(function(window, BB) {
+
 
     if (!_.isFunction($.fn.detach)) {
         $.fn.detach = function(a) {
@@ -53,4 +53,3 @@
         tmp_node.remove();
         return markup;
     };
-}).call(this, window, Backbone);
