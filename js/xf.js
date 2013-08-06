@@ -1,4 +1,4 @@
-/*! X-Framework 05-08-2013 */
+/*! X-Framework 06-08-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -1656,7 +1656,15 @@
          @param $ jqPage
          */
         show : function(page, animationType){
-            if (page === '' || page === this.activePageName) {
+            if (page === this.activePageName) {
+                return;
+            }
+
+            if (page === '') {
+                var pages =  rootDOMObject.find(' .' + this.pageClass);
+                if (pages.length) {
+                    this.show(pages.first());
+                }
                 return;
             }
 
@@ -3571,4 +3579,4 @@
             }
         }
     };
-}).call(this, window, $, Backbone)
+}).call(this, window, $, Backbone);
