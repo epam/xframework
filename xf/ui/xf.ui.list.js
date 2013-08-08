@@ -1,5 +1,5 @@
 
-    XF.UIElements.enhancementList.list = {
+    XF.UI.enhancementList.list = {
         selector : 'UL[data-role=listview], OL[data-role=listview]',
         enhanceMethod : 'enhanceList'
     };
@@ -9,7 +9,7 @@
      @param list DOM Object
      @private
      */
-    XF.UIElements.enhanceList = function(list) {
+    XF.UI.enhanceList = function(list) {
         var jQList = $(list);
         if(!list || !jQList instanceof $) {
             return;

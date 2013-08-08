@@ -1,5 +1,5 @@
 
-    XF.UIElements.enhancementList.button = {
+    XF.UI.enhancementList.button = {
             selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button] [data-appearance=backbtn]',
             enhanceMethod : 'enhanceButton'
     };
@@ -8,8 +8,7 @@
      @param button DOM Object
      @private
      */
-    XF.UIElements.enhanceButton = function(button) {
-
+    XF.UI.enhanceButton = function(button) {
         var jQButton = $(button);
         if(!button || !jQButton instanceof $) {
             return;
@@ -21,6 +20,13 @@
 
         var enhancedButton;
         var innerStuff;
+
+
+
+        //UNDERSCORE TEMPLATES
+
+        var buttonTpl = _.template('<div></div>');
+        //-- UNDERSCORE TEMPLATES
 
         // If it's A or BUTTON, the necessary classes are added to the element itself
         if(button.nodeName == 'A' || button.nodeName == 'BUTTON') {
@@ -115,7 +121,7 @@
      @param buttonDescr Object
      @return $
      */
-    XF.UIElements.createButton = function(buttonDescr)  {
+    XF.UI.createButton = function(buttonDescr)  {
         /*
          buttonDescr = {
          text,
@@ -128,7 +134,7 @@
          handler
          }
          */
-        var jQButton = $('<button></button>');
+        var jQButton = $('<button>/button>');
         jQButton.html(buttonDescr.text);
         var attrs = {};
         if(buttonDescr.icon && buttonDescr.icon != '') {
@@ -156,7 +162,7 @@
 
         jQButton.attr(attrs);
 
-        XF.UIElements.enhanceButton(jQButton[0]);
+        XF.UI.enhanceButton(jQButton[0]);
 
         return jQButton;
     };
