@@ -1,5 +1,5 @@
 
-    XF.UIElements.enhancementList.textinput = {
+    XF.UI.enhancementList.textinput = {
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
                     'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
                     'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
@@ -13,7 +13,7 @@
      @param textInput DOM Object
      @private
      */
-    XF.UIElements.enhanceTextInput = function(textInput) {
+    XF.UI.enhanceTextInput = function(textInput) {
 
         var jQTextInput = $(textInput);
         if(!textInput || !jQTextInput instanceof $) {
