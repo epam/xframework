@@ -152,12 +152,13 @@
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
-                XF.UIElements.enhanceView($(this));
+                XF.UI.enhanceView($(this));
             }
         });
-        /*
+
          var selector = null;
-         _.each(XF.UIElements.enhancementList, function(enhancement, index, enhancementList) {
+        console.log(XF.UI.enhancementList)
+         _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
          if(!selector) {
          selector = enhancement.selector;
          } else {
@@ -165,9 +166,9 @@
          }
          });
          $(selector).on('show', function() {
-         XF.UIElements.enhanceView($(this));
+         XF.UI.enhanceView($(this));
          });
-         */
+
     };
 
     /**
