@@ -1,4 +1,4 @@
-/*! X-Framework 06-08-2013 */
+/*! X-Framework 08-08-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -153,12 +153,13 @@
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
-                XF.UIElements.enhanceView($(this));
+                XF.UI.enhanceView($(this));
             }
         });
-        /*
+
          var selector = null;
-         _.each(XF.UIElements.enhancementList, function(enhancement, index, enhancementList) {
+        console.log(XF.UI.enhancementList)
+         _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
          if(!selector) {
          selector = enhancement.selector;
          } else {
@@ -166,9 +167,9 @@
          }
          });
          $(selector).on('show', function() {
-         XF.UIElements.enhanceView($(this));
+         XF.UI.enhanceView($(this));
          });
-         */
+
     };
 
     /**
@@ -2393,9 +2394,9 @@
     /**
      @namespace Holds all the logic related to UI elements enhancement
      */
-    XF.UIElements = {};
+    XF.UI = {};
 
-    _.extend(XF.UIElements, /** @lends XF.UIElements */ {
+    _.extend(XF.UI, /** @lends XF.UI */ {
 
         /**
          Reworks markup of a givven $ object
@@ -2410,18 +2411,18 @@
                 }
             }
 
-            _.each(XF.UIElements.enhancementList, function(enhancement, index, enhancementList) {
+            _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
                 jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each( function(){
                     var skip = false;
-                    _.each(XF.UIElements.enhanced.length, function(elem, index, enhancementList) {
-                        if(XF.UIElements.enhanced[i] === this) {
+                    _.each(XF.UI.enhanced.length, function(elem, index, enhancementList) {
+                        if(XF.UI.enhanced[i] === this) {
                             skip = true;
                         }
                     });
                     if(!skip & $(this).attr('data-skip-enhance') != 'true') {
 
-                        XF.UIElements.enhanced.push(this);
-                        XF.UIElements[enhancement.enhanceMethod](this);
+                        XF.UI.enhanced.push(this);
+                        XF.UI[enhancement.enhanceMethod](this);
                     }
                 });
             });
@@ -2445,7 +2446,7 @@
     });
 
 
-    XF.UIElements.enhancementList.button = {
+    XF.UI.enhancementList.button = {
             selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button] [data-appearance=backbtn]',
             enhanceMethod : 'enhanceButton'
     };
@@ -2454,8 +2455,7 @@
      @param button DOM Object
      @private
      */
-    XF.UIElements.enhanceButton = function(button) {
-
+    XF.UI.enhanceButton = function(button) {
         var jQButton = $(button);
         if(!button || !jQButton instanceof $) {
             return;
@@ -2467,6 +2467,13 @@
 
         var enhancedButton;
         var innerStuff;
+
+
+
+        //UNDERSCORE TEMPLATES
+
+        var buttonTpl = _.template('<div></div>');
+        //-- UNDERSCORE TEMPLATES
 
         // If it's A or BUTTON, the necessary classes are added to the element itself
         if(button.nodeName == 'A' || button.nodeName == 'BUTTON') {
@@ -2561,7 +2568,7 @@
      @param buttonDescr Object
      @return $
      */
-    XF.UIElements.createButton = function(buttonDescr)  {
+    XF.UI.createButton = function(buttonDescr)  {
         /*
          buttonDescr = {
          text,
@@ -2574,7 +2581,7 @@
          handler
          }
          */
-        var jQButton = $('<button></button>');
+        var jQButton = $('<button>/button>');
         jQButton.html(buttonDescr.text);
         var attrs = {};
         if(buttonDescr.icon && buttonDescr.icon != '') {
@@ -2602,13 +2609,13 @@
 
         jQButton.attr(attrs);
 
-        XF.UIElements.enhanceButton(jQButton[0]);
+        XF.UI.enhanceButton(jQButton[0]);
 
         return jQButton;
     };
 
 
-    XF.UIElements.enhancementList.checkboxRadio = {
+    XF.UI.enhancementList.checkboxRadio = {
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
         enhanceMethod : 'enhanceCheckboxRadio'
     };
@@ -2618,7 +2625,7 @@
      @param textInput DOM Object
      @private
      */
-    XF.UIElements.enhanceCheckboxRadio = function(chbRbInput) {
+    XF.UI.enhanceCheckboxRadio = function(chbRbInput) {
         var jQChbRbInput = $(chbRbInput);
         if(!chbRbInput || !jQChbRbInput instanceof $) {
             return;
@@ -2691,7 +2698,7 @@
     };
 
 
-    XF.UIElements.enhancementList.fieldset = {
+    XF.UI.enhancementList.fieldset = {
         selector : 'fieldset[data-role=controlgroup]',
         enhanceMethod : 'enhanceFieldset'
     };
@@ -2701,7 +2708,7 @@
      @param textInput DOM Object
      @private
      */
-    XF.UIElements.enhanceFieldset = function(fieldset) {
+    XF.UI.enhanceFieldset = function(fieldset) {
         var jQFieldset = $(fieldset);
         if(!fieldset || !jQFieldset instanceof $) {
             return;
@@ -2739,7 +2746,7 @@
     };
 
 
-    XF.UIElements.enhancementList.list = {
+    XF.UI.enhancementList.list = {
         selector : 'UL[data-role=listview], OL[data-role=listview]',
         enhanceMethod : 'enhanceList'
     };
@@ -2749,7 +2756,7 @@
      @param list DOM Object
      @private
      */
-    XF.UIElements.enhanceList = function(list) {
+    XF.UI.enhanceList = function(list) {
         var jQList = $(list);
         if(!list || !jQList instanceof $) {
             return;
@@ -2846,7 +2853,7 @@
      @return $
      @private
      */
-    XF.UIElements.createPopup = function() {
+    XF.UI.createPopup = function() {
         /*
          <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
          */
@@ -2861,16 +2868,16 @@
      @param messageText String to show in dialog body
      @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
      */
-    XF.UIElements.showDialog = function (headerText, messageText, buttons) {
-        var popup = XF.UIElements.createDialog(headerText, messageText, buttons);
-        XF.UIElements.showPopup(popup);
+    XF.UI.showDialog = function (headerText, messageText, buttons) {
+        var popup = XF.UI.createDialog(headerText, messageText, buttons);
+        XF.UI.showPopup(popup);
     };
 
     /**
      Attaches popup (dialog/notification/etc.) to the page
      @param jqPopup $ object representing popup
      */
-    XF.UIElements.showPopup = function(jqPopup) {
+    XF.UI.showPopup = function(jqPopup) {
         XF.Device.getViewport().append(jqPopup);
     };
 
@@ -2878,7 +2885,7 @@
      Detaches popup (dialog/notification/etc.) from the page
      @param jqPopup $ object representing popup
      */
-    XF.UIElements.hidePopup = function(jqPopup) {
+    XF.UI.hidePopup = function(jqPopup) {
         jqPopup.detach();
     };
 
@@ -2891,7 +2898,7 @@
      @param modal Boolean Flag which indicates whether the dialog is modal
      @return $ Dialog object
      */
-    XF.UIElements.createDialog = function(headerText, messageText, buttons) {
+    XF.UI.createDialog = function(headerText, messageText, buttons) {
 
         /*
          <div class="xf-dialog-box">
@@ -2918,7 +2925,7 @@
          </div>
          */
 
-        var jqDialog = XF.UIElements.createPopup();
+        var jqDialog = XF.UI.createPopup();
         jqDialog.find('.xf-dialog-content')
             .append(
                 $('<div></div>')
@@ -2948,7 +2955,7 @@
             buttons = [{
                 text: 'OK',
                 handler: function (){
-                    XF.UIElements.hidePopup(jqDialog);
+                    XF.UI.hidePopup(jqDialog);
                 }
             }]
         }
@@ -2961,7 +2968,7 @@
                 if(btn instanceof $){
                     jqBtn = btn;
                 } else {
-                    jqBtn = XF.UIElements.createButton(btn);
+                    jqBtn = XF.UI.createButton(btn);
                 }
 
                 jqBtnContainer.append(
@@ -2971,7 +2978,7 @@
                 );
             });
         }
-        XF.UIElements.dialog = jqDialog;
+        XF.UI.dialog = jqDialog;
         return jqDialog;
     };
 
@@ -2981,7 +2988,7 @@
      @param iconName Icon name (optional)
      @return $ Notification object
      */
-    XF.UIElements.createNotification = function(messageText, iconName) {
+    XF.UI.createNotification = function(messageText, iconName) {
 
         /*
          <div class="xf-notification">
@@ -2996,7 +3003,7 @@
          </div>
          */
 
-        var jqNotification = XF.UIElements.createPopup().addClass('xf-dialog-notification');
+        var jqNotification = XF.UI.createPopup().addClass('xf-dialog-notification');
         jqNotification.find('.xf-dialog-content')
             .append(
                 $('<div></div>')
@@ -3032,7 +3039,7 @@
      @type $
      @private
      */
-    XF.UIElements.loadingNotification = null;
+    XF.UI.loadingNotification = null;
 
 
     /**
@@ -3040,14 +3047,14 @@
      @type $
      @private
      */
-    XF.UIElements.dialog = null;
+    XF.UI.dialog = null;
 
     /**
      Saves passed popup as default loading notification
      @param jqPopup $ object representing popup
      */
-    XF.UIElements.setLoadingNotification = function(jqPopup) {
-        XF.UIElements.loadingNotification = jqPopup;
+    XF.UI.setLoadingNotification = function(jqPopup) {
+        XF.UI.loadingNotification = jqPopup;
     };
 
     /**
@@ -3055,43 +3062,43 @@
      @param messageText String to show in loading notification
      @param icon Icon name (optional)
      */
-    XF.UIElements.showLoading = function (messageText, icon) {
+    XF.UI.showLoading = function (messageText, icon) {
         if(messageText || icon) {
-            if(XF.UIElements.loadingNotification) {
-                XF.UIElements.hideLoading();
+            if(XF.UI.loadingNotification) {
+                XF.UI.hideLoading();
             }
-            XF.UIElements.setLoadingNotification(
-                XF.UIElements.createNotification(messageText, icon)
+            XF.UI.setLoadingNotification(
+                XF.UI.createNotification(messageText, icon)
             );
         }
-        if(!XF.UIElements.loadingNotification) {
-            XF.UIElements.setLoadingNotification(
-                XF.UIElements.createNotification('Loading...')
+        if(!XF.UI.loadingNotification) {
+            XF.UI.setLoadingNotification(
+                XF.UI.createNotification('Loading...')
             );
         }
-        XF.UIElements.showPopup(XF.UIElements.loadingNotification);
+        XF.UI.showPopup(XF.UI.loadingNotification);
     };
 
     /**
      Hides loading notification
      */
-    XF.UIElements.hideLoading = function () {
-        if(XF.UIElements.loadingNotification) {
-            XF.UIElements.hidePopup(XF.UIElements.loadingNotification);
+    XF.UI.hideLoading = function () {
+        if(XF.UI.loadingNotification) {
+            XF.UI.hidePopup(XF.UI.loadingNotification);
         }
     };
 
     /**
      Hides Dialog
      */
-    XF.UIElements.hideDialog = function () {
-        if(XF.UIElements.dialog) {
-            XF.UIElements.hidePopup(XF.UIElements.dialog);
+    XF.UI.hideDialog = function () {
+        if(XF.UI.dialog) {
+            XF.UI.hidePopup(XF.UI.dialog);
         }
     };
 
 
-    XF.UIElements.enhancementList.scrollable = {
+    XF.UI.enhancementList.scrollable = {
         selector : '[data-scrollable=true]',
         enhanceMethod : 'enhanceScrollable'
     };
@@ -3101,7 +3108,7 @@
      @param scrollable DOM Object
      @private
      */
-    XF.UIElements.enhanceScrollable = function(scrollable) {
+    XF.UI.enhanceScrollable = function(scrollable) {
 
         var jQScrollable = $(scrollable);
         if(!scrollable || !jQScrollable instanceof $) {
@@ -3163,7 +3170,7 @@
     };
 
 
-    XF.UIElements.enhancementList.textinput = {
+    XF.UI.enhancementList.textinput = {
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
                     'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
                     'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
@@ -3177,7 +3184,7 @@
      @param textInput DOM Object
      @private
      */
-    XF.UIElements.enhanceTextInput = function(textInput) {
+    XF.UI.enhanceTextInput = function(textInput) {
 
         var jQTextInput = $(textInput);
         if(!textInput || !jQTextInput instanceof $) {
