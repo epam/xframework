@@ -157,18 +157,17 @@
             }
         });
 
-         var selector = null;
-        console.log(XF.UI.enhancementList)
-         _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
-         if(!selector) {
-         selector = enhancement.selector;
-         } else {
-         selector += ', ' + enhancement.selector;
-         }
-         });
-         $(selector).on('show', function() {
-         XF.UI.enhanceView($(this));
-         });
+//         var selector = null;
+//         _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
+//         if(!selector) {
+//         selector = enhancement.selector;
+//         } else {
+//         selector += ', ' + enhancement.selector;
+//         }
+//         });
+//         $(selector).on('show', function() {
+//         XF.UI.enhanceView($(this));
+//         });
 
     };
 
@@ -1724,6 +1723,11 @@
             // scroll to top of page ofter page switch
             window.scrollTo( 0, 1 );
 
+            // Check if UI
+            if (XF.hasOwnProperty('UI')) {
+                XF.UI.enhanceView($(this.activePage[0]));
+            }
+
             // looking for components inside the page
             loadChildComponents(this.activePage[0]);
         }
@@ -2420,7 +2424,6 @@
                         }
                     });
                     if(!skip & $(this).attr('data-skip-enhance') != 'true') {
-
                         XF.UI.enhanced.push(this);
                         XF.UI[enhancement.enhanceMethod](this);
                     }
@@ -2447,7 +2450,7 @@
 
 
     XF.UI.enhancementList.button = {
-            selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button] [data-appearance=backbtn]',
+            selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
             enhanceMethod : 'enhanceButton'
     };
     /**

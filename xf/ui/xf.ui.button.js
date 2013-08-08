@@ -1,6 +1,6 @@
 
     XF.UI.enhancementList.button = {
-            selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button] [data-appearance=backbtn]',
+            selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
             enhanceMethod : 'enhanceButton'
     };
     /**
