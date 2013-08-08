@@ -3,9 +3,9 @@
     /**
      @namespace Holds all the logic related to UI elements enhancement
      */
-    XF.UIElements = {};
+    XF.UI = {};
 
-    _.extend(XF.UIElements, /** @lends XF.UIElements */ {
+    _.extend(XF.UI, /** @lends XF.UI */ {
 
         /**
          Reworks markup of a givven $ object
@@ -20,18 +20,18 @@
                 }
             }
 
-            _.each(XF.UIElements.enhancementList, function(enhancement, index, enhancementList) {
+            _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
                 jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each( function(){
                     var skip = false;
-                    _.each(XF.UIElements.enhanced.length, function(elem, index, enhancementList) {
-                        if(XF.UIElements.enhanced[i] === this) {
+                    _.each(XF.UI.enhanced.length, function(elem, index, enhancementList) {
+                        if(XF.UI.enhanced[i] === this) {
                             skip = true;
                         }
                     });
                     if(!skip & $(this).attr('data-skip-enhance') != 'true') {
 
-                        XF.UIElements.enhanced.push(this);
-                        XF.UIElements[enhancement.enhanceMethod](this);
+                        XF.UI.enhanced.push(this);
+                        XF.UI[enhancement.enhanceMethod](this);
                     }
                 });
             });
