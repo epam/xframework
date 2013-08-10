@@ -1,4 +1,4 @@
-/*! X-Framework 06-08-2013 */
+/*! X-Framework 10-08-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -27,6 +27,37 @@
     };
 
     XF.on('navigate', XF.navigate);
+
+    var compEventSplitter = /\:/;
+
+    XF.on('all', function (eventName) {
+        console.log('XF:all - ', eventName);
+        console.log(typeof eventName);
+        if (!compEventSplitter.test(eventName)) {
+            return;
+        }
+
+        var parts = eventName.split(compEventSplitter);
+
+        if (parts[0] !== 'component' && parts.length < 3) {
+            return;
+        }
+
+        var compID = parts[1];
+
+        XF._defferedCompEvents || (XF._defferedCompEvents = {});
+
+        if (!XF.getComponentByID(compID)) {
+            var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []);
+            events.push(eventName);
+            XF.on('component:' + compID + ':constructed', function () {
+                _.each(events, function (e) {
+                    XF.trigger(e);
+                });
+            });
+        }
+
+    });
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -653,7 +684,7 @@
                 this.trigger('init');
 
                 this.trigger('construct');
-                XF.trigger(this.id + ':constructed');
+                XF.trigger('component:' + this.id + ':constructed');
             };
             /** @ignore */
             var modelConstructed = function() {
