@@ -9,7 +9,8 @@
 	z-index: 20; /* z-index > 0 causes the rotated pseudo-el inside .xf-button-back to not be rotated on android*/
 	text-align: center;
 	border-bottom: 1px solid transparent;
-
+    background: @header-bg-color-end;
+    .bg-gradient(@header-bg-color-start, @header-bg-color-start, @header-bg-color-end);
 	border-bottom: 1px solid @header-border-color;
 }
 .xf-header-title {
