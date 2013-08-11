@@ -2716,7 +2716,9 @@
                 return;
             }
 
-            jQFieldset.attr({'data-skip-enhance':true});
+            var id = jQFieldset.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+
+            jQFieldset.attr({'data-skip-enhance':  true, 'id' : id});
 
             // If the inputs have a parent fieldset[data-role=controlgroup], the fieldset
             // is assigned a class xf-controlgroup,
@@ -2849,7 +2851,7 @@
          <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
          */
         var jqPopup =
-            $('<div class="xf-dialog "><div class="xf-dialog-content"></div></div>');
+            $('<div class="xf-dialog " id="xf-' + Math.floor(Math.random() * 10000) + '"><div class="xf-dialog-content"></div></div>');
         return jqPopup;
     };
 
@@ -3104,15 +3106,13 @@
         Render : function(scrollable) {
 
             var jQScrollable = $(scrollable);
-            if(!scrollable || !jQScrollable instanceof $) {
+            if(!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            if(jQScrollable.attr('data-skip-enhance') == 'true') {
-                return;
-            }
+            var id = jQScrollable.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
 
-            jQScrollable.attr({'data-skip-enhance':true});
+            jQScrollable.attr({'data-skip-enhance':true, 'id' : id});
 
             var children = jQScrollable.children();
             // always create wrapper

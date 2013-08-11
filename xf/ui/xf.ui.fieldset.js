@@ -17,7 +17,9 @@
                 return;
             }
 
-            jQFieldset.attr({'data-skip-enhance':true});
+            var id = jQFieldset.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+
+            jQFieldset.attr({'data-skip-enhance':  true, 'id' : id});
 
             // If the inputs have a parent fieldset[data-role=controlgroup], the fieldset
             // is assigned a class xf-controlgroup,
