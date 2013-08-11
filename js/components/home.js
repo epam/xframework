@@ -1,7 +1,7 @@
 $(function(){
 	XF.defineComponent(
 		'home',
-		XF.RootComponent.extend({
+		XF.Component.extend({
 
             viewClass : XF.View.extend({
                 useCache : false,
