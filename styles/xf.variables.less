@@ -5,7 +5,11 @@
 @app-bg: 						#fff; // Background of whole application
 @page-bg: 						@app-bg; // Background on pages
 @text-color:                    #333;
-@general-border-color:			#b2b2b2; // Used throughout most UI elements
+@general-border-color:			#e6e5eb; // Used throughout most UI elements
+
+// Globals
+
+@global-border-radius:          0;
 
 // Grays
 // -------------------------
@@ -32,44 +36,50 @@
 @headingsFontWeight:    		bold;    // instead of browser default, bold
 @headingsColor:         		inherit; // empty to use BS default, @textColor
 
-// Inputs
+// Form Elements
 // -------------------------
 @input-bg-color:							#fff;
-@input-active-bg-color:						#669cf1;
+@input-active-bg-color:						#3498DB;
 @input-inactive-bg-color:					#e6e6e6;
 @input-text-color: 							#294d8c;
 @input-label-color: 						@text-color;
 @input-placeholder-color:					#c8c8cc;
 
+@range-thumb-bg-color-start:                #1abc9c;
+@range-thumb-bg-color-end:                  #1abc9c;
+@range-active-bg-color:                     #1abc9c;
+@range-thumb-border-color:                  #fff;
+@switch-bg-color:                           #e6e6e6;
+@switch-active-bg-color:                    #1abc9c;
+@switch-thumb-bg-color-start:               #fff;
+@switch-thumb-bg-color-end:                 #fff;
 
 // Buttons
 // -------------------------
-@button-bg-color-start:                     #717a80;
-@button-bg-color-end:                       #383d40;
-@button-border-color: 						rgba(0,0,0,.4);//#212325;
+@button-bg-color-start:                     #1abc9c;
+@button-bg-color-end:                       #1abc9c;
+@button-border-size: 						3px;
 @button-text-color: 						#fff;
-@button-text-shadow-color: 					rgba(0,0,0,.7);//tbd
+@button-text-shadow-color: 					rgba(0,0,0,0);
 
-@button-active-bg-color-start: 				#6ea5fa;
-@button-active-bg-color-end:				#2e5fb2;
-@button-active-border-color: 				@button-border-color;//#315eab;
+@button-active-bg-color-start: 				#3498DB;
+@button-active-bg-color-end:				#3498DB;
 @button-active-text-color:					@button-text-color;
 @button-active-text-shadow-color:			@button-text-shadow-color;
 
-@button-alert-bg-color-start: 				#fa6e6e;
-@button-alert-bg-color-end: 				#bc0101;
-//@button-alert-border-color: 				@button-border-color;
+@button-alert-bg-color-start: 				#e74c3c;
+@button-alert-bg-color-end: 				#e74c3c;
 @button-alert-text-color:					@button-text-color;
 @button-alert-text-shadow-color: 			@button-text-shadow-color;
 
 
 // Header
 // -------------------------
-@header-bg-color-start: 					#fff;
-@header-bg-color-end: 						#000;
-@header-border-color: 						#7c7c7c;
-@header-text-color: 						#666;
-@header-text-shadow-color: 					rgba(255,255,255,.7);
+@header-bg-color-start: 					#474e5d;
+@header-bg-color-end: 						#474e5d;
+@header-border-color: 						#2d313b;
+@header-text-color: 						#fff;
+@header-text-shadow-color: 					rgba(255,255,255,0);
 
 
 // Footer nav
@@ -91,20 +101,26 @@
 // Lists
 // -------------------------
 @list-bg-color: 							#fff;
-@list-icon-color:							#969699;
+@list-icon-color:							#95a5a6;
 @list-text-color:							@input-label-color;
+@list-border-color:                         @general-border-color;
+@list-description-text-color:               #95a5a6;
+
+@list-divider-bg-color-start:               #e6e5eb;
+@list-divider-bg-color-end:                 #e6e5eb;
+@list-divider-text-color:                   #000;
 
 
 @list-btn-bg-color-start:			        rgba(0,0,0,0);
 @list-btn-bg-color-end:			    	    rgba(0,0,0,.1);
 
-@list-btn-active-bg-color-start:			@button-active-bg-color-start;
-@list-btn-active-bg-color-end:				@button-active-bg-color-end;
-@list-btn-active-text-color:				@button-active-text-color;
-@list-btn-active-text-shadow-color:			@button-active-text-shadow-color;
+@list-btn-active-bg-color-start:			#1abc9c;
+@list-btn-active-bg-color-end:				#1abc9c;
+@list-btn-active-text-color:				#fff;
+@list-btn-active-text-shadow-color:			none;
 
-@count-bubble-bg-color: 					@list-icon-color;
-@count-bubble-text-color:					@list-bg-color;
+@count-bubble-bg-color: 					#e6e5eb;
+@count-bubble-text-color:					#000;
 
 
 // Dialogs
@@ -112,10 +128,10 @@
 @dialog-dim-color: 							rgba(0,0,0,.4);
 @dialog-box-border-color: 					#fff;
 @dialog-box-bg-color-start: 				#fff;
-@dialog-box-bg-color-end: 					#ccccca;
+@dialog-box-bg-color-end: 					#fff;
 @dialog-box-text-color: 					#555;
 @dialog-box-text-shadow-color: 				#fff;
 
 @notification-bg-color: 					rgba(0,0,0,.7);
 @notification-text-color: 					#e3e3e3;
-@notification-text-shadow-color: 			#000;
+@notification-text-shadow-color: 			#fff;
