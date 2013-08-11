@@ -119,7 +119,7 @@
                 if(btn instanceof $){
                     jqBtn = btn;
                 } else {
-                    jqBtn = XF.UI.createButton(btn);
+                    jqBtn = XF.UI.Button.Create(btn);
                 }
 
                 jqBtnContainer.append(
