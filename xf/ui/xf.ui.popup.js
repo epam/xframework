@@ -9,7 +9,7 @@
          <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
          */
         var jqPopup =
-            $('<div class="xf-dialog "><div class="xf-dialog-content"></div></div>');
+            $('<div class="xf-dialog " id="xf-' + Math.floor(Math.random() * 10000) + '"><div class="xf-dialog-content"></div></div>');
         return jqPopup;
     };
 
