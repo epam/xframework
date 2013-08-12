@@ -40,7 +40,7 @@
   display: inline-block;
   height: 29px;
   min-width: 50px;
-  padding: 4px;
+  padding: 5px;
   margin-bottom: 4px;
   line-height: 1px;/*?*/
   font: 15px sans-serif;
@@ -124,8 +124,8 @@
   .bg-gradient(@button-bg-color-start, @button-bg-color-start, @button-bg-color-end);
   .bgclip(border-box);
 
-  &:focus /*hover*/ {
-    .background-size( 100% 140% );
+  &:focus, &:hover /*hover*/ {
+    .bg-gradient(lighten(@button-bg-color-start, 5%), lighten(@button-bg-color-start, 5%), lighten(@button-bg-color-end, 5%));
   }
 }
 
@@ -140,10 +140,18 @@
   color: @button-active-text-color;
   text-shadow: 0 1px 0 @button-active-text-shadow-color;
   border-bottom: @button-border-size solid darken(@button-active-bg-color-end, 10%);
+
+  &:focus, &:hover {
+    .bg-gradient(lighten(@button-active-bg-color-start, 5%), lighten(@button-active-bg-color-start, 5%), lighten(@button-active-bg-color-end, 5%));
+  }
 }
 .xf-button-alert {
   .bg-gradient(@button-alert-bg-color-start, @button-alert-bg-color-start, @button-alert-bg-color-end);
   border-bottom: @button-border-size solid darken(@button-alert-bg-color-end, 10%);
   color: @button-alert-text-color;
   text-shadow: 0 1px 0 @button-alert-text-shadow-color;
+
+  &:focus, &:hover {
+    .bg-gradient(lighten(@button-alert-bg-color-start, 5%), lighten(@button-alert-bg-color-start, 5%), lighten(@button-alert-bg-color-end, 5%));
+  }
 }
