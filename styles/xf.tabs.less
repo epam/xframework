@@ -21,13 +21,17 @@
    .box-sizing-border-box;
 	height: 44px;
 	padding: 10px;
-	margin: -1px 0 0 -1px; /* needed to hide adjacent borders */
+	//margin: -1px 0 0 -1px; /* needed to hide adjacent borders */
 	text-decoration: none;
 	text-align: center;
 	cursor: pointer;
 	color: @button-text-color;
-	text-shadow: 0 1px 0 @button-text-shadow-color;
-   //.gradient(@button-bg-color-start, @button-bg-color-end);
+	text-shadow: @tabs-text-shadow;
+    .bg-gradient(@tabs-active-bg-color-start, @tabs-active-bg-color-start, @tabs-active-bg-color-end);
+
+    //border-left: 1px solid white;
+    //border-right: 1px solid white;
+    border-bottom: 5px solid @tabs-border-color;
 
 	&:hover {
     -webkit-background-size: 100% 150%;
@@ -35,34 +39,37 @@
    }
 }
 	.xf-grid-unit:first-child > .xf-tabs-button {
-		border-left-width:1px;
+		border-left: none;
 	}
 	.xf-grid-unit-1of2 ~ .xf-grid-unit:last-child > .xf-tabs-button,
 	.xf-grid-unit-1of3 ~ .xf-grid-unit:last-child > .xf-tabs-button,
 	.xf-grid-unit-1of4 ~ .xf-grid-unit:last-child > .xf-tabs-button	{
-		border-left-width:1px;
+		border-right: none;
 		margin-right: 0px;
 	}
 
 .xf-tabs-button-text {
 	display: block;
-	min-height: 24px;
+	height: 24px;
 	line-height: 24px;
 	vertical-align: middle;
    .overflow-ellipsis;
-	font-weight: bold;
+    color: @tabs-text-color;
 }
 
 .xf-tabs-button-active {
 	z-index: 1;
-	//.gradient(@button-active-bg-color-start, @button-active-bg-color-end);
-	color: @button-active-text-color;
-	text-shadow: 0 -1px 0 @button-active-text-shadow-color;
+	.bg-gradient(@tabs-active-bg-color-start, @tabs-active-bg-color-start, @tabs-active-bg-color-end);
+	color: @tabs-active-text-color;
+	text-shadow: @tabs-text-shadow;
+    font-weight: bold;
+    border-bottom: 5px solid @tabs-active-border-color;
 
 	&:hover {
 	-webkit-background-size: auto;
 			background-size: auto;
 			cursor: default;
+      border-bottom: 5px solid @tabs-active-border-color;
 	}
 }
 .xf-tabs-button-active .xf-tabs-button-text {
