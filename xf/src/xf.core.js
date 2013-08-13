@@ -68,9 +68,6 @@
         var compObj = $(XF.getComponentByID(compID).selector());
         XF.trigger('pages:start', compObj);
 
-        if (_.has(XF, 'UI')) {
-            XF.UI.enhanceView(compObj);
-        }   
         loadChildComponents(compObj);
     };
 
@@ -119,6 +116,10 @@
         }
 
         XF.Pages.init(options.animations);
+
+        if (_.has(XF, 'UI')) {
+            XF.UI.init();
+        }
 
         //XF.Pages.start();
         loadChildComponents(rootDOMObject);
@@ -205,9 +206,7 @@
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
-                if (_.has(XF, 'UI')) {
-                    XF.UI.enhanceView($(this));
-                }
+                XF.trigger('ui:enhance', $(this));
             }
         });
 
