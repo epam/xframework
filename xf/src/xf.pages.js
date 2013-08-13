@@ -62,10 +62,11 @@
          Initialises Pages: get current active page and binds necessary routes handling
          @private
          */
-        start : function(animations) {
+        init : function(animations) {
             XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
             XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
             XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
+            XF.on('pages:start', _.bind(XF.Pages.start, XF.Pages));
 
             if (_.has(animations, 'types') ) {
                 _.extend(this.animations.types, animations.types);
@@ -75,8 +76,13 @@
                 this.setDefaultAnimationType(animations.default);
             }
 
-            //TODO: move it to Pages.show and make showing first page by triggering empty route (should work withour routes!)
-            var pages =  rootDOMObject.find(' .' + this.pageClass);
+            this.start();
+        },
+
+        start: function (jqObj) {
+            jqObj = jqObj || $('body');
+            console.log('pages start', jqObj);
+            var pages =  jqObj.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
                 if(preselectedAP.length) {
@@ -170,7 +176,11 @@
 
 
             // scroll to top of page ofter page switch
-            window.scrollTo( 0, 1 );
+            //window.scrollTo( 0, 1 );
+
+            if (_.has(XF, 'UI')) {
+                XF.UI.enhanceView(this.activePage);
+            }
 
             // looking for components inside the page
             loadChildComponents(this.activePage[0]);
