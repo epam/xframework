@@ -1,7 +1,7 @@
 
     XF.UI.enhancementList.scrollable = {
         selector : '[data-scrollable=true]',
-        enhanceElement : 'Scrollable'
+        enhanceElement : 'scrollable'
     };
 
     /**
@@ -9,9 +9,9 @@
      @param scrollable DOM Object
      @private
      */
-    XF.UI.Scrollable = {
+    XF.UI.scrollable = {
 
-        Render : function(scrollable) {
+        render : function(scrollable) {
 
             var jQScrollable = $(scrollable);
             if(!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {

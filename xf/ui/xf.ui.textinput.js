@@ -6,15 +6,15 @@
                     'INPUT[type=datetime-local], INPUT[type=number], INPUT[type=color], TEXTAREA, ' +
                     //
                     'INPUT[type=range], INPUT[type=search]',
-        enhanceElement : 'Input'
+        enhanceElement : 'input'
     };
     /**
      Enhances text input view
      @param textInput DOM Object
      @private
      */
-    XF.UI.Input = {
-        Render : function (textInput) {
+    XF.UI.input = {
+        render : function (textInput) {
 
             var jQTextInput = $(textInput);
             if(!textInput || !jQTextInput instanceof $ || jQTextInput.attr('data-skip-enhance') == 'true') {

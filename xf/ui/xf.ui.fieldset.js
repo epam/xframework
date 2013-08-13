@@ -1,7 +1,7 @@
 
     XF.UI.enhancementList.fieldset = {
         selector : 'fieldset[data-role=controlgroup]',
-        enhanceElement : 'Fieldset'
+        enhanceElement : 'fieldset'
     };
 
     /**
@@ -9,9 +9,9 @@
      @param textInput DOM Object
      @private
      */
-    XF.UI.Fieldset =  {
+    XF.UI.fieldset =  {
 
-        Render : function(fieldset) {
+        render : function(fieldset) {
             var jQFieldset = $(fieldset);
             if(!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;

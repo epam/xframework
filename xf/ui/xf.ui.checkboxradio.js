@@ -1,7 +1,7 @@
 
     XF.UI.enhancementList.checkboxRadio = {
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
-        enhanceElement : 'CheckboxRadio'
+        enhanceElement : 'checkboxRadio'
     };
 
     /**
@@ -9,9 +9,9 @@
      @param textInput DOM Object
      @private
      */
-    XF.UI.CheckboxRadio = {
+    XF.UI.checkboxRadio = {
 
-        Render : function(chbRbInput) {
+        render : function(chbRbInput) {
 
             var jQChbRbInput = $(chbRbInput),
                 options = {
