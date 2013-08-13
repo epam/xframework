@@ -8,10 +8,10 @@
 
         selector : '[data-scrollable=true]',
 
-        render : function(scrollable) {
+        render : function (scrollable) {
 
             var jQScrollable = $(scrollable);
-            if(!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
+            if (!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -20,8 +20,9 @@
             jQScrollable.attr({'data-skip-enhance':true, 'id' : id});
 
             var children = jQScrollable.children();
+
             // always create wrapper
-            if(children.length == 1 && false) {
+            if (children.length == 1 && false) {
                 children.addClass('xf-scrollable-content');
             } else {
                 jQScrollable.append(
@@ -32,28 +33,33 @@
             }
 
             var wrapperId = jQScrollable.attr('id');
-            if(!wrapperId || wrapperId == '') {
+
+            if (!wrapperId || wrapperId == '') {
                 wrapperId = 'xf_scrollable_' + new Date().getTime();
                 jQScrollable.attr({'id':wrapperId});
             }
 
             var ISItem = jQScrollable.data('iscroll', new iScroll(wrapperId));
             var wrapperChanged = false;
-            var doRefreshIScroll = function() {
-                if(wrapperChanged) {
+
+            var doRefreshIScroll = function () {
+
+                if (wrapperChanged) {
                     wrapperChanged = false;
                     ISItem.data('iscroll').refresh();
                     bindHanlders();
                 }
             };
-            var needRefreshIScroll = function(){
-                if($.contains($('#' + wrapperId)[0], this)) {
+
+            var needRefreshIScroll = function (){
+
+                if ($.contains($('#' + wrapperId)[0], this)) {
                     wrapperChanged = true;
                     setTimeout(doRefreshIScroll, 100);
                 }
             };
 
-            var bindHanlders = function() {
+            var bindHanlders = function () {
                 $('#' + wrapperId + ' *')
                     .bind('detach', needRefreshIScroll)
                     .bind('hide', needRefreshIScroll)
@@ -63,7 +69,6 @@
                     .bind('html', needRefreshIScroll)
                     .bind('resize', needRefreshIScroll);
             };
-
             bindHanlders();
         }
     };

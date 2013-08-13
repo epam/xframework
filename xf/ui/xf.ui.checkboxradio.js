@@ -20,7 +20,8 @@
                     isSwitch : false,
                     label : ''
                 };
-            if(!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
+
+            if (!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -31,7 +32,7 @@
             var chbRbInputLabel = $('label[for=' + options.id + ']');
 
             // If the input doesn't have an associated label, quit
-            if(chbRbInputLabel.length) {
+            if (chbRbInputLabel.length) {
 
                 var typeValue = jQChbRbInput.attr('type').toLowerCase(),
                     wrapper = $('<div></div>'),
@@ -59,17 +60,6 @@
                     + '</label><%= options.labelFor %></div>'
                 );
                 jQChbRbInput.parent().html(_template({options : options}));
-
-                // fix iOS bug when labels don't check radios and checkboxes
-                /*
-                 wrapper.on('click', 'label[for="'+ chbRbInputID +'"]', function(){
-                 if (!$(this).data('bound')) {
-                 var $input = $('#'+ chbRbInputID);
-                 alert($input[0].checked);
-                 $input.attr({checked: !$input[0].checked});
-                 !$(this).data('bound', true)
-                 }
-                 })*/
             }
         }
     };
