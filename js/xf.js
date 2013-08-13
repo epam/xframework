@@ -2406,25 +2406,31 @@
          Reworks markup of a givven $ object
          @param jqObj $ item
          */
-        enhanceView : function(jqObj) {
+        enhanceView : function (jqObj) {
 
-            if(!jqObj instanceof $) {
+            if (!jqObj instanceof $) {
                 jqObj = $(jqObj);
-                if(!jqObj instanceof $) {
+
+                if (!jqObj instanceof $) {
                     return;
                 }
             }
 
-            _.each(XF.UI, function(enhancement, index, enhancementList) {
+            _.each(XF.UI, function (enhancement, index, enhancementList) {
+
                 if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
-                    jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each( function(){
+
+                    jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
                         var skip = false;
-                        _.each(XF.UI.enhanced.length, function(elem, index, enhancementList) {
-                            if(XF.UI.enhanced[i] === this) {
+
+                        _.each(XF.UI.enhanced.length, function (elem, index, enhancementList) {
+
+                            if (XF.UI.enhanced[i] === this) {
                                 skip = true;
                             }
                         });
-                        if(!skip & $(this).attr('data-skip-enhance') != 'true') {
+
+                        if (!skip & $(this).attr('data-skip-enhance') != 'true') {
                             XF.UI.enhanced.push(this);
                             enhancement.render(this);
                         }
@@ -2492,10 +2498,6 @@
     });
 
 
-//    XF.UI.enhancementList.button = {
-//            selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
-//            enhanceElement : 'button'
-//    };
     /**
      Make the DOM object look like a button
      @param button DOM Object
@@ -2664,11 +2666,6 @@
     };
 
 
-//    XF.UI.enhancementList.checkboxRadio = {
-//        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
-//        enhanceElement : 'checkboxRadio'
-//    };
-
     /**
      Enhances checkbox or radio button input view
      @param textInput DOM Object
@@ -2745,11 +2742,6 @@
     };
 
 
-//    XF.UI.enhancementList.fieldset = {
-//        selector : 'fieldset[data-role=controlgroup]',
-//        enhanceElement : 'fieldset'
-//    };
-
     /**
      Enhances fieldset view
      @param textInput DOM Object
@@ -2794,11 +2786,6 @@
     };
 
 
-//    XF.UI.enhancementList.list = {
-//        selector : 'UL[data-role=listview], OL[data-role=listview]',
-//        enhanceElement : 'list'
-//    };
-
     /**
      Enhances ul/ol lists view
      @param list DOM Object
@@ -2811,10 +2798,9 @@
         render : function (list) {
             var jQList = $(list);
 
-            if(!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
+            if (!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
                 return;
             }
-
             var listItems = jQList.children('li'),
                 linkItems = listItems.children('a'),
                 listItemsScope = [],
@@ -2832,7 +2818,8 @@
                         $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-' + icon)
                     );
                     var iconPos = anchor.parent().attr('data-iconpos');
-                    if(iconPos != 'left' && iconPos != 'right') {
+
+                    if (iconPos != 'left' && iconPos != 'right') {
                         iconPos = 'right';
                     }
                     anchor.addClass('xf-li-with-icon-' + iconPos);
@@ -2842,16 +2829,18 @@
                 jQList.addClass('xf-listview-fullwidth');
             }
 
-            linkItems.children('img').parent().each(function(){
+            linkItems.children('img').parent().each(function (){
                 var anchor = $(this);
                 var thumbPos = anchor.parent().attr('data-thumbpos');
-                if(thumbPos != 'right' && thumbPos != 'left') {
+
+                if (thumbPos != 'right' && thumbPos != 'left') {
                     thumbPos = 'left';
                 }
                 anchor.addClass('xf-li-with-thumb-' + thumbPos);
                 anchor.children('img').addClass('xf-li-thumb xf-li-thumb-' + thumbPos);
             });
-            linkItems.each(function() {
+
+            linkItems.each(function () {
                 var anchor = $(this);
                 anchor.append(
                     $('<div class=xf-btn-text></div>')
@@ -2865,11 +2854,11 @@
 
             listItems.find('p').addClass('xf-li-desc');
 
-            listItems.filter('.xf-li-static').each(function(){
+            listItems.filter('.xf-li-static').each(function (){
                 $(this).wrapInner('<div class=xf-li-wrap />');
             });
 
-            $.each(listItems, function(key, value) {
+            $.each(listItems, function (key, value) {
                 var html = listItems.eq(key).html(),
                     role = listItems.eq(key).attr('data-role') || '',
                     class_ = (listItems.eq(key).attr('class') || '') + ' xf-li',
@@ -2940,7 +2929,7 @@
          Attaches popup (dialog/notification/etc.) to the page
          @param jqPopup $ object representing popup
          */
-        show : function(jqPopup) {
+        show : function (jqPopup) {
             XF.Device.getViewport().append(jqPopup);
         },
 
@@ -2948,7 +2937,7 @@
          Detaches popup (dialog/notification/etc.) from the page
          @param jqPopup $ object representing popup
          */
-        hide : function(jqPopup) {
+        hide : function (jqPopup) {
             jqPopup.detach();
             XF.UI.removeFromIsset('popup', jqPopup.attr('id'));
         },
@@ -2962,7 +2951,7 @@
          @param modal Boolean Flag which indicates whether the dialog is modal
          @return $ Dialog object
          */
-        createDialog : function(headerText, messageText, buttons) {
+        createDialog : function (headerText, messageText, buttons) {
 
             /*
              <div class="xf-dialog-box">
@@ -2989,14 +2978,14 @@
              </div>
              */
 
-            var jqDialog = this.create();
-            var _template = _.template(
+            var jqDialog = this.create(),
+                _template = _.template(
                 '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
                 + '<div class="xf-dialog-box-content"><%= messageText %></div>'
                 + '<div class="xf-dialog-box-footer clearfix"></div></div>'
             );
-            jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
 
+            jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
             var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
 
             if (!buttons) {
@@ -3008,12 +2997,13 @@
                 }]
             }
 
-            if(buttons) {
-                var btnCount = buttons.length;
+            if (buttons) {
+                var btnCount = buttons.length,
+                    jqBtn;
 
-                var jqBtn;
-                _.each(buttons, function(btn, index, buttons){
-                    if(btn instanceof $){
+                _.each(buttons, function (btn, index, buttons){
+
+                    if (btn instanceof $){
                         jqBtn = btn;
                     } else {
                         jqBtn = XF.UI.button.create(btn);
@@ -3036,7 +3026,7 @@
          @param iconName Icon name (optional)
          @return $ Notification object
          */
-        createNotification : function(messageText, iconName) {
+        createNotification : function (messageText, iconName) {
 
             /*
              <div class="xf-notification">
@@ -3059,7 +3049,7 @@
 
             jqNotification.find('.xf-dialog-content').html(_template({messageText : messageText}));
 
-            if(iconName && iconName != '') {
+            if (iconName && iconName != '') {
                 jqNotification.find('.xf-notification-wrap')
                     .prepend(
                         $('<div></div>')
@@ -3070,7 +3060,6 @@
                             )
                     );
             }
-
             return jqNotification;
         },
 
@@ -3093,7 +3082,7 @@
          Saves passed popup as default loading notification
          @param jqPopup $ object representing popup
          */
-        setLoadingNotification : function(jqPopup) {
+        setLoadingNotification : function (jqPopup) {
             this.loadingNotification = jqPopup;
         },
 
@@ -3103,18 +3092,17 @@
          @param icon Icon name (optional)
          */
         showLoading : function (messageText, icon) {
-            if(messageText || icon) {
-                if(this.loadingNotification) {
+
+            if (messageText || icon) {
+
+                if (this.loadingNotification) {
                     this.hideLoading();
                 }
-                this.setLoadingNotification(
-                    this.createNotification(messageText, icon)
-                );
+                this.setLoadingNotification(this.createNotification(messageText, icon));
             }
-            if(!!this.loadingNotification) {
-                this.setLoadingNotification(
-                    this.createNotification('Loading...')
-                );
+
+            if (!!this.loadingNotification) {
+                this.setLoadingNotification(this.createNotification('Loading...'));
             }
             this.show(this.loadingNotification);
         },
@@ -3123,7 +3111,8 @@
          Hides loading notification
          */
         hideLoading : function () {
-            if(this.loadingNotification) {
+
+            if (this.loadingNotification) {
                 this.hide(this.loadingNotification);
             }
         },
@@ -3132,7 +3121,8 @@
          Hides Dialog
          */
         hideDialog : function () {
-            if(this.dialog) {
+
+            if (this.dialog) {
                 this.hide(this.dialog);
             }
         },
@@ -3149,11 +3139,6 @@
         }
     };
 
-
-//    XF.UI.enhancementList.scrollable = {
-//        selector : '[data-scrollable=true]',
-//        enhanceElement : 'scrollable'
-//    };
 
     /**
      Adds scrolling functionality
@@ -3225,15 +3210,6 @@
     };
 
 
-//    XF.UI.enhancementList.textinput = {
-//        selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
-//                    'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
-//                    'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
-//                    'INPUT[type=datetime-local], INPUT[type=number], INPUT[type=color], TEXTAREA, ' +
-//                    //
-//                    'INPUT[type=range], INPUT[type=search]',
-//        enhanceElement : 'input'
-//    };
     /**
      Enhances text input view
      @param textInput DOM Object
@@ -3248,9 +3224,9 @@
                     'INPUT[type=range], INPUT[type=search]',
 
         render : function (textInput) {
-
             var jQTextInput = $(textInput);
-            if(!textInput || !jQTextInput instanceof $ || jQTextInput.attr('data-skip-enhance') == 'true') {
+
+            if (!textInput || !jQTextInput instanceof $ || jQTextInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -3262,15 +3238,17 @@
             // 	add class "xf-input-text".
             jQTextInput.addClass('xf-input-text');
 
-            var isInputElement = (textInput.nodeName == 'INPUT');
-            var textInputType = jQTextInput.attr('type');
+            var isInputElement = (textInput.nodeName == 'INPUT'),
+                textInputType = jQTextInput.attr('type');
 
             // For inputs of types "range" and "search" change type to "text".
-            if(textInputType == 'search') {
-                var newTextInput = $('<input type="text"/>');
-                var newTIAttrs = {};
-                _.each(textInput.attributes, function(attribute) {
-                    if(attribute.name == 'type') {
+            if (textInputType == 'search') {
+                var newTextInput = $('<input type="text"/>'),
+                    newTIAttrs = {};
+
+                _.each(textInput.attributes, function (attribute) {
+
+                    if (attribute.name == 'type') {
                         return;
                     }
                     newTIAttrs[attribute.name] = attribute.value;
@@ -3293,18 +3271,18 @@
                  </button>
                  </div>
                  */
-            } else if(textInputType == 'number' || textInputType == 'range') {
+            } else if (textInputType == 'number' || textInputType == 'range') {
 
-                var minValue = jQTextInput.attr('min');
-                var maxValue = jQTextInput.attr('max');
-                var selValue = parseFloat(jQTextInput.attr('value'));
-                var step = parseFloat(jQTextInput.attr('step')) || 1;
+                var minValue = jQTextInput.attr('min'),
+                    maxValue = jQTextInput.attr('max'),
+                    selValue = parseFloat(jQTextInput.attr('value')),
+                    step = parseFloat(jQTextInput.attr('step')) || 1,
+                    newTextInput = $('<input type="text"/>'),
+                    newTIAttrs = {};
 
-                // For inputs of types "range" and "search" change type to "text".
-                var newTextInput = $('<input type="text"/>');
-                var newTIAttrs = {};
-                _.each(textInput.attributes, function(attribute) {
-                    if(attribute.name == 'type') {
+                _.each(textInput.attributes, function (attribute) {
+
+                    if (attribute.name == 'type') {
                         return;
                     }
                     newTIAttrs[attribute.name] = attribute.value;
@@ -3333,89 +3311,47 @@
 
                 var rangeWrapper = null;
 
-                if(textInputType == 'number') {
+                if (textInputType == 'number') {
 
                     jQTextInput.outerHtml(numberWrapper);
                     jQTextInput = numberWrapper;
                     textInput = numberWrapper[0];
 
-                } else if(textInputType == 'range') {
-
-                    /*
-                     <div class="xf-input-range">
-                     <div class="xf-range-wrap">
-                     <div class="xf-input-range-min">0</div>
-                     <div class="xf-input-range-slider">
-                     <div class="xf-input-range-track">
-                     <div class="xf-input-range-value" style="width: 30%">
-                     <div class="xf-input-range-control" tabindex="0">
-                     <div class="xf-input-range-thumb" title="400"></div>
-                     </div>
-                     </div>
-                     </div>
-                     </div>
-                     <div class="xf-input-range-max">1200</div>
-                     </div>
-                     </div>
-                     */
+                } else if (textInputType == 'range') {
 
                     rangeWrapper = $('<div></div>').addClass('xf-range');
                     rangeWrapper.append(numberWrapper);
 
                     // If there is no either min or max attribute -- don't render the slider.
-                    if((minValue || minValue === 0) && (maxValue || maxValue === 0)) {
+                    if ((minValue || minValue === 0) && (maxValue || maxValue === 0)) {
 
                         minValue = parseFloat(minValue);
                         maxValue = parseFloat(maxValue);
 
-                        var percValue = (selValue - minValue) * 100 / (maxValue - minValue);
-                        rangeWrapper.append(
-                                $('<div></div>')
-                                    .addClass('xf-input-range')
-                                    .append(
-                                        $('<div></div>')
-                                            .addClass('xf-range-wrap')
-                                            .append(
-                                                $('<div></div>')
-                                                    .addClass('xf-input-range-min')
-                                                    .html(minValue)
-                                            )
-                                            .append(
-                                                $('<div></div>')
-                                                    .addClass('xf-input-range-slider')
-                                                    .append(
-                                                        $('<div></div>')
-                                                            .addClass('xf-input-range-track')
-                                                            .append(
-                                                                $('<div></div>')
-                                                                    .addClass('xf-input-range-value')
-                                                                    .css({'width':'' + percValue + '%'})
-                                                                    .append(
-                                                                        $('<div></div>')
-                                                                            .addClass('xf-input-range-control')
-                                                                            .attr({'tabindex':'0'})
-                                                                            .append(
-                                                                                $('<div></div>')
-                                                                                    .addClass('xf-input-range-thumb')
-                                                                                    .attr({'title':'' + selValue})
-                                                                                    .css({'left':'' + 100 + '%'})
-                                                                            )
-                                                                    )
-                                                            )
-                                                    )
-                                            )
-                                            .append(
-                                                $('<div></div>')
-                                                    .addClass('xf-input-range-max')
-                                                    .html(maxValue)
-                                            )
-                                    )
-                            )
-                            .append($('<div></div>').addClass('xf-slider'));
+                        var percValue = (selValue - minValue) * 100 / (maxValue - minValue),
+                            _template = _.template(
+                                 '<div class="xf-input-range">'
+                                 + '<div class="xf-range-wrap">'
+                                 + '<div class="xf-input-range-min"><%= minValue %></div>'
+                                 + '<div class="xf-input-range-slider">'
+                                 + '<div class="xf-input-range-track">'
+                                 + '<div class="xf-input-range-value" style="width: 30%">'
+                                 + '<div class="xf-input-range-control" tabindex="0">'
+                                 + '<div class="xf-input-range-thumb" style="left:100%" title="<%= selValue %>"></div>'
+                                 + '</div>'
+                                 + '</div>'
+                                 + '</div>'
+                                 + '</div>'
+                                 + '<div class="xf-input-range-max"><%= maxValue %></div>'
+                                 + '</div>'
+                                 + '</div>'
+                            );
+                        rangeWrapper.append(_template({minValue : minValue, maxValue: maxValue, selValue: selValue}));
 
                         jQTextInput.outerHtml(rangeWrapper);
                         jQTextInput = rangeWrapper;
                         textInput = rangeWrapper[0];
+                        console.log(textInput)
                     }
 
                 }
@@ -3609,7 +3545,7 @@
                 });
             }
 
-            var textInputID = jQTextInput.attr('id');
+            var textInputID = (jQTextInput[0].nodeName === 'INPUT') ? jQTextInput.attr('id') : jQTextInput.find('input').eq(0).attr('id');
             var textInputLabel = (textInputID.length) ? $('label[for=' + textInputID + ']') : [];
 
             // If the input doesn't have an associated label, quit

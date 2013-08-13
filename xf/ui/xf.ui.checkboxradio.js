@@ -1,9 +1,4 @@
 
-//    XF.UI.enhancementList.checkboxRadio = {
-//        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
-//        enhanceElement : 'checkboxRadio'
-//    };
-
     /**
      Enhances checkbox or radio button input view
      @param textInput DOM Object

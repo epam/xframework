@@ -1,9 +1,4 @@
 
-//    XF.UI.enhancementList.fieldset = {
-//        selector : 'fieldset[data-role=controlgroup]',
-//        enhanceElement : 'fieldset'
-//    };
-
     /**
      Enhances fieldset view
      @param textInput DOM Object

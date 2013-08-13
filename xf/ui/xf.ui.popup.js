@@ -47,7 +47,7 @@
          Attaches popup (dialog/notification/etc.) to the page
          @param jqPopup $ object representing popup
          */
-        show : function(jqPopup) {
+        show : function (jqPopup) {
             XF.Device.getViewport().append(jqPopup);
         },
 
@@ -55,7 +55,7 @@
          Detaches popup (dialog/notification/etc.) from the page
          @param jqPopup $ object representing popup
          */
-        hide : function(jqPopup) {
+        hide : function (jqPopup) {
             jqPopup.detach();
             XF.UI.removeFromIsset('popup', jqPopup.attr('id'));
         },
@@ -69,7 +69,7 @@
          @param modal Boolean Flag which indicates whether the dialog is modal
          @return $ Dialog object
          */
-        createDialog : function(headerText, messageText, buttons) {
+        createDialog : function (headerText, messageText, buttons) {
 
             /*
              <div class="xf-dialog-box">
@@ -96,14 +96,14 @@
              </div>
              */
 
-            var jqDialog = this.create();
-            var _template = _.template(
+            var jqDialog = this.create(),
+                _template = _.template(
                 '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
                 + '<div class="xf-dialog-box-content"><%= messageText %></div>'
                 + '<div class="xf-dialog-box-footer clearfix"></div></div>'
             );
-            jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
 
+            jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
             var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
 
             if (!buttons) {
@@ -115,12 +115,13 @@
                 }]
             }
 
-            if(buttons) {
-                var btnCount = buttons.length;
+            if (buttons) {
+                var btnCount = buttons.length,
+                    jqBtn;
 
-                var jqBtn;
-                _.each(buttons, function(btn, index, buttons){
-                    if(btn instanceof $){
+                _.each(buttons, function (btn, index, buttons){
+
+                    if (btn instanceof $){
                         jqBtn = btn;
                     } else {
                         jqBtn = XF.UI.button.create(btn);
@@ -143,7 +144,7 @@
          @param iconName Icon name (optional)
          @return $ Notification object
          */
-        createNotification : function(messageText, iconName) {
+        createNotification : function (messageText, iconName) {
 
             /*
              <div class="xf-notification">
@@ -166,7 +167,7 @@
 
             jqNotification.find('.xf-dialog-content').html(_template({messageText : messageText}));
 
-            if(iconName && iconName != '') {
+            if (iconName && iconName != '') {
                 jqNotification.find('.xf-notification-wrap')
                     .prepend(
                         $('<div></div>')
@@ -177,7 +178,6 @@
                             )
                     );
             }
-
             return jqNotification;
         },
 
@@ -200,7 +200,7 @@
          Saves passed popup as default loading notification
          @param jqPopup $ object representing popup
          */
-        setLoadingNotification : function(jqPopup) {
+        setLoadingNotification : function (jqPopup) {
             this.loadingNotification = jqPopup;
         },
 
@@ -210,18 +210,17 @@
          @param icon Icon name (optional)
          */
         showLoading : function (messageText, icon) {
-            if(messageText || icon) {
-                if(this.loadingNotification) {
+
+            if (messageText || icon) {
+
+                if (this.loadingNotification) {
                     this.hideLoading();
                 }
-                this.setLoadingNotification(
-                    this.createNotification(messageText, icon)
-                );
+                this.setLoadingNotification(this.createNotification(messageText, icon));
             }
-            if(!!this.loadingNotification) {
-                this.setLoadingNotification(
-                    this.createNotification('Loading...')
-                );
+
+            if (!!this.loadingNotification) {
+                this.setLoadingNotification(this.createNotification('Loading...'));
             }
             this.show(this.loadingNotification);
         },
@@ -230,7 +229,8 @@
          Hides loading notification
          */
         hideLoading : function () {
-            if(this.loadingNotification) {
+
+            if (this.loadingNotification) {
                 this.hide(this.loadingNotification);
             }
         },
@@ -239,7 +239,8 @@
          Hides Dialog
          */
         hideDialog : function () {
-            if(this.dialog) {
+
+            if (this.dialog) {
                 this.hide(this.dialog);
             }
         },

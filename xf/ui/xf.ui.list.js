@@ -1,9 +1,4 @@
 
-//    XF.UI.enhancementList.list = {
-//        selector : 'UL[data-role=listview], OL[data-role=listview]',
-//        enhanceElement : 'list'
-//    };
-
     /**
      Enhances ul/ol lists view
      @param list DOM Object
@@ -16,10 +11,9 @@
         render : function (list) {
             var jQList = $(list);
 
-            if(!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
+            if (!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
                 return;
             }
-
             var listItems = jQList.children('li'),
                 linkItems = listItems.children('a'),
                 listItemsScope = [],
@@ -37,7 +31,8 @@
                         $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-' + icon)
                     );
                     var iconPos = anchor.parent().attr('data-iconpos');
-                    if(iconPos != 'left' && iconPos != 'right') {
+
+                    if (iconPos != 'left' && iconPos != 'right') {
                         iconPos = 'right';
                     }
                     anchor.addClass('xf-li-with-icon-' + iconPos);
@@ -47,16 +42,18 @@
                 jQList.addClass('xf-listview-fullwidth');
             }
 
-            linkItems.children('img').parent().each(function(){
+            linkItems.children('img').parent().each(function (){
                 var anchor = $(this);
                 var thumbPos = anchor.parent().attr('data-thumbpos');
-                if(thumbPos != 'right' && thumbPos != 'left') {
+
+                if (thumbPos != 'right' && thumbPos != 'left') {
                     thumbPos = 'left';
                 }
                 anchor.addClass('xf-li-with-thumb-' + thumbPos);
                 anchor.children('img').addClass('xf-li-thumb xf-li-thumb-' + thumbPos);
             });
-            linkItems.each(function() {
+
+            linkItems.each(function () {
                 var anchor = $(this);
                 anchor.append(
                     $('<div class=xf-btn-text></div>')
@@ -70,11 +67,11 @@
 
             listItems.find('p').addClass('xf-li-desc');
 
-            listItems.filter('.xf-li-static').each(function(){
+            listItems.filter('.xf-li-static').each(function (){
                 $(this).wrapInner('<div class=xf-li-wrap />');
             });
 
-            $.each(listItems, function(key, value) {
+            $.each(listItems, function (key, value) {
                 var html = listItems.eq(key).html(),
                     role = listItems.eq(key).attr('data-role') || '',
                     class_ = (listItems.eq(key).attr('class') || '') + ' xf-li',
