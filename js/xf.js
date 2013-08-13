@@ -134,7 +134,7 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('body').on('click tap', '[data-href]', function() {
+        $('body').on('tap click', '[data-href]', function() {
             var animationType = $(this).data('animation') || null;
             if (animationType) {
                 XF.trigger('pages:animation:next', animationType);
@@ -2413,6 +2413,32 @@
 
     _.extend(XF.UI, /** @lends XF.UI */ {
 
+        enhance : function (el) {;
+
+            _.each(this, function (enhancement, index) {
+
+                if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
+
+                    $(document).find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
+                        var skip = false;
+
+                        _.each(XF.UI.enhanced.length, function (elem, index) {
+
+                            if (XF.UI.enhanced[i] === this) {
+                                skip = true;
+                            }
+                        });
+
+                        if (!skip & $(this).attr('data-skip-enhance') != 'true') {
+                            XF.UI.enhanced.push(this);
+                            enhancement.render(this);
+                        }
+                    });
+                }
+            });
+
+        },
+
         /**
          Reworks markup of a givven $ object
          @param jqObj $ item
@@ -2427,14 +2453,14 @@
                 }
             }
 
-            _.each(XF.UI, function (enhancement, index, enhancementList) {
+            _.each(XF.UI, function (enhancement, index) {
 
                 if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
 
                     jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
                         var skip = false;
 
-                        _.each(XF.UI.enhanced.length, function (elem, index, enhancementList) {
+                        _.each(XF.UI.enhanced.length, function (elem, index) {
 
                             if (XF.UI.enhanced[i] === this) {
                                 skip = true;
