@@ -99,33 +99,9 @@
              */
             dataUrlFormatter: function(compName) {
                 return XF.Settings.property('dataUrlPrefix') + compName + XF.Settings.property('dataUrlPostfix');
-            },
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 100
-             @type Number
-             */
-            touchableSwipeLength: 100,
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 700
-             @type Number
-             */
-            touchableDoubleTapInterval: 700,
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 300
-             @type Number
-             */
-            touchableLongTapInterval: 500,
+            }
 
 
-
-            //TODO merge with animation types
-            animations: {}
         },
 
         /**
