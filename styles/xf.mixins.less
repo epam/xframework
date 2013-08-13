@@ -1,3 +1,20 @@
+.bg-gradient(@color: #F5F5F5, @start: #EEE, @stop: #FFF) {
+    background: @color;
+    background: -webkit-gradient(linear,
+    left bottom,
+    left top,
+    color-stop(0, @start),
+    color-stop(1, @stop));
+    background: -ms-linear-gradient(bottom,
+    @start,
+    @stop);
+    background: -moz-linear-gradient(center bottom,
+    @start 0%,
+    @stop 100%);
+    background: -o-linear-gradient(@stop,
+    @start);
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@stop,@start));
+}
 
 .clearfix(...) {
 	*zoom: 1;
@@ -78,61 +95,61 @@
 		  border-radius: @arguments;
 }
 .xf-corner-tl {
-	-moz-border-radius-topleft: 		8px;
-	-webkit-border-top-left-radius: 	8px;
-	border-top-left-radius: 			8px;
+	-moz-border-radius-topleft: 		@global-border-radius;;
+	-webkit-border-top-left-radius: 	@global-border-radius;;
+	border-top-left-radius: 			@global-border-radius;;
 }
 .xf-corner-tr {
-	-moz-border-radius-topright: 		8px;
-	-webkit-border-top-right-radius: 	8px;
-	border-top-right-radius: 			8px;
+	-moz-border-radius-topright: 		@global-border-radius;;
+	-webkit-border-top-right-radius: 	@global-border-radius;;
+	border-top-right-radius: 			@global-border-radius;;
 }
 .xf-corner-bl {
-	-moz-border-radius-bottomleft: 		8px;
-	-webkit-border-bottom-left-radius: 	8px;
-	border-bottom-left-radius: 			8px;
+	-moz-border-radius-bottomleft: 		@global-border-radius;;
+	-webkit-border-bottom-left-radius: 	@global-border-radius;;
+	border-bottom-left-radius: 			@global-border-radius;;
 }
 .xf-corner-br {
-	-moz-border-radius-bottomright: 	8px;
-	-webkit-border-bottom-right-radius: 8px;
-	border-bottom-right-radius: 		8px;
+	-moz-border-radius-bottomright: 	@global-border-radius;;
+	-webkit-border-bottom-right-radius: @global-border-radius;;
+	border-bottom-right-radius: 		@global-border-radius;;
 }
 .xf-corner-top {
-	-moz-border-radius-topleft: 		8px;
-	-webkit-border-top-left-radius: 	8px;
-	border-top-left-radius: 			8px;
-	-moz-border-radius-topright: 		8px;
-	-webkit-border-top-right-radius: 	8px;
-	border-top-right-radius: 			8px;
+	-moz-border-radius-topleft: 		@global-border-radius;;
+	-webkit-border-top-left-radius: 	@global-border-radius;;
+	border-top-left-radius: 			@global-border-radius;;
+	-moz-border-radius-topright: 		@global-border-radius;;
+	-webkit-border-top-right-radius: 	@global-border-radius;;
+	border-top-right-radius: 			@global-border-radius;;
 }
 .xf-corner-bottom {
-	-moz-border-radius-bottomleft: 		8px;
-	-webkit-border-bottom-left-radius: 	8px;
-	border-bottom-left-radius: 			8px;
-	-moz-border-radius-bottomright: 	8px;
-	-webkit-border-bottom-right-radius: 8px;
-	border-bottom-right-radius: 		8px;
+	-moz-border-radius-bottomleft: 		@global-border-radius;;
+	-webkit-border-bottom-left-radius: 	@global-border-radius;;
+	border-bottom-left-radius: 			@global-border-radius;;
+	-moz-border-radius-bottomright: 	@global-border-radius;;
+	-webkit-border-bottom-right-radius: @global-border-radius;;
+	border-bottom-right-radius: 		@global-border-radius;;
 	}
 .xf-corner-right {
-	-moz-border-radius-topright: 		8px;
-	-webkit-border-top-right-radius: 	8px;
-	border-top-right-radius: 			8px;
-	-moz-border-radius-bottomright: 	8px;
-	-webkit-border-bottom-right-radius: 8px;
-	border-bottom-right-radius: 		8px;
+	-moz-border-radius-topright: 		@global-border-radius;;
+	-webkit-border-top-right-radius: 	@global-border-radius;;
+	border-top-right-radius: 			@global-border-radius;;
+	-moz-border-radius-bottomright: 	@global-border-radius;;
+	-webkit-border-bottom-right-radius: @global-border-radius;;
+	border-bottom-right-radius: 		@global-border-radius;
 }
 .xf-corner-left {
-	-moz-border-radius-topleft: 		8px;
-	-webkit-border-top-left-radius: 	8px;
-	border-top-left-radius: 			8px;
-	-moz-border-radius-bottomleft: 		8px;
-	-webkit-border-bottom-left-radius: 	8px;
-	border-bottom-left-radius: 			8px;
+	-moz-border-radius-topleft: 		@global-border-radius;
+	-webkit-border-top-left-radius: 	@global-border-radius;
+	border-top-left-radius: 			@global-border-radius;
+	-moz-border-radius-bottomleft: 		@global-border-radius;
+	-webkit-border-bottom-left-radius: 	@global-border-radius;
+	border-bottom-left-radius: 			@global-border-radius;
 }
 .xf-corner-all {
-	-moz-border-radius: 				8px;
-	-webkit-border-radius: 				8px;
-	border-radius: 						8px;
+	-moz-border-radius: 				@global-border-radius;
+	-webkit-border-radius: 				@global-border-radius;
+	border-radius: 						@global-border-radius;
 }
 .xf-corner-none {
 	-moz-border-radius: 				   0;

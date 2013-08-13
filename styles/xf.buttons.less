@@ -24,8 +24,8 @@
   line-height: 28px;
   font-size: 18px;
   vertical-align: middle;
-  border-radius: 8px;
   cursor: pointer;
+  border-bottom: @button-border-size solid darken(@button-bg-color-end, 10%);
 }
 .xf-button-text {
   display: block;
@@ -40,12 +40,12 @@
   display: inline-block;
   height: 29px;
   min-width: 50px;
-  padding: 4px;
+  padding: 5px;
   margin-bottom: 4px;
   line-height: 1px;/*?*/
-  border-radius: 4px;
   font: 15px sans-serif;
   line-height: 18px;
+  border: none;
 
   *margin-left: .3em;
   &:first-child {
@@ -120,17 +120,13 @@
 .xf-button,
 .xf-button-small {
   color: @button-text-color;
-  border:1px solid @button-border-color;
   text-shadow: 0 1px 0 @button-text-shadow-color;
-  .buttonBackground(@button-bg-color-start, @button-bg-color-end);
+  .bg-gradient(@button-bg-color-start, @button-bg-color-start, @button-bg-color-end);
   .bgclip(border-box);
 
-  &:focus /*hover*/ {
-    .background-size( 100% 140% );
+  &:focus, &:hover /*hover*/ {
+    .bg-gradient(lighten(@button-bg-color-start, 5%), lighten(@button-bg-color-start, 5%), lighten(@button-bg-color-end, 5%));
   }
-}
-.xf-button {
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 1px 2px rgba(0,0,0,.5);
 }
 
 .xf-button-small {
@@ -140,21 +136,22 @@
 
 .xf-button-active,
 .xf-button-special {
-  border: 1px solid @button-active-border-color;
-  .buttonBackground(@button-active-bg-color-start, @button-active-bg-color-end);
+  .bg-gradient(@button-active-bg-color-start, @button-active-bg-color-start, @button-active-bg-color-end);
   color: @button-active-text-color;
   text-shadow: 0 1px 0 @button-active-text-shadow-color;
-}
-.xf-button-back.xf-button-active:before,
-.xf-button-back.xf-button-special:before {
-  background: @button-active-border-color;
-}
-.xf-button-back.xf-button-active:after {
-  .gradient(~"linear-gradient(-45deg, @button-active-bg-color-start 0%,@button-active-bg-color-end 100%)");
-  background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0%,@button-active-bg-color-start), color-stop(100%, @button-active-bg-color-end));
+  border-bottom: @button-border-size solid darken(@button-active-bg-color-end, 10%);
+
+  &:focus, &:hover {
+    .bg-gradient(lighten(@button-active-bg-color-start, 5%), lighten(@button-active-bg-color-start, 5%), lighten(@button-active-bg-color-end, 5%));
+  }
 }
 .xf-button-alert {
-  .buttonBackground(@button-alert-bg-color-start, @button-alert-bg-color-end);
+  .bg-gradient(@button-alert-bg-color-start, @button-alert-bg-color-start, @button-alert-bg-color-end);
+  border-bottom: @button-border-size solid darken(@button-alert-bg-color-end, 10%);
   color: @button-alert-text-color;
   text-shadow: 0 1px 0 @button-alert-text-shadow-color;
+
+  &:focus, &:hover {
+    .bg-gradient(lighten(@button-alert-bg-color-start, 5%), lighten(@button-alert-bg-color-start, 5%), lighten(@button-alert-bg-color-end, 5%));
+  }
 }

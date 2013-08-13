@@ -145,7 +145,7 @@
                 this.trigger('init');
 
                 this.trigger('construct');
-                XF.trigger(this.id + ':constructed');
+                XF.trigger('component:' + this.id + ':constructed');
             };
             /** @ignore */
             var modelConstructed = function() {
