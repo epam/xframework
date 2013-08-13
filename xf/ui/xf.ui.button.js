@@ -1,15 +1,15 @@
 
     XF.UI.enhancementList.button = {
             selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
-            enhanceElement : 'Button'
+            enhanceElement : 'button'
     };
     /**
      Make the DOM object look like a button
      @param button DOM Object
      @private
      */
-    XF.UI.Button = {
-        Render : function(button) {
+    XF.UI.button = {
+        render : function(button) {
             var jQButton = $(button);
             if(!button || !jQButton instanceof $) {
                 return;
@@ -121,7 +121,7 @@
          @param buttonDescr Object
          @return $
          */
-        Create : function (buttonDescr)  {
+        create : function (buttonDescr)  {
             /*
              buttonDescr = {
              text,
@@ -162,7 +162,7 @@
 
             jQButton.attr(attrs);
 
-            XF.UI.Button.Render(jQButton[0]);
+            this.render(jQButton[0]);
 
             return jQButton;
         }

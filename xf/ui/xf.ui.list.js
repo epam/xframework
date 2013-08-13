@@ -1,7 +1,7 @@
 
     XF.UI.enhancementList.list = {
         selector : 'UL[data-role=listview], OL[data-role=listview]',
-        enhanceElement : 'List'
+        enhanceElement : 'list'
     };
 
     /**
@@ -9,9 +9,9 @@
      @param list DOM Object
      @private
      */
-    XF.UI.List = {
+    XF.UI.list = {
 
-        Render : function (list) {
+        render : function (list) {
             var jQList = $(list);
 
             if(!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {

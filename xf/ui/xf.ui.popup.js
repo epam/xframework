@@ -4,13 +4,13 @@
      @return $
      @private
      */
-    XF.UI.Popup = {
+    XF.UI.popup = {
         Create : function () {
             /*
              <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
              */
             var id = 'xf-' + Math.floor(Math.random() * 10000),
-                idStack = XF.UI.checkInIsset('Popup'),
+                idStack = XF.UI.checkInIsset('popup'),
                 newId = false;
 
             for (var i in idStack) {
@@ -25,7 +25,7 @@
             }
 
             if (!newId) {
-                XF.UI.issetElements.push({type : 'Popup', id : id});
+                XF.UI.issetElements.push({type : 'popup', id : id});
             }
             var jqPopup = $('<div class="xf-dialog " id="' + id + '"><div class="xf-dialog-content"></div></div>');
 
@@ -38,16 +38,16 @@
          @param messageText String to show in dialog body
          @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
          */
-        ShowDialog : function (headerText, messageText, buttons) {
-            var popup = this.CreateDialog(headerText, messageText, buttons);
-            this.Show(popup);
+        showDialog : function (headerText, messageText, buttons) {
+            var popup = this.createDialog(headerText, messageText, buttons);
+            this.show(popup);
         },
 
         /**
          Attaches popup (dialog/notification/etc.) to the page
          @param jqPopup $ object representing popup
          */
-        Show : function(jqPopup) {
+        show : function(jqPopup) {
             XF.Device.getViewport().append(jqPopup);
         },
 
@@ -55,9 +55,9 @@
          Detaches popup (dialog/notification/etc.) from the page
          @param jqPopup $ object representing popup
          */
-        Hide : function(jqPopup) {
+        hide : function(jqPopup) {
             jqPopup.detach();
-            XF.UI.removeFromIsset('Popup', jqPopup.attr('id'));
+            XF.UI.removeFromIsset('popup', jqPopup.attr('id'));
         },
 
 
@@ -69,7 +69,7 @@
          @param modal Boolean Flag which indicates whether the dialog is modal
          @return $ Dialog object
          */
-        CreateDialog : function(headerText, messageText, buttons) {
+        createDialog : function(headerText, messageText, buttons) {
 
             /*
              <div class="xf-dialog-box">
@@ -96,7 +96,7 @@
              </div>
              */
 
-            var jqDialog = this.Create();
+            var jqDialog = this.create();
             var _template = _.template(
                 '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
                 + '<div class="xf-dialog-box-content"><%= messageText %></div>'
@@ -110,7 +110,7 @@
                 buttons = [{
                     text: 'OK',
                     handler: function (){
-                        this.Hide(jqDialog);
+                        this.hide(jqDialog);
                     }
                 }]
             }
@@ -123,7 +123,7 @@
                     if(btn instanceof $){
                         jqBtn = btn;
                     } else {
-                        jqBtn = XF.UI.Button.Create(btn);
+                        jqBtn = XF.UI.button.create(btn);
                     }
 
                     jqBtnContainer.append(
@@ -133,7 +133,7 @@
                     );
                 });
             }
-            this.Dialog = jqDialog;
+            this.dialog = jqDialog;
             return jqDialog;
         },
 
@@ -143,7 +143,7 @@
          @param iconName Icon name (optional)
          @return $ Notification object
          */
-        CreateNotification : function(messageText, iconName) {
+        createNotification : function(messageText, iconName) {
 
             /*
              <div class="xf-notification">
@@ -158,7 +158,7 @@
              </div>
              */
 
-            var jqNotification = this.Create().addClass('xf-dialog-notification'),
+            var jqNotification = this.create().addClass('xf-dialog-notification'),
                 _template = _.template(
                     '<div class="xf-notification"><div class="xf-notification-wrap">'
                     + '<div class="xf-notification-text"><%= messageText %></div></div></div>'
@@ -186,7 +186,7 @@
          @type $
          @private
          */
-        LoadingNotification : null,
+        loadingNotification : null,
 
 
         /**
@@ -194,14 +194,14 @@
          @type $
          @private
          */
-        Dialog : null,
+        dialog : null,
 
         /**
          Saves passed popup as default loading notification
          @param jqPopup $ object representing popup
          */
-        SetLoadingNotification : function(jqPopup) {
-            this.LoadingNotification = jqPopup;
+        setLoadingNotification : function(jqPopup) {
+            this.loadingNotification = jqPopup;
         },
 
         /**
@@ -209,48 +209,48 @@
          @param messageText String to show in loading notification
          @param icon Icon name (optional)
          */
-        ShowLoading : function (messageText, icon) {
+        showLoading : function (messageText, icon) {
             if(messageText || icon) {
-                if(this.LoadingNotification) {
-                    this.HideLoading();
+                if(this.loadingNotification) {
+                    this.hideLoading();
                 }
-                this.SetLoadingNotification(
-                    this.CreateNotification(messageText, icon)
+                this.setLoadingNotification(
+                    this.createNotification(messageText, icon)
                 );
             }
-            if(!!this.LoadingNotification) {
-                this.SetLoadingNotification(
-                    this.CreateNotification('Loading...')
+            if(!!this.loadingNotification) {
+                this.setLoadingNotification(
+                    this.createNotification('Loading...')
                 );
             }
-            this.Show(this.LoadingNotification);
+            this.show(this.loadingNotification);
         },
 
         /**
          Hides loading notification
          */
-        HideLoading : function () {
-            if(this.LoadingNotification) {
-                this.Hide(this.LoadingNotification);
+        hideLoading : function () {
+            if(this.loadingNotification) {
+                this.hide(this.loadingNotification);
             }
         },
 
         /**
          Hides Dialog
          */
-        HideDialog : function () {
-            if(this.Dialog) {
-                this.Hide(this.Dialog);
+        hideDialog : function () {
+            if(this.dialog) {
+                this.hide(this.dialog);
             }
         },
 
-        HideAll : function () {
-            var idStack = XF.UI.checkInIsset('Popup');
+        hideAll : function () {
+            var idStack = XF.UI.checkInIsset('popup');
 
             for (var i in idStack) {
 
                 if ($('#' + idStack[i]).length) {
-                    this.Hide($('#' + idStack[i]));
+                    this.hide($('#' + idStack[i]));
                 }
             }
         }

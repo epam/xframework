@@ -30,7 +30,7 @@
                     });
                     if(!skip & $(this).attr('data-skip-enhance') != 'true') {
                         XF.UI.enhanced.push(this);
-                        XF.UI[enhancement.enhanceElement].Render(this);
+                        XF.UI[enhancement.enhanceElement].render(this);
                     }
                 });
             });
