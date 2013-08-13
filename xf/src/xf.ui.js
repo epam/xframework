@@ -12,7 +12,7 @@
          @param jqObj $ item
          */
         enhanceView : function(jqObj) {
-
+            console.log('enhance', jqObj);
             if(!jqObj instanceof $) {
                 jqObj = $(jqObj);
                 if(!jqObj instanceof $) {
