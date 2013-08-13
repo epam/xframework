@@ -1,19 +1,26 @@
 
-    XF.UI.enhancementList.textinput = {
-        selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
-                    'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
-                    'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
-                    'INPUT[type=datetime-local], INPUT[type=number], INPUT[type=color], TEXTAREA, ' +
-                    //
-                    'INPUT[type=range], INPUT[type=search]',
-        enhanceElement : 'input'
-    };
+//    XF.UI.enhancementList.textinput = {
+//        selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
+//                    'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
+//                    'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
+//                    'INPUT[type=datetime-local], INPUT[type=number], INPUT[type=color], TEXTAREA, ' +
+//                    //
+//                    'INPUT[type=range], INPUT[type=search]',
+//        enhanceElement : 'input'
+//    };
     /**
      Enhances text input view
      @param textInput DOM Object
      @private
      */
     XF.UI.input = {
+        selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
+                    'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
+                    'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
+                    'INPUT[type=datetime-local], INPUT[type=number], INPUT[type=color], TEXTAREA, ' +
+                    //
+                    'INPUT[type=range], INPUT[type=search]',
+
         render : function (textInput) {
 
             var jQTextInput = $(textInput);

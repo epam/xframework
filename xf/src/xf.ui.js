@@ -20,29 +20,24 @@
                 }
             }
 
-            _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
-                jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each( function(){
-                    var skip = false;
-                    _.each(XF.UI.enhanced.length, function(elem, index, enhancementList) {
-                        if(XF.UI.enhanced[i] === this) {
-                            skip = true;
+            _.each(XF.UI, function(enhancement, index, enhancementList) {
+                if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
+                    jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each( function(){
+                        var skip = false;
+                        _.each(XF.UI.enhanced.length, function(elem, index, enhancementList) {
+                            if(XF.UI.enhanced[i] === this) {
+                                skip = true;
+                            }
+                        });
+                        if(!skip & $(this).attr('data-skip-enhance') != 'true') {
+                            XF.UI.enhanced.push(this);
+                            enhancement.render(this);
                         }
                     });
-                    if(!skip & $(this).attr('data-skip-enhance') != 'true') {
-                        XF.UI.enhanced.push(this);
-                        XF.UI[enhancement.enhanceElement].render(this);
-                    }
-                });
+                }
             });
 
         },
-
-        /**
-         A list of all the enhancements that whould be done of every $ object givven
-         @type Object
-         @private
-         */
-        enhancementList : {},
 
         /**
          A list of objects already enhanced (used to skip them while iterating through DOM)

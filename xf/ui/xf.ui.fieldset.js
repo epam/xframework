@@ -1,8 +1,8 @@
 
-    XF.UI.enhancementList.fieldset = {
-        selector : 'fieldset[data-role=controlgroup]',
-        enhanceElement : 'fieldset'
-    };
+//    XF.UI.enhancementList.fieldset = {
+//        selector : 'fieldset[data-role=controlgroup]',
+//        enhanceElement : 'fieldset'
+//    };
 
     /**
      Enhances fieldset view
@@ -10,6 +10,8 @@
      @private
      */
     XF.UI.fieldset =  {
+
+        selector : 'fieldset[data-role=controlgroup]',
 
         render : function(fieldset) {
             var jQFieldset = $(fieldset);

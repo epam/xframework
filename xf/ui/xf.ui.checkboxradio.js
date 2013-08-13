@@ -1,8 +1,8 @@
 
-    XF.UI.enhancementList.checkboxRadio = {
-        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
-        enhanceElement : 'checkboxRadio'
-    };
+//    XF.UI.enhancementList.checkboxRadio = {
+//        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
+//        enhanceElement : 'checkboxRadio'
+//    };
 
     /**
      Enhances checkbox or radio button input view
@@ -10,6 +10,8 @@
      @private
      */
     XF.UI.checkboxRadio = {
+
+        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
         render : function(chbRbInput) {
 

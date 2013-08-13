@@ -1,8 +1,8 @@
 
-    XF.UI.enhancementList.scrollable = {
-        selector : '[data-scrollable=true]',
-        enhanceElement : 'scrollable'
-    };
+//    XF.UI.enhancementList.scrollable = {
+//        selector : '[data-scrollable=true]',
+//        enhanceElement : 'scrollable'
+//    };
 
     /**
      Adds scrolling functionality
@@ -10,6 +10,8 @@
      @private
      */
     XF.UI.scrollable = {
+
+        selector : '[data-scrollable=true]',
 
         render : function(scrollable) {
 
