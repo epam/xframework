@@ -11,7 +11,7 @@
          Reworks markup of a givven $ object
          @param jqObj $ item
          */
-        enhanceView : function (jqObj) {
+        enhance : function (jqObj) {
 
             if (!jqObj instanceof $) {
                 jqObj = $(jqObj);
@@ -21,14 +21,14 @@
                 }
             }
 
-            _.each(XF.UI, function (enhancement, index, enhancementList) {
+            _.each(XF.UI, function (enhancement, index) {
 
                 if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
 
                     jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
                         var skip = false;
 
-                        _.each(XF.UI.enhanced.length, function (elem, index, enhancementList) {
+                        _.each(XF.UI.enhanced.length, function (elem, index) {
 
                             if (XF.UI.enhanced[i] === this) {
                                 skip = true;
