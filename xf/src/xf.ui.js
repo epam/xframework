@@ -11,25 +11,31 @@
          Reworks markup of a givven $ object
          @param jqObj $ item
          */
-        enhanceView : function(jqObj) {
+        enhanceView : function (jqObj) {
 
-            if(!jqObj instanceof $) {
+            if (!jqObj instanceof $) {
                 jqObj = $(jqObj);
-                if(!jqObj instanceof $) {
+
+                if (!jqObj instanceof $) {
                     return;
                 }
             }
 
-            _.each(XF.UI, function(enhancement, index, enhancementList) {
+            _.each(XF.UI, function (enhancement, index, enhancementList) {
+
                 if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
-                    jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each( function(){
+
+                    jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
                         var skip = false;
-                        _.each(XF.UI.enhanced.length, function(elem, index, enhancementList) {
-                            if(XF.UI.enhanced[i] === this) {
+
+                        _.each(XF.UI.enhanced.length, function (elem, index, enhancementList) {
+
+                            if (XF.UI.enhanced[i] === this) {
                                 skip = true;
                             }
                         });
-                        if(!skip & $(this).attr('data-skip-enhance') != 'true') {
+
+                        if (!skip & $(this).attr('data-skip-enhance') != 'true') {
                             XF.UI.enhanced.push(this);
                             enhancement.render(this);
                         }

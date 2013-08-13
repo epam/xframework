@@ -1,9 +1,4 @@
 
-//    XF.UI.enhancementList.scrollable = {
-//        selector : '[data-scrollable=true]',
-//        enhanceElement : 'scrollable'
-//    };
-
     /**
      Adds scrolling functionality
      @param scrollable DOM Object

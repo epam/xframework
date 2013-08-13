@@ -1,8 +1,4 @@
 
-//    XF.UI.enhancementList.button = {
-//            selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
-//            enhanceElement : 'button'
-//    };
     /**
      Make the DOM object look like a button
      @param button DOM Object
