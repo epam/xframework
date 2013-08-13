@@ -174,5 +174,10 @@
 
             // looking for components inside the page
             loadChildComponents(this.activePage[0]);
+
+            // Check if UI
+            if (XF.hasOwnProperty('UI')) {
+                XF.UI.enhanceView($(this.activePage[0]));
+            }
         }
     };
