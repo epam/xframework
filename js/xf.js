@@ -2469,6 +2469,29 @@
             }
 
             return result;
+        },
+
+        removeFromIsset : function (type, id) {
+            var type = type || '',
+                id = id || '',
+                result = [];
+
+            for (var i in this.issetElements) {
+
+                if (id === '') {
+
+                    if (this.issetElements[i].type !== type) {
+                        result.push(this.issetElements[i]);
+                    }
+                } else {
+
+                    if (this.issetElements[i].type !== type && this.issetElements[i].id !== id) {
+                        result.push(this.issetElements[i]);
+                    }
+                }
+            }
+
+            this.issetElements = result;
         }
 
     });
@@ -2924,6 +2947,7 @@
          */
         Hide : function(jqPopup) {
             jqPopup.detach();
+            XF.UI.removeFromIsset('Popup', jqPopup.attr('id'));
         },
 
 
@@ -2963,28 +2987,12 @@
              */
 
             var jqDialog = this.Create();
-            jqDialog.find('.xf-dialog-content')
-                .append(
-                    $('<div></div>')
-                        .addClass('xf-dialog-box')
-                        .append(
-                            $('<div></div>')
-                                .addClass('xf-dialog-box-header')
-                                .append(
-                                    $('<h3></h3>')
-                                        .html(headerText)
-                                )
-                        )
-                        .append(
-                            $('<div></div>')
-                                .addClass('xf-dialog-box-content')
-                                .html(messageText)
-                        )
-                        .append(
-                            $('<div></div>')
-                                .addClass('xf-dialog-box-footer clearfix')
-                        )
-                );
+            var _template = _.template(
+                '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
+                + '<div class="xf-dialog-box-content"><%= messageText %></div>'
+                + '<div class="xf-dialog-box-footer clearfix"></div></div>'
+            );
+            jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
 
             var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
 
@@ -3040,21 +3048,13 @@
              </div>
              */
 
-            var jqNotification = this.Create().addClass('xf-dialog-notification');
-            jqNotification.find('.xf-dialog-content')
-                .append(
-                    $('<div></div>')
-                        .addClass('xf-notification')
-                        .append(
-                            $('<div></div>')
-                                .addClass('xf-notification-wrap')
-                                .append(
-                                    $('<div></div>')
-                                        .addClass('xf-notification-text')
-                                        .html(messageText)
-                                )
-                        )
-                );
+            var jqNotification = this.Create().addClass('xf-dialog-notification'),
+                _template = _.template(
+                    '<div class="xf-notification"><div class="xf-notification-wrap">'
+                    + '<div class="xf-notification-text"><%= messageText %></div></div></div>'
+            );
+
+            jqNotification.find('.xf-dialog-content').html(_template({messageText : messageText}));
 
             if(iconName && iconName != '') {
                 jqNotification.find('.xf-notification-wrap')
@@ -3121,7 +3121,7 @@
          */
         HideLoading : function () {
             if(this.LoadingNotification) {
-                this.HidePopup(this.LoadingNotification);
+                this.Hide(this.LoadingNotification);
             }
         },
 
@@ -3130,7 +3130,18 @@
          */
         HideDialog : function () {
             if(this.Dialog) {
-                this.HidePopup(this.Dialog);
+                this.Hide(this.Dialog);
+            }
+        },
+
+        HideAll : function () {
+            var idStack = XF.UI.checkInIsset('Popup');
+
+            for (var i in idStack) {
+
+                if ($('#' + idStack[i]).length) {
+                    this.Hide($('#' + idStack[i]));
+                }
             }
         }
     };

@@ -97,28 +97,12 @@
              */
 
             var jqDialog = this.Create();
-            jqDialog.find('.xf-dialog-content')
-                .append(
-                    $('<div></div>')
-                        .addClass('xf-dialog-box')
-                        .append(
-                            $('<div></div>')
-                                .addClass('xf-dialog-box-header')
-                                .append(
-                                    $('<h3></h3>')
-                                        .html(headerText)
-                                )
-                        )
-                        .append(
-                            $('<div></div>')
-                                .addClass('xf-dialog-box-content')
-                                .html(messageText)
-                        )
-                        .append(
-                            $('<div></div>')
-                                .addClass('xf-dialog-box-footer clearfix')
-                        )
-                );
+            var _template = _.template(
+                '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
+                + '<div class="xf-dialog-box-content"><%= messageText %></div>'
+                + '<div class="xf-dialog-box-footer clearfix"></div></div>'
+            );
+            jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
 
             var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
 
@@ -174,21 +158,13 @@
              </div>
              */
 
-            var jqNotification = this.Create().addClass('xf-dialog-notification');
-            jqNotification.find('.xf-dialog-content')
-                .append(
-                    $('<div></div>')
-                        .addClass('xf-notification')
-                        .append(
-                            $('<div></div>')
-                                .addClass('xf-notification-wrap')
-                                .append(
-                                    $('<div></div>')
-                                        .addClass('xf-notification-text')
-                                        .html(messageText)
-                                )
-                        )
-                );
+            var jqNotification = this.Create().addClass('xf-dialog-notification'),
+                _template = _.template(
+                    '<div class="xf-notification"><div class="xf-notification-wrap">'
+                    + '<div class="xf-notification-text"><%= messageText %></div></div></div>'
+            );
+
+            jqNotification.find('.xf-dialog-content').html(_template({messageText : messageText}));
 
             if(iconName && iconName != '') {
                 jqNotification.find('.xf-notification-wrap')
