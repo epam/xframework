@@ -49,6 +49,54 @@
          @type Array
          @private
          */
-        enhanced : []
+        enhanced : [],
+
+        issetElements : [],
+
+        checkInIsset : function (type, id) {
+            var type = type || '',
+                id = id || '',
+                result = [];
+
+            for (var i in this.issetElements) {
+
+                if (id === '') {
+
+                    if (this.issetElements[i].type === type) {
+                        result.push(this.issetElements[i].id);
+                    }
+                } else {
+
+                    if (this.issetElements[i].type === type && this.issetElements[i].id === id) {
+                        result.push(this.issetElements[i].id);
+                    }
+                }
+            }
+
+            return result;
+        },
+
+        removeFromIsset : function (type, id) {
+            var type = type || '',
+                id = id || '',
+                result = [];
+
+            for (var i in this.issetElements) {
+
+                if (id === '') {
+
+                    if (this.issetElements[i].type !== type) {
+                        result.push(this.issetElements[i]);
+                    }
+                } else {
+
+                    if (this.issetElements[i].type !== type && this.issetElements[i].id !== id) {
+                        result.push(this.issetElements[i]);
+                    }
+                }
+            }
+
+            this.issetElements = result;
+        }
 
     });
