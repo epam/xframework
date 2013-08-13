@@ -28,6 +28,37 @@
 
     XF.on('navigate', XF.navigate);
 
+    var compEventSplitter = /\:/;
+
+    XF.on('all', function (eventName) {
+        console.log('XF:all - ', eventName);
+        console.log(typeof eventName);
+        if (!compEventSplitter.test(eventName)) {
+            return;
+        }
+
+        var parts = eventName.split(compEventSplitter);
+
+        if (parts[0] !== 'component' && parts.length < 3) {
+            return;
+        }
+
+        var compID = parts[1];
+
+        XF._defferedCompEvents || (XF._defferedCompEvents = {});
+
+        if (!XF.getComponentByID(compID)) {
+            var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []);
+            events.push(eventName);
+            XF.on('component:' + compID + ':constructed', function () {
+                _.each(events, function (e) {
+                    XF.trigger(e);
+                });
+            });
+        }
+
+    });
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,6 +98,10 @@
 
         options.animations = options.animations || {};
         options.animations.default = options.animations.default || '';
+        if (_.has(XF.Device.type, 'defaultAnimation')) {
+            options.animations.default = XF.Device.type.defaultAnimation;
+            console.log('Options.animations', options.animations);
+        }
 
         XF.Pages.start(options.animations);
 
@@ -449,33 +484,9 @@
              */
             dataUrlFormatter: function(compName) {
                 return XF.Settings.property('dataUrlPrefix') + compName + XF.Settings.property('dataUrlPostfix');
-            },
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 100
-             @type Number
-             */
-            touchableSwipeLength: 100,
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 700
-             @type Number
-             */
-            touchableDoubleTapInterval: 700,
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 300
-             @type Number
-             */
-            touchableLongTapInterval: 500,
+            }
 
 
-
-            //TODO merge with animation types
-            animations: {}
         },
 
         /**
@@ -653,7 +664,7 @@
                 this.trigger('init');
 
                 this.trigger('construct');
-                XF.trigger(this.id + ':constructed');
+                XF.trigger('component:' + this.id + ':constructed');
             };
             /** @ignore */
             var modelConstructed = function() {
@@ -1703,8 +1714,8 @@
             if (fromPage) {
                 viewport.addClass('xf-viewport-transitioning');
 
-                fromPage.addClass('out '+ animationType);
-                toPage.addClass('in '+ animationType + ' ' + this.activePageClass);
+                fromPage.height(viewport.height()).addClass('out '+ animationType);
+                toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
                 fromPage.animationEnd(function(){
                     fromPage.height('').removeClass(animationType + ' out in');
                     fromPage.removeClass(XF.Pages.activePageClass);

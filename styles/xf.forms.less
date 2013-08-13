@@ -17,18 +17,17 @@
 .xf-switch {
 	position: relative;
 	display: block;
-   .box-sizing-border-box();
+    .box-sizing-border-box();
 	width: 100%;
 	padding: 8px 12px;
 	font: normal 18px/1 sans-serif;
 	.xf-corner-all;
-	box-shadow: 0 1px 0 rgba(0,0,0,.1);
 
 	min-height: 44px;
 	/* ACHTUNG! need better detection */
 	/* FF has problems with border-box & min-height */
 	min-height: -moz-calc(44px - 16px - 2px);
-	min-height: 26px e('\9');
+	min-height: 26px;
 }
 
 
@@ -95,7 +94,7 @@ textarea.xf-input-text {
 
 	}
 	.xf-input-range-slider:after {
-		content: "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W ";
+		content: "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W ";
 		display: block;
 		height: 0;
 		overflow: hidden;
@@ -112,14 +111,14 @@ textarea.xf-input-text {
 	height: 8px;
 	background: @input-inactive-bg-color;
 	border-radius: 4px;
-	box-shadow: inset 0 1px 0 rgba(0,0,0,.5);
+	//box-shadow: inset 0 1px 0 rgba(0,0,0,.5);
 }
 	.xf-input-range-value {
 		height: 100%;
 	    position: relative;
 		border-radius: 4px;
-		background: @input-active-bg-color;
-		box-shadow: inset 0 1px 0 rgba(0,0,0,.5);
+		background: @range-active-bg-color;
+		//box-shadow: inset 0 1px 0 rgba(0,0,0,.5);
 	}
 		.xf-input-range-control {
 			position: absolute;
@@ -127,7 +126,7 @@ textarea.xf-input-text {
 			top:50%;
 			width: 0;
 			height: 0;
-				outline: none;
+			outline: none;
 		}
 			.xf-input-range-thumb {
 			    display: block;
@@ -136,16 +135,13 @@ textarea.xf-input-text {
 				.box-sizing-border-box;
 				margin: -12px 0 0 -12px;
 			   .border-radius(999px); /* Workaround Android 2 %-radius bug*/
-               .gradient(~"linear-gradient(90deg, #fff 0%,#bfbfbd 100%)");
-				border: 1px solid rgba(0,0,0,.5);
-			   .box-shadow( rgba(0,0,0,.4), 0, 1px, 2px);
+               .bg-gradient(@range-thumb-bg-color-start, @range-thumb-bg-color-start, @range-thumb-bg-color-end);
+				border: 1px solid @range-thumb-border-color;
+			   //.box-shadow( rgba(0,0,0,.4), 0, 1px, 2px);
 				outline: none;
 			}
 			.xf-input-range-thumb:hover {
 				.background-size(100% 140%);
-			}
-			.xf-input-range-control:focus .xf-input-range-thumb {
-				.box-shadow(@button-active-bg-color-end, 0, 0, 10px);
 			}
 
 @media screen and (min-width: 480px) {
@@ -236,12 +232,12 @@ textarea.xf-input-text {
 	}
 	 .xf-input-radio:first-child,
 	 .xf-input-checkbox:first-child {
-		border-radius: 8px 8px 0 0;
+		border-radius: @global-border-radius @global-border-radius 0 0;
 		border-top-width: 1px;
 	}
 	 .xf-input-radio:last-child,
 	 .xf-input-checkbox:last-child {
-		border-radius: 0 0 8px 8px;
+		border-radius: 0 0 @global-border-radius @global-border-radius;
 	}
 }
 .xf-input-split-part1,
@@ -268,13 +264,10 @@ textarea.xf-input-text {
     	height: 100%;
 -webkit-border-radius: 14px;
     	border-radius: 14px;
--webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.5), 0 0 1px rgba(0,0,0,.1); /* Android 2 */
-   -moz-box-shadow: inset 0 1px rgba(0,0,0,.5);
-        box-shadow: inset 0 1px rgba(0,0,0,.5);
--webkit-transition: background-color .1s ease-in;
-   -moz-transition: background-color .1s ease-in;
-     -o-transition: background-color .1s ease-in;
-		transition: background-color .1s ease-in;
+-webkit-transition: background-color .35s ease-in;
+   -moz-transition: background-color .35s ease-in;
+     -o-transition: background-color .35s ease-in;
+		transition: background-color .35s ease-in;
 }
 	.xf-switch-track-wrap {
 		position: absolute;
@@ -289,10 +282,10 @@ textarea.xf-input-text {
 		position: absolute;
 		width: 0;
 		height: 100%;
--webkit-transition: left .1s ease-in;
-   -moz-transition: left .1s ease-in;
-     -o-transition: left .1s ease-in;
-		transition: left .1s ease-in;
+-webkit-transition: left .15s ease-in;
+   -moz-transition: left .15s ease-in;
+     -o-transition: left .15s ease-in;
+		transition: left .15s ease-in;
 }
 	.xf-switch-thumb:before {
 		display: block;
@@ -303,18 +296,16 @@ textarea.xf-input-text {
 -webkit-border-radius: 50%;
 		border-radius: 50%;
 		content: '';
-      .gradient(~"linear-gradient(90deg, #fff 0%,#bfbfbd 100%)");
--webkit-box-shadow: inset 0 0 1px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.86);
-		box-shadow: 0 1px 2px rgba(0,0,0,.86);
+        .bg-gradient(@switch-thumb-bg-color-start, @switch-thumb-bg-color-start, @switch-thumb-bg-color-end);
 	}
 .xf-switch-track {
-	background: @input-inactive-bg-color;
+	background: @switch-bg-color;
 }
 	.xf-switch-control input:checked + span .xf-switch-thumb {
 		left: 100%;
 	}
 	.xf-switch-control input:checked + .xf-switch-track {
-		background: @input-active-bg-color;
+		background: @switch-active-bg-color;
 	}
 
 .xf-switch-control input {
@@ -348,7 +339,7 @@ textarea.xf-input-text {
 	height: 44px;
 	padding: 8px;
 	font: 18px/26px sans-serif;
-	border-radius: 8px;
+	border-radius: @global-border-radius;
 }
 
 
@@ -369,7 +360,6 @@ textarea.xf-input-text {
 .xf-input-text {
 	color: 	@input-text-color;
     background: @input-bg-color;
-	box-shadow: inset 0 1px 2px #dcdede;
 
 	&:focus {
 		outline: none;
