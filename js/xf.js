@@ -47,6 +47,11 @@
 
         XF._defferedCompEvents || (XF._defferedCompEvents = {});
 
+        //on component constructed
+        if (parts[0] === 'component' && parts[2] === 'constructed') {
+            onComponentCostruct(compID);
+        }
+
         if (!XF.getComponentByID(compID)) {
             var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []);
             events.push(eventName);
@@ -58,6 +63,14 @@
         }
 
     });
+
+    onComponentCostruct = function (compID) {
+        console.log('constructed', compID);
+        var compObj = $(XF.getComponentByID(compID).selector());
+        XF.trigger('pages:start', compObj);
+
+        loadChildComponents(compObj);
+    };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +116,11 @@
             console.log('Options.animations', options.animations);
         }
 
-        XF.Pages.start(options.animations);
+        XF.Pages.init(options.animations);
+
+        if (_.has(XF, 'UI')) {
+            XF.UI.init();
+        }
 
         //XF.Pages.start();
         loadChildComponents(rootDOMObject);
@@ -150,6 +167,7 @@
      @private
      */
     var loadChildComponents = function(DOMObject) {
+        console.log('XF :: loadChildComponents', DOMObject);
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
@@ -182,13 +200,14 @@
      */
     var bindHideShowListeners = function() {
         $('[data-component]').on('show', function(evt) {
+            console.log('SHOWED', evt.target);
             if(evt.currentTarget == evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
-                XF.UI.enhanceView($(this));
+                XF.trigger('ui:enhance', $(this));
             }
         });
 
@@ -1624,10 +1643,11 @@
          Initialises Pages: get current active page and binds necessary routes handling
          @private
          */
-        start : function(animations) {
+        init : function(animations) {
             XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
             XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
             XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
+            XF.on('pages:start', _.bind(XF.Pages.start, XF.Pages));
 
             if (_.has(animations, 'types') ) {
                 _.extend(this.animations.types, animations.types);
@@ -1637,8 +1657,13 @@
                 this.setDefaultAnimationType(animations.default);
             }
 
-            //TODO: move it to Pages.show and make showing first page by triggering empty route (should work withour routes!)
-            var pages =  rootDOMObject.find(' .' + this.pageClass);
+            this.start();
+        },
+
+        start: function (jqObj) {
+            jqObj = jqObj || $('body');
+            console.log('pages start', jqObj);
+            var pages =  jqObj.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
                 if(preselectedAP.length) {
@@ -1730,17 +1755,10 @@
                 this.activePage.addClass(this.activePageClass);
             }
 
-
-            // scroll to top of page ofter page switch
-            window.scrollTo( 0, 1 );
-
             // looking for components inside the page
             loadChildComponents(this.activePage[0]);
 
-            // Check if UI
-            if (XF.hasOwnProperty('UI')) {
-                XF.UI.enhanceView($(this.activePage[0]));
-            }
+            XF.trigger('ui:enhance', $(this.activePage[0]));
         }
     };
     /**
@@ -2182,7 +2200,7 @@
             this.renderVersion++;
             var DOMObject = $('[data-id=' + this.component.id + ']');
             DOMObject.html(this.getMarkup());
-            loadChildComponents(DOMObject);
+            XF.trigger('ui:enhance', DOMObject);
         },
 
         /**
@@ -2413,37 +2431,16 @@
 
     _.extend(XF.UI, /** @lends XF.UI */ {
 
-        enhance : function (el) {;
-
-            _.each(this, function (enhancement, index) {
-
-                if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
-
-                    $(document).find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
-                        var skip = false;
-
-                        _.each(XF.UI.enhanced.length, function (elem, index) {
-
-                            if (XF.UI.enhanced[i] === this) {
-                                skip = true;
-                            }
-                        });
-
-                        if (!skip & $(this).attr('data-skip-enhance') != 'true') {
-                            XF.UI.enhanced.push(this);
-                            enhancement.render(this);
-                        }
-                    });
-                }
-            });
-
+        init: function () {
+            XF.on('ui:enhance', _.bind(XF.UI.enhance, XF.UI));
         },
 
         /**
          Reworks markup of a givven $ object
          @param jqObj $ item
          */
-        enhanceView : function (jqObj) {
+
+        enhance : function (jqObj) {
 
             if (!jqObj instanceof $) {
                 jqObj = $(jqObj);
@@ -2487,9 +2484,9 @@
         issetElements : [],
 
         checkInIsset : function (type, id) {
-            var type = type || '',
-                id = id || '',
-                result = [];
+            type = type || '';
+            id = id || '';
+            var result = [];
 
             for (var i in this.issetElements) {
 
@@ -2510,9 +2507,9 @@
         },
 
         removeFromIsset : function (type, id) {
-            var type = type || '',
-                id = id || '',
-                result = [];
+            type = type || '';
+            id = id || '';
+            var result = [];
 
             for (var i in this.issetElements) {
 
