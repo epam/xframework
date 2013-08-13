@@ -1,4 +1,4 @@
-/*! X-Framework 11-08-2013 */
+/*! X-Framework 13-08-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -2444,7 +2444,32 @@
          @type Array
          @private
          */
-        enhanced : []
+        enhanced : [],
+
+        issetElements : [],
+
+        checkInIsset : function (type, id) {
+            var type = type || '',
+                id = id || '',
+                result = [];
+
+            for (var i in this.issetElements) {
+
+                if (id === '') {
+
+                    if (this.issetElements[i].type === type) {
+                        result.push(this.issetElements[i].id);
+                    }
+                } else {
+
+                    if (this.issetElements[i].type === type && this.issetElements[i].id === id) {
+                        result.push(this.issetElements[i].id);
+                    }
+                }
+            }
+
+            return result;
+        }
 
     });
 
@@ -2846,247 +2871,267 @@
      @return $
      @private
      */
-    XF.UI.createPopup = function() {
-        /*
-         <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
-         */
-        var jqPopup =
-            $('<div class="xf-dialog " id="xf-' + Math.floor(Math.random() * 10000) + '"><div class="xf-dialog-content"></div></div>');
-        return jqPopup;
-    };
+    XF.UI.Popup = {
+        Create : function () {
+            /*
+             <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
+             */
+            var id = 'xf-' + Math.floor(Math.random() * 10000),
+                idStack = XF.UI.checkInIsset('Popup'),
+                newId = false;
 
-    /**
-     Shorthand to show dialogs
-     @param headerText String to show in dialog header
-     @param messageText String to show in dialog body
-     @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
-     */
-    XF.UI.showDialog = function (headerText, messageText, buttons) {
-        var popup = XF.UI.createDialog(headerText, messageText, buttons);
-        XF.UI.showPopup(popup);
-    };
+            for (var i in idStack) {
 
-    /**
-     Attaches popup (dialog/notification/etc.) to the page
-     @param jqPopup $ object representing popup
-     */
-    XF.UI.showPopup = function(jqPopup) {
-        XF.Device.getViewport().append(jqPopup);
-    };
+                if (newId) {
 
-    /**
-     Detaches popup (dialog/notification/etc.) from the page
-     @param jqPopup $ object representing popup
-     */
-    XF.UI.hidePopup = function(jqPopup) {
-        jqPopup.detach();
-    };
-
-
-    /**
-     Generates a dialog with header, message and buttons
-     @param headerText String to show in dialog header
-     @param messageText String to show in dialog body
-     @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
-     @param modal Boolean Flag which indicates whether the dialog is modal
-     @return $ Dialog object
-     */
-    XF.UI.createDialog = function(headerText, messageText, buttons) {
-
-        /*
-         <div class="xf-dialog-box">
-         <div class="xf-dialog-box-header">
-         <h3>Impossible! <!-- Header text here --> </h3>
-         </div>
-         <div class="xf-dialog-box-content">
-         <!-- Message text here -->
-         You’re the smartest guy I've ever known.
-         </div>
-         <div class="xf-dialog-box-footer clearfix">
-         <!-- Buttons here -->
-         <div class="xf-grid-unit xf-grid-unit-1of2">
-         <button class="xf-button xf-button-small">
-         <span class="xf-button-text">Cancel</span>
-         </button>
-         </div>
-         <div class="xf-grid-unit xf-grid-unit-1of2">
-         <button class="xf-button xf-button-small xf-button-special">
-         <span class="xf-button-text">OK</span>
-         </button>
-         </div>
-         </div>
-         </div>
-         */
-
-        var jqDialog = XF.UI.createPopup();
-        jqDialog.find('.xf-dialog-content')
-            .append(
-                $('<div></div>')
-                    .addClass('xf-dialog-box')
-                    .append(
-                        $('<div></div>')
-                            .addClass('xf-dialog-box-header')
-                            .append(
-                                $('<h3></h3>')
-                                    .html(headerText)
-                            )
-                    )
-                    .append(
-                        $('<div></div>')
-                            .addClass('xf-dialog-box-content')
-                            .html(messageText)
-                    )
-                    .append(
-                        $('<div></div>')
-                            .addClass('xf-dialog-box-footer clearfix')
-                    )
-            );
-
-        var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
-
-        if (!buttons) {
-            buttons = [{
-                text: 'OK',
-                handler: function (){
-                    XF.UI.hidePopup(jqDialog);
+                    if (!$('#' + idStack[i]).length) {
+                        id = idStack[i];
+                        newId = true;
+                    }
                 }
-            }]
-        }
+            }
 
-        if(buttons) {
-            var btnCount = buttons.length;
+            if (!newId) {
+                XF.UI.issetElements.push({type : 'Popup', id : id});
+            }
+            var jqPopup = $('<div class="xf-dialog " id="' + id + '"><div class="xf-dialog-content"></div></div>');
 
-            var jqBtn;
-            _.each(buttons, function(btn, index, buttons){
-                if(btn instanceof $){
-                    jqBtn = btn;
-                } else {
-                    jqBtn = XF.UI.Button.Create(btn);
-                }
+            return jqPopup;
+        },
 
-                jqBtnContainer.append(
-                    $('<div></div>')
-                        .addClass('xf-grid-unit xf-grid-unit-1of' + btnCount)
-                        .append(jqBtn)
-                );
-            });
-        }
-        XF.UI.dialog = jqDialog;
-        return jqDialog;
-    };
-
-    /**
-     Generates a notification with text and icon
-     @param messageText String to show in dialog body
-     @param iconName Icon name (optional)
-     @return $ Notification object
-     */
-    XF.UI.createNotification = function(messageText, iconName) {
-
-        /*
-         <div class="xf-notification">
-         <div class="xf-notification-wrap">
-         <div class="xf-notification-icon">
-         <span class="xf-icon xf-icon-xl xf-icon-dots"></span>
-         </div>
-         <div class="xf-notification-text">
-         Loading...
-         </div>
-         </div>
-         </div>
+        /**
+         Shorthand to show dialogs
+         @param headerText String to show in dialog header
+         @param messageText String to show in dialog body
+         @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
          */
+        ShowDialog : function (headerText, messageText, buttons) {
+            var popup = this.CreateDialog(headerText, messageText, buttons);
+            this.Show(popup);
+        },
 
-        var jqNotification = XF.UI.createPopup().addClass('xf-dialog-notification');
-        jqNotification.find('.xf-dialog-content')
-            .append(
-                $('<div></div>')
-                    .addClass('xf-notification')
-                    .append(
-                        $('<div></div>')
-                            .addClass('xf-notification-wrap')
-                            .append(
-                                $('<div></div>')
-                                    .addClass('xf-notification-text')
-                                    .html(messageText)
-                            )
-                    )
-            );
+        /**
+         Attaches popup (dialog/notification/etc.) to the page
+         @param jqPopup $ object representing popup
+         */
+        Show : function(jqPopup) {
+            XF.Device.getViewport().append(jqPopup);
+        },
 
-        if(iconName && iconName != '') {
-            jqNotification.find('.xf-notification-wrap')
-                .prepend(
+        /**
+         Detaches popup (dialog/notification/etc.) from the page
+         @param jqPopup $ object representing popup
+         */
+        Hide : function(jqPopup) {
+            jqPopup.detach();
+        },
+
+
+        /**
+         Generates a dialog with header, message and buttons
+         @param headerText String to show in dialog header
+         @param messageText String to show in dialog body
+         @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
+         @param modal Boolean Flag which indicates whether the dialog is modal
+         @return $ Dialog object
+         */
+        CreateDialog : function(headerText, messageText, buttons) {
+
+            /*
+             <div class="xf-dialog-box">
+             <div class="xf-dialog-box-header">
+             <h3>Impossible! <!-- Header text here --> </h3>
+             </div>
+             <div class="xf-dialog-box-content">
+             <!-- Message text here -->
+             You’re the smartest guy I've ever known.
+             </div>
+             <div class="xf-dialog-box-footer clearfix">
+             <!-- Buttons here -->
+             <div class="xf-grid-unit xf-grid-unit-1of2">
+             <button class="xf-button xf-button-small">
+             <span class="xf-button-text">Cancel</span>
+             </button>
+             </div>
+             <div class="xf-grid-unit xf-grid-unit-1of2">
+             <button class="xf-button xf-button-small xf-button-special">
+             <span class="xf-button-text">OK</span>
+             </button>
+             </div>
+             </div>
+             </div>
+             */
+
+            var jqDialog = this.Create();
+            jqDialog.find('.xf-dialog-content')
+                .append(
                     $('<div></div>')
-                        .addClass('xf-notification-icon')
+                        .addClass('xf-dialog-box')
                         .append(
-                            $('<span></span>')
-                                .addClass('xf-icon xf-icon-xl xf-icon-' + iconName)
+                            $('<div></div>')
+                                .addClass('xf-dialog-box-header')
+                                .append(
+                                    $('<h3></h3>')
+                                        .html(headerText)
+                                )
+                        )
+                        .append(
+                            $('<div></div>')
+                                .addClass('xf-dialog-box-content')
+                                .html(messageText)
+                        )
+                        .append(
+                            $('<div></div>')
+                                .addClass('xf-dialog-box-footer clearfix')
                         )
                 );
-        }
 
-        return jqNotification;
-    };
+            var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
 
-    /**
-     Stores loading notification object
-     @type $
-     @private
-     */
-    XF.UI.loadingNotification = null;
-
-
-    /**
-     Stores dialog object
-     @type $
-     @private
-     */
-    XF.UI.dialog = null;
-
-    /**
-     Saves passed popup as default loading notification
-     @param jqPopup $ object representing popup
-     */
-    XF.UI.setLoadingNotification = function(jqPopup) {
-        XF.UI.loadingNotification = jqPopup;
-    };
-
-    /**
-     Shows loading notification (and generates new if params are passed)
-     @param messageText String to show in loading notification
-     @param icon Icon name (optional)
-     */
-    XF.UI.showLoading = function (messageText, icon) {
-        if(messageText || icon) {
-            if(XF.UI.loadingNotification) {
-                XF.UI.hideLoading();
+            if (!buttons) {
+                buttons = [{
+                    text: 'OK',
+                    handler: function (){
+                        this.Hide(jqDialog);
+                    }
+                }]
             }
-            XF.UI.setLoadingNotification(
-                XF.UI.createNotification(messageText, icon)
-            );
-        }
-        if(!XF.UI.loadingNotification) {
-            XF.UI.setLoadingNotification(
-                XF.UI.createNotification('Loading...')
-            );
-        }
-        XF.UI.showPopup(XF.UI.loadingNotification);
-    };
 
-    /**
-     Hides loading notification
-     */
-    XF.UI.hideLoading = function () {
-        if(XF.UI.loadingNotification) {
-            XF.UI.hidePopup(XF.UI.loadingNotification);
-        }
-    };
+            if(buttons) {
+                var btnCount = buttons.length;
 
-    /**
-     Hides Dialog
-     */
-    XF.UI.hideDialog = function () {
-        if(XF.UI.dialog) {
-            XF.UI.hidePopup(XF.UI.dialog);
+                var jqBtn;
+                _.each(buttons, function(btn, index, buttons){
+                    if(btn instanceof $){
+                        jqBtn = btn;
+                    } else {
+                        jqBtn = XF.UI.Button.Create(btn);
+                    }
+
+                    jqBtnContainer.append(
+                        $('<div></div>')
+                            .addClass('xf-grid-unit xf-grid-unit-1of' + btnCount)
+                            .append(jqBtn)
+                    );
+                });
+            }
+            this.Dialog = jqDialog;
+            return jqDialog;
+        },
+
+        /**
+         Generates a notification with text and icon
+         @param messageText String to show in dialog body
+         @param iconName Icon name (optional)
+         @return $ Notification object
+         */
+        CreateNotification : function(messageText, iconName) {
+
+            /*
+             <div class="xf-notification">
+             <div class="xf-notification-wrap">
+             <div class="xf-notification-icon">
+             <span class="xf-icon xf-icon-xl xf-icon-dots"></span>
+             </div>
+             <div class="xf-notification-text">
+             Loading...
+             </div>
+             </div>
+             </div>
+             */
+
+            var jqNotification = this.Create().addClass('xf-dialog-notification');
+            jqNotification.find('.xf-dialog-content')
+                .append(
+                    $('<div></div>')
+                        .addClass('xf-notification')
+                        .append(
+                            $('<div></div>')
+                                .addClass('xf-notification-wrap')
+                                .append(
+                                    $('<div></div>')
+                                        .addClass('xf-notification-text')
+                                        .html(messageText)
+                                )
+                        )
+                );
+
+            if(iconName && iconName != '') {
+                jqNotification.find('.xf-notification-wrap')
+                    .prepend(
+                        $('<div></div>')
+                            .addClass('xf-notification-icon')
+                            .append(
+                                $('<span></span>')
+                                    .addClass('xf-icon xf-icon-xl xf-icon-' + iconName)
+                            )
+                    );
+            }
+
+            return jqNotification;
+        },
+
+        /**
+         Stores loading notification object
+         @type $
+         @private
+         */
+        LoadingNotification : null,
+
+
+        /**
+         Stores dialog object
+         @type $
+         @private
+         */
+        Dialog : null,
+
+        /**
+         Saves passed popup as default loading notification
+         @param jqPopup $ object representing popup
+         */
+        SetLoadingNotification : function(jqPopup) {
+            this.LoadingNotification = jqPopup;
+        },
+
+        /**
+         Shows loading notification (and generates new if params are passed)
+         @param messageText String to show in loading notification
+         @param icon Icon name (optional)
+         */
+        ShowLoading : function (messageText, icon) {
+            if(messageText || icon) {
+                if(this.LoadingNotification) {
+                    this.HideLoading();
+                }
+                this.SetLoadingNotification(
+                    this.CreateNotification(messageText, icon)
+                );
+            }
+            if(!!this.LoadingNotification) {
+                this.SetLoadingNotification(
+                    this.CreateNotification('Loading...')
+                );
+            }
+            this.Show(this.LoadingNotification);
+        },
+
+        /**
+         Hides loading notification
+         */
+        HideLoading : function () {
+            if(this.LoadingNotification) {
+                this.HidePopup(this.LoadingNotification);
+            }
+        },
+
+        /**
+         Hides Dialog
+         */
+        HideDialog : function () {
+            if(this.Dialog) {
+                this.HidePopup(this.Dialog);
+            }
         }
     };
 
