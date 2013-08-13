@@ -2,7 +2,7 @@ module.exports = (function(grunt) {
 
     grunt.registerTask('build', "X-Framework build", function() {
         console.log('Adding core elements');
-        var sources = [
+        var jsSources = [
             'xf/src/xf.core.js',
             'xf/src/xf.settings.js',
             'xf/src/xf.component.js',
@@ -19,20 +19,22 @@ module.exports = (function(grunt) {
             'xf/src/xf.ui.js'
         ];
 
+        // Run through files and detect icons to use
+        var lessSources = [];
+
+
         // TODO modules to add
 
         if (arguments.length === 0) {
             console.log('Adding all UI components');
-            sources.push('xf/ui/*.js');
+            jsSources.push('xf/ui/*.js');
         } else {
 
             for (var i in arguments) {
                 console.log('Adding UI for "' + arguments[i] + '"');
-                sources.push('xf/ui/xf.ui.' + arguments[i] + '.js');
+                jsSources.push('xf/ui/xf.ui.' + arguments[i] + '.js');
             }
         }
-
-        sources.push();
 
         grunt.initConfig({
             pkg: grunt.file.readJSON('package.json'),
@@ -43,7 +45,7 @@ module.exports = (function(grunt) {
                     footer: '}).call(this, window, $, Backbone);'
                 },
                 dist: {
-                    src: sources,
+                    src: jsSources,
                     dest: 'js/xf.js'
                 }
             },
