@@ -2415,29 +2415,24 @@
                 }
             }
 
-            _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
-                jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each( function(){
-                    var skip = false;
-                    _.each(XF.UI.enhanced.length, function(elem, index, enhancementList) {
-                        if(XF.UI.enhanced[i] === this) {
-                            skip = true;
+            _.each(XF.UI, function(enhancement, index, enhancementList) {
+                if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
+                    jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each( function(){
+                        var skip = false;
+                        _.each(XF.UI.enhanced.length, function(elem, index, enhancementList) {
+                            if(XF.UI.enhanced[i] === this) {
+                                skip = true;
+                            }
+                        });
+                        if(!skip & $(this).attr('data-skip-enhance') != 'true') {
+                            XF.UI.enhanced.push(this);
+                            enhancement.render(this);
                         }
                     });
-                    if(!skip & $(this).attr('data-skip-enhance') != 'true') {
-                        XF.UI.enhanced.push(this);
-                        XF.UI[enhancement.enhanceElement].render(this);
-                    }
-                });
+                }
             });
 
         },
-
-        /**
-         A list of all the enhancements that whould be done of every $ object givven
-         @type Object
-         @private
-         */
-        enhancementList : {},
 
         /**
          A list of objects already enhanced (used to skip them while iterating through DOM)
@@ -2497,16 +2492,18 @@
     });
 
 
-    XF.UI.enhancementList.button = {
-            selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
-            enhanceElement : 'button'
-    };
+//    XF.UI.enhancementList.button = {
+//            selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
+//            enhanceElement : 'button'
+//    };
     /**
      Make the DOM object look like a button
      @param button DOM Object
      @private
      */
     XF.UI.button = {
+        selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
+
         render : function(button) {
             var jQButton = $(button);
             if(!button || !jQButton instanceof $) {
@@ -2667,10 +2664,10 @@
     };
 
 
-    XF.UI.enhancementList.checkboxRadio = {
-        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
-        enhanceElement : 'checkboxRadio'
-    };
+//    XF.UI.enhancementList.checkboxRadio = {
+//        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
+//        enhanceElement : 'checkboxRadio'
+//    };
 
     /**
      Enhances checkbox or radio button input view
@@ -2678,6 +2675,8 @@
      @private
      */
     XF.UI.checkboxRadio = {
+
+        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
         render : function(chbRbInput) {
 
@@ -2746,10 +2745,10 @@
     };
 
 
-    XF.UI.enhancementList.fieldset = {
-        selector : 'fieldset[data-role=controlgroup]',
-        enhanceElement : 'fieldset'
-    };
+//    XF.UI.enhancementList.fieldset = {
+//        selector : 'fieldset[data-role=controlgroup]',
+//        enhanceElement : 'fieldset'
+//    };
 
     /**
      Enhances fieldset view
@@ -2757,6 +2756,8 @@
      @private
      */
     XF.UI.fieldset =  {
+
+        selector : 'fieldset[data-role=controlgroup]',
 
         render : function(fieldset) {
             var jQFieldset = $(fieldset);
@@ -2793,10 +2794,10 @@
     };
 
 
-    XF.UI.enhancementList.list = {
-        selector : 'UL[data-role=listview], OL[data-role=listview]',
-        enhanceElement : 'list'
-    };
+//    XF.UI.enhancementList.list = {
+//        selector : 'UL[data-role=listview], OL[data-role=listview]',
+//        enhanceElement : 'list'
+//    };
 
     /**
      Enhances ul/ol lists view
@@ -2804,6 +2805,8 @@
      @private
      */
     XF.UI.list = {
+
+        selector : 'UL[data-role=listview], OL[data-role=listview]',
 
         render : function (list) {
             var jQList = $(list);
@@ -3147,10 +3150,10 @@
     };
 
 
-    XF.UI.enhancementList.scrollable = {
-        selector : '[data-scrollable=true]',
-        enhanceElement : 'scrollable'
-    };
+//    XF.UI.enhancementList.scrollable = {
+//        selector : '[data-scrollable=true]',
+//        enhanceElement : 'scrollable'
+//    };
 
     /**
      Adds scrolling functionality
@@ -3158,6 +3161,8 @@
      @private
      */
     XF.UI.scrollable = {
+
+        selector : '[data-scrollable=true]',
 
         render : function(scrollable) {
 
@@ -3220,21 +3225,28 @@
     };
 
 
-    XF.UI.enhancementList.textinput = {
-        selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
-                    'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
-                    'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
-                    'INPUT[type=datetime-local], INPUT[type=number], INPUT[type=color], TEXTAREA, ' +
-                    //
-                    'INPUT[type=range], INPUT[type=search]',
-        enhanceElement : 'input'
-    };
+//    XF.UI.enhancementList.textinput = {
+//        selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
+//                    'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
+//                    'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
+//                    'INPUT[type=datetime-local], INPUT[type=number], INPUT[type=color], TEXTAREA, ' +
+//                    //
+//                    'INPUT[type=range], INPUT[type=search]',
+//        enhanceElement : 'input'
+//    };
     /**
      Enhances text input view
      @param textInput DOM Object
      @private
      */
     XF.UI.input = {
+        selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
+                    'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
+                    'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
+                    'INPUT[type=datetime-local], INPUT[type=number], INPUT[type=color], TEXTAREA, ' +
+                    //
+                    'INPUT[type=range], INPUT[type=search]',
+
         render : function (textInput) {
 
             var jQTextInput = $(textInput);

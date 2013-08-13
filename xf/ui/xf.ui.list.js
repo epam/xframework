@@ -1,8 +1,8 @@
 
-    XF.UI.enhancementList.list = {
-        selector : 'UL[data-role=listview], OL[data-role=listview]',
-        enhanceElement : 'list'
-    };
+//    XF.UI.enhancementList.list = {
+//        selector : 'UL[data-role=listview], OL[data-role=listview]',
+//        enhanceElement : 'list'
+//    };
 
     /**
      Enhances ul/ol lists view
@@ -10,6 +10,8 @@
      @private
      */
     XF.UI.list = {
+
+        selector : 'UL[data-role=listview], OL[data-role=listview]',
 
         render : function (list) {
             var jQList = $(list);
