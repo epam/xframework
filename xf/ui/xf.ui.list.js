@@ -1,101 +1,94 @@
 
-    XF.UI.enhancementList.list = {
-        selector : 'UL[data-role=listview], OL[data-role=listview]',
-        enhanceMethod : 'enhanceList'
-    };
-
     /**
      Enhances ul/ol lists view
      @param list DOM Object
      @private
      */
-    XF.UI.enhanceList = function(list) {
-        var jQList = $(list);
-        if(!list || !jQList instanceof $) {
-            return;
-        }
+    XF.UI.list = {
 
-        if(jQList.attr('data-skip-enhance') == 'true') {
-            return;
-        }
+        selector : 'UL[data-role=listview], OL[data-role=listview]',
 
-        jQList.attr({'data-skip-enhance':true});
+        render : function (list) {
+            var jQList = $(list);
 
-        jQList.addClass('xf-listview');
-
-        // If the list has data-fullwidth="true" attribute add xf-listview-fullwidth class to it
-        if(jQList.attr('data-fullwidth') == 'true') {
-            jQList.addClass('xf-listview-fullwidth');
-        }
-
-        // Add xf-li class to all LIs inside
-        jQList.children('li').addClass('xf-li');
-        // If a LI has data-role="divider" attribute add xf-li-divider class to the LI
-        jQList.children('li[data-role=divider]').addClass('xf-li-divider');
-
-        var lis = jQList.children('li');
-
-        // If there's an A element directly inside the LI, add xf-li-btn class to the A
-        var anchors = lis.children('a');
-
-        anchors.addClass('xf-li-btn');
-        // If there's _no_ A element directly inside the LI, add xf-li-static class to it.
-        // Don't add xf-li-static class to LIs with data-role="divider"
-        lis.not(anchors.parent()).not('[data-role=divider]').addClass('xf-li-static');
-
-        // If there's a data-icon attribute on LI:
-        // Append SPAN.xf-icon.xf-icon-big.xf-icon-ICONNAME inside the A
-        // If parent LI had no data-iconpos attribute or had data-iconpos="right" attr,
-        // add xf-li-with-icon-right class to the A, otherwise add class xf-li-with-icon-left
-        jQList.children('li[data-icon]').children('a').each(function(){
-            var jqAnchor = $(this);
-            var icon = jqAnchor.parent().attr('data-icon');
-            jqAnchor.append(
-                $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-' + icon)
-            );
-            var iconPos = jqAnchor.parent().attr('data-iconpos');
-            if(iconPos != 'left' && iconPos != 'right') {
-                iconPos = 'right';
+            if (!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
+                return;
             }
-            jqAnchor.addClass('xf-li-with-icon-' + iconPos);
-        });
+            var listItems = jQList.children('li'),
+                linkItems = listItems.children('a'),
+                listItemsScope = [],
+                fullWidth = jQList.attr('data-fullwidth') || 'false',
+                listId = jQList.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
 
-        // If there's an element with class xf-count-bubble inside the A, add xf-li-has-count to the A
-        anchors.children('.xf-count-bubble').parent().addClass('xf-li-has-count');
+            linkItems.addClass('xf-li-btn').children('.xf-count-bubble').parent().addClass('xf-li-has-count');
+            listItems.not(linkItems.parent()).not('[data-role=divider]').addClass('xf-li-static');
 
-        // If there's an IMG directly inside the A, add xf-li-with-thumb-left class to the A,
-        // and xf-li-thumb & xf-li-thumb-left classes to the IMG.
-        // If there was data-thumbpos="right" attr, the classes must be
-        // xf-li-with-thumb-right & xf-li-thumb-right
-        anchors.children('img').parent().each(function(){
-            var jqAnchor = $(this);
-            var thumbPos = jqAnchor.parent().attr('data-thumbpos');
-            if(thumbPos != 'right' && thumbPos != 'left') {
-                thumbPos = 'left';
+            jQList.attr({'data-skip-enhance':true, 'id': listId}).addClass('xf-listview')
+                .children('li[data-icon]').children('a').each(function () {
+                    var anchor = $(this);
+                    var icon = anchor.parent().attr('data-icon');
+                    anchor.append(
+                        $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-' + icon)
+                    );
+                    var iconPos = anchor.parent().attr('data-iconpos');
+
+                    if (iconPos != 'left' && iconPos != 'right') {
+                        iconPos = 'right';
+                    }
+                    anchor.addClass('xf-li-with-icon-' + iconPos);
+                });
+
+            if (fullWidth === 'true') {
+                jQList.addClass('xf-listview-fullwidth');
             }
-            jqAnchor.addClass('xf-li-with-thumb-' + thumbPos);
-            jqAnchor.children('img').addClass('xf-li-thumb xf-li-thumb-' + thumbPos);
-        });
 
-        // Inside the A, wrap all contents except the icon, count-bubble and the thumbnail
-        // in one .xf-btn-text div.
-        anchors.each(function() {
-            var jqAnchor = $(this);
-            jqAnchor.append(
-                $('<div class=xf-btn-text></div>')
-                    .append(
-                        jqAnchor.children().not('.xf-icon, .xf-count-bubble, .xf-li-thumb')
-                    )
+            linkItems.children('img').parent().each(function (){
+                var anchor = $(this);
+                var thumbPos = anchor.parent().attr('data-thumbpos');
+
+                if (thumbPos != 'right' && thumbPos != 'left') {
+                    thumbPos = 'left';
+                }
+                anchor.addClass('xf-li-with-thumb-' + thumbPos);
+                anchor.children('img').addClass('xf-li-thumb xf-li-thumb-' + thumbPos);
+            });
+
+            linkItems.each(function () {
+                var anchor = $(this);
+                anchor.append(
+                    $('<div class=xf-btn-text></div>')
+                        .append(
+                            anchor.children().not('.xf-icon, .xf-count-bubble, .xf-li-thumb')
+                        )
+                );
+            });
+
+            listItems.find('h1, h2, h3, h4, h5, h6').addClass('xf-li-header');
+
+            listItems.find('p').addClass('xf-li-desc');
+
+            listItems.filter('.xf-li-static').each(function (){
+                $(this).wrapInner('<div class=xf-li-wrap />');
+            });
+
+            $.each(listItems, function (key, value) {
+                var html = listItems.eq(key).html(),
+                    role = listItems.eq(key).attr('data-role') || '',
+                    class_ = (listItems.eq(key).attr('class') || '') + ' xf-li',
+                    id = listItems.eq(key).attr('id') || '';
+
+                if (role !== '') {
+                    class_ += ' xf-li-' + role;
+                }
+                listItemsScope.push({'html': html, 'class': class_, 'id': id});
+            });
+
+            var _template = _.template(
+                '<% _.each(listItemsScope, function(item) { %> '
+                    + '<li class="<%= item.class %>" id="<%= item.id %>"><%= item.html %></li>'
+                + '<% }); %>'
             );
-        });
 
-        // To all H1-h6 elements inside the A add xf-li-header class
-        lis.find('h1, h2, h3, h4, h5, h6').addClass('xf-li-header');
-        // To all P elements inside the A add xf-li-desc class
-        lis.find('p').addClass('xf-li-desc');
-
-        // Wrap LI.xf-li-static inside with DIV.xf-li-wrap
-        lis.filter('.xf-li-static').each(function(){
-            $(this).wrapInner('<div class=xf-li-wrap />');
-        });
+            jQList.html(_template({listItemsScope : listItemsScope}));
+        }
     };

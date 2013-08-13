@@ -1,82 +1,65 @@
 
-    XF.UI.enhancementList.checkboxRadio = {
-        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
-        enhanceMethod : 'enhanceCheckboxRadio'
-    };
-
     /**
      Enhances checkbox or radio button input view
      @param textInput DOM Object
      @private
      */
-    XF.UI.enhanceCheckboxRadio = function(chbRbInput) {
-        var jQChbRbInput = $(chbRbInput);
-        if(!chbRbInput || !jQChbRbInput instanceof $) {
-            return;
-        }
+    XF.UI.checkboxRadio = {
 
-        if(jQChbRbInput.attr('data-skip-enhance') == 'true') {
-            return;
-        }
+        selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
-        jQChbRbInput.attr({'data-skip-enhance':true});
+        render : function(chbRbInput) {
 
-        var chbRbInputID = jQChbRbInput.attr('id');
-        var chbRbInputLabel = $('label[for=' + chbRbInputID + ']');
+            var jQChbRbInput = $(chbRbInput),
+                options = {
+                    id : '',
+                    input : '',
+                    wrapperClass : '',
+                    labelClass : '',
+                    labelFor : '',
+                    isSwitch : false,
+                    label : ''
+                };
 
-        // If the input doesn't have an associated label, quit
-        if(chbRbInputLabel.length) {
-
-            var typeValue = jQChbRbInput.attr('type').toLowerCase();
-            var isSwitch = jQChbRbInput.attr('data-role') == 'switch';
-
-            /*
-             <div class="xf-switch">
-
-             <label class="xf-switch-control" for="wifi-switch22">
-             <input class="" type="radio" name="rr" id="wifi-switch22" data-role="switch" data-skip-enhance="true">
-             <span class="xf-switch-track">
-             <span class="xf-switch-track-wrap"><span class="xf-switch-thumb"></span></span>
-             </span>
-             </label>
-
-             <label class="xf-switch-label" for="wifi-switch22">On/Off Switch</label>
-             </div>
-             */
-
-            var wrapper = $('<div></div>');
-            if(!isSwitch) {
-                // An input-label pair is wrapped in a div.xf-input-radio or div.xf-input-checkbox
-                wrapper.addClass('xf-input-' + typeValue);
-
-                // The input is wrapped in a new label.xf-input-positioner[for=INPUT-ID]
-                wrapper.append($('<label class="xf-input-positioner"></label>').attr({'for' : chbRbInputID}).append(jQChbRbInput.clone()));
-                // The old label is assigned a class xf-input-label
-                wrapper.append(chbRbInputLabel.addClass('xf-input-label'));
-            } else {
-                wrapper.addClass('xf-switch');
-                wrapper.append(
-                    $('<label class="xf-switch-control"></label>').attr({'for' : chbRbInputID})
-                        .append(jQChbRbInput.clone())
-                        .append(
-                            $('<span class=xf-switch-track><span class=xf-switch-track-wrap><span class=xf-switch-thumb></span></span></span>')
-                        )
-                );
-                wrapper.append(chbRbInputLabel.addClass('xf-switch-label'));
+            if (!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
+                return;
             }
 
+            jQChbRbInput.attr({'data-skip-enhance':true});
+            options.id = jQChbRbInput.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            options.input = jQChbRbInput.wrap("<span></span>").parent().html();
+            jQChbRbInput.attr('id', options.id);
+            var chbRbInputLabel = $('label[for=' + options.id + ']');
 
-            jQChbRbInput.outerHtml(wrapper);
+            // If the input doesn't have an associated label, quit
+            if (chbRbInputLabel.length) {
 
-            // fix iOS bug when labels don't check radios and checkboxes
-            /*
-             wrapper.on('click', 'label[for="'+ chbRbInputID +'"]', function(){
-             if (!$(this).data('bound')) {
-             var $input = $('#'+ chbRbInputID);
-             alert($input[0].checked);
-             $input.attr({checked: !$input[0].checked});
-             !$(this).data('bound', true)
-             }
-             })*/
+                var typeValue = jQChbRbInput.attr('type').toLowerCase(),
+                    wrapper = $('<div></div>'),
+                    isSwitch = options.isSwitch = jQChbRbInput.attr('data-role') == 'switch';
+
+                if (!isSwitch) {
+                    options.wrapperClass = 'xf-input-' + typeValue;
+                    options.labelClass = 'xf-input-positioner';
+                    chbRbInputLabel.addClass('xf-input-label');
+                } else {
+                    options.wrapperClass = 'xf-switch';
+                    options.labelClass = 'xf-switch-control';
+                    chbRbInputLabel.addClass('xf-switch-label');
+                }
+                wrapper.append(chbRbInputLabel);
+                options.labelFor = chbRbInputLabel.wrap("<span></span>").parent().html();
+
+                var _template = _.template(
+                    '<div class="<%= options.wrapperClass %>"><label for="<%= options.id %>" class="<%= options.labelClass %>">'
+                    + '<%= options.input %><% if(options.isSwitch) { %>'
+                    + '<span class=xf-switch-track><span class=xf-switch-track-wrap>'
+                    + '<span class=xf-switch-thumb></span>'
+                    + '</span></span>'
+                    + '<% } %>'
+                    + '</label><%= options.labelFor %></div>'
+                );
+                jQChbRbInput.parent().html(_template({options : options}));
+            }
         }
     };
