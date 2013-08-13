@@ -7,6 +7,10 @@
 
     _.extend(XF.UI, /** @lends XF.UI */ {
 
+        init: function () {
+            XF.on('ui:enhance', _.bind(XF.UI.enhance, XF.UI));
+        },
+
         /**
          Reworks markup of a givven $ object
          @param jqObj $ item
@@ -56,9 +60,9 @@
         issetElements : [],
 
         checkInIsset : function (type, id) {
-            var type = type || '',
-                id = id || '',
-                result = [];
+            type = type || '';
+            id = id || '';
+            var result = [];
 
             for (var i in this.issetElements) {
 
@@ -79,9 +83,9 @@
         },
 
         removeFromIsset : function (type, id) {
-            var type = type || '',
-                id = id || '',
-                result = [];
+            type = type || '';
+            id = id || '';
+            var result = [];
 
             for (var i in this.issetElements) {
 

@@ -288,9 +288,7 @@
             this.renderVersion++;
             var DOMObject = $('[data-id=' + this.component.id + ']');
             DOMObject.html(this.getMarkup());
-            if (_.has(XF, 'UI')) {
-                XF.UI.enhanceView(DOMObject);
-            }
+            XF.trigger('ui:enhance', DOMObject);
         },
 
         /**
