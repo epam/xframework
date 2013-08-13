@@ -149,7 +149,7 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('body').on('click tap', '[data-href]', function() {
+        $('body').on('tap click', '[data-href]', function() {
             var animationType = $(this).data('animation') || null;
             if (animationType) {
                 XF.trigger('pages:animation:next', animationType);
@@ -211,18 +211,17 @@
             }
         });
 
-         var selector = null;
-        console.log(XF.UI.enhancementList)
-         _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
-         if(!selector) {
-         selector = enhancement.selector;
-         } else {
-         selector += ', ' + enhancement.selector;
-         }
-         });
-         $(selector).on('show', function() {
-         XF.UI.enhanceView($(this));
-         });
+//         var selector = null;
+//         _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
+//         if(!selector) {
+//         selector = enhancement.selector;
+//         } else {
+//         selector += ', ' + enhancement.selector;
+//         }
+//         });
+//         $(selector).on('show', function() {
+//         XF.UI.enhanceView($(this));
+//         });
 
     };
 
