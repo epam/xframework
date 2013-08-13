@@ -95,6 +95,12 @@
 
         XF.Router.start();
 
+        options.animations = options.animations || {};
+        options.animations.default = options.animations.default || '';
+        if (_.has(XF.Device.type, 'defaultAnimation')) {
+            options.animations.default = XF.Device.type.defaultAnimation;
+            console.log('Options.animations', options.animations);
+        }
 
         XF.Pages.start(options.animations);
 

@@ -1,4 +1,4 @@
-/*! X-Framework 10-08-2013 */
+/*! X-Framework 13-08-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -98,6 +98,10 @@
 
         options.animations = options.animations || {};
         options.animations.default = options.animations.default || '';
+        if (_.has(XF.Device.type, 'defaultAnimation')) {
+            options.animations.default = XF.Device.type.defaultAnimation;
+            console.log('Options.animations', options.animations);
+        }
 
         XF.Pages.start(options.animations);
 
@@ -481,33 +485,9 @@
              */
             dataUrlFormatter: function(compName) {
                 return XF.Settings.property('dataUrlPrefix') + compName + XF.Settings.property('dataUrlPostfix');
-            },
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 100
-             @type Number
-             */
-            touchableSwipeLength: 100,
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 700
-             @type Number
-             */
-            touchableDoubleTapInterval: 700,
-            /**
-             Used by {@link XF.Touchable}
-             @memberOf XF.Settings.prototype
-             @default 300
-             @type Number
-             */
-            touchableLongTapInterval: 500,
+            }
 
 
-
-            //TODO merge with animation types
-            animations: {}
         },
 
         /**
@@ -1735,8 +1715,8 @@
             if (fromPage) {
                 viewport.addClass('xf-viewport-transitioning');
 
-                fromPage.addClass('out '+ animationType);
-                toPage.addClass('in '+ animationType + ' ' + this.activePageClass);
+                fromPage.height(viewport.height()).addClass('out '+ animationType);
+                toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
                 fromPage.animationEnd(function(){
                     fromPage.height('').removeClass(animationType + ' out in');
                     fromPage.removeClass(XF.Pages.activePageClass);
