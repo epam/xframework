@@ -10,7 +10,8 @@
 
         render : function(fieldset) {
             var jQFieldset = $(fieldset);
-            if(!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
+
+            if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -30,10 +31,11 @@
             jQFieldset.wrapInner('<div class="xf-controlgroup-controls">');
             jQFieldset.prepend(legend);
 
-            if(legend.length) {
+            if (legend.length) {
                 var legendDiv = $('<div></div>');
                 var newLegendAttrs = {};
-                _.each(legend[0].attributes, function(attribute) {
+
+                _.each(legend[0].attributes, function (attribute) {
                     newLegendAttrs[attribute.name] = attribute.value;
                 });
                 legendDiv.attr(newLegendAttrs).addClass('xf-label').html(legend.html());

@@ -140,7 +140,6 @@
                         jQTextInput.outerHtml(rangeWrapper);
                         jQTextInput = rangeWrapper;
                         textInput = rangeWrapper[0];
-                        console.log(textInput)
                     }
 
                 }

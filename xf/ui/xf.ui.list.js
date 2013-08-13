@@ -24,7 +24,7 @@
             listItems.not(linkItems.parent()).not('[data-role=divider]').addClass('xf-li-static');
 
             jQList.attr({'data-skip-enhance':true, 'id': listId}).addClass('xf-listview')
-                .children('li[data-icon]').children('a').each(function() {
+                .children('li[data-icon]').children('a').each(function () {
                     var anchor = $(this);
                     var icon = anchor.parent().attr('data-icon');
                     anchor.append(
@@ -89,6 +89,6 @@
                 + '<% }); %>'
             );
 
-            jQList.html( _template({listItemsScope : listItemsScope}) );
+            jQList.html(_template({listItemsScope : listItemsScope}));
         }
     };

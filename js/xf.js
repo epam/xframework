@@ -2506,33 +2506,22 @@
     XF.UI.button = {
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
-        render : function(button) {
-            var jQButton = $(button);
-            if(!button || !jQButton instanceof $) {
+        render : function (button) {
+            var jQButton = $(button),
+                enhancedButton,
+                innerStuff;
+
+            if (!button || !jQButton instanceof $ || jQButton.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            if(jQButton.attr('data-skip-enhance') == 'true') {
-                return;
-            }
-
-            var enhancedButton;
-            var innerStuff;
-
-
-
-            //UNDERSCORE TEMPLATES
-
-    //        var inputTpl = _.template('<div></div>');
-            //-- UNDERSCORE TEMPLATES
-
-            // If it's A or BUTTON, the necessary classes are added to the element itself
-            if(button.nodeName == 'A' || button.nodeName == 'BUTTON') {
+            if (button.nodeName == 'A' || button.nodeName == 'BUTTON') {
                 enhancedButton = jQButton.attr({'data-skip-enhance':true});
                 innerStuff = jQButton.html();
                 jQButton.html('');
+
                 // If it's INPUT - it's wrapped in a DIV and the necessary classes are added to the DIV.
-            } else if(button.nodeName == 'INPUT') {
+            } else if (button.nodeName == 'INPUT') {
                 // The input is assigned a class xf-input-hidden
                 enhancedButton = $('<div></div>').append(jQButton.clone().addClass('xf-input-hidden').attr({'data-skip-enhance':true}));
                 jQButton.outerHtml(enhancedButton);
@@ -2549,17 +2538,17 @@
             enhancedButton.addClass(isSmall ? 'xf-button-small' : 'xf-button');
 
             // If data-appearance="backbtn" attribute is present, xf-button-back class is also added.
-            if(jQButton.attr('data-appearance') == 'backbtn') {
+            if (jQButton.attr('data-appearance') === 'backbtn') {
                 enhancedButton.addClass('xf-button-back');
             }
 
             var iconName = jQButton.attr('data-icon');
 
-            if(jQButton.attr('data-appearance') == 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
+            if (jQButton.attr('data-appearance') === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
                 iconName = 'left';
             }
 
-            if(iconName) {
+            if (iconName) {
 
                 // If data-icon attribute is present, a SPAN.xf-icon is added inside the button.
                 var iconSpan = $('<span class=xf-icon></span>');
@@ -2569,7 +2558,7 @@
 
                 // If the button had data-small=true or data-appearance="backbtn" attributes,
                 // xf-icon-small class is also added to SPAN.xf-icon
-                if(isSmall) {
+                if (isSmall) {
                     iconSpan.addClass('xf-icon-small');
                 } else {
                     iconSpan.addClass('xf-icon-big');
@@ -2579,7 +2568,8 @@
                 // The value is taken from data-iconpos attr.
                 // Possible values: left, right, top, bottom.
                 var iconPos = jQButton.attr('data-iconpos') || 'left';
-                if(iconPos != 'left' && iconPos != 'right' && iconPos != 'top' && iconPos != 'bottom') {
+
+                if (iconPos != 'left' && iconPos != 'right' && iconPos != 'top' && iconPos != 'bottom') {
                     iconPos = 'left';
                 }
                 enhancedButton.addClass('xf-iconpos-' + iconPos);
@@ -2589,8 +2579,9 @@
 
             if(innerStuff) {
                 var textSpan = $('<span></span>').append(innerStuff);
+
                 // The text of buttons is placed inside span.xf-button-small-text for small buttons
-                if(isSmall || jQButton.attr('data-appearance') == 'backbtn') {
+                if (isSmall || jQButton.attr('data-appearance') == 'backbtn') {
                     textSpan.addClass('xf-button-small-text');
                     // and span.xf-button-text for big ones.
                 } else {
@@ -2600,15 +2591,16 @@
             }
 
             // If data-special="true" attribute is present add xf-button-special class.
-            if(jQButton.attr('data-special') == 'true') {
+            if (jQButton.attr('data-special') == 'true') {
                 enhancedButton.addClass('xf-button-special');
             }
-            if(jQButton.attr('data-alert') == 'true') {
+
+            if (jQButton.attr('data-alert') == 'true') {
                 enhancedButton.addClass('xf-button-alert');
             }
 
             // If data-alert="true" attribute is present add xf-button-alert class.
-            if(jQButton.attr('data-alert') == 'true') {
+            if (jQButton.attr('data-alert') == 'true') {
                 enhancedButton.addClass('xf-button-alert');
             }
         },
@@ -2631,36 +2623,38 @@
              handler
              }
              */
-            var jQButton = $('<button>/button>');
+            var jQButton = $('<button>/button>'),
+                attrs = {};
             jQButton.html(buttonDescr.text);
-            var attrs = {};
-            if(buttonDescr.icon && buttonDescr.icon != '') {
+
+            if (buttonDescr.icon && buttonDescr.icon != '') {
                 attrs['data-icon'] = buttonDescr.icon;
             };
-            if(buttonDescr.iconpos && buttonDescr.iconpos != '') {
+
+            if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
                 attrs['data-iconpos'] = buttonDescr.iconpos;
             };
-            if(buttonDescr.small && buttonDescr.small != '') {
+
+            if (buttonDescr.small && buttonDescr.small != '') {
                 attrs['data-small'] = buttonDescr.small;
             };
-            if(buttonDescr.appearance && buttonDescr.appearance != '') {
+
+            if (buttonDescr.appearance && buttonDescr.appearance != '') {
                 attrs['data-appearance'] = buttonDescr.appearance;
             };
-            if(buttonDescr.special && buttonDescr.special != '') {
+
+            if (buttonDescr.special && buttonDescr.special != '') {
                 attrs['data-special'] = buttonDescr.special;
             };
             if(buttonDescr.alert && buttonDescr.alert != '') {
                 attrs['data-alert'] = buttonDescr.alert;
             };
-            if(_.isFunction(buttonDescr.handler)) {
+
+            if (_.isFunction(buttonDescr.handler)) {
                 jQButton.click(buttonDescr.handler)
             };
-
-
             jQButton.attr(attrs);
-
             this.render(jQButton[0]);
-
             return jQButton;
         }
     };
@@ -2687,7 +2681,8 @@
                     isSwitch : false,
                     label : ''
                 };
-            if(!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
+
+            if (!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2698,7 +2693,7 @@
             var chbRbInputLabel = $('label[for=' + options.id + ']');
 
             // If the input doesn't have an associated label, quit
-            if(chbRbInputLabel.length) {
+            if (chbRbInputLabel.length) {
 
                 var typeValue = jQChbRbInput.attr('type').toLowerCase(),
                     wrapper = $('<div></div>'),
@@ -2726,17 +2721,6 @@
                     + '</label><%= options.labelFor %></div>'
                 );
                 jQChbRbInput.parent().html(_template({options : options}));
-
-                // fix iOS bug when labels don't check radios and checkboxes
-                /*
-                 wrapper.on('click', 'label[for="'+ chbRbInputID +'"]', function(){
-                 if (!$(this).data('bound')) {
-                 var $input = $('#'+ chbRbInputID);
-                 alert($input[0].checked);
-                 $input.attr({checked: !$input[0].checked});
-                 !$(this).data('bound', true)
-                 }
-                 })*/
             }
         }
     };
@@ -2753,7 +2737,8 @@
 
         render : function(fieldset) {
             var jQFieldset = $(fieldset);
-            if(!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
+
+            if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2773,10 +2758,11 @@
             jQFieldset.wrapInner('<div class="xf-controlgroup-controls">');
             jQFieldset.prepend(legend);
 
-            if(legend.length) {
+            if (legend.length) {
                 var legendDiv = $('<div></div>');
                 var newLegendAttrs = {};
-                _.each(legend[0].attributes, function(attribute) {
+
+                _.each(legend[0].attributes, function (attribute) {
                     newLegendAttrs[attribute.name] = attribute.value;
                 });
                 legendDiv.attr(newLegendAttrs).addClass('xf-label').html(legend.html());
@@ -2811,7 +2797,7 @@
             listItems.not(linkItems.parent()).not('[data-role=divider]').addClass('xf-li-static');
 
             jQList.attr({'data-skip-enhance':true, 'id': listId}).addClass('xf-listview')
-                .children('li[data-icon]').children('a').each(function() {
+                .children('li[data-icon]').children('a').each(function () {
                     var anchor = $(this);
                     var icon = anchor.parent().attr('data-icon');
                     anchor.append(
@@ -2876,7 +2862,7 @@
                 + '<% }); %>'
             );
 
-            jQList.html( _template({listItemsScope : listItemsScope}) );
+            jQList.html(_template({listItemsScope : listItemsScope}));
         }
     };
 
@@ -3149,10 +3135,10 @@
 
         selector : '[data-scrollable=true]',
 
-        render : function(scrollable) {
+        render : function (scrollable) {
 
             var jQScrollable = $(scrollable);
-            if(!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
+            if (!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -3161,8 +3147,9 @@
             jQScrollable.attr({'data-skip-enhance':true, 'id' : id});
 
             var children = jQScrollable.children();
+
             // always create wrapper
-            if(children.length == 1 && false) {
+            if (children.length == 1 && false) {
                 children.addClass('xf-scrollable-content');
             } else {
                 jQScrollable.append(
@@ -3173,28 +3160,33 @@
             }
 
             var wrapperId = jQScrollable.attr('id');
-            if(!wrapperId || wrapperId == '') {
+
+            if (!wrapperId || wrapperId == '') {
                 wrapperId = 'xf_scrollable_' + new Date().getTime();
                 jQScrollable.attr({'id':wrapperId});
             }
 
             var ISItem = jQScrollable.data('iscroll', new iScroll(wrapperId));
             var wrapperChanged = false;
-            var doRefreshIScroll = function() {
-                if(wrapperChanged) {
+
+            var doRefreshIScroll = function () {
+
+                if (wrapperChanged) {
                     wrapperChanged = false;
                     ISItem.data('iscroll').refresh();
                     bindHanlders();
                 }
             };
-            var needRefreshIScroll = function(){
-                if($.contains($('#' + wrapperId)[0], this)) {
+
+            var needRefreshIScroll = function (){
+
+                if ($.contains($('#' + wrapperId)[0], this)) {
                     wrapperChanged = true;
                     setTimeout(doRefreshIScroll, 100);
                 }
             };
 
-            var bindHanlders = function() {
+            var bindHanlders = function () {
                 $('#' + wrapperId + ' *')
                     .bind('detach', needRefreshIScroll)
                     .bind('hide', needRefreshIScroll)
@@ -3204,7 +3196,6 @@
                     .bind('html', needRefreshIScroll)
                     .bind('resize', needRefreshIScroll);
             };
-
             bindHanlders();
         }
     };
@@ -3351,7 +3342,6 @@
                         jQTextInput.outerHtml(rangeWrapper);
                         jQTextInput = rangeWrapper;
                         textInput = rangeWrapper[0];
-                        console.log(textInput)
                     }
 
                 }
