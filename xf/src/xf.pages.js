@@ -174,20 +174,9 @@
                 this.activePage.addClass(this.activePageClass);
             }
 
-
-            // scroll to top of page ofter page switch
-            //window.scrollTo( 0, 1 );
-
-            if (_.has(XF, 'UI')) {
-                XF.UI.enhanceView(this.activePage);
-            }
-
             // looking for components inside the page
             loadChildComponents(this.activePage[0]);
 
-            // Check if UI
-            if (XF.hasOwnProperty('UI')) {
-                XF.UI.enhanceView($(this.activePage[0]));
-            }
+            XF.trigger('ui:enhance', $(this.activePage[0]));
         }
     };
