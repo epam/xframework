@@ -152,8 +152,8 @@
             if (fromPage) {
                 viewport.addClass('xf-viewport-transitioning');
 
-                fromPage.addClass('out '+ animationType);
-                toPage.addClass('in '+ animationType + ' ' + this.activePageClass);
+                fromPage.height(viewport.height()).addClass('out '+ animationType);
+                toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
                 fromPage.animationEnd(function(){
                     fromPage.height('').removeClass(animationType + ' out in');
                     fromPage.removeClass(XF.Pages.activePageClass);

@@ -95,8 +95,6 @@
 
         XF.Router.start();
 
-        options.animations = options.animations || {};
-        options.animations.default = options.animations.default || '';
 
         XF.Pages.start(options.animations);
 
