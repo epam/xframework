@@ -174,9 +174,9 @@
                 this.activePage.addClass(this.activePageClass);
             }
 
+            XF.trigger('ui:enhance', $(this.activePage));
+
             // looking for components inside the page
             loadChildComponents(this.activePage[0]);
-
-            XF.trigger('ui:enhance', $(this.activePage[0]));
         }
     };
