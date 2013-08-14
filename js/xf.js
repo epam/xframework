@@ -1,4 +1,4 @@
-/*! X-Framework 13-08-2013 */
+/*! X-Framework 14-08-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -151,7 +151,7 @@
      @private
      */
     var placeAnchorHooks = function() {
-        $('body').on('tap click', '[data-href]', function() {
+        $('body').on('tap', '[data-href]', function() {
             var animationType = $(this).data('animation') || null;
             if (animationType) {
                 XF.trigger('pages:animation:next', animationType);
@@ -2307,7 +2307,9 @@
     // List of new events
     ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
         $.fn[i] = function (callback) {
-            return this.bind(i, callback)
+            return this.bind(i, callback);
+            console.log(i)
+            if(i === 'tap') console.log(callback)
         };
     });
 
@@ -2637,59 +2639,6 @@
             if (jQButton.attr('data-alert') == 'true') {
                 enhancedButton.addClass('xf-button-alert');
             }
-        },
-
-        /**
-         Generates and enhances button
-         @param buttonDescr Object
-         @return $
-         */
-        create : function (buttonDescr)  {
-            /*
-             buttonDescr = {
-             text,
-             icon,
-             iconpos,
-             small,
-             appearance,
-             special,
-             alert,
-             handler
-             }
-             */
-            var jQButton = $('<button>/button>'),
-                attrs = {};
-            jQButton.html(buttonDescr.text);
-
-            if (buttonDescr.icon && buttonDescr.icon != '') {
-                attrs['data-icon'] = buttonDescr.icon;
-            };
-
-            if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
-                attrs['data-iconpos'] = buttonDescr.iconpos;
-            };
-
-            if (buttonDescr.small && buttonDescr.small != '') {
-                attrs['data-small'] = buttonDescr.small;
-            };
-
-            if (buttonDescr.appearance && buttonDescr.appearance != '') {
-                attrs['data-appearance'] = buttonDescr.appearance;
-            };
-
-            if (buttonDescr.special && buttonDescr.special != '') {
-                attrs['data-special'] = buttonDescr.special;
-            };
-            if(buttonDescr.alert && buttonDescr.alert != '') {
-                attrs['data-alert'] = buttonDescr.alert;
-            };
-
-            if (_.isFunction(buttonDescr.handler)) {
-                jQButton.click(buttonDescr.handler)
-            };
-            jQButton.attr(attrs);
-            this.render(jQButton[0]);
-            return jQButton;
         }
     };
 
@@ -2907,7 +2856,7 @@
      @private
      */
     XF.UI.popup = {
-        Create : function () {
+        render : function () {
             /*
              <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
              */
@@ -2998,7 +2947,7 @@
              </div>
              */
 
-            var jqDialog = this.create(),
+            var jqDialog = this.render(),
                 _template = _.template(
                 '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
                 + '<div class="xf-dialog-box-content"><%= messageText %></div>'
@@ -3026,7 +2975,7 @@
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
-                        jqBtn = XF.UI.button.create(btn);
+                        jqBtn = XF.UI.popup.createButton(btn);
                     }
 
                     jqBtnContainer.append(
@@ -3061,7 +3010,7 @@
              </div>
              */
 
-            var jqNotification = this.create().addClass('xf-dialog-notification'),
+            var jqNotification = this.render().addClass('xf-dialog-notification'),
                 _template = _.template(
                     '<div class="xf-notification"><div class="xf-notification-wrap">'
                     + '<div class="xf-notification-text"><%= messageText %></div></div></div>'
@@ -3156,6 +3105,42 @@
                     this.hide($('#' + idStack[i]));
                 }
             }
+        },
+
+        createButton : function (buttonDescr)  {
+            var jQButton = $('<button>/button>'),
+                attrs = {};
+            jQButton.html(buttonDescr.text);
+
+            if (buttonDescr.icon && buttonDescr.icon != '') {
+                attrs['data-icon'] = buttonDescr.icon;
+            };
+
+            if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
+                attrs['data-iconpos'] = buttonDescr.iconpos;
+            };
+
+            if (buttonDescr.small && buttonDescr.small != '') {
+                attrs['data-small'] = buttonDescr.small;
+            };
+
+            if (buttonDescr.appearance && buttonDescr.appearance != '') {
+                attrs['data-appearance'] = buttonDescr.appearance;
+            };
+
+            if (buttonDescr.special && buttonDescr.special != '') {
+                attrs['data-special'] = buttonDescr.special;
+            };
+            if(buttonDescr.alert && buttonDescr.alert != '') {
+                attrs['data-alert'] = buttonDescr.alert;
+            };
+
+            if (_.isFunction(buttonDescr.handler)) {
+                jQButton.click(buttonDescr.handler)
+            };
+            jQButton.attr(attrs);
+            XF.UI.button.render(jQButton[0]);
+            return jQButton;
         }
     };
 
