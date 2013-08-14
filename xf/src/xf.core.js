@@ -46,6 +46,11 @@
 
         XF._defferedCompEvents || (XF._defferedCompEvents = {});
 
+        //on component constructed
+        if (parts[0] === 'component' && parts[2] === 'constructed') {
+            onComponentCostruct(compID);
+        }
+
         if (!XF.getComponentByID(compID)) {
             var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []);
             events.push(eventName);
@@ -57,6 +62,14 @@
         }
 
     });
+
+    onComponentCostruct = function (compID) {
+        console.log('constructed', compID);
+        var compObj = $(XF.getComponentByID(compID).selector());
+        XF.trigger('pages:start', compObj);
+
+        loadChildComponents(compObj);
+    };
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +115,11 @@
             console.log('Options.animations', options.animations);
         }
 
-        XF.Pages.start(options.animations);
+        XF.Pages.init(options.animations);
+
+        if (_.has(XF, 'UI')) {
+            XF.UI.init();
+        }
 
         //XF.Pages.start();
         loadChildComponents(rootDOMObject);
@@ -149,6 +166,7 @@
      @private
      */
     var loadChildComponents = function(DOMObject) {
+        console.log('XF :: loadChildComponents', DOMObject);
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
@@ -181,13 +199,14 @@
      */
     var bindHideShowListeners = function() {
         $('[data-component]').on('show', function(evt) {
+            console.log('SHOWED', evt.target);
             if(evt.currentTarget == evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
-                XF.UI.enhanceView($(this));
+                XF.trigger('ui:enhance', $(this));
             }
         });
 

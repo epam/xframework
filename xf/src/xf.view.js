@@ -288,7 +288,7 @@
             this.renderVersion++;
             var DOMObject = $('[data-id=' + this.component.id + ']');
             DOMObject.html(this.getMarkup());
-            loadChildComponents(DOMObject);
+            XF.trigger('ui:enhance', DOMObject);
         },
 
         /**
