@@ -107,6 +107,10 @@
         placeAnchorHooks();
         bindHideShowListeners();
 
+        if (_.has(XF, 'UI')) {
+            XF.UI.init();
+        }
+
         XF.Router.start();
 
         options.animations = options.animations || {};
@@ -118,9 +122,7 @@
 
         XF.Pages.init(options.animations);
 
-        if (_.has(XF, 'UI')) {
-            XF.UI.init();
-        }
+
 
         //XF.Pages.start();
         loadChildComponents(rootDOMObject);
@@ -1755,10 +1757,10 @@
                 this.activePage.addClass(this.activePageClass);
             }
 
+            XF.trigger('ui:enhance', $(this.activePage));
+
             // looking for components inside the page
             loadChildComponents(this.activePage[0]);
-
-            XF.trigger('ui:enhance', $(this.activePage[0]));
         }
     };
     /**
@@ -2443,7 +2445,7 @@
          */
 
         enhance : function (jqObj) {
-
+            console.log('enhance', jqObj);
             if (!jqObj instanceof $) {
                 jqObj = $(jqObj);
 
