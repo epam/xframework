@@ -99,6 +99,11 @@
         options.device = options.device || {};
         XF.Device.init(options.device.types);
 
+        // initializing XF.Touches
+        if ('Touches' in XF) {
+            XF.Touches.init();
+        }
+
         // options.router
         options.router = options.router || {};
         createRouter(options.router);
