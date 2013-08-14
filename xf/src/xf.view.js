@@ -137,7 +137,7 @@
                 if(this.lastDeviceType && this.lastDeviceType.templatePath) {
                     templatePath = this.lastDeviceType.templatePath;
                 }
-                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.name, templatePath);
+                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.templateName, templatePath);
             }
             return this.templateURL;
         },

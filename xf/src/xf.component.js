@@ -33,6 +33,8 @@
          */
         this.name = name || 'default_name';
 
+        this.templateName = this.name;
+
         /**
          ID of the component.
          @default 'default_id'
