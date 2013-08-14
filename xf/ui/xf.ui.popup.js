@@ -5,7 +5,7 @@
      @private
      */
     XF.UI.popup = {
-        Create : function () {
+        render : function () {
             /*
              <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
              */
@@ -96,7 +96,7 @@
              </div>
              */
 
-            var jqDialog = this.create(),
+            var jqDialog = this.render(),
                 _template = _.template(
                 '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
                 + '<div class="xf-dialog-box-content"><%= messageText %></div>'
@@ -124,7 +124,7 @@
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
-                        jqBtn = XF.UI.button.create(btn);
+                        jqBtn = XF.UI.popup.createButton(btn);
                     }
 
                     jqBtnContainer.append(
@@ -159,7 +159,7 @@
              </div>
              */
 
-            var jqNotification = this.create().addClass('xf-dialog-notification'),
+            var jqNotification = this.render().addClass('xf-dialog-notification'),
                 _template = _.template(
                     '<div class="xf-notification"><div class="xf-notification-wrap">'
                     + '<div class="xf-notification-text"><%= messageText %></div></div></div>'
@@ -254,5 +254,41 @@
                     this.hide($('#' + idStack[i]));
                 }
             }
+        },
+
+        createButton : function (buttonDescr)  {
+            var jQButton = $('<button>/button>'),
+                attrs = {};
+            jQButton.html(buttonDescr.text);
+
+            if (buttonDescr.icon && buttonDescr.icon != '') {
+                attrs['data-icon'] = buttonDescr.icon;
+            };
+
+            if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
+                attrs['data-iconpos'] = buttonDescr.iconpos;
+            };
+
+            if (buttonDescr.small && buttonDescr.small != '') {
+                attrs['data-small'] = buttonDescr.small;
+            };
+
+            if (buttonDescr.appearance && buttonDescr.appearance != '') {
+                attrs['data-appearance'] = buttonDescr.appearance;
+            };
+
+            if (buttonDescr.special && buttonDescr.special != '') {
+                attrs['data-special'] = buttonDescr.special;
+            };
+            if(buttonDescr.alert && buttonDescr.alert != '') {
+                attrs['data-alert'] = buttonDescr.alert;
+            };
+
+            if (_.isFunction(buttonDescr.handler)) {
+                jQButton.click(buttonDescr.handler)
+            };
+            jQButton.attr(attrs);
+            XF.UI.button.render(jQButton[0]);
+            return jQButton;
         }
     };
