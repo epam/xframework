@@ -106,6 +106,10 @@
         placeAnchorHooks();
         bindHideShowListeners();
 
+        if (_.has(XF, 'UI')) {
+            XF.UI.init();
+        }
+
         XF.Router.start();
 
         options.animations = options.animations || {};
@@ -117,9 +121,7 @@
 
         XF.Pages.init(options.animations);
 
-        if (_.has(XF, 'UI')) {
-            XF.UI.init();
-        }
+
 
         //XF.Pages.start();
         loadChildComponents(rootDOMObject);
