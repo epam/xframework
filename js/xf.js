@@ -726,14 +726,19 @@
          @private
          */
         constructView : function() {
+            var params = {
+                attributes: {
+                    'data-id': this.id
+                }
+            };
             if(!this.view || !(this.view instanceof XF.View)) {
                 if(this.viewClass) {
-                    this.view = new this.viewClass();
+                    this.view = new this.viewClass(params);
                     if(!(this.view instanceof XF.View)) {
-                        this.view = new XF.View();
+                        this.view = new XF.View(params);
                     }
                 } else {
-                    this.view = new XF.View();
+                    this.view = new XF.View(params);
                 }
             }
             this.view.component = this;
@@ -2200,9 +2205,12 @@
          */
         render : function() {
             this.renderVersion++;
-            var DOMObject = $('[data-id=' + this.component.id + ']');
-            DOMObject.html(this.getMarkup());
-            XF.trigger('ui:enhance', DOMObject);
+            this.$el.html(this.getMarkup());
+            XF.trigger('ui:enhance', this.$el);
+        },
+
+        initialize: function () {
+            this.setElement('[data-id=' + this.attributes['data-id'] + ']');
         },
 
         /**
@@ -2443,7 +2451,6 @@
          */
 
         enhance : function (jqObj) {
-            console.log('enhance', jqObj);
             if (!jqObj instanceof $) {
                 jqObj = $(jqObj);
 
