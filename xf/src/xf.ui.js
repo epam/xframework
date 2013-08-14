@@ -17,7 +17,6 @@
          */
 
         enhance : function (jqObj) {
-
             if (!jqObj instanceof $) {
                 jqObj = $(jqObj);
 
