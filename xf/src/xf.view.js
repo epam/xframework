@@ -286,9 +286,12 @@
          */
         render : function() {
             this.renderVersion++;
-            var DOMObject = $('[data-id=' + this.component.id + ']');
-            DOMObject.html(this.getMarkup());
-            XF.trigger('ui:enhance', DOMObject);
+            this.$el.html(this.getMarkup());
+            XF.trigger('ui:enhance', this.$el);
+        },
+
+        initialize: function () {
+            this.setElement('[data-id=' + this.attributes['data-id'] + ']');
         },
 
         /**
