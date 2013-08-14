@@ -100,6 +100,11 @@
         options.device = options.device || {};
         XF.Device.init(options.device.types);
 
+        // initializing XF.Touches
+        if ('Touches' in XF) {
+            XF.Touches.init();
+        }
+
         // options.router
         options.router = options.router || {};
         createRouter(options.router);
@@ -2222,108 +2227,118 @@
 
     });
 
-    // Default values and device events detection
-    var touchHandler = {},
-        eventsHandler = {
+XF.Touches = {
 
-            // Events for desktop browser, old ios, old android
-            mouse : {
-                start : "mousedown",
-                move : "mousemove",
-                end : "mouseup",
-                cancel : "mouseup"
+    init : function () {
+        // Default values and device events detection
+        var touchHandler = {},
+            eventsHandler = {
+
+                // Events for desktop browser, old ios, old android
+                mouse : {
+                    start : "mousedown",
+                    move : "mousemove",
+                    end : "mouseup",
+                    cancel : "mouseup"
+                },
+
+                // Events for modern Windows devices (IE10+)
+                pointer : {
+                    start : "MSPointerDown",
+                    move : "MSPointerMove",
+                    end : "MSPointerUp",
+                    cancel : "MSPointerCancel"
+                },
+
+                // Events for touchable devices
+                touch : {
+                    start : "touchstart",
+                    move : "touchmove",
+                    end : "touchend",
+                    cancel : "touchcancel"
+                }
             },
+            swipeDelta = 30, // Amount of pixels for swipe event
+            isTouch,
+            eventType;
 
-            // Events for modern Windows devices (IE10+)
-            pointer : {
-                start : "MSPointerDown",
-                move : "MSPointerMove",
-                end : "MSPointerUp",
-                cancel : "MSPointerCancel"
-            },
+        // Changing events depending on detected data
+        isTouch = (XF.Device.supports.pointerEvents) ? false : (XF.Device.supports.touchEvents ? true : false);
+        eventType = (XF.Device.supports.pointerEvents) ? 'pointer' : (XF.Device.supports.touchEvents ? 'touch' : 'mouse');
 
-            // Events for touchable devices
-            touch : {
-                start : "touchstart",
-                move : "touchmove",
-                end : "touchend",
-                cancel : "touchcancel"
-            }
-        },
-        swipeDelta = 30, // Amount of pixels for swipe event
-        isTouch,
-        eventType;
+        // If target is text
+        var parentIfText = function (node) {
+            return 'tagName' in node ? node : node.parentNode;
+        }
 
-    // Changing events depending on detected data
-    isTouch = (XF.Device.pointerEvents) ? false : (XF.Device.touchEvents ? true : false);
-    eventType = (XF.Device.pointerEvents) ? 'pointer' : (XF.Device.touchEvents ? 'touch' : 'mouse');
+        // Detecting swipe direction
+        var swipeDirection = function (x1, x2, y1, y2) {
+            var xDelta = Math.abs(x1 - x2),
+                yDelta = Math.abs(y1 - y2);
+            return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
+        }
 
-    // If target is text
-    var parentIfText = function (node) {
-        return 'tagName' in node ? node : node.parentNode;
+        var cancelAll = function () {
+            touchHandler = {};
+        }
+
+        $(document).ready(function () {
+            var now,
+                delta;
+
+            $(document.body).bind(eventsHandler[eventType].start, function(e){
+                now = Date.now();
+                delta = now - (touchHandler.last || now);
+                touchHandler.el = $(parentIfText(e.target));
+                touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                touchHandler.last = now;
+            }).bind(eventsHandler[eventType].move, function (e) {
+                touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+
+                if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
+                    e.preventDefault();
+                }
+            }).bind(eventsHandler[eventType].end, function(e){
+
+                if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
+                    || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
+                    touchHandler.direction = swipeDirection(touchHandler.x1, touchHandler.x2, touchHandler.y1, touchHandler.y2);
+
+                    // Trigger swipe event
+                    touchHandler.el.trigger('swipe');
+
+                    // Trigger swipe event by it's direction
+                    touchHandler.el.trigger('swipe' + touchHandler.direction);
+                    touchHandler = {};
+                } else if ('last' in touchHandler) {
+                    touchHandler.el.trigger('tap');
+
+                    // Unbind click event if tap
+                    $(document.body).unbind('click');
+                    touchHandler.el.unbind('click');
+                }
+            }).bind(eventsHandler[eventType].cancel, cancelAll);
+
+            $(window).bind('scroll', cancelAll);
+        });
+
+        // List of new events
+        ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
+            $.fn[i] = function (callback) {
+
+                if (!callback) {
+                    callback = function() {
+                        $(this).trigger('click');
+                    }
+                }
+                return this.bind(i, callback)
+            };
+        });
     }
 
-    // Detecting swipe direction
-    var swipeDirection = function (x1, x2, y1, y2) {
-        var xDelta = Math.abs(x1 - x2),
-            yDelta = Math.abs(y1 - y2);
-        return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
-    }
-
-    var cancelAll = function () {
-        touchHandler = {};
-    }
-
-    $(document).ready(function(){
-        var now,
-            delta;
-
-        $(document.body).bind(eventsHandler[eventType].start, function(e){
-            now = Date.now();
-            delta = now - (touchHandler.last || now);
-            touchHandler.el = $(parentIfText(e.target));
-            touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-            touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
-            touchHandler.last = now;
-        }).bind(eventsHandler[eventType].move, function (e) {
-            touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-            touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
-
-            if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
-                e.preventDefault();
-            }
-        }).bind(eventsHandler[eventType].end, function(e){
-
-            if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
-                || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
-                touchHandler.direction = swipeDirection(touchHandler.x1, touchHandler.x2, touchHandler.y1, touchHandler.y2);
-
-                // Trigger swipe event
-                touchHandler.el.trigger('swipe');
-
-                // Trigger swipe event by it's direction
-                touchHandler.el.trigger('swipe' + touchHandler.direction);
-                touchHandler = {};
-            } else if ('last' in touchHandler) {
-                touchHandler.el.trigger('tap');
-
-                // Unbind click event if tap
-                $(document.body).unbind('click');
-                touchHandler.el.unbind('click');
-            }
-        }).bind(eventsHandler[eventType].cancel, cancelAll);
-
-        $(window).bind('scroll', cancelAll);
-    });
-
-    // List of new events
-    ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
-        $.fn[i] = function (callback) {
-            return this.bind(i, callback)
-        };
-    });
-
-
+};
 
 
     /* $ hooks */
@@ -2648,59 +2663,6 @@
             if (jQButton.attr('data-alert') == 'true') {
                 enhancedButton.addClass('xf-button-alert');
             }
-        },
-
-        /**
-         Generates and enhances button
-         @param buttonDescr Object
-         @return $
-         */
-        create : function (buttonDescr)  {
-            /*
-             buttonDescr = {
-             text,
-             icon,
-             iconpos,
-             small,
-             appearance,
-             special,
-             alert,
-             handler
-             }
-             */
-            var jQButton = $('<button>/button>'),
-                attrs = {};
-            jQButton.html(buttonDescr.text);
-
-            if (buttonDescr.icon && buttonDescr.icon != '') {
-                attrs['data-icon'] = buttonDescr.icon;
-            };
-
-            if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
-                attrs['data-iconpos'] = buttonDescr.iconpos;
-            };
-
-            if (buttonDescr.small && buttonDescr.small != '') {
-                attrs['data-small'] = buttonDescr.small;
-            };
-
-            if (buttonDescr.appearance && buttonDescr.appearance != '') {
-                attrs['data-appearance'] = buttonDescr.appearance;
-            };
-
-            if (buttonDescr.special && buttonDescr.special != '') {
-                attrs['data-special'] = buttonDescr.special;
-            };
-            if(buttonDescr.alert && buttonDescr.alert != '') {
-                attrs['data-alert'] = buttonDescr.alert;
-            };
-
-            if (_.isFunction(buttonDescr.handler)) {
-                jQButton.click(buttonDescr.handler)
-            };
-            jQButton.attr(attrs);
-            this.render(jQButton[0]);
-            return jQButton;
         }
     };
 
@@ -2918,7 +2880,7 @@
      @private
      */
     XF.UI.popup = {
-        Create : function () {
+        render : function () {
             /*
              <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
              */
@@ -3009,7 +2971,7 @@
              </div>
              */
 
-            var jqDialog = this.create(),
+            var jqDialog = this.render(),
                 _template = _.template(
                 '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
                 + '<div class="xf-dialog-box-content"><%= messageText %></div>'
@@ -3037,7 +2999,7 @@
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
-                        jqBtn = XF.UI.button.create(btn);
+                        jqBtn = XF.UI.popup.createButton(btn);
                     }
 
                     jqBtnContainer.append(
@@ -3072,7 +3034,7 @@
              </div>
              */
 
-            var jqNotification = this.create().addClass('xf-dialog-notification'),
+            var jqNotification = this.render().addClass('xf-dialog-notification'),
                 _template = _.template(
                     '<div class="xf-notification"><div class="xf-notification-wrap">'
                     + '<div class="xf-notification-text"><%= messageText %></div></div></div>'
@@ -3167,6 +3129,42 @@
                     this.hide($('#' + idStack[i]));
                 }
             }
+        },
+
+        createButton : function (buttonDescr)  {
+            var jQButton = $('<button>/button>'),
+                attrs = {};
+            jQButton.html(buttonDescr.text);
+
+            if (buttonDescr.icon && buttonDescr.icon != '') {
+                attrs['data-icon'] = buttonDescr.icon;
+            };
+
+            if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
+                attrs['data-iconpos'] = buttonDescr.iconpos;
+            };
+
+            if (buttonDescr.small && buttonDescr.small != '') {
+                attrs['data-small'] = buttonDescr.small;
+            };
+
+            if (buttonDescr.appearance && buttonDescr.appearance != '') {
+                attrs['data-appearance'] = buttonDescr.appearance;
+            };
+
+            if (buttonDescr.special && buttonDescr.special != '') {
+                attrs['data-special'] = buttonDescr.special;
+            };
+            if(buttonDescr.alert && buttonDescr.alert != '') {
+                attrs['data-alert'] = buttonDescr.alert;
+            };
+
+            if (_.isFunction(buttonDescr.handler)) {
+                jQButton.click(buttonDescr.handler)
+            };
+            jQButton.attr(attrs);
+            XF.UI.button.render(jQButton[0]);
+            return jQButton;
         }
     };
 
