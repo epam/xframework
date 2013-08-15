@@ -99,12 +99,6 @@ XF.Touches = {
         // List of new events
         ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
             $.fn[i] = function (callback) {
-
-                if (!callback) {
-                    callback = function() {
-                        $(this).trigger('click');
-                    }
-                }
                 return this.bind(i, callback)
             };
         });
