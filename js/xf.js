@@ -1,4 +1,4 @@
-/*! X-Framework 14-08-2013 */
+/*! X-Framework 15-08-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -2317,12 +2317,6 @@ XF.Touches = {
         // List of new events
         ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
             $.fn[i] = function (callback) {
-
-                if (!callback) {
-                    callback = function() {
-                        $(this).trigger('click');
-                    }
-                }
                 return this.bind(i, callback)
             };
         });
@@ -2734,6 +2728,8 @@ XF.Touches = {
 
         render : function(fieldset) {
             var jQFieldset = $(fieldset);
+
+            console.log(jQFieldset)
 
             if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;

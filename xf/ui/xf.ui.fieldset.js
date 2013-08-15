@@ -11,6 +11,8 @@
         render : function(fieldset) {
             var jQFieldset = $(fieldset);
 
+            console.log(jQFieldset)
+
             if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;
             }
