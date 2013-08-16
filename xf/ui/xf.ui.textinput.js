@@ -85,7 +85,7 @@
                         .addClass('xf-input-number-control xf-input-number-control-decrease')
                         .attr({'data-skip-enhance':true})
                         .append(
-                            $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-minus-circled')
+                            $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-circled-minus')
                         )
                 );
                 numberWrapper.append(newTextInput);
@@ -94,7 +94,7 @@
                         .addClass('xf-input-number-control xf-input-number-control-increase')
                         .attr({'data-skip-enhance':true})
                         .append(
-                            $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-plus-circled')
+                            $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-circled-plus')
                         )
                 );
 
@@ -124,7 +124,7 @@
                                  + '<div class="xf-input-range-min"><%= minValue %></div>'
                                  + '<div class="xf-input-range-slider">'
                                  + '<div class="xf-input-range-track">'
-                                 + '<div class="xf-input-range-value" style="width: 30%">'
+                                 + '<div class="xf-input-range-value" style="width: 0">'
                                  + '<div class="xf-input-range-control" tabindex="0">'
                                  + '<div class="xf-input-range-thumb" style="left:100%" title="<%= selValue %>"></div>'
                                  + '</div>'
@@ -187,8 +187,8 @@
                 };
 
                 // initialing number stepper buttons (-) & (+) click handlers
-                numberWrapper.find('button.xf-input-number-control-decrease').click(stepDown);
-                numberWrapper.find('button.xf-input-number-control-increase').click(stepUp);
+                numberWrapper.find('button.xf-input-number-control-decrease').on('tap', stepDown);
+                numberWrapper.find('button.xf-input-number-control-increase').on('tap', stepUp);
 
                 var savedInputText = newTextInput.attr('value');
                 var newInputText;
@@ -234,15 +234,15 @@
                         return (trackDiffToValueDiff(trackPoint) + minValue);
                     };
 
-                    var startThumbDrag = function() {
-                        mousePrevX = event.pageX || event.clientX || layerX || event.screenX;
+                    var startThumbDrag = function(event) {
+                        mousePrevX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         savedVal = selValue;
-                        $(document).bind('mouseup', stopThumbDrag);
-                        $(document).bind('mousemove', doThumbDrag);
+                        $(document).bind('mouseup touchend', stopThumbDrag);
+                        $(document).bind('mousemove touchmove', doThumbDrag);
                     };
 
-                    var doThumbDrag = function() {
-                        mouseNewX = event.pageX || event.clientX || layerX || event.screenX;
+                    var doThumbDrag = function(event) {
+                        mouseNewX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         mouseDiff = mouseNewX - mousePrevX;
                         valueDiff = trackDiffToValueDiff(mouseDiff);
                         mousePrevX = mouseNewX;
@@ -251,8 +251,8 @@
                     };
 
                     var stopThumbDrag = function() {
-                        $(document).unbind('mouseup', stopThumbDrag);
-                        $(document).unbind('mousemove', doThumbDrag);
+                        $(document).unbind('mouseup touchend', stopThumbDrag);
+                        $(document).unbind('mousemove touchmove', doThumbDrag);
                     };
 
                     var startThumbPress = function() {
@@ -297,7 +297,7 @@
                     };
 
                     // initialing slider thumb dragging handler
-                    rangeWrapper.find('div.xf-input-range-thumb').bind('mousedown', startThumbDrag);
+                    rangeWrapper.find('div.xf-input-range-thumb').bind('mousedown touchstart', startThumbDrag);
 
                     // initialing arrow keys press handling
                     rangeWrapper.find('div.xf-input-range-control')
