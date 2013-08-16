@@ -1086,7 +1086,7 @@ div.xf-viewport {
 .xf-grid-padded > .xf-grid-unit:last-child {
   padding-right: 0;
 }
-/** 
+/**
  * @font-face Icons. Borrowed from http://entypo.com
  */
 @font-face {
@@ -1126,7 +1126,7 @@ div.xf-viewport {
 }
 .xf-icon-big:before {
   font-size: 60px;
-  line-height: 15px;
+  line-height: 30px;
   height: 30px;
   text-indent: -2px;
   vertical-align: bottom;
@@ -2131,6 +2131,7 @@ textarea.xf-input-text {
 .xf-input-range-slider {
   width: 100%;
   position: relative;
+  height: 24px;
 }
 .xf-input-range-slider:after {
   content: "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W ";
@@ -2169,6 +2170,7 @@ textarea.xf-input-text {
   display: block;
   width: 24px;
   height: 24px;
+  line-height: 24px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;

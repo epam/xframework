@@ -56,10 +56,29 @@ module.exports = (function(grunt) {
                     }
                 }
             },
+            less: {
+              development: {
+                options: {
+                  paths: ["styles"]
+                },
+                files: {
+                  "styles/xf.css": "styles/xf.less"
+                }
+              },
+              production: {
+                options: {
+                  paths: ["styles"]
+                },
+                files: {
+                  "styles/xf.css": "styles/xf.less"
+                }
+              }
+            }
         });
         grunt.loadNpmTasks('grunt-contrib-uglify');
         grunt.loadNpmTasks('grunt-contrib-concat');
-        grunt.task.run(['concat', 'uglify']);
+        grunt.loadNpmTasks('grunt-contrib-less');
+        grunt.task.run(['concat', 'uglify', 'less']);
     });
 
     grunt.registerTask('default', ['build']);

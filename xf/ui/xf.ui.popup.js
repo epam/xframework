@@ -259,6 +259,11 @@
         createButton : function (buttonDescr)  {
             var jQButton = $('<button>/button>'),
                 attrs = {};
+
+            attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
+            attrs['class'] = buttonDescr.class || '';
+            attrs['name'] = buttonDescr.name || attrs.id;
+
             jQButton.html(buttonDescr.text);
 
             if (buttonDescr.icon && buttonDescr.icon != '') {
@@ -280,7 +285,8 @@
             if (buttonDescr.special && buttonDescr.special != '') {
                 attrs['data-special'] = buttonDescr.special;
             };
-            if(buttonDescr.alert && buttonDescr.alert != '') {
+
+            if (buttonDescr.alert && buttonDescr.alert != '') {
                 attrs['data-alert'] = buttonDescr.alert;
             };
 
