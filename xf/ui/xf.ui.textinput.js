@@ -237,8 +237,8 @@
                     var startThumbDrag = function(event) {
                         mousePrevX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         savedVal = selValue;
-                        $(document).bind('mouseup touchend', stopThumbDrag);
-                        $(document).bind('mousemove touchmove', doThumbDrag);
+                        $(document).bind('mouseup touchend MSPointerUp', stopThumbDrag);
+                        $(document).bind('mousemove touchmove MSPointerMove', doThumbDrag);
                     };
 
                     var doThumbDrag = function(event) {
@@ -251,8 +251,8 @@
                     };
 
                     var stopThumbDrag = function() {
-                        $(document).unbind('mouseup touchend', stopThumbDrag);
-                        $(document).unbind('mousemove touchmove', doThumbDrag);
+                        $(document).unbind('mouseup touchend MSPointerUp', stopThumbDrag);
+                        $(document).unbind('mousemove touchmove MSPointerMove', doThumbDrag);
                     };
 
                     var startThumbPress = function() {

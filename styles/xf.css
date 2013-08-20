@@ -2132,6 +2132,11 @@ textarea.xf-input-text {
   width: 100%;
   position: relative;
   height: 24px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 .xf-input-range-slider:after {
   content: "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W ";
@@ -2191,6 +2196,7 @@ textarea.xf-input-text {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1abc9c', endColorstr='#1abc9c', GradientType=0);
   border: 1px solid #ffffff;
   outline: none;
+  cursor: move;
 }
 .xf-input-range-thumb:hover {
   -webkit-background-size: 100% 140%;
