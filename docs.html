@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Docs</title>
+    </head>
+    <body>
+        <pre id="text">
+
+        </pre>
+        <script src="./js/lib/jquery.js"></script>
+        <script type="text/javascript">
+
+
+
+            var TEXT,
+                NEWTEXT = '';
+
+            $('document').ready(function () {
+                $.ajax({
+                    url : './text.md',
+                    success : function (data) {
+                        TEXT = data;
+                        var splitReg = new RegExp(/\n{1}#{1}[\s]{1}[^\n]{1,}/ig);
+                        var docsRow = TEXT.split(splitReg);
+                        var docsHeaders = TEXT.match(splitReg);
+
+                        for (var i in docsHeaders) {
+                            i = parseFloat(i);
+                            NEWTEXT += docsHeaders[i] + docsRow[i+1] + "<hr />";
+                        }
+
+                        $('#text').append(NEWTEXT);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

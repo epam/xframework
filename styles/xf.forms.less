@@ -92,6 +92,11 @@ textarea.xf-input-text {
 		width: 100%;
 		position: relative;
         height: 24px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
 	}
 	.xf-input-range-slider:after {
 		content: "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W ";
@@ -140,6 +145,7 @@ textarea.xf-input-text {
 				border: 1px solid @range-thumb-border-color;
 			   //.box-shadow( rgba(0,0,0,.4), 0, 1px, 2px);
 				outline: none;
+                cursor: move;
 			}
 			.xf-input-range-thumb:hover {
 				.background-size(100% 140%);
