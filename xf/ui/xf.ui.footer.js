@@ -21,7 +21,7 @@
             jQFooter.attr({
                 'data-id': options.id,
                 'id': options.id,
-                'data-component' : 'footer',
+                'data-role' : 'footer',
                 'data-skip-enhance' : 'true'
             });
 
@@ -57,19 +57,18 @@
             });
 
             var _template = _.template(
-                '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">\
-                <ul class="xf-nav">\
-                    <% _.each(buttons, function(button) { %>\
-                    <li class="xf-grid-unit <%= buttonsClass %>">\
-                        <a data-href="<%= button.dataHrefString %>" class="xf-nav-item xf-iconpos-top" id="<%= button.id %>">\
-                            <div class="xf-icon xf-icon-big <%= button.iconClass %>"></div>\
-                            <div class="xf-nav-item-text <%= button.textClass %>"><%= button.text %></div>\
-                        </a>\
-                    </li>\
-                    <% }); %>\
-                </ul>\
-            </div>\
-        '
+                '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">'
+                + '<ul class="xf-nav">'
+                + '<% _.each(buttons, function(button) { %>'
+                + '<li class="xf-grid-unit <%= buttonsClass %>">'
+                + '<a data-href="<%= button.dataHrefString %>" class="xf-nav-item xf-iconpos-top" id="<%= button.id %>">'
+                + '<div class="xf-icon xf-icon-big <%= button.iconClass %>"></div>'
+                + '<div class="xf-nav-item-text <%= button.textClass %>"><%= button.text %></div>'
+                + '</a>'
+                + '</li>'
+                + '<% }); %>'
+                + '</ul>'
+                + '</div>'
             );
 
             jQFooter.html(_template(options));
