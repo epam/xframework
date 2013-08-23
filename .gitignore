@@ -13,6 +13,8 @@ phantomjs
 
 docs/
 
+docs.js
+
 js/xf*.js
 
 js/lib/underscore.js
