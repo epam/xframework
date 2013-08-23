@@ -2802,7 +2802,7 @@ XF.Touches = {
             jQFooter.attr({
                 'data-id': options.id,
                 'id': options.id,
-                'data-component' : 'footer',
+                'data-role' : 'footer',
                 'data-skip-enhance' : 'true'
             });
 
@@ -2838,19 +2838,18 @@ XF.Touches = {
             });
 
             var _template = _.template(
-                '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">\
-                <ul class="xf-nav">\
-                    <% _.each(buttons, function(button) { %>\
-                    <li class="xf-grid-unit <%= buttonsClass %>">\
-                        <a data-href="<%= button.dataHrefString %>" class="xf-nav-item xf-iconpos-top" id="<%= button.id %>">\
-                            <div class="xf-icon xf-icon-big <%= button.iconClass %>"></div>\
-                            <div class="xf-nav-item-text <%= button.textClass %>"><%= button.text %></div>\
-                        </a>\
-                    </li>\
-                    <% }); %>\
-                </ul>\
-            </div>\
-        '
+                '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">'
+                + '<ul class="xf-nav">'
+                + '<% _.each(buttons, function(button) { %>'
+                + '<li class="xf-grid-unit <%= buttonsClass %>">'
+                + '<a data-href="<%= button.dataHrefString %>" class="xf-nav-item xf-iconpos-top" id="<%= button.id %>">'
+                + '<div class="xf-icon xf-icon-big <%= button.iconClass %>"></div>'
+                + '<div class="xf-nav-item-text <%= button.textClass %>"><%= button.text %></div>'
+                + '</a>'
+                + '</li>'
+                + '<% }); %>'
+                + '</ul>'
+                + '</div>'
             );
 
             jQFooter.html(_template(options));
@@ -2887,15 +2886,19 @@ XF.Touches = {
             options.hasTitle = options.title != '' ? true : false;
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
 
-            jQHeader.attr({'data-id': options.id, 'id': options.id, 'data-skip-enhance' : 'true'});
+            jQHeader.attr({
+                'data-id': options.id,
+                'id': options.id,
+                'data-skip-enhance' : 'true'
+            });
 
             var _template = _.template(
-                '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">\
-                <%= html %>\
-                <% if(hasTitle) { %>\
-                <h1 class="xf-header-title"><%= title %></h1>\
-                <% } %>\
-               </header>'
+                '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">'
+                + '<%= html %>'
+                + '<% if(hasTitle) { %>'
+                + '<h1 class="xf-header-title"><%= title %></h1>'
+                + '<% } %>'
+                + '</header>'
             );
 
             jQHeader.html(_template(options));
@@ -3452,16 +3455,15 @@ XF.Touches = {
             }
 
             var _template = _.template(
-                '<ul class="xf-tabs">\
-                    <% _.each(tabs, function(tab) { %>\
-                    <li class="xf-grid-unit <%= tabsClass %> <%= tab.gridClass %>  ">\
-                        <a data-params="<%= tab.params %>" class="xf-tabs-button <%= tab.className %>" id="<%= tab.id %>">\
-                        <span class="xf-tabs-button-text"><%= tab.text %></span>\
-                        </a>\
-                    </li>\
-                    <% }); %>\
-                </ul>\
-        '
+                '<ul class="xf-tabs">'
+                + '<% _.each(tabs, function(tab) { %>'
+                + '<li class="xf-grid-unit <%= tabsClass %> <%= tab.gridClass %>  ">'
+                + '<a data-params="<%= tab.params %>" class="xf-tabs-button <%= tab.className %>" id="<%= tab.id %>">'
+                + '<span class="xf-tabs-button-text"><%= tab.text %></span>'
+                + '</a>'
+                + '</li>'
+                + '<% }); %>'
+                + '</ul>'
             );
 
             jQTabs.html(_template(options));
