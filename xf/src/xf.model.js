@@ -52,42 +52,14 @@
          Settings for $ AJAX data request
          @type String
          */
-        dataRequestSettings : null,
+        ajaxSettings : null,
 
         /**
          Flag that determines whether the data should not be loaded at all
          @default false
          @type Boolean
          */
-        isEmptyData : false,
-
-        /**
-         Flag that determines whether the data should be loaded once
-         @default false
-         @type Boolean
-         */
-        isStaticData : false,
-
-        /**
-         Flag that determines whether the data type is string (otherwise JSON)
-         @default false
-         @type Boolean
-         */
-        isStringData : false,
-
-        /**
-         Interval in milliseconds defining how often data should be retrived from the server; use '0' to turn autoUpdate off
-         @default 0
-         @type Number
-         */
-        autoUpdateInterval: 0,
-
-        /**
-         Flag that determines whether the data should be updateing (with autoUpdate) even if the component is currentyl hidden
-         @default false
-         @type Boolean
-         */
-        updateInBackground: false,
+        autoload : true,
 
         /**
          Flag that determines whether the data should be updated each time the component becomes visible
@@ -97,28 +69,12 @@
         updateOnShow: false,
 
         /**
-         Object that contains default values for attributes - should be overriden to be used
-         @type Object
-         */
-        defaults : null,
-
-        /**
          Constructs model instance
          @private
          */
         construct : function() {
             this.initialize();
             this.trigger('init');
-            if(this.autoUpdateInterval > 0) {
-                var autoUpdateFunc = _.bind(function() {
-                    if($(this.component.selector()).is(':visible')) {
-                        this.refresh();
-                    } else if(this.updateInBackground) {
-                        this.refresh();
-                    }
-                }, this);
-                setInterval(autoUpdateFunc, this.autoUpdateInterval);
-            }
             if(this.updateOnShow) {
                 $(this.component.selector()).bind('show', _.bind(this.refresh, this));
             }
@@ -133,13 +89,10 @@
             /** ignore */
             var dataLoaded = function() {
                 this.unbind('dataLoaded', dataLoaded);
-                var renderVersion = this.component.view.renderVersion;
                 this.afterLoadData();
 
-                //TODO: uncomment this and try to find why 'refresh' not working for menu component
-                //if(this.component.view.renderVersion == renderVersion) {
+
                 this.trigger('refresh');
-                //}
             };
 
             this.bind('dataLoaded', dataLoaded);
@@ -181,7 +134,7 @@
          */
         loadData : function() {
 
-            if(!this.isEmptyData && (!this.rawData || !this.isStaticData || this.autoUpdate > 0)) {
+            if(!this.isEmptyData && !this.isStaticData) {
 
                 var $this = this;
                 var url = this.getDataURL();

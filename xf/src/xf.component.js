@@ -33,8 +33,6 @@
          */
         this.name = name || 'default_name';
 
-        this.templateName = this.name;
-
         /**
          ID of the component.
          @default 'default_id'
@@ -62,43 +60,7 @@
         this.options = _.defaults(instanceOptions, defaultOptions);
     };
 
-    /**
-     Component template
-     @type String
-     @static
-     */
-    XF.Component.template = null;
 
-    /**
-     The URL of template that is currently being loaded
-     @type String
-     @private
-     @static
-     */
-    XF.Component.templateURL= false;
-
-    /**
-     A flag that indiacates whether that template is currently being loaded
-     @type Boolean
-     @private
-     @static
-     */
-    XF.Component.templateLoaded = false;
-
-    /**
-     A flag that indiacates whether that template was successfully loaded
-     @type Boolean
-     @private
-     @static
-     */
-    XF.Component.templateLoading = false;
-
-    /**
-     Compiled component template
-     @type Function
-     @static
-     */
-    XF.Component.compiledTemplate = null;
 
     _.extend(XF.Component.prototype, XF.Events);
 
