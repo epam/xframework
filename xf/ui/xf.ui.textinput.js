@@ -12,8 +12,13 @@
                     //
                     'INPUT[type=range], INPUT[type=search]',
 
-        render : function (textInput) {
-            var jQTextInput = $(textInput);
+        render : function (textInput, options) {
+            var jQTextInput = $(textInput),
+                eventsHandler = {
+                    start : 'mousedown touchstart MSPointerDown',
+                    move : 'mousemove touchmove MSPointerMove',
+                    end : 'mouseup touchend MSPointerUp',
+                };
 
             if (!textInput || !jQTextInput instanceof $ || jQTextInput.attr('data-skip-enhance') == 'true') {
                 return;
@@ -237,8 +242,8 @@
                     var startThumbDrag = function(event) {
                         mousePrevX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         savedVal = selValue;
-                        $(document).bind('mouseup touchend MSPointerUp', stopThumbDrag);
-                        $(document).bind('mousemove touchmove MSPointerMove', doThumbDrag);
+                        $(document).bind(eventsHandler.end, stopThumbDrag);
+                        $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
                     var doThumbDrag = function(event) {
@@ -251,8 +256,8 @@
                     };
 
                     var stopThumbDrag = function() {
-                        $(document).unbind('mouseup touchend MSPointerUp', stopThumbDrag);
-                        $(document).unbind('mousemove touchmove MSPointerMove', doThumbDrag);
+                        $(document).bind(eventsHandler.end, stopThumbDrag);
+                        $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
                     var startThumbPress = function() {
@@ -321,7 +326,7 @@
             // week, time, datetime-local, color) with data-appearance="split" attribute
             // are parsed specifically:
             var splitAppearance = false;
-            if(jQTextInput.attr('data-appearance') == 'split' && isInputElement) {
+            if(options.appearance == 'split' && isInputElement) {
 
                 var applicableTypes = ['text', 'search', 'tel', 'url', 'email',
                     'password', 'datetime', 'date', 'month', 'week', 'time', 'datetime-local', 'color'];

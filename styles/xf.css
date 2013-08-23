@@ -2671,6 +2671,12 @@ textarea::-webkit-input-placeholder {
   background: -o-linear-gradient(#1dd2af, #1dd2af);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1dd2af', endColorstr='#1dd2af', GradientType=0);
 }
+.xf-button-float-right {
+  float: right;
+}
+.xf-button-float-left {
+  float: left;
+}
 .xf-button-active,
 .xf-button-special {
   background: #3498db;
