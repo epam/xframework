@@ -11,6 +11,8 @@ bower.json
 
 phantomjs
 
+docs/
+
 js/xf*.js
 
 js/lib/underscore.js
