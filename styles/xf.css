@@ -1086,6 +1086,16 @@ div.xf-viewport {
 .xf-grid-padded > .xf-grid-unit:last-child {
   padding-right: 0;
 }
+.xf-loader {
+  width: 30px;
+  height: 30px;
+  background-color: #000;
+  position: fixed;
+  top: 30%;
+  left: 30%;
+  z-index: 10000;
+  display: none;
+}
 /**
  * @font-face Icons. Borrowed from http://entypo.com
  */

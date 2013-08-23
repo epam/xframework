@@ -205,37 +205,6 @@
         },
 
         /**
-         Shows loading notification (and generates new if params are passed)
-         @param messageText String to show in loading notification
-         @param icon Icon name (optional)
-         */
-        showLoading : function (messageText, icon) {
-
-            if (messageText || icon) {
-
-                if (this.loadingNotification) {
-                    this.hideLoading();
-                }
-                this.setLoadingNotification(this.createNotification(messageText, icon));
-            }
-
-            if (!!this.loadingNotification) {
-                this.setLoadingNotification(this.createNotification('Loading...'));
-            }
-            this.show(this.loadingNotification);
-        },
-
-        /**
-         Hides loading notification
-         */
-        hideLoading : function () {
-
-            if (this.loadingNotification) {
-                this.hide(this.loadingNotification);
-            }
-        },
-
-        /**
          Hides Dialog
          */
         hideDialog : function () {

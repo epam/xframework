@@ -22,7 +22,6 @@
             jQTabs.attr({
                 'data-id': options.id,
                 'id': options.id,
-                'data-component' : 'tabs',
                 'data-skip-enhance' : 'true'
             });
 
