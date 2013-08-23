@@ -8,10 +8,8 @@
 
         selector : 'fieldset[data-role=controlgroup]',
 
-        render : function(fieldset) {
+        render : function(fieldset, options) {
             var jQFieldset = $(fieldset);
-
-            console.log(jQFieldset)
 
             if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;
