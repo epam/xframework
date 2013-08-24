@@ -3015,11 +3015,7 @@
                 _self = this,
                 options = options || {};
 
-            if (!loader || !jqLoader instanceof $) {
-                var jqLoader = $('<div class="xf-loader"></div>');
-            }
-
-            if (jqLoader.attr('data-skip-enhance') == 'true') {
+            if (!loader || !jqLoader instanceof $ || jqLoader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -3045,10 +3041,6 @@
 
             jqLoader.attr('id', id);
 
-            if (!$('#' + id).length) {
-                XF.Device.getViewport().append(jqLoader);
-            }
-
             if (!$('#' + id).hasClass('xf-loader')) {
                 $('#' + id).addClass('xf-loader');
             }
@@ -3061,8 +3053,18 @@
         },
 
         hide : function (jqLoader) {
+            jqLoader.hide();
+        },
+
+        remove : function (jqLoader) {
             jqLoader.detach();
             XF.UI.removeFromIsset('popup', jqLoader.attr('id'));
+        },
+
+        create : function () {
+            var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
+            XF.Device.getViewport().append(jqLoader);
+           return this.render(jqLoader[0]);
         }
     };
 
@@ -3269,30 +3271,6 @@
          */
         setLoadingNotification : function (jqPopup) {
             this.loadingNotification = jqPopup;
-        },
-
-        /**
-         Shows loading notification (and generates new if params are passed)
-         @param messageText String to show in loading notification
-         @param icon Icon name (optional)
-         */
-        showLoading : function (messageText) {
-            messageText = messageText || 'Loading...';
-
-            if (!!this.loadingNotification) {
-                this.setLoadingNotification(this.createNotification('Loading...'));
-            }
-            this.show(this.loadingNotification);
-        },
-
-        /**
-         Hides loading notification
-         */
-        hideLoading : function () {
-
-            if (this.loadingNotification) {
-                this.hide(this.loadingNotification);
-            }
         },
 
         /**
