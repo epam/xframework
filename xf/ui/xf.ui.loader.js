@@ -14,11 +14,7 @@
                 _self = this,
                 options = options || {};
 
-            if (!loader || !jqLoader instanceof $) {
-                var jqLoader = $('<div class="xf-loader"></div>');
-            }
-
-            if (jqLoader.attr('data-skip-enhance') == 'true') {
+            if (!loader || !jqLoader instanceof $ || jqLoader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -42,11 +38,7 @@
                 XF.UI.issetElements.push({type : 'loader', id : id});
             }
 
-            jqLoader.attr('id', id);
-
-            if (!$('#' + id).length) {
-                XF.Device.getViewport().append(jqLoader);
-            }
+            jqLoader.attr({'id': id, 'data-skip-enhance' : 'true'});
 
             if (!$('#' + id).hasClass('xf-loader')) {
                 $('#' + id).addClass('xf-loader');
@@ -60,7 +52,17 @@
         },
 
         hide : function (jqLoader) {
+            jqLoader.hide();
+        },
+
+        remove : function (jqLoader) {
             jqLoader.detach();
             XF.UI.removeFromIsset('popup', jqLoader.attr('id'));
+        },
+
+        create : function () {
+            var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
+            XF.Device.getViewport().append(jqLoader);
+            return this.render(jqLoader[0]);
         }
     };
