@@ -7,7 +7,7 @@
     XF.UI.button = {
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
-        render : function (button) {
+        render : function (button, options) {
             var jQButton = $(button),
                 enhancedButton,
                 innerStuff;
@@ -32,20 +32,29 @@
                 return;
             }
 
-            var isSmall = jQButton.attr('data-small') == 'true' || jQButton.attr('data-appearance') == 'backbtn';
+            var isSmall = options.small === true || options.appearance == 'backbtn';
+            var position = options.position || '';
+
+            if (position !== '') {
+                enhancedButton.addClass('xf-button-float-' + position);
+            }
+
+            if (jQButton.parents(XF.UI.header.selector).length > 0) {
+                enhancedButton.addClass('xf-button-header-' + position);
+            }
 
             // The class xf-button is added to the button.
             // If it has data-small="true" attribute, the class should be xf-button-small.
             enhancedButton.addClass(isSmall ? 'xf-button-small' : 'xf-button');
 
             // If data-appearance="backbtn" attribute is present, xf-button-back class is also added.
-            if (jQButton.attr('data-appearance') === 'backbtn') {
+            if (options.appearance === 'backbtn') {
                 enhancedButton.addClass('xf-button-back');
             }
 
-            var iconName = jQButton.attr('data-icon');
+            var iconName = options.icon;
 
-            if (jQButton.attr('data-appearance') === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
+            if (options.appearance === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
                 iconName = 'left';
             }
 
@@ -68,7 +77,7 @@
                 // A class denoting icon position is also added to the button. Default: xf-iconpos-left.
                 // The value is taken from data-iconpos attr.
                 // Possible values: left, right, top, bottom.
-                var iconPos = jQButton.attr('data-iconpos') || 'left';
+                var iconPos = options.iconpos || 'left';
 
                 if (iconPos != 'left' && iconPos != 'right' && iconPos != 'top' && iconPos != 'bottom') {
                     iconPos = 'left';
@@ -78,30 +87,35 @@
 
             }
 
-            if(innerStuff) {
+            if (innerStuff) {
                 var textSpan = $('<span></span>').append(innerStuff);
 
                 // The text of buttons is placed inside span.xf-button-small-text for small buttons
-                if (isSmall || jQButton.attr('data-appearance') == 'backbtn') {
+                if (isSmall || options.appearance == 'backbtn') {
                     textSpan.addClass('xf-button-small-text');
                     // and span.xf-button-text for big ones.
                 } else {
                     textSpan.addClass('xf-button-text');
                 }
                 enhancedButton.append(textSpan);
+            } else {
+
+                if (isSmall) {
+                    enhancedButton.addClass('xf-button-small-icon-only');
+                }
             }
 
             // If data-special="true" attribute is present add xf-button-special class.
-            if (jQButton.attr('data-special') == 'true') {
+            if (options.special == 'true') {
                 enhancedButton.addClass('xf-button-special');
             }
 
-            if (jQButton.attr('data-alert') == 'true') {
+            if (options.alert == 'true') {
                 enhancedButton.addClass('xf-button-alert');
             }
 
             // If data-alert="true" attribute is present add xf-button-alert class.
-            if (jQButton.attr('data-alert') == 'true') {
+            if (options.alert == 'true') {
                 enhancedButton.addClass('xf-button-alert');
             }
         }

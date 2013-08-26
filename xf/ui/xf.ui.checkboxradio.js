@@ -8,7 +8,7 @@
 
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
-        render : function(chbRbInput) {
+        render : function(chbRbInput, options) {
 
             var jQChbRbInput = $(chbRbInput),
                 options = {

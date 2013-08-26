@@ -33,8 +33,6 @@
          */
         this.name = name || 'default_name';
 
-        this.templateName = this.name;
-
         /**
          ID of the component.
          @default 'default_id'
@@ -42,63 +40,13 @@
          */
         this.id = id || 'default_id';
 
-        /**
-         Flag which defines whether the component was rendered atleast once
-         @type Boolean
-         */
-        this.rendered = false;
-
-        /** @ignore */
-        var firstRender = function() {
-            this.unbind('refresh', firstRender);
-            this.rendered = true;
-        };
-
-        this.bind('refresh', firstRender);
-
         // merging defaults with custom instance options
         var defaultOptions = this.options;
         var instanceOptions = XF.getOptionsByID(this.id);
         this.options = _.defaults(instanceOptions, defaultOptions);
     };
 
-    /**
-     Component template
-     @type String
-     @static
-     */
-    XF.Component.template = null;
 
-    /**
-     The URL of template that is currently being loaded
-     @type String
-     @private
-     @static
-     */
-    XF.Component.templateURL= false;
-
-    /**
-     A flag that indiacates whether that template is currently being loaded
-     @type Boolean
-     @private
-     @static
-     */
-    XF.Component.templateLoaded = false;
-
-    /**
-     A flag that indiacates whether that template was successfully loaded
-     @type Boolean
-     @private
-     @static
-     */
-    XF.Component.templateLoading = false;
-
-    /**
-     Compiled component template
-     @type Function
-     @static
-     */
-    XF.Component.compiledTemplate = null;
 
     _.extend(XF.Component.prototype, XF.Events);
 
@@ -113,18 +61,29 @@
         /**
          Defenition of custom Model class extending {@link XF.Model}
          */
-        modelClass : XF.Model,
+        modelClass: XF.Model,
 
         /**
          Instance of {@link XF.Model} or its subclass
          @type XF.Model
          */
-        model : null,
+        model: null,
+
+        /**
+         Defenition of custom Collection class extending {@link XF.Collection}
+         */
+        collectionClass: XF.Model,
+
+        /**
+         Instance of {@link XF.Collection} or its subclass
+         @type XF.Collection
+         */
+        collection: null,
 
         /**
          Defenition of custom View class extending {@link XF.View}
          */
-        viewClass : XF.View,
+        viewClass: XF.View,
 
         /**
          Instance of {@link XF.View} or its subclass
