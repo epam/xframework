@@ -579,8 +579,6 @@
          */
         this.name = name || 'default_name';
 
-        this.templateName = this.name;
-
         /**
          ID of the component.
          @default 'default_id'
@@ -588,63 +586,13 @@
          */
         this.id = id || 'default_id';
 
-        /**
-         Flag which defines whether the component was rendered atleast once
-         @type Boolean
-         */
-        this.rendered = false;
-
-        /** @ignore */
-        var firstRender = function() {
-            this.unbind('refresh', firstRender);
-            this.rendered = true;
-        };
-
-        this.bind('refresh', firstRender);
-
         // merging defaults with custom instance options
         var defaultOptions = this.options;
         var instanceOptions = XF.getOptionsByID(this.id);
         this.options = _.defaults(instanceOptions, defaultOptions);
     };
 
-    /**
-     Component template
-     @type String
-     @static
-     */
-    XF.Component.template = null;
 
-    /**
-     The URL of template that is currently being loaded
-     @type String
-     @private
-     @static
-     */
-    XF.Component.templateURL= false;
-
-    /**
-     A flag that indiacates whether that template is currently being loaded
-     @type Boolean
-     @private
-     @static
-     */
-    XF.Component.templateLoaded = false;
-
-    /**
-     A flag that indiacates whether that template was successfully loaded
-     @type Boolean
-     @private
-     @static
-     */
-    XF.Component.templateLoading = false;
-
-    /**
-     Compiled component template
-     @type Function
-     @static
-     */
-    XF.Component.compiledTemplate = null;
 
     _.extend(XF.Component.prototype, XF.Events);
 
@@ -659,18 +607,29 @@
         /**
          Defenition of custom Model class extending {@link XF.Model}
          */
-        modelClass : XF.Model,
+        modelClass: XF.Model,
 
         /**
          Instance of {@link XF.Model} or its subclass
          @type XF.Model
          */
-        model : null,
+        model: null,
+
+        /**
+         Defenition of custom Collection class extending {@link XF.Collection}
+         */
+        collectionClass: XF.Model,
+
+        /**
+         Instance of {@link XF.Collection} or its subclass
+         @type XF.Collection
+         */
+        collection: null,
 
         /**
          Defenition of custom View class extending {@link XF.View}
          */
-        viewClass : XF.View,
+        viewClass: XF.View,
 
         /**
          Instance of {@link XF.View} or its subclass
@@ -1424,42 +1383,14 @@
          Settings for $ AJAX data request
          @type String
          */
-        dataRequestSettings : null,
+        ajaxSettings : null,
 
         /**
          Flag that determines whether the data should not be loaded at all
          @default false
          @type Boolean
          */
-        isEmptyData : false,
-
-        /**
-         Flag that determines whether the data should be loaded once
-         @default false
-         @type Boolean
-         */
-        isStaticData : false,
-
-        /**
-         Flag that determines whether the data type is string (otherwise JSON)
-         @default false
-         @type Boolean
-         */
-        isStringData : false,
-
-        /**
-         Interval in milliseconds defining how often data should be retrived from the server; use '0' to turn autoUpdate off
-         @default 0
-         @type Number
-         */
-        autoUpdateInterval: 0,
-
-        /**
-         Flag that determines whether the data should be updateing (with autoUpdate) even if the component is currentyl hidden
-         @default false
-         @type Boolean
-         */
-        updateInBackground: false,
+        autoload : true,
 
         /**
          Flag that determines whether the data should be updated each time the component becomes visible
@@ -1469,28 +1400,12 @@
         updateOnShow: false,
 
         /**
-         Object that contains default values for attributes - should be overriden to be used
-         @type Object
-         */
-        defaults : null,
-
-        /**
          Constructs model instance
          @private
          */
         construct : function() {
             this.initialize();
             this.trigger('init');
-            if(this.autoUpdateInterval > 0) {
-                var autoUpdateFunc = _.bind(function() {
-                    if($(this.component.selector()).is(':visible')) {
-                        this.refresh();
-                    } else if(this.updateInBackground) {
-                        this.refresh();
-                    }
-                }, this);
-                setInterval(autoUpdateFunc, this.autoUpdateInterval);
-            }
             if(this.updateOnShow) {
                 $(this.component.selector()).bind('show', _.bind(this.refresh, this));
             }
@@ -1505,13 +1420,10 @@
             /** ignore */
             var dataLoaded = function() {
                 this.unbind('dataLoaded', dataLoaded);
-                var renderVersion = this.component.view.renderVersion;
                 this.afterLoadData();
 
-                //TODO: uncomment this and try to find why 'refresh' not working for menu component
-                //if(this.component.view.renderVersion == renderVersion) {
+
                 this.trigger('refresh');
-                //}
             };
 
             this.bind('dataLoaded', dataLoaded);
@@ -1553,7 +1465,7 @@
          */
         loadData : function() {
 
-            if(!this.isEmptyData && (!this.rawData || !this.isStaticData || this.autoUpdate > 0)) {
+            if(!this.isEmptyData && !this.isStaticData) {
 
                 var $this = this;
                 var url = this.getDataURL();
@@ -1971,6 +1883,46 @@
          */
         templateURL : null,
 
+        templateName: null,
+
+        /**
+         Component template
+         @type String
+         @static
+         */
+        template: null,
+
+        /**
+         The URL of template that is currently being loaded
+         @type String
+         @private
+         @static
+         */
+        templateURL: null,
+
+        /**
+         A flag that indiacates whether that template is currently being loaded
+         @type Boolean
+         @private
+         @static
+         */
+        templateLoaded: false,
+
+        /**
+         A flag that indiacates whether that template was successfully loaded
+         @type Boolean
+         @private
+         @static
+         */
+        templateLoading: false,
+
+        /**
+         Compiled component template
+         @type Function
+         @static
+         */
+        compiledTemplate: null,
+
         /**
          Flag that determines whether the Model update should be ignored by the View (in this case you may launch {@link XF.View#refresh} manualy)
          @default false
@@ -1997,6 +1949,8 @@
          @private
          */
         construct : function() {
+            this.templateName = this.templateName || this.component.name;
+
             /** ignore */
             var templateLoaded = function() {
 
@@ -2006,7 +1960,7 @@
                     return;
                 }
 
-                if(!this.component.constructor.templateLoaded) {
+                if(!this.templateLoaded) {
                     this.loadTemplate();
                     return;
                 }
@@ -2065,7 +2019,7 @@
                 if(this.lastDeviceType && this.lastDeviceType.templatePath) {
                     templatePath = this.lastDeviceType.templatePath;
                 }
-                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.templateName, templatePath);
+                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.templateName, templatePath);
             }
             return this.templateURL;
         },
@@ -2075,10 +2029,10 @@
          @static
          */
         getMarkup: function() {
-            if(!this.component.constructor.compiledTemplate) {
-                this.component.constructor.compiledTemplate = _.template(this.component.constructor.template);
+            if(!this.compiledTemplate) {
+                this.compiledTemplate = _.template(this.template);
             }
-            return this.component.constructor.compiledTemplate(this.component.model);
+            return this.compiledTemplate(this.component.model);
         },
 
         /**
@@ -2110,17 +2064,17 @@
             if(this.useCache) {
                 var cachedTemplate = XF.Cache.get(url);
                 if(cachedTemplate) {
-                    this.component.constructor.template = cachedTemplate;
-                    this.component.constructor.templateLoaded = true;
+                    this.template = cachedTemplate;
+                    this.templateLoaded = true;
                     this.trigger('templateLoaded');
                     return;
                 }
             }
 
-            if(!this.component.constructor.templateLoaded && !this.component.constructor.templateLoading) {
+            if(!this.templateLoaded && !this.templateLoading) {
 
-                this.component.constructor.templateURL = url;
-                this.component.constructor.templateLoading = true;
+                this.templateURL = url;
+                this.templateLoading = true;
 
                 var $this = this;
 
@@ -2138,25 +2092,25 @@
                                 XF.Cache.set(url, template);
                             }
 
-                            $this.component.constructor.template = jqXHR.responseText;
-                            $this.component.constructor.templateLoading = false;
-                            $this.component.constructor.templateLoaded = true;
+                            $this.template = jqXHR.responseText;
+                            $this.templateLoading = false;
+                            $this.templateLoaded = true;
                             $this.trigger('templateLoaded');
                             XF.trigger('templateLoaded', {url: url, template:template});
                         } else {
-                            $this.component.constructor.template = null;
-                            $this.component.constructor.templateLoading = false;
-                            $this.component.constructor.templateLoaded = false;
+                            $this.template = null;
+                            $this.templateLoading = false;
+                            $this.templateLoaded = false;
                             $this.trigger('templateLoaded');
                             XF.trigger('templateLoaded', {url: url, template : null});
                         }
                     }
                 });
 
-            } else if(this.component.constructor.templateLoading) {
+            } else if(this.templateLoading) {
 
                 var $this = this;
-                url = this.component.constructor.templateURL;
+                url = this.templateURL;
 
                 /** ignore */
                 var templateLoadedAsync = function(params) {
