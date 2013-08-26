@@ -205,37 +205,6 @@
         },
 
         /**
-         Shows loading notification (and generates new if params are passed)
-         @param messageText String to show in loading notification
-         @param icon Icon name (optional)
-         */
-        showLoading : function (messageText, icon) {
-
-            if (messageText || icon) {
-
-                if (this.loadingNotification) {
-                    this.hideLoading();
-                }
-                this.setLoadingNotification(this.createNotification(messageText, icon));
-            }
-
-            if (!!this.loadingNotification) {
-                this.setLoadingNotification(this.createNotification('Loading...'));
-            }
-            this.show(this.loadingNotification);
-        },
-
-        /**
-         Hides loading notification
-         */
-        hideLoading : function () {
-
-            if (this.loadingNotification) {
-                this.hide(this.loadingNotification);
-            }
-        },
-
-        /**
          Hides Dialog
          */
         hideDialog : function () {
@@ -259,6 +228,11 @@
         createButton : function (buttonDescr)  {
             var jQButton = $('<button>/button>'),
                 attrs = {};
+
+            attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
+            attrs['class'] = buttonDescr.class || '';
+            attrs['name'] = buttonDescr.name || attrs.id;
+
             jQButton.html(buttonDescr.text);
 
             if (buttonDescr.icon && buttonDescr.icon != '') {
@@ -280,7 +254,8 @@
             if (buttonDescr.special && buttonDescr.special != '') {
                 attrs['data-special'] = buttonDescr.special;
             };
-            if(buttonDescr.alert && buttonDescr.alert != '') {
+
+            if (buttonDescr.alert && buttonDescr.alert != '') {
                 attrs['data-alert'] = buttonDescr.alert;
             };
 

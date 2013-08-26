@@ -1,6 +1,6 @@
-module.exports = (function(grunt) {
+module.exports = (function (grunt) {
 
-    grunt.registerTask('build', "X-Framework build", function() {
+    grunt.registerTask('build', "X-Framework build", function () {
         console.log('Adding core elements');
         var jsSources = [
             'xf/src/xf.core.js',
@@ -56,10 +56,32 @@ module.exports = (function(grunt) {
                     }
                 }
             },
+            less: {
+                development: {
+                    options: {
+                        paths: ["styles"]
+                    },
+                    files: {
+                        "styles/xf.css": "styles/xf.less"
+                    }
+                },
+                production: {
+                    options: {
+                        paths: ["styles"],
+                        compress: true,
+                        yuicompress: true,
+                        report: 'min'
+                    },
+                    files: {
+                        "styles/xf.min.css": "styles/xf.less"
+                    }
+                }
+            }
         });
         grunt.loadNpmTasks('grunt-contrib-uglify');
         grunt.loadNpmTasks('grunt-contrib-concat');
-        grunt.task.run(['concat', 'uglify']);
+        grunt.loadNpmTasks('grunt-contrib-less');
+        grunt.task.run(['concat', 'uglify', 'less']);
     });
 
     grunt.registerTask('default', ['build']);
