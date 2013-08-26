@@ -107,7 +107,7 @@ XF.Collection = BB.Collection.extend({
                     url: url,
                     complete : function(jqXHR, textStatus) {
                         if(!$this.component) {
-                            throw 'XF.Model "component" linkage lost';
+                            throw 'XF.Collection "component" linkage lost';
                         }
                         if(textStatus == 'success') {
                             if($this.isStringData) {

@@ -40,8 +40,9 @@
                         });
 
                         if (!skip & $(this).attr('data-skip-enhance') != 'true') {
+                            var options = $(this).data();
                             XF.UI.enhanced.push(this);
-                            enhancement.render(this);
+                            enhancement.render(this, options);
                         }
                     });
                 }

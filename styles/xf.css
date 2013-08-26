@@ -1086,7 +1086,7 @@ div.xf-viewport {
 .xf-grid-padded > .xf-grid-unit:last-child {
   padding-right: 0;
 }
-/** 
+/**
  * @font-face Icons. Borrowed from http://entypo.com
  */
 @font-face {
@@ -1126,7 +1126,7 @@ div.xf-viewport {
 }
 .xf-icon-big:before {
   font-size: 60px;
-  line-height: 15px;
+  line-height: 30px;
   height: 30px;
   text-indent: -2px;
   vertical-align: bottom;
@@ -2131,6 +2131,12 @@ textarea.xf-input-text {
 .xf-input-range-slider {
   width: 100%;
   position: relative;
+  height: 24px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 .xf-input-range-slider:after {
   content: "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W ";
@@ -2169,6 +2175,7 @@ textarea.xf-input-text {
   display: block;
   width: 24px;
   height: 24px;
+  line-height: 24px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -2189,6 +2196,7 @@ textarea.xf-input-text {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1abc9c', endColorstr='#1abc9c', GradientType=0);
   border: 1px solid #ffffff;
   outline: none;
+  cursor: move;
 }
 .xf-input-range-thumb:hover {
   -webkit-background-size: 100% 140%;
@@ -2662,6 +2670,12 @@ textarea::-webkit-input-placeholder {
   background: -moz-linear-gradient(center bottom, #1dd2af 0%, #1dd2af 100%);
   background: -o-linear-gradient(#1dd2af, #1dd2af);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1dd2af', endColorstr='#1dd2af', GradientType=0);
+}
+.xf-button-float-right {
+  float: right;
+}
+.xf-button-float-left {
+  float: left;
 }
 .xf-button-active,
 .xf-button-special {
