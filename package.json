@@ -7,10 +7,12 @@
     "grunt-contrib-nodeunit": "~0.2.0",
     "grunt-contrib-uglify": "~0.1.1",
     "grunt-contrib-concat": "~0.3.0",
-    "grunt-concat": "~0.1.6"
+    "grunt-contrib-less" : "~0.7.0",
+    "grunt-concat": "~0.1.6",
+    "vows" : "latest"
   },
   "scripts": {
-    "start": "node server.js"
+      "test" : "phantomjs tests/ui/xf.ui.button.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.fieldset.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.dialog.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.list.js http://localhost:9292/tests/test.html"
   },
   "description": "ERROR: No README data found!",
   "main": "Gruntfile.js",

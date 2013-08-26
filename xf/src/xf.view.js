@@ -43,6 +43,46 @@
          */
         templateURL : null,
 
+        templateName: null,
+
+        /**
+         Component template
+         @type String
+         @static
+         */
+        template: null,
+
+        /**
+         The URL of template that is currently being loaded
+         @type String
+         @private
+         @static
+         */
+        templateURL: null,
+
+        /**
+         A flag that indiacates whether that template is currently being loaded
+         @type Boolean
+         @private
+         @static
+         */
+        templateLoaded: false,
+
+        /**
+         A flag that indiacates whether that template was successfully loaded
+         @type Boolean
+         @private
+         @static
+         */
+        templateLoading: false,
+
+        /**
+         Compiled component template
+         @type Function
+         @static
+         */
+        compiledTemplate: null,
+
         /**
          Flag that determines whether the Model update should be ignored by the View (in this case you may launch {@link XF.View#refresh} manualy)
          @default false
@@ -69,6 +109,8 @@
          @private
          */
         construct : function() {
+            this.templateName = this.templateName || this.component.name;
+
             /** ignore */
             var templateLoaded = function() {
 
@@ -78,7 +120,7 @@
                     return;
                 }
 
-                if(!this.component.constructor.templateLoaded) {
+                if(!this.templateLoaded) {
                     this.loadTemplate();
                     return;
                 }
@@ -137,7 +179,7 @@
                 if(this.lastDeviceType && this.lastDeviceType.templatePath) {
                     templatePath = this.lastDeviceType.templatePath;
                 }
-                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.templateName, templatePath);
+                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.templateName, templatePath);
             }
             return this.templateURL;
         },
@@ -147,10 +189,10 @@
          @static
          */
         getMarkup: function() {
-            if(!this.component.constructor.compiledTemplate) {
-                this.component.constructor.compiledTemplate = _.template(this.component.constructor.template);
+            if(!this.compiledTemplate) {
+                this.compiledTemplate = _.template(this.template);
             }
-            return this.component.constructor.compiledTemplate(this.component.model);
+            return this.compiledTemplate(this.component.model);
         },
 
         /**
@@ -182,17 +224,17 @@
             if(this.useCache) {
                 var cachedTemplate = XF.Cache.get(url);
                 if(cachedTemplate) {
-                    this.component.constructor.template = cachedTemplate;
-                    this.component.constructor.templateLoaded = true;
+                    this.template = cachedTemplate;
+                    this.templateLoaded = true;
                     this.trigger('templateLoaded');
                     return;
                 }
             }
 
-            if(!this.component.constructor.templateLoaded && !this.component.constructor.templateLoading) {
+            if(!this.templateLoaded && !this.templateLoading) {
 
-                this.component.constructor.templateURL = url;
-                this.component.constructor.templateLoading = true;
+                this.templateURL = url;
+                this.templateLoading = true;
 
                 var $this = this;
 
@@ -210,25 +252,25 @@
                                 XF.Cache.set(url, template);
                             }
 
-                            $this.component.constructor.template = jqXHR.responseText;
-                            $this.component.constructor.templateLoading = false;
-                            $this.component.constructor.templateLoaded = true;
+                            $this.template = jqXHR.responseText;
+                            $this.templateLoading = false;
+                            $this.templateLoaded = true;
                             $this.trigger('templateLoaded');
                             XF.trigger('templateLoaded', {url: url, template:template});
                         } else {
-                            $this.component.constructor.template = null;
-                            $this.component.constructor.templateLoading = false;
-                            $this.component.constructor.templateLoaded = false;
+                            $this.template = null;
+                            $this.templateLoading = false;
+                            $this.templateLoaded = false;
                             $this.trigger('templateLoaded');
                             XF.trigger('templateLoaded', {url: url, template : null});
                         }
                     }
                 });
 
-            } else if(this.component.constructor.templateLoading) {
+            } else if(this.templateLoading) {
 
                 var $this = this;
-                url = this.component.constructor.templateURL;
+                url = this.templateURL;
 
                 /** ignore */
                 var templateLoadedAsync = function(params) {

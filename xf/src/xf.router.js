@@ -25,6 +25,7 @@
         start : function() {
             this.bindAnyRoute();
             XF.history.start();
+            XF.trigger('ui:enhance', $('body'));
         },
 
 
