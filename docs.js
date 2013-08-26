@@ -1,3 +1,5 @@
+'use strict';
+
 var md = require("node-markdown").Markdown,
     fs = require('fs'),
     splitReg = new RegExp(/\n{1}#{1}[\s]{1}[^\n]{1,}/ig);

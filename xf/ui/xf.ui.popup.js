@@ -6,9 +6,7 @@
      */
     XF.UI.popup = {
         render : function () {
-            /*
-             <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
-             */
+
             var id = 'xf-' + Math.floor(Math.random() * 10000),
                 idStack = XF.UI.checkInIsset('popup'),
                 newId = false;
@@ -182,27 +180,11 @@
         },
 
         /**
-         Stores loading notification object
-         @type $
-         @private
-         */
-        loadingNotification : null,
-
-
-        /**
          Stores dialog object
          @type $
          @private
          */
         dialog : null,
-
-        /**
-         Saves passed popup as default loading notification
-         @param jqPopup $ object representing popup
-         */
-        setLoadingNotification : function (jqPopup) {
-            this.loadingNotification = jqPopup;
-        },
 
         /**
          Hides Dialog
