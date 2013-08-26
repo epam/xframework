@@ -137,7 +137,7 @@
                 if(this.lastDeviceType && this.lastDeviceType.templatePath) {
                     templatePath = this.lastDeviceType.templatePath;
                 }
-                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.name, templatePath);
+                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.component.templateName, templatePath);
             }
             return this.templateURL;
         },
@@ -286,9 +286,12 @@
          */
         render : function() {
             this.renderVersion++;
-            var DOMObject = $('[data-id=' + this.component.id + ']');
-            DOMObject.html(this.getMarkup());
-            XF.trigger('ui:enhance', DOMObject);
+            this.$el.html(this.getMarkup());
+            XF.trigger('ui:enhance', this.$el);
+        },
+
+        initialize: function () {
+            this.setElement('[data-id=' + this.attributes['data-id'] + ']');
         },
 
         /**
