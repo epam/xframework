@@ -9,6 +9,14 @@ node_modules
 
 bower.json
 
+phantomjs
+
+docs/
+
+docs.js
+
+js/xf*.js
+
 js/lib/underscore.js
 
 js/lib/backbone.js

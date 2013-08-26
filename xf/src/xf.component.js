@@ -40,20 +40,6 @@
          */
         this.id = id || 'default_id';
 
-        /**
-         Flag which defines whether the component was rendered atleast once
-         @type Boolean
-         */
-        this.rendered = false;
-
-        /** @ignore */
-        var firstRender = function() {
-            this.unbind('refresh', firstRender);
-            this.rendered = true;
-        };
-
-        this.bind('refresh', firstRender);
-
         // merging defaults with custom instance options
         var defaultOptions = this.options;
         var instanceOptions = XF.getOptionsByID(this.id);
@@ -75,18 +61,29 @@
         /**
          Defenition of custom Model class extending {@link XF.Model}
          */
-        modelClass : XF.Model,
+        modelClass: XF.Model,
 
         /**
          Instance of {@link XF.Model} or its subclass
          @type XF.Model
          */
-        model : null,
+        model: null,
+
+        /**
+         Defenition of custom Collection class extending {@link XF.Collection}
+         */
+        collectionClass: XF.Model,
+
+        /**
+         Instance of {@link XF.Collection} or its subclass
+         @type XF.Collection
+         */
+        collection: null,
 
         /**
          Defenition of custom View class extending {@link XF.View}
          */
-        viewClass : XF.View,
+        viewClass: XF.View,
 
         /**
          Instance of {@link XF.View} or its subclass

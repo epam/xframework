@@ -1,4 +1,4 @@
-/*! X-Framework 14-08-2013 */
+/*! X-Framework 26-08-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -176,6 +176,7 @@
     var loadChildComponents = function(DOMObject) {
         console.log('XF :: loadChildComponents', DOMObject);
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
+            console.log(value)
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
             loadChildComponent(compID, compName, true);
@@ -585,20 +586,6 @@
          */
         this.id = id || 'default_id';
 
-        /**
-         Flag which defines whether the component was rendered atleast once
-         @type Boolean
-         */
-        this.rendered = false;
-
-        /** @ignore */
-        var firstRender = function() {
-            this.unbind('refresh', firstRender);
-            this.rendered = true;
-        };
-
-        this.bind('refresh', firstRender);
-
         // merging defaults with custom instance options
         var defaultOptions = this.options;
         var instanceOptions = XF.getOptionsByID(this.id);
@@ -620,18 +607,29 @@
         /**
          Defenition of custom Model class extending {@link XF.Model}
          */
-        modelClass : XF.Model,
+        modelClass: XF.Model,
 
         /**
          Instance of {@link XF.Model} or its subclass
          @type XF.Model
          */
-        model : null,
+        model: null,
+
+        /**
+         Defenition of custom Collection class extending {@link XF.Collection}
+         */
+        collectionClass: XF.Model,
+
+        /**
+         Instance of {@link XF.Collection} or its subclass
+         @type XF.Collection
+         */
+        collection: null,
 
         /**
          Defenition of custom View class extending {@link XF.View}
          */
-        viewClass : XF.View,
+        viewClass: XF.View,
 
         /**
          Instance of {@link XF.View} or its subclass
@@ -1385,42 +1383,14 @@
          Settings for $ AJAX data request
          @type String
          */
-        dataRequestSettings : null,
+        ajaxSettings : null,
 
         /**
          Flag that determines whether the data should not be loaded at all
          @default false
          @type Boolean
          */
-        isEmptyData : false,
-
-        /**
-         Flag that determines whether the data should be loaded once
-         @default false
-         @type Boolean
-         */
-        isStaticData : false,
-
-        /**
-         Flag that determines whether the data type is string (otherwise JSON)
-         @default false
-         @type Boolean
-         */
-        isStringData : false,
-
-        /**
-         Interval in milliseconds defining how often data should be retrived from the server; use '0' to turn autoUpdate off
-         @default 0
-         @type Number
-         */
-        autoUpdateInterval: 0,
-
-        /**
-         Flag that determines whether the data should be updateing (with autoUpdate) even if the component is currentyl hidden
-         @default false
-         @type Boolean
-         */
-        updateInBackground: false,
+        autoload : true,
 
         /**
          Flag that determines whether the data should be updated each time the component becomes visible
@@ -1430,28 +1400,12 @@
         updateOnShow: false,
 
         /**
-         Object that contains default values for attributes - should be overriden to be used
-         @type Object
-         */
-        defaults : null,
-
-        /**
          Constructs model instance
          @private
          */
         construct : function() {
             this.initialize();
             this.trigger('init');
-            if(this.autoUpdateInterval > 0) {
-                var autoUpdateFunc = _.bind(function() {
-                    if($(this.component.selector()).is(':visible')) {
-                        this.refresh();
-                    } else if(this.updateInBackground) {
-                        this.refresh();
-                    }
-                }, this);
-                setInterval(autoUpdateFunc, this.autoUpdateInterval);
-            }
             if(this.updateOnShow) {
                 $(this.component.selector()).bind('show', _.bind(this.refresh, this));
             }
@@ -1466,13 +1420,10 @@
             /** ignore */
             var dataLoaded = function() {
                 this.unbind('dataLoaded', dataLoaded);
-                var renderVersion = this.component.view.renderVersion;
                 this.afterLoadData();
 
-                //TODO: uncomment this and try to find why 'refresh' not working for menu component
-                //if(this.component.view.renderVersion == renderVersion) {
+
                 this.trigger('refresh');
-                //}
             };
 
             this.bind('dataLoaded', dataLoaded);
@@ -1514,7 +1465,7 @@
          */
         loadData : function() {
 
-            if(!this.isEmptyData && (!this.rawData || !this.isStaticData || this.autoUpdate > 0)) {
+            if(!this.isEmptyData && !this.isStaticData) {
 
                 var $this = this;
                 var url = this.getDataURL();
@@ -1764,6 +1715,7 @@
         start : function() {
             this.bindAnyRoute();
             XF.history.start();
+            XF.trigger('ui:enhance', $('body'));
         },
 
 
@@ -2231,118 +2183,112 @@
 
     });
 
-XF.Touches = {
+    XF.Touches = {
 
-    init : function () {
-        // Default values and device events detection
-        var touchHandler = {},
-            eventsHandler = {
+        init : function () {
+            // Default values and device events detection
+            var touchHandler = {},
+                eventsHandler = {
 
-                // Events for desktop browser, old ios, old android
-                mouse : {
-                    start : "mousedown",
-                    move : "mousemove",
-                    end : "mouseup",
-                    cancel : "mouseup"
-                },
+                    // Events for desktop browser, old ios, old android
+                    mouse : {
+                        start : "mousedown",
+                        move : "mousemove",
+                        end : "mouseup",
+                        cancel : "mouseup"
+                    },
 
-                // Events for modern Windows devices (IE10+)
-                pointer : {
-                    start : "MSPointerDown",
-                    move : "MSPointerMove",
-                    end : "MSPointerUp",
-                    cancel : "MSPointerCancel"
-                },
+                    // Events for modern Windows devices (IE10+)
+                    pointer : {
+                        start : "MSPointerDown",
+                        move : "MSPointerMove",
+                        end : "MSPointerUp",
+                        cancel : "MSPointerCancel"
+                    },
 
-                // Events for touchable devices
-                touch : {
-                    start : "touchstart",
-                    move : "touchmove",
-                    end : "touchend",
-                    cancel : "touchcancel"
-                }
-            },
-            swipeDelta = 30, // Amount of pixels for swipe event
-            isTouch,
-            eventType;
-
-        // Changing events depending on detected data
-        isTouch = (XF.Device.supports.pointerEvents) ? false : (XF.Device.supports.touchEvents ? true : false);
-        eventType = (XF.Device.supports.pointerEvents) ? 'pointer' : (XF.Device.supports.touchEvents ? 'touch' : 'mouse');
-
-        // If target is text
-        var parentIfText = function (node) {
-            return 'tagName' in node ? node : node.parentNode;
-        }
-
-        // Detecting swipe direction
-        var swipeDirection = function (x1, x2, y1, y2) {
-            var xDelta = Math.abs(x1 - x2),
-                yDelta = Math.abs(y1 - y2);
-            return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
-        }
-
-        var cancelAll = function () {
-            touchHandler = {};
-        }
-
-        $(document).ready(function () {
-            var now,
-                delta;
-
-            $(document.body).bind(eventsHandler[eventType].start, function(e){
-                now = Date.now();
-                delta = now - (touchHandler.last || now);
-                touchHandler.el = $(parentIfText(e.target));
-                touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
-                touchHandler.last = now;
-            }).bind(eventsHandler[eventType].move, function (e) {
-                touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
-
-                if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
-                    e.preventDefault();
-                }
-            }).bind(eventsHandler[eventType].end, function(e){
-
-                if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
-                    || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
-                    touchHandler.direction = swipeDirection(touchHandler.x1, touchHandler.x2, touchHandler.y1, touchHandler.y2);
-
-                    // Trigger swipe event
-                    touchHandler.el.trigger('swipe');
-
-                    // Trigger swipe event by it's direction
-                    touchHandler.el.trigger('swipe' + touchHandler.direction);
-                    touchHandler = {};
-                } else if ('last' in touchHandler) {
-                    touchHandler.el.trigger('tap');
-
-                    // Unbind click event if tap
-                    $(document.body).unbind('click');
-                    touchHandler.el.unbind('click');
-                }
-            }).bind(eventsHandler[eventType].cancel, cancelAll);
-
-            $(window).bind('scroll', cancelAll);
-        });
-
-        // List of new events
-        ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
-            $.fn[i] = function (callback) {
-
-                if (!callback) {
-                    callback = function() {
-                        $(this).trigger('click');
+                    // Events for touchable devices
+                    touch : {
+                        start : "touchstart",
+                        move : "touchmove",
+                        end : "touchend",
+                        cancel : "touchcancel"
                     }
-                }
-                return this.bind(i, callback)
-            };
-        });
-    }
+                },
+                swipeDelta = 30, // Amount of pixels for swipe event
+                isTouch,
+                eventType;
 
-};
+            // Changing events depending on detected data
+            isTouch = (XF.Device.supports.pointerEvents) ? false : (XF.Device.supports.touchEvents ? true : false);
+            eventType = (XF.Device.supports.pointerEvents) ? 'pointer' : (XF.Device.supports.touchEvents ? 'touch' : 'mouse');
+
+            // If target is text
+            var parentIfText = function (node) {
+                return 'tagName' in node ? node : node.parentNode;
+            }
+
+            // Detecting swipe direction
+            var swipeDirection = function (x1, x2, y1, y2) {
+                var xDelta = Math.abs(x1 - x2),
+                    yDelta = Math.abs(y1 - y2);
+                return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
+            }
+
+            var cancelAll = function () {
+                touchHandler = {};
+            }
+
+            $(document).ready(function () {
+                var now,
+                    delta;
+
+                $(document.body).bind(eventsHandler[eventType].start, function(e){
+                    now = Date.now();
+                    delta = now - (touchHandler.last || now);
+                    touchHandler.el = $(parentIfText(e.target));
+                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    touchHandler.last = now;
+                }).bind(eventsHandler[eventType].move, function (e) {
+                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+
+                    if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
+                        e.preventDefault();
+                    }
+                }).bind(eventsHandler[eventType].end, function(e){
+
+                    if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
+                        || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
+                        touchHandler.direction = swipeDirection(touchHandler.x1, touchHandler.x2, touchHandler.y1, touchHandler.y2);
+
+                        // Trigger swipe event
+                        touchHandler.el.trigger('swipe');
+
+                        // Trigger swipe event by it's direction
+                        touchHandler.el.trigger('swipe' + touchHandler.direction);
+                        touchHandler = {};
+                    } else if ('last' in touchHandler) {
+                        touchHandler.el.trigger('tap');
+
+                        // Unbind click event if tap
+                        $(document.body).unbind('click');
+                        touchHandler.el.unbind('click');
+                    }
+                }).bind(eventsHandler[eventType].cancel, cancelAll);
+
+                $(window).bind('scroll', cancelAll);
+            });
+
+            // List of new events
+            ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
+                $.fn[i] = function (callback) {
+                    return this.bind(i, callback)
+                };
+            });
+        }
+
+    };
 
 
     /* $ hooks */
@@ -2495,8 +2441,9 @@ XF.Touches = {
                         });
 
                         if (!skip & $(this).attr('data-skip-enhance') != 'true') {
+                            var options = $(this).data();
                             XF.UI.enhanced.push(this);
-                            enhancement.render(this);
+                            enhancement.render(this, options);
                         }
                     });
                 }
@@ -2570,7 +2517,7 @@ XF.Touches = {
     XF.UI.button = {
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
-        render : function (button) {
+        render : function (button, options) {
             var jQButton = $(button),
                 enhancedButton,
                 innerStuff;
@@ -2595,20 +2542,29 @@ XF.Touches = {
                 return;
             }
 
-            var isSmall = jQButton.attr('data-small') == 'true' || jQButton.attr('data-appearance') == 'backbtn';
+            var isSmall = options.small === true || options.appearance == 'backbtn';
+            var position = options.position || '';
+
+            if (position !== '') {
+                enhancedButton.addClass('xf-button-float-' + position);
+            }
+
+            if (jQButton.parents(XF.UI.header.selector).length > 0) {
+                enhancedButton.addClass('xf-button-header-' + position);
+            }
 
             // The class xf-button is added to the button.
             // If it has data-small="true" attribute, the class should be xf-button-small.
             enhancedButton.addClass(isSmall ? 'xf-button-small' : 'xf-button');
 
             // If data-appearance="backbtn" attribute is present, xf-button-back class is also added.
-            if (jQButton.attr('data-appearance') === 'backbtn') {
+            if (options.appearance === 'backbtn') {
                 enhancedButton.addClass('xf-button-back');
             }
 
-            var iconName = jQButton.attr('data-icon');
+            var iconName = options.icon;
 
-            if (jQButton.attr('data-appearance') === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
+            if (options.appearance === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
                 iconName = 'left';
             }
 
@@ -2631,7 +2587,7 @@ XF.Touches = {
                 // A class denoting icon position is also added to the button. Default: xf-iconpos-left.
                 // The value is taken from data-iconpos attr.
                 // Possible values: left, right, top, bottom.
-                var iconPos = jQButton.attr('data-iconpos') || 'left';
+                var iconPos = options.iconpos || 'left';
 
                 if (iconPos != 'left' && iconPos != 'right' && iconPos != 'top' && iconPos != 'bottom') {
                     iconPos = 'left';
@@ -2641,30 +2597,35 @@ XF.Touches = {
 
             }
 
-            if(innerStuff) {
+            if (innerStuff) {
                 var textSpan = $('<span></span>').append(innerStuff);
 
                 // The text of buttons is placed inside span.xf-button-small-text for small buttons
-                if (isSmall || jQButton.attr('data-appearance') == 'backbtn') {
+                if (isSmall || options.appearance == 'backbtn') {
                     textSpan.addClass('xf-button-small-text');
                     // and span.xf-button-text for big ones.
                 } else {
                     textSpan.addClass('xf-button-text');
                 }
                 enhancedButton.append(textSpan);
+            } else {
+
+                if (isSmall) {
+                    enhancedButton.addClass('xf-button-small-icon-only');
+                }
             }
 
             // If data-special="true" attribute is present add xf-button-special class.
-            if (jQButton.attr('data-special') == 'true') {
+            if (options.special == 'true') {
                 enhancedButton.addClass('xf-button-special');
             }
 
-            if (jQButton.attr('data-alert') == 'true') {
+            if (options.alert == 'true') {
                 enhancedButton.addClass('xf-button-alert');
             }
 
             // If data-alert="true" attribute is present add xf-button-alert class.
-            if (jQButton.attr('data-alert') == 'true') {
+            if (options.alert == 'true') {
                 enhancedButton.addClass('xf-button-alert');
             }
         }
@@ -2680,7 +2641,7 @@ XF.Touches = {
 
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
-        render : function(chbRbInput) {
+        render : function(chbRbInput, options) {
 
             var jQChbRbInput = $(chbRbInput),
                 options = {
@@ -2746,7 +2707,7 @@ XF.Touches = {
 
         selector : 'fieldset[data-role=controlgroup]',
 
-        render : function(fieldset) {
+        render : function(fieldset, options) {
             var jQFieldset = $(fieldset);
 
             if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
@@ -2784,6 +2745,131 @@ XF.Touches = {
 
 
     /**
+     Enhances footers view
+     @param footer DOM Object
+     @private
+     */
+    XF.UI.footer = {
+
+        selector : 'footer, [data-role=footer]',
+
+        render : function (footer, options) {
+            var jQFooter = $(footer),
+                _self = this;
+
+            if (!footer || !jQFooter instanceof $ || jQFooter.attr('data-skip-enhance') == 'true') {
+                return;
+            }
+
+            options.id = options.id || 'xf-footer-component-' + Math.floor(Math.random()*10000);
+
+            jQFooter.attr({
+                'data-id': options.id,
+                'id': options.id,
+                'data-role' : 'footer',
+                'data-skip-enhance' : 'true'
+            });
+
+            options.fixed = options.fixed === true ? true : false;
+            options.buttons = options.buttons || [];
+
+            if (options.fixed) {
+                var parentPage = $(this.selector).parents('.xf-page');
+                if (parentPage[0]) {
+                    parentPage.addClass('xf-page-has-fixed-footer');
+                } else {
+                    XF.Device.getViewport().addClass('xf-viewport-has-fixed-footer');
+                }
+            }
+
+            var buttons = jQFooter.find(XF.UI.button.selector);
+            options.buttonsClass = 'xf-grid-unit-1of' + buttons.length;
+
+            for (var i = 0; i < buttons.length; ++i) {
+                var button = buttons.eq(i);
+                var butOpts = {
+                    iconClass : button.attr('data-icon') ? 'xf-icon-' + button.attr('data-icon') : '',
+                    dataHrefString : button.attr('data-href') ? button.attr('data-href') : '',
+                    textClass : button.attr('data-text-class') ? button.attr('data-text-class') : '',
+                    id : button.attr('data-id') ? button.attr('data-id') : options.id + '-item' + i,
+                    text : button.val() || button.text() || ''
+                };
+                options.buttons.push(butOpts);
+            }
+
+            XF.Router.on('route', function () {
+                XF.UI.footer.selectButton(jQFooter);
+            });
+
+            var _template = _.template(
+                '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">'
+                + '<ul class="xf-nav">'
+                + '<% _.each(buttons, function(button) { %>'
+                + '<li class="xf-grid-unit <%= buttonsClass %>">'
+                + '<a data-href="<%= button.dataHrefString %>" class="xf-nav-item xf-iconpos-top" id="<%= button.id %>">'
+                + '<div class="xf-icon xf-icon-big <%= button.iconClass %>"></div>'
+                + '<div class="xf-nav-item-text <%= button.textClass %>"><%= button.text %></div>'
+                + '</a>'
+                + '</li>'
+                + '<% }); %>'
+                + '</ul>'
+                + '</div>'
+            );
+
+            jQFooter.html(_template(options));
+
+            XF.UI.footer.selectButton(jQFooter);
+        },
+
+        selectButton : function (el) {
+            var page = XF.history.fragment;
+            el.find('.xf-nav a').removeClass('xf-nav-item-active');
+            el.find('.xf-nav a[data-href="#' + page + '"]').addClass('xf-nav-item-active');
+        }
+    };
+
+    /**
+     Enhances headers view
+     @param header DOM Object
+     @private
+     */
+    XF.UI.header = {
+
+        selector : '[data-role=header]',
+
+        render : function (header, options) {
+            var jQHeader = $(header);
+
+            if (!header || !jQHeader instanceof $ || jQHeader.attr('data-skip-enhance') == 'true') {
+                return;
+            }
+
+            options.id = options.id || 'xf-header-component-' + Math.floor(Math.random()*10000);
+            options.title = options.title || '';
+            options.html = jQHeader.html();
+            options.hasTitle = options.title != '' ? true : false;
+            options.isFixed = (options.fixed && options.fixed === true) ? true : false;
+
+            jQHeader.attr({
+                'data-id': options.id,
+                'id': options.id,
+                'data-skip-enhance' : 'true'
+            });
+
+            var _template = _.template(
+                '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">'
+                + '<%= html %>'
+                + '<% if(hasTitle) { %>'
+                + '<h1 class="xf-header-title"><%= title %></h1>'
+                + '<% } %>'
+                + '</header>'
+            );
+
+            jQHeader.html(_template(options));
+        }
+    };
+
+    /**
      Enhances ul/ol lists view
      @param list DOM Object
      @private
@@ -2792,7 +2878,7 @@ XF.Touches = {
 
         selector : 'UL[data-role=listview], OL[data-role=listview]',
 
-        render : function (list) {
+        render : function (list, options) {
             var jQList = $(list);
 
             if (!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
@@ -2801,7 +2887,7 @@ XF.Touches = {
             var listItems = jQList.children('li'),
                 linkItems = listItems.children('a'),
                 listItemsScope = [],
-                fullWidth = jQList.attr('data-fullwidth') || 'false',
+                fullWidth = options.fullwidth || 'false',
                 listId = jQList.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
 
             linkItems.addClass('xf-li-btn').children('.xf-count-bubble').parent().addClass('xf-li-has-count');
@@ -2877,6 +2963,74 @@ XF.Touches = {
         }
     };
 
+
+    /**
+     Enhances loaders view
+     @param loader DOM Object
+     @private
+     */
+    XF.UI.loader = {
+
+        selector : '[data-role=loader]',
+
+        render : function (loader, options) {
+
+            var jqLoader = $(loader),
+                _self = this,
+                options = options || {};
+
+            if (!loader || !jqLoader instanceof $ || jqLoader.attr('data-skip-enhance') == 'true') {
+                return;
+            }
+
+
+            var id = jqLoader.attr('id') || 'xf-' + Math.floor(Math.random() * 10000),
+                idStack = XF.UI.checkInIsset('loader'),
+                newId = false;
+
+            for (var i in idStack) {
+
+                if (newId) {
+
+                    if (!$('#' + idStack[i]).length) {
+                        id = idStack[i];
+                        newId = true;
+                    }
+                }
+            }
+
+            if (!newId) {
+                XF.UI.issetElements.push({type : 'loader', id : id});
+            }
+
+            jqLoader.attr({'id': id, 'data-skip-enhance' : 'true'});
+
+            if (!$('#' + id).hasClass('xf-loader')) {
+                $('#' + id).addClass('xf-loader');
+            }
+
+            return jqLoader;
+        },
+
+        show : function (jqLoader) {
+            jqLoader.show();
+        },
+
+        hide : function (jqLoader) {
+            jqLoader.hide();
+        },
+
+        remove : function (jqLoader) {
+            jqLoader.detach();
+            XF.UI.removeFromIsset('popup', jqLoader.attr('id'));
+        },
+
+        create : function () {
+            var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
+            XF.Device.getViewport().append(jqLoader);
+            return this.render(jqLoader[0]);
+        }
+    };
 
     /**
      Generates basic popup container
@@ -3084,37 +3238,6 @@ XF.Touches = {
         },
 
         /**
-         Shows loading notification (and generates new if params are passed)
-         @param messageText String to show in loading notification
-         @param icon Icon name (optional)
-         */
-        showLoading : function (messageText, icon) {
-
-            if (messageText || icon) {
-
-                if (this.loadingNotification) {
-                    this.hideLoading();
-                }
-                this.setLoadingNotification(this.createNotification(messageText, icon));
-            }
-
-            if (!!this.loadingNotification) {
-                this.setLoadingNotification(this.createNotification('Loading...'));
-            }
-            this.show(this.loadingNotification);
-        },
-
-        /**
-         Hides loading notification
-         */
-        hideLoading : function () {
-
-            if (this.loadingNotification) {
-                this.hide(this.loadingNotification);
-            }
-        },
-
-        /**
          Hides Dialog
          */
         hideDialog : function () {
@@ -3138,6 +3261,11 @@ XF.Touches = {
         createButton : function (buttonDescr)  {
             var jQButton = $('<button>/button>'),
                 attrs = {};
+
+            attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
+            attrs['class'] = buttonDescr.class || '';
+            attrs['name'] = buttonDescr.name || attrs.id;
+
             jQButton.html(buttonDescr.text);
 
             if (buttonDescr.icon && buttonDescr.icon != '') {
@@ -3159,7 +3287,8 @@ XF.Touches = {
             if (buttonDescr.special && buttonDescr.special != '') {
                 attrs['data-special'] = buttonDescr.special;
             };
-            if(buttonDescr.alert && buttonDescr.alert != '') {
+
+            if (buttonDescr.alert && buttonDescr.alert != '') {
                 attrs['data-alert'] = buttonDescr.alert;
             };
 
@@ -3249,6 +3378,108 @@ XF.Touches = {
 
 
     /**
+     Enhances footers view
+     @param footer DOM Object
+     @private
+     */
+    XF.UI.tabs = {
+
+        selector : '[data-role=tabs]',
+
+        render : function (tabs, options) {
+            var jQTabs = $(tabs),
+                _self = this;
+
+            if (!tabs || !jQTabs instanceof $ || jQTabs.attr('data-skip-enhance') == 'true') {
+                return;
+            }
+
+            options.id = options.id || 'xf-tabs-component-' + Math.floor(Math.random()*10000);
+            options.tabsperrow = options.tabsperrow || 4;
+
+            jQTabs.attr({
+                'data-id': options.id,
+                'id': options.id,
+                'data-skip-enhance' : 'true'
+            });
+
+            options.tabs = options.tabs || [];
+
+            var buttons = jQTabs.find(XF.UI.button.selector);
+            options.rowCount = Math.ceil(buttons.length / options.tabsperrow);
+            options.tabsClass = options.tabsclass || '';
+
+            var lastRowSize = buttons.length % options.tabsperrow;
+            if(!lastRowSize) {
+                lastRowSize = options.tabsperrow;
+            }
+
+            for (var i = 0; i < buttons.length; ++i){
+                var tab = buttons.eq(i),
+                    x = i + 1,
+                    tabOpts = {
+                        className : ''
+                    };
+
+                if (x === 1) {
+                    tabOpts.className += ' xf-corner-tl ';
+                }
+
+                if (x === options.tabsperrow || (options.rowCount == 1 && i == buttons.length)) {
+                    tabOpts.className += ' xf-corner-tr ';
+                }
+
+                if (x == buttons.length + 1 - lastRowSize) {
+                    tabOpts.className += ' xf-corner-bl ';
+                }
+
+                if (x === buttons.length) {
+                    tabOpts.className += ' xf-corner-br ';
+                }
+
+                if (tab.attr('data-active')) {
+                    tabOpts.className += ' xf-tabs-button-active '
+                }
+
+                if (x > buttons.length - lastRowSize) {
+                    tabOpts.gridClass = 'xf-grid-unit-1of' + lastRowSize;
+                } else {
+                    tabOpts.gridClass = 'xf-grid-unit-1of' + options.tabsperrow;
+                }
+
+                tabOpts.id = tab.attr('id') || options.id +'-item-' + i;
+                tabOpts.text = tab.val() || tab.text() || '';
+                tabOpts.params = tab.attr('data-params') || "{}";
+
+                options.tabs.push(tabOpts);
+            }
+
+            var _template = _.template(
+                '<ul class="xf-tabs">'
+                + '<% _.each(tabs, function(tab) { %>'
+                + '<li class="xf-grid-unit <%= tabsClass %> <%= tab.gridClass %>  ">'
+                + '<a data-params="<%= tab.params %>" class="xf-tabs-button <%= tab.className %>" id="<%= tab.id %>">'
+                + '<span class="xf-tabs-button-text"><%= tab.text %></span>'
+                + '</a>'
+                + '</li>'
+                + '<% }); %>'
+                + '</ul>'
+            );
+
+            jQTabs.html(_template(options));
+
+            jQTabs.find('a').on('tap', function () {
+               XF.UI.tabs.selectTab(jQTabs, $(this));
+            });
+        },
+
+        selectTab : function (parent, el) {
+            parent.find('a').removeClass('xf-tabs-button-active');
+            el.addClass('xf-tabs-button-active');
+        }
+    };
+
+    /**
      Enhances text input view
      @param textInput DOM Object
      @private
@@ -3261,8 +3492,13 @@ XF.Touches = {
                     //
                     'INPUT[type=range], INPUT[type=search]',
 
-        render : function (textInput) {
-            var jQTextInput = $(textInput);
+        render : function (textInput, options) {
+            var jQTextInput = $(textInput),
+                eventsHandler = {
+                    start : 'mousedown touchstart MSPointerDown',
+                    move : 'mousemove touchmove MSPointerMove',
+                    end : 'mouseup touchend MSPointerUp',
+                };
 
             if (!textInput || !jQTextInput instanceof $ || jQTextInput.attr('data-skip-enhance') == 'true') {
                 return;
@@ -3334,7 +3570,7 @@ XF.Touches = {
                         .addClass('xf-input-number-control xf-input-number-control-decrease')
                         .attr({'data-skip-enhance':true})
                         .append(
-                            $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-minus-circled')
+                            $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-circled-minus')
                         )
                 );
                 numberWrapper.append(newTextInput);
@@ -3343,7 +3579,7 @@ XF.Touches = {
                         .addClass('xf-input-number-control xf-input-number-control-increase')
                         .attr({'data-skip-enhance':true})
                         .append(
-                            $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-plus-circled')
+                            $('<span></span>').addClass('xf-icon xf-icon-big xf-icon-circled-plus')
                         )
                 );
 
@@ -3373,7 +3609,7 @@ XF.Touches = {
                                  + '<div class="xf-input-range-min"><%= minValue %></div>'
                                  + '<div class="xf-input-range-slider">'
                                  + '<div class="xf-input-range-track">'
-                                 + '<div class="xf-input-range-value" style="width: 30%">'
+                                 + '<div class="xf-input-range-value" style="width: 0">'
                                  + '<div class="xf-input-range-control" tabindex="0">'
                                  + '<div class="xf-input-range-thumb" style="left:100%" title="<%= selValue %>"></div>'
                                  + '</div>'
@@ -3436,8 +3672,8 @@ XF.Touches = {
                 };
 
                 // initialing number stepper buttons (-) & (+) click handlers
-                numberWrapper.find('button.xf-input-number-control-decrease').click(stepDown);
-                numberWrapper.find('button.xf-input-number-control-increase').click(stepUp);
+                numberWrapper.find('button.xf-input-number-control-decrease').on('tap', stepDown);
+                numberWrapper.find('button.xf-input-number-control-increase').on('tap', stepUp);
 
                 var savedInputText = newTextInput.attr('value');
                 var newInputText;
@@ -3483,15 +3719,15 @@ XF.Touches = {
                         return (trackDiffToValueDiff(trackPoint) + minValue);
                     };
 
-                    var startThumbDrag = function() {
-                        mousePrevX = event.pageX || event.clientX || layerX || event.screenX;
+                    var startThumbDrag = function(event) {
+                        mousePrevX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         savedVal = selValue;
-                        $(document).bind('mouseup', stopThumbDrag);
-                        $(document).bind('mousemove', doThumbDrag);
+                        $(document).bind(eventsHandler.end, stopThumbDrag);
+                        $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
-                    var doThumbDrag = function() {
-                        mouseNewX = event.pageX || event.clientX || layerX || event.screenX;
+                    var doThumbDrag = function(event) {
+                        mouseNewX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         mouseDiff = mouseNewX - mousePrevX;
                         valueDiff = trackDiffToValueDiff(mouseDiff);
                         mousePrevX = mouseNewX;
@@ -3500,8 +3736,8 @@ XF.Touches = {
                     };
 
                     var stopThumbDrag = function() {
-                        $(document).unbind('mouseup', stopThumbDrag);
-                        $(document).unbind('mousemove', doThumbDrag);
+                        $(document).bind(eventsHandler.end, stopThumbDrag);
+                        $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
                     var startThumbPress = function() {
@@ -3546,7 +3782,7 @@ XF.Touches = {
                     };
 
                     // initialing slider thumb dragging handler
-                    rangeWrapper.find('div.xf-input-range-thumb').bind('mousedown', startThumbDrag);
+                    rangeWrapper.find('div.xf-input-range-thumb').bind('mousedown touchstart', startThumbDrag);
 
                     // initialing arrow keys press handling
                     rangeWrapper.find('div.xf-input-range-control')
@@ -3570,7 +3806,7 @@ XF.Touches = {
             // week, time, datetime-local, color) with data-appearance="split" attribute
             // are parsed specifically:
             var splitAppearance = false;
-            if(jQTextInput.attr('data-appearance') == 'split' && isInputElement) {
+            if(options.appearance == 'split' && isInputElement) {
 
                 var applicableTypes = ['text', 'search', 'tel', 'url', 'email',
                     'password', 'datetime', 'date', 'month', 'week', 'time', 'datetime-local', 'color'];
