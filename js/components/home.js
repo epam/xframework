@@ -8,10 +8,12 @@ $(function(){
                 afterLoadTemplateFailed : function() {
                     $('body').html('Something went wrong. Try to reload the page...');
                 },
-                postRender : function() { 
-                    SyntaxHighlighter.defaults['gutter'] = true;
-                    SyntaxHighlighter.defaults['pad-line-numbers'] = true;
-                    SyntaxHighlighter.highlight();
+                postRender : function () {
+                    $('#firstTabs a').on('tap', function(){
+                        var id = $(this).attr('data-params');
+                        $(".tabs-list > li").hide();
+                        $('#tab_'+id).show();
+                    });
                 }
             }),
 

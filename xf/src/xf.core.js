@@ -118,9 +118,9 @@
         XF.Router.start();
 
         options.animations = options.animations || {};
-        options.animations.default = options.animations.default || '';
+        options.animations.standardAnimation = options.animations.standardAnimation || '';
         if (_.has(XF.Device.type, 'defaultAnimation')) {
-            options.animations.default = XF.Device.type.defaultAnimation;
+            options.animations.standardAnimation = XF.Device.type.defaultAnimation;
             console.log('Options.animations', options.animations);
         }
 

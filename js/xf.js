@@ -1,4 +1,4 @@
-/*! X-Framework 26-08-2013 */
+/*! X-Framework 02-09-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -119,9 +119,9 @@
         XF.Router.start();
 
         options.animations = options.animations || {};
-        options.animations.default = options.animations.default || '';
+        options.animations.standardAnimation = options.animations.standardAnimation || '';
         if (_.has(XF.Device.type, 'defaultAnimation')) {
-            options.animations.default = XF.Device.type.defaultAnimation;
+            options.animations.standardAnimation = XF.Device.type.defaultAnimation;
             console.log('Options.animations', options.animations);
         }
 
@@ -975,6 +975,10 @@
 
         isMobile: ( /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test((navigator.userAgent||navigator.vendor||window.opera).toLowerCase() ) ),
 
+        isIOS: (
+/iphone|ipod|ipad/i.test((navigator.userAgent||navigator.vendor||window.opera).toLowerCase() )
+        ),
+
 
         /**
          Array of device types to be chosen from (can be set via {@link XF.start} options)
@@ -1533,7 +1537,7 @@
          @default 'fade'
          */
         animations: {
-            default: 'slideleft',
+            standardAnimation: 'slideleft',
             next: null,
 
             types : {
@@ -1580,8 +1584,8 @@
                 _.extend(this.animations.types, animations.types);
             }
 
-            if (_.has(animations, 'default') ) {
-                this.setDefaultAnimationType(animations.default);
+            if (_.has(animations, 'standardAnimation') ) {
+                this.setDefaultAnimationType(animations.standardAnimation);
             }
 
             this.start();
@@ -1604,7 +1608,7 @@
 
         setDefaultAnimationType: function (animationType) {
             if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.default = animationType;
+                XF.Pages.animations.standardAnimation = animationType;
             }
         },
 
@@ -1643,10 +1647,10 @@
             var screenHeight = XF.Device.getScreenHeight();
 
             if (this.animations.next) {
-                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
+                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.standardAnimation);
                 this.animations.next = null;
             }else {
-                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
+                animationType = (this.animations.types[animationType] ? animationType : this.animations.standardAnimation);
             }
 
             var fromPage = this.activePage;
@@ -2245,7 +2249,7 @@
                 $(document.body).bind(eventsHandler[eventType].start, function(e){
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
-                    touchHandler.el = $(parentIfText(e.target));
+                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
                     touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
                     touchHandler.last = now;
@@ -2275,7 +2279,7 @@
                         $(document.body).unbind('click');
                         touchHandler.el.unbind('click');
                     }
-                }).bind(eventsHandler[eventType].cancel, cancelAll);
+                });
 
                 $(window).bind('scroll', cancelAll);
             });
@@ -2616,16 +2620,12 @@
             }
 
             // If data-special="true" attribute is present add xf-button-special class.
-            if (options.special == 'true') {
+            if (options.special == true) {
                 enhancedButton.addClass('xf-button-special');
             }
 
-            if (options.alert == 'true') {
-                enhancedButton.addClass('xf-button-alert');
-            }
-
             // If data-alert="true" attribute is present add xf-button-alert class.
-            if (options.alert == 'true') {
+            if (options.alert == true) {
                 enhancedButton.addClass('xf-button-alert');
             }
         }
@@ -3101,6 +3101,7 @@
          @return $ Dialog object
          */
         createDialog : function (headerText, messageText, buttons) {
+            buttons = buttons || [];
 
             /*
              <div class="xf-dialog-box">
@@ -3137,16 +3138,15 @@
             jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
             var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
 
-            if (!buttons) {
-                buttons = [{
+            if (buttons.length < 1) {
+                buttons.push({
                     text: 'OK',
                     handler: function (){
-                        this.hide(jqDialog);
+                        XF.UI.popup.hide(jqDialog);
                     }
-                }]
+                });
             }
-
-            if (buttons) {
+            if (buttons.length > 0) {
                 var btnCount = buttons.length,
                     jqBtn;
 
@@ -3166,6 +3166,7 @@
                 });
             }
             this.dialog = jqDialog;
+            XF.trigger('ui:enhance', jqDialog);
             return jqDialog;
         },
 
@@ -3241,12 +3242,13 @@
         },
 
         createButton : function (buttonDescr)  {
-            var jQButton = $('<button>/button>'),
+            var jQButton = $('<button></button>'),
                 attrs = {};
 
             attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
             attrs['class'] = buttonDescr.class || '';
             attrs['name'] = buttonDescr.name || attrs.id;
+            buttonDescr.small = buttonDescr.small || '';
 
             jQButton.html(buttonDescr.text);
 
@@ -3278,7 +3280,10 @@
                 jQButton.click(buttonDescr.handler)
             };
             jQButton.attr(attrs);
-            XF.UI.button.render(jQButton[0]);
+
+            if (_.isFunction(buttonDescr.handler)) {
+                jQButton.on('tap', buttonDescr.handler);
+            };
             return jQButton;
         }
     };
@@ -3375,19 +3380,26 @@
                 return;
             }
 
-            options.id = options.id || 'xf-header-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || 'xf-slidemenu-component-' + Math.floor(Math.random()*10000);
             options.title = options.title || '';
             options.hasTitle = options.title != '' ? true : false;
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
+            options.buttons = options.buttons || [];
+            options.html = jQMenu.html();
 
             jQMenu.attr({
                 'data-id': options.id,
                 'id': options.id,
                 'data-skip-enhance' : 'true'
-            });
+            }).addClass('xf-slidemenu-wrapper');
+
+            var menuButton = '<button class="xf-slidemenu-button xf-button-float-' +jQMenu.data('button-position')  + ' xf-button-header-' +jQMenu.data('button-position')  + ' xf-button-small-icon-only xf-button-small xf-button" data-position="' +jQMenu.data('button-position')  + '" data-skip-enhance="true"><span class="xf-icon xf-icon-list xf-icon-small"></span></button>',
+            menuButtonContainer = $('#' + jQMenu.data('button-container'));
+            menuButtonContainer.find('header').append(menuButton);
+            options.menuButton = '<button class="xf-slidemenu-close-button xf-button-float-' +jQMenu.data('button-position')  + ' xf-button-header-' +jQMenu.data('button-position')  + ' xf-button-small-icon-only xf-button-small xf-button" data-position="' +jQMenu.data('button-position')  + '" data-skip-enhance="true"><span class="xf-icon xf-icon-cross xf-icon-small"></span</button>';
 
             var buttons = jQMenu.find(XF.UI.button.selector);
-            options.buttonsClass = 'xf-grid-unit-1of' + buttons.length;
+            options.buttonsClass = '';
 
             for (var i = 0; i < buttons.length; ++i) {
                 var button = buttons.eq(i);
@@ -3396,31 +3408,51 @@
                     dataHrefString : button.attr('data-href') ? button.attr('data-href') : '',
                     textClass : button.attr('data-text-class') ? button.attr('data-text-class') : '',
                     id : button.attr('data-id') ? button.attr('data-id') : options.id + '-item' + i,
+                    class : button.attr('data-class') || '',
                     text : button.val() || button.text() || ''
                 };
                 options.buttons.push(butOpts);
             }
 
             XF.Router.on('route', function () {
-                XF.UI.footer.selectButton(jQFooter);
+                XF.UI.slidemenu.selectButton(jQMenu);
+
+                if ($('.xf-slidemenu-wrapper')) {
+                    $('.xf-slidemenu-wrapper').removeClass('xf-slidemenu-show');
+                    $('body').removeClass('blur-page');
+                }
             });
 
             var _template = _.template(
-                '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">'
-                + '<%= html %>'
-                + '<% if(hasTitle) { %>'
-                + '<h1 class="xf-header-title"><%= title %></h1>'
-                + '<% } %>'
-                + '</header>'
+                '<div class="xf-slidemenu-scrollable"><div class="xf-slidemenu-header"><%= title %><%= menuButton %></div>'
+                + '<%= html %></div>'
             );
 
             jQMenu.html(_template(options));
+
+            XF.trigger('ui:enhance', jQMenu);
+
+            $('.xf-slidemenu-button').on('tap', function () {
+                $('.xf-slidemenu-wrapper').addClass('xf-slidemenu-show xf-slidemenu-animation');
+                $('body').addClass('blur-page xf-viewport-transitioning');
+                return false;
+            });
+            $('.xf-slidemenu-close-button').on('tap', function () {
+                var delayTime = XF.Device.isIOS ? 300 : 0;
+                setTimeout(function () {
+                    $('.xf-slidemenu-wrapper').removeClass('xf-slidemenu-show');
+                    $('body').removeClass('blur-page xf-viewport-transitioning');
+                }, delayTime);
+                return false;
+            });
+
+            this.selectButton(jQMenu);
         },
 
         selectButton : function (el) {
-            var page = XF.history.fragment;
-            el.find('.xf-slidemenu a').removeClass('xf-slidemenu-item-active');
-            el.find('.xf-slidemenu a[data-href="#' + page + '"]').addClass('xf-slidemenu-item-active');
+            var page = XF.history.fragment !== '' ? XF.history.fragment : 'home';
+            el.find('a').removeClass('xf-slidemenu-item-active');
+            el.find('a[data-href="#' + page + '"], a[href="#' + page + '"]').addClass('xf-slidemenu-item-active');
         }
     };
 
@@ -3866,7 +3898,7 @@
             }
 
             var textInputID = (jQTextInput[0].nodeName === 'INPUT') ? jQTextInput.attr('id') : jQTextInput.find('input').eq(0).attr('id');
-            var textInputLabel = (textInputID.length) ? $('label[for=' + textInputID + ']') : [];
+            var textInputLabel = (textInputID && textInputID.length) ? $('label[for=' + textInputID + ']') : [];
 
             // If the input doesn't have an associated label, quit
             if(textInputLabel.length) {
