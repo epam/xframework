@@ -68,6 +68,7 @@
          @return $ Dialog object
          */
         createDialog : function (headerText, messageText, buttons) {
+            buttons = buttons || [];
 
             /*
              <div class="xf-dialog-box">
@@ -104,16 +105,15 @@
             jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
             var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
 
-            if (!buttons) {
-                buttons = [{
+            if (buttons.length < 1) {
+                buttons.push({
                     text: 'OK',
                     handler: function (){
-                        this.hide(jqDialog);
+                        XF.UI.popup.hide(jqDialog);
                     }
-                }]
+                });
             }
-
-            if (buttons) {
+            if (buttons.length > 0) {
                 var btnCount = buttons.length,
                     jqBtn;
 
@@ -133,6 +133,7 @@
                 });
             }
             this.dialog = jqDialog;
+            XF.trigger('ui:enhance', jqDialog);
             return jqDialog;
         },
 
@@ -208,12 +209,13 @@
         },
 
         createButton : function (buttonDescr)  {
-            var jQButton = $('<button>/button>'),
+            var jQButton = $('<button></button>'),
                 attrs = {};
 
             attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
             attrs['class'] = buttonDescr.class || '';
             attrs['name'] = buttonDescr.name || attrs.id;
+            buttonDescr.small = buttonDescr.small || '';
 
             jQButton.html(buttonDescr.text);
 
@@ -245,7 +247,10 @@
                 jQButton.click(buttonDescr.handler)
             };
             jQButton.attr(attrs);
-            XF.UI.button.render(jQButton[0]);
+
+            if (_.isFunction(buttonDescr.handler)) {
+                jQButton.on('tap', buttonDescr.handler);
+            };
             return jQButton;
         }
     };

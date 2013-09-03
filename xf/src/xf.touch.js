@@ -61,7 +61,7 @@
                 $(document.body).bind(eventsHandler[eventType].start, function(e){
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
-                    touchHandler.el = $(parentIfText(e.target));
+                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
                     touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
                     touchHandler.last = now;
@@ -91,7 +91,7 @@
                         $(document.body).unbind('click');
                         touchHandler.el.unbind('click');
                     }
-                }).bind(eventsHandler[eventType].cancel, cancelAll);
+                });
 
                 $(window).bind('scroll', cancelAll);
             });
