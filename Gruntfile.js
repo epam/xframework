@@ -7,6 +7,7 @@ module.exports = (function (grunt) {
         var jsSources = [
             'xf/src/xf.core.js',
             'xf/src/xf.settings.js',
+            'xf/src/xf.collection.js',
             'xf/src/xf.component.js',
             'xf/src/xf.cache.js',
             'xf/src/xf.device.js',
