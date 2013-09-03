@@ -76,7 +76,7 @@
         /**
          Defenition of custom Model class extending {@link XF.Model}
          */
-        modelClass: XF.Model,
+        Model: XF.Model,
 
         /**
          Instance of {@link XF.Model} or its subclass
@@ -87,7 +87,7 @@
         /**
          Defenition of custom Collection class extending {@link XF.Collection}
          */
-        collectionClass: XF.Collection,
+        Collection: XF.Collection,
 
         /**
          Instance of {@link XF.Collection} or its subclass
@@ -98,7 +98,7 @@
         /**
          Defenition of custom View class extending {@link XF.View}
          */
-        viewClass: XF.View,
+        View: XF.View,
 
         /**
          Instance of {@link XF.View} or its subclass
@@ -122,24 +122,24 @@
         initialize: function() {
             var cmp = this;
 
-            if (this.collectionClass) {
-                this.collection = new this.collectionClass({
+            if (this.Collection) {
+                this.collection = new this.Collection({
                     url: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
                 });
-                if (this.modelClass) {
-                    this.collection.model = this.modelClass;
+                if (this.Model) {
+                    this.collection.model = this.Model;
                 }
                 this.collection.component = this;
                 this.collection.construct();
-            }else if (this.modelClass) {
-                this.model = new this.modelClass({
+            }else if (this.Model) {
+                this.model = new this.Model({
                     urlRoot: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
                 });
                 this.model.component = this;
                 this.model.construct();
             }
 
-            if (this.viewClass) {
+            if (this.View) {
                 var params = {
                     attributes: {
                         'data-id': this.id
@@ -153,7 +153,7 @@
                     params.model = this.model;
                 }
 
-                this.view = new this.viewClass(params);
+                this.view = new this.View(params);
                 this.view.component = this;
                 this.view.construct();
             }
