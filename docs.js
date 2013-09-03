@@ -6,7 +6,7 @@ var md = require("node-markdown").Markdown,
 
 console.log('\033[2J\033[39m\x1b[1mCreating documentation:\n');
 
-var DOCFILE = '\n' + fs.readFileSync('./text.md', 'utf8', function (err) {
+var DOCFILE = '\n' + fs.readFileSync('./README.md', 'utf8', function (err) {
 
     if (err) {
         throw err;

@@ -2555,6 +2555,15 @@ textarea::-webkit-input-placeholder {
 .xf-button-small-icon-only:first-child {
   *margin-left: 0;
 }
+.xf-button-small-icon-only:focus,
+.xf-button-small-icon-only:hover {
+  background: #1dd2af;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #1dd2af), color-stop(1, #1dd2af));
+  background: -ms-linear-gradient(bottom, #1dd2af, #1dd2af);
+  background: -moz-linear-gradient(center bottom, #1dd2af 0%, #1dd2af 100%);
+  background: -o-linear-gradient(#1dd2af, #1dd2af);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1dd2af', endColorstr='#1dd2af', GradientType=0);
+}
 /* Back button */
 .xf-button-back {
   -webkit-box-sizing: border-box;
@@ -2590,6 +2599,15 @@ textarea::-webkit-input-placeholder {
 }
 .xf-button-back:first-child {
   *margin-left: 0;
+}
+.xf-button-back:focus,
+.xf-button-back:hover {
+  background: #1dd2af;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #1dd2af), color-stop(1, #1dd2af));
+  background: -ms-linear-gradient(bottom, #1dd2af, #1dd2af);
+  background: -moz-linear-gradient(center bottom, #1dd2af 0%, #1dd2af 100%);
+  background: -o-linear-gradient(#1dd2af, #1dd2af);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1dd2af', endColorstr='#1dd2af', GradientType=0);
 }
 .xf-button.xf-iconpos-left {
   padding-left: 40px;
@@ -2651,6 +2669,17 @@ textarea::-webkit-input-placeholder {
   -webkit-background-clip: border-box;
   -moz-background-clip: border-box;
   background-clip: border-box;
+}
+.xf-button:focus,
+.xf-button-small:focus,
+.xf-button:hover,
+.xf-button-small:hover {
+  background: #1dd2af;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #1dd2af), color-stop(1, #1dd2af));
+  background: -ms-linear-gradient(bottom, #1dd2af, #1dd2af);
+  background: -moz-linear-gradient(center bottom, #1dd2af 0%, #1dd2af 100%);
+  background: -o-linear-gradient(#1dd2af, #1dd2af);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1dd2af', endColorstr='#1dd2af', GradientType=0);
 }
 .xf-button-float-right {
   float: right;

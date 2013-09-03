@@ -1,4 +1,4 @@
-/*! X-Framework 02-09-2013 */
+/*! X-Framework 03-09-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -3934,4 +3934,6 @@
             }
         }
     };
-}).call(this, window, $, Backbone);
+}).call(this, window, $, Backbone); 
+
+/* License text */
