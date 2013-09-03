@@ -40,10 +40,8 @@
          */
         this.id = id || 'default_id';
 
-        // merging defaults with custom instance options
-        var defaultOptions = this.options;
-        var instanceOptions = XF.getOptionsByID(this.id);
-        this.options = _.defaults(instanceOptions, defaultOptions);
+        // merging defaults with custom instance options and class options
+        this.options = _.defaults(XF.getOptionsByID(this.id), this.options, this.defaults);
         this.initialize();
     };
 
@@ -57,10 +55,14 @@
          Object containing has-map of component options that can be different for each instance & should be set with {@link XF.setOptionsByID}
          @type Object
          */
-        options : {
+        defaults : {
             autoload: true,
             autorender: true,
             updateOnShow: false
+        },
+
+        options: {
+
         },
 
         /**
@@ -122,7 +124,7 @@
 
             if (this.collectionClass) {
                 this.collection = new this.collectionClass({
-                    url: '/' + this.name + '/'
+                    url: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
                 });
                 if (this.modelClass) {
                     this.collection.model = this.modelClass;
@@ -131,7 +133,7 @@
                 this.collection.construct();
             }else if (this.modelClass) {
                 this.model = new this.modelClass({
-                    urlRoot: '/' + this.name + '/'
+                    urlRoot: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
                 });
                 this.model.component = this;
                 this.model.construct();
