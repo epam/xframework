@@ -1,4 +1,4 @@
-/*! X-Framework 26-08-2013 */
+/*! X-Framework 03-09-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -196,7 +196,6 @@
                 var compInst = new compDef(compName, compID);
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
-                compInst.construct();
             }
         });
     };
@@ -469,7 +468,7 @@
              @default ''
              @type String
              */
-            templateUrlPrefix: '',
+            templateUrlPrefix: 'tmpl/',
             /**
              Used by default Template URL formatter: prefix + component_name + postfix
              @memberOf XF.Settings.prototype
@@ -477,16 +476,7 @@
              @type String
              */
             templateUrlPostfix: '.tmpl',
-            /**
-             Default Template URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @returns {String} Template URL
-             @memberOf XF.Settings.prototype
-             @type Function
-             */
-            templateUrlFormatter: function(compName, templatePath) {
-                return XF.Settings.property('templateUrlPrefix') + templatePath + compName + XF.Settings.property('templateUrlPostfix');
-            },
+
 
             /**
              Used by default Data URL formatter: prefix + component_name + postfix
@@ -495,25 +485,11 @@
              @type String
              */
             dataUrlPrefix: '',
-            /**
-             Used by default Data URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.json'
-             @type String
-             */
-            dataUrlPostfix: '.json',
-            /**
-             Default Data URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @returns {String} Template URL
-             @memberOf XF.Settings.prototype
-             @type Function
-             */
-            dataUrlFormatter: function(compName) {
-                return XF.Settings.property('dataUrlPrefix') + compName + XF.Settings.property('dataUrlPostfix');
+
+
+            ajaxSettings: {
+                      // TODO: fill in ajaxSettings
             }
-
-
         },
 
         /**
@@ -618,7 +594,7 @@
         /**
          Defenition of custom Collection class extending {@link XF.Collection}
          */
-        collectionClass: XF.Model,
+        collectionClass: XF.Collection,
 
         /**
          Instance of {@link XF.Collection} or its subclass
@@ -671,8 +647,6 @@
 
             this.model.bind('construct', modelConstructed, this);
             this.model.construct();
-
-            this.childComponent = [];
         },
 
         /**
@@ -768,24 +742,6 @@
             this.model.refresh();
         },
 
-        /**
-         A wrapper that allows to set some callbacks to be called after the component was first rendered
-         @param {Function} callback A callback that would be invoked right after component's first render or right after method invocation if the component has already been rendered
-         */
-        ready: function(callback) {
-            if(this.rendered) {
-                callback();
-            } else {
-                /** @ignore */
-                var firstRender = function() {
-                    this.unbind('refresh', firstRender);
-
-                    callback();
-                };
-
-                this.bind('refresh', firstRender, this);
-            }
-        }
 
     });
 
@@ -1131,38 +1087,6 @@
         },
 
         /**
-         Chooses the next applicable type in case when previous one's templatePath could not be loaded
-         @param {Object} fallBackFrom If passed, the return type would be taken as dropDown from it (optional)
-         @return {Object} Device type
-         */
-        getNextType : function(fallBackFrom) {
-            var aimType = this.type;
-            if(fallBackFrom) {
-                if(fallBackFrom.fallBackTo) {
-                    aimType = this.getTypeByName(fallBackFrom.fallBackTo);
-                } else {
-                    aimType = this.defaultType;
-                }
-            }
-
-            // just checking if type is ok
-            if(aimType && aimType.templatePath) {
-                // type is ok
-            } else {
-                aimType = this.defaultType;
-            }
-
-            // prevent looping the same type again & again
-            if(aimType == fallBackFrom) {
-                console.log('XF.DeviceClass :: getNextType - infinit cycle of drop down logic detected');
-                console.log('XF.DeviceClass :: getNextType - stop trying, no template is available');
-                return null;
-            }
-
-            return aimType;
-        },
-
-        /**
          Chooses device type by ot's name
          @param {String} typeName Value of 'name' property of the type that should be returnd
          @return {Object} Device type
@@ -1326,186 +1250,79 @@
                 }
                 vp.addClass('xf-viewport');
             }
-            return vp.eq(0)
+            return vp.eq(0);
         }
     };
+XF.Model = BB.Model.extend({
+
+    component: null,
+
+    root: null,
+
+    status: {
+        loaded: false,
+        loading: false,
+        loadingFailed: false
+    },
+
     /**
-     Implements data workaround flow.
-     @class
-     @static
-     @augments XF.Events
-     @param {Object} attributes list of predefined attributes
+     Settings for $ AJAX data request
+     @type String
      */
-    XF.Model = BB.Model.extend({
-        /**
-         Would be dispatched once when the Component inited
-         @name XF.Model#init
-         @event
-         */
+    ajaxSettings : null,
 
-        /**
-         Would be dispatched once when the Component constructed
-         @name XF.Model#construct
-         @event
-         */
+    _bindListeners: function () {
 
-        /**
-         Would be dispatched after each data update
-         @name XF.Model#dataLoaded
-         @event
-         */
+    },
 
-        /**
-         Would be dispatched after each update
-         @name XF.Model#refresh
-         @event
-         */
+    /**
+     Constructs model instance
+     @private
+     */
+    initialize : function() {
+        this._bindListeners();
 
-        /**
-         Link to the {@link XF.Component} instance
-         @type XF.Component
-         */
-        component: null,
+        if (this.component.options.updateOnShow) {
+            $(this.component.selector()).bind('show', _.bind(this.refresh, this));
+        }
 
-        /**
-         Object that contains plan data recieved from server
-         @type Object
-         */
-        rawData: null,
+        this.ajaxSettings = this.ajaxSettings || XF.Settings.getProperty('ajaxSettings');
 
-        /**
-         Data source URL
-         @type String
-         */
-        dataURL : null,
-
-        /**
-         Settings for $ AJAX data request
-         @type String
-         */
-        ajaxSettings : null,
-
-        /**
-         Flag that determines whether the data should not be loaded at all
-         @default false
-         @type Boolean
-         */
-        autoload : true,
-
-        /**
-         Flag that determines whether the data should be updated each time the component becomes visible
-         @default false
-         @type Boolean
-         */
-        updateOnShow: false,
-
-        /**
-         Constructs model instance
-         @private
-         */
-        construct : function() {
-            this.initialize();
-            this.trigger('init');
-            if(this.updateOnShow) {
-                $(this.component.selector()).bind('show', _.bind(this.refresh, this));
-            }
-            this.trigger('construct');
-        },
-
-        /**
-         Refreshes data from backend if necessary
-         @private
-         */
-        refresh : function() {
-            /** ignore */
-            var dataLoaded = function() {
-                this.unbind('dataLoaded', dataLoaded);
-                this.afterLoadData();
-
-
-                this.trigger('refresh');
+        if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
+            var onSuccess = this.ajaxSettings.success,
+                onDataLoaded = _.bind(this.onDataLoaded, this);
+            this.ajaxSettings.success = function () {
+                onDataLoaded();
+                onSuccess();
             };
+        }else{
+            this.ajaxSettings = _.bind(this.onDataLoaded, this);
+        }
+    },
 
-            this.bind('dataLoaded', dataLoaded);
+    construct: function () {
 
-            this.beforeLoadData();
-            this.loadData();
-        },
+    },
 
-        /**
-         Generates data url - override if custom format is required and {@link XF.Settings} has no appropriate way to handle it
-         @private
-         */
-        getDataURL : function() {
-            if(!this.dataURL) {
-                if(!this.component) {
-                    throw 'XF.Model "component" linkage lost';
-                }
-                this.dataURL = _.bind(XF.Settings.property('dataUrlFormatter'), this)(this.component.name);
-            }
-            return this.dataURL;
-        },
+    /**
+     Refreshes data from backend if necessary
+     @private
+     */
+    refresh : function () {
+        this.status.loaded = false;
+        this.status.loading = true;
 
-        /**
-         Returns settings for AddressBar AJAX data request or empty object is it is not set - override to add extra functionality
-         @private
-         */
-        getDataRequestSettings : function() {
-            return this.dataRequestSettings || {};
-        },
+        this.fetch(this.ajaxSettings);
+    },
 
-        /**
-         HOOK: override to add logic before data load
-         */
-        beforeLoadData : function() {},
+    onDataLoaded: function () {
+        this.status.loaded = true;
+        this.status.loading = false;
 
-        /**
-         Loads data
-         @private
-         */
-        loadData : function() {
+        this.trigger('fetched');
+    }
 
-            if(!this.isEmptyData && !this.isStaticData) {
-
-                var $this = this;
-                var url = this.getDataURL();
-
-                $.ajax(
-                    _.extend(this.getDataRequestSettings(), {
-                        url: url,
-                        complete : function(jqXHR, textStatus) {
-                            if(!$this.component) {
-                                throw 'XF.Model "component" linkage lost';
-                            }
-                            if(textStatus == 'success') {
-                                if($this.isStringData) {
-                                    $this.rawData = jqXHR.responseText;
-                                } else {
-                                    $this.rawData = JSON.parse(jqXHR.responseText);
-                                }
-                            } else {
-                                if($this.isStringData) {
-                                    $this.rawData = {};
-                                } else {
-                                    $this.rawData = '';
-                                }
-                            }
-                            $this.trigger('dataLoaded');
-                        }
-                    })
-                );
-
-            } else {
-                this.trigger('dataLoaded');
-            }
-        },
-
-        /**
-         HOOK: override to add logic after data load
-         */
-        afterLoadData : function() {}
-
-    });
+});
     /**
      XF.Pages
      @static
@@ -1877,28 +1694,7 @@
          */
         component : null,
 
-        /**
-         Template URL
-         @type String
-         */
-        templateURL : null,
 
-        templateName: null,
-
-        /**
-         Component template
-         @type String
-         @static
-         */
-        template: null,
-
-        /**
-         The URL of template that is currently being loaded
-         @type String
-         @private
-         @static
-         */
-        templateURL: null,
 
         /**
          A flag that indiacates whether that template is currently being loaded
@@ -1906,175 +1702,79 @@
          @private
          @static
          */
-        templateLoaded: false,
+        status: {
+            loaded: false,
+            loading: false,
+            loadingFailed: false
+        },
 
-        /**
-         A flag that indiacates whether that template was successfully loaded
-         @type Boolean
-         @private
-         @static
-         */
-        templateLoading: false,
+        template: {
+            src: null,
+            compiled: null,
+            cache: true
+        },
 
-        /**
-         Compiled component template
-         @type Function
-         @static
-         */
-        compiledTemplate: null,
+        url: function () {
+            return XF.Settings.getProperty('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.Settings.getProperty('templateUrlPostfix');
+        },
 
         /**
          Flag that determines whether the Model update should be ignored by the View (in this case you may launch {@link XF.View#refresh} manualy)
          @default false
          @type Boolean
          */
-        ignoreModelUpdate : false,
 
-        /**
-         Flag that determines whether the view should be rerendered each time the component becomes visible
-         @default false
-         @type Boolean
-         */
-        updateOnShow: false,
-
-        /**
-         Flag that determines whether the template should be stored into {@link XF.Cache}
-         @default false
-         @type Boolean
-         */
-        useCache: false,
-
-        /**
-         Constructs view instance
-         @private
-         */
-        construct : function() {
-            this.templateName = this.templateName || this.component.name;
-
-            /** ignore */
-            var templateLoaded = function() {
-
-                if(this.loadTemplateFailed) {
-                    this.unbind('templateLoaded', templateLoaded);
-                    this.afterLoadTemplateFailed();
-                    return;
+        _bindListeners: function () {
+            if(!this.component.options.autorender) {
+                if (this.component.collection) {
+                    this.listenTo(this.component.collection, 'fetched', this.refresh);
+                }else if (this.component.model) {
+                    this.listenTo(this.component.model, 'fetched', this.refresh);
                 }
+            }
 
-                if(!this.templateLoaded) {
-                    this.loadTemplate();
-                    return;
-                }
-
-                this.unbind('templateLoaded', templateLoaded);
-                this.afterLoadTemplate();
-
-                this.initialize();
-                this.trigger('init');
-
-                if(!this.ignoreModelUpdate) {
-                    this.component.model.bind('changed', this.refresh, this);
-                }
-                if(this.updateOnShow) {
-                    $(this.component.selector()).bind('show', _.bind(this.refresh, this));
-                }
-
-                this.trigger('construct');
-            };
-
-            this.bind('templateLoaded', templateLoaded);
-
-            this.beforeLoadTemplate();
-            this.loadTemplate();
+            this.on('refresh', this.refresh, this);
         },
 
-        /**
-         Stores last device type that was used for template url generation
-         @type String
-         @private
-         */
-        lastDeviceType : null,
+        initialize: function () {
+            this.setElement('[data-id=' + this.attributes['data-id'] + ']');
 
-        /**
-         Generates template url - override if custom format is required and {@link XF.Settings} has no appropriate way to handle it
-         @private
-         */
-        getTemplateURL : function() {
-            // clearing saved template URL - it was erroneous
-            if(this.lastDeviceType) {
-                this.templateURL = null;
-            }
-            if(!this.templateURL) {
-                if(!this.component) {
-                    throw 'XF.View "component" linkage lost';
-                }
+            this._bindListeners();
 
-                this.lastDeviceType = XF.Device.getNextType(this.lastDeviceType);
-
-                // preventing from infinit cycle
-                if(!this.lastDeviceType) {
-                    return null;
-                }
-
-                var templatePath = '';
-                if(this.lastDeviceType && this.lastDeviceType.templatePath) {
-                    templatePath = this.lastDeviceType.templatePath;
-                }
-                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.templateName, templatePath);
-            }
-            return this.templateURL;
+            this.load();
         },
 
-        /**
-         Compiles component template if necessary & executes it with current component instance model
-         @static
-         */
-        getMarkup: function() {
-            if(!this.compiledTemplate) {
-                this.compiledTemplate = _.template(this.template);
-            }
-            return this.compiledTemplate(this.component.model);
+        construct: function () {
+
         },
 
-        /**
-         HOOK: override to add logic before template load
-         */
-        beforeLoadTemplate : function() {},
+        load: function () {
+            if (this.template.src) {
+                return;
+            }
 
-        /**
-         A flag that indicates whether the template loading failed
-         @type Boolean
-         @private
-         */
-        loadTemplateFailed : false,
+            var url = (_.isFunction(this.url)) ? this.url() : this.url;
 
-        /**
-         Loads template
-         @private
-         */
-        loadTemplate : function() {
-
-            var url = this.getTemplateURL();
-            if(url == null) {
-                this.loadTemplateFailed = true;
-                this.trigger('templateLoaded');
+            if(!url) {
+                this.status.loadingFailed = true;
+                this.trigger('loaded');
                 return;
             }
 
             // trying to get template from cache
-            if(this.useCache) {
+            if(this.template.cache && _.has(XF, 'Cache')) {
                 var cachedTemplate = XF.Cache.get(url);
-                if(cachedTemplate) {
-                    this.template = cachedTemplate;
-                    this.templateLoaded = true;
-                    this.trigger('templateLoaded');
+                if (cachedTemplate) {
+                    this.template.src = cachedTemplate;
+                    this.status.loaded = true;
+                    this.trigger('loaded');
                     return;
                 }
             }
 
-            if(!this.templateLoaded && !this.templateLoading) {
+            if(!this.status.loaded && !this.status.loading) {
 
-                this.templateURL = url;
-                this.templateLoading = true;
+                this.status.loading = true;
 
                 var $this = this;
 
@@ -2088,44 +1788,45 @@
                             var template = jqXHR.responseText;
 
                             // saving template into cache if the option is turned on
-                            if($this.useCache) {
+                            if($this.template.cache && _.has(XF, 'Cache')) {
                                 XF.Cache.set(url, template);
                             }
 
-                            $this.template = jqXHR.responseText;
-                            $this.templateLoading = false;
-                            $this.templateLoaded = true;
-                            $this.trigger('templateLoaded');
-                            XF.trigger('templateLoaded', {url: url, template:template});
+                            $this.template.src = jqXHR.responseText;
+                            $this.status.loading = false;
+                            $this.status.loaded = true;
+                            $this.afterLoadTemplate();
+                            $this.trigger('loaded');
                         } else {
-                            $this.template = null;
-                            $this.templateLoading = false;
-                            $this.templateLoaded = false;
-                            $this.trigger('templateLoaded');
-                            XF.trigger('templateLoaded', {url: url, template : null});
+                            $this.template.src = null;
+                            $this.status.loading = false;
+                            $this.status.loaded = false;
+                            $this.status.loadingFailed = true;
+                            $this.afterLoadTemplateFailed();
+                            $this.trigger('loaded');
                         }
                     }
                 });
-
-            } else if(this.templateLoading) {
-
-                var $this = this;
-                url = this.templateURL;
-
-                /** ignore */
-                var templateLoadedAsync = function(params) {
-                    if(params.url == url) {
-                        XF.unbind('templateLoaded', templateLoadedAsync);
-                        $this.trigger('templateLoaded');
-                    }
-                };
-
-                XF.bind('templateLoaded', templateLoadedAsync);
-
-            } else {
-                this.trigger('templateLoaded');
             }
         },
+
+        /**
+         Compiles component template if necessary & executes it with current component instance model
+         @static
+         */
+        getMarkup: function() {
+            if(!this.template.compiled) {
+                this.template.compiled = _.template(this.template.src);
+            }
+
+            return this.template.compiled();
+        },
+
+        /**
+         HOOK: override to add logic before template load
+         */
+        beforeLoadTemplate : function() {},
+
 
         /**
          HOOK: override to add logic after template load
@@ -2144,16 +1845,19 @@
          Renders component into placeholder + calling all the necessary hooks & events
          */
         refresh : function() {
-            this.preRender();
-            this.render();
-            this.postRender();
-            this.trigger('refresh');
+            if (this.status.loaded && this.template.src) {
+                if ((this.collection && this.collection.loaded) || (this.model && this.model.loaded)) {
+                    this.beforeRender();
+                    this.render();
+                    this.afterRender();
+                }
+            }
         },
 
         /**
          HOOK: override to add logic before render
          */
-        preRender : function() {},
+        beforeRender : function() {},
 
 
         /**
@@ -2167,19 +1871,20 @@
          @private
          */
         render : function() {
-            this.renderVersion++;
             this.$el.html(this.getMarkup());
             XF.trigger('ui:enhance', this.$el);
+            this.renderVersion++;
+
+            this.trigger('rendered');
+
+            return this;
         },
 
-        initialize: function () {
-            this.setElement('[data-id=' + this.attributes['data-id'] + ']');
-        },
 
         /**
          HOOK: override to add logic after render
          */
-        postRender : function() {}
+        afterRender : function() {}
 
     });
 

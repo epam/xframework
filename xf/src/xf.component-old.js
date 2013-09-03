@@ -44,7 +44,6 @@
         var defaultOptions = this.options;
         var instanceOptions = XF.getOptionsByID(this.id);
         this.options = _.defaults(instanceOptions, defaultOptions);
-        this.initialize();
     };
 
 
@@ -57,19 +56,7 @@
          Object containing has-map of component options that can be different for each instance & should be set with {@link XF.setOptionsByID}
          @type Object
          */
-        options : {
-            autoload: true,
-            autorender: true,
-            updateOnShow: false
-        },
-
-        /**
-         Returns component selector
-         @return {String} Selector string that can be used for $.find() for example
-         */
-        selector : function() {
-            return '[data-id=' + this.id + ']';
-        },
+        options : {},
 
         /**
          Defenition of custom Model class extending {@link XF.Model}
@@ -104,93 +91,134 @@
          */
         view : null,
 
-        _bindListeners: function () {
-            this.on('component:'+ this.id +':refresh', _.bind(this.refresh, this));
-        },
-
         /**
          Constructs component instance
          @private
          */
         construct : function() {
 
-        },
+            /** @ignore */
+            var viewConstructed = function() {
+                this.view.unbind('construct', viewConstructed);
+                this.afterConstructView();
 
-        
-        initialize: function() {
-            var cmp = this;
+                this.init();
+                this.trigger('init');
 
-            if (this.collectionClass) {
-                this.collection = new this.collectionClass({
-                    url: '/' + this.name + '/'
-                });
-                if (this.modelClass) {
-                    this.collection.model = this.modelClass;
-                }
-                this.collection.component = this;
-                this.collection.construct();
-            }else if (this.modelClass) {
-                this.model = new this.modelClass({
-                    urlRoot: '/' + this.name + '/'
-                });
-                this.model.component = this;
-                this.model.construct();
-            }
+                this.trigger('construct');
+                XF.trigger('component:' + this.id + ':constructed');
+            };
+            /** @ignore */
+            var modelConstructed = function() {
+                this.model.unbind('construct', modelConstructed);
+                this.afterConstructModel();
 
-            if (this.viewClass) {
-                var params = {
-                    attributes: {
-                        'data-id': this.id
-                    }
-                };
+                this.beforeConstructView();
+                this.constructView();
 
-                if (this.collection) {
-                    params.collection = this.collection;
-                }
-                if (this.model) {
-                    params.model = this.model;
-                }
-
-                this.view = new this.viewClass(params);
-                this.view.component = this;
+                this.view.bind('construct', viewConstructed, this);
                 this.view.construct();
-            }
+            };
 
-            this._bindListeners();
+            this.beforeConstructModel();
+            this.constructModel();
 
-            this.construct();
-
-            this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-
-            if (this.collection && this.options.autoload) {
-                this.collection.refresh();
-            }else if (this.model && this.options.autoload) {
-                this.model.refresh();
-            }else if (this.view) {
-                this.view.refresh();
-            }
-
-            XF.trigger('component:' + this.id + ':constructed');
+            this.model.bind('construct', modelConstructed, this);
+            this.model.construct();
         },
-
 
         /**
-         Refreshes data and then rerenders view
+         Returns component selector
+         @return {String} Selector string that can be used for $.find() for example
+         */
+        selector : function() {
+            return '[data-id=' + this.id + ']';
+        },
+
+        /**
+         HOOK: override to add logic before view construction
+         */
+        beforeConstructView : function() {},
+
+        /**
+         Constructs {@link XF.View} object
+         @private
+         */
+        constructView : function() {
+            var params = {
+                attributes: {
+                    'data-id': this.id
+                }
+            };
+            if(!this.view || !(this.view instanceof XF.View)) {
+                if(this.viewClass) {
+                    this.view = new this.viewClass(params);
+                    if(!(this.view instanceof XF.View)) {
+                        this.view = new XF.View(params);
+                    }
+                } else {
+                    this.view = new XF.View(params);
+                }
+            }
+            this.view.component = this;
+        },
+
+        /**
+         HOOK: override to add logic after view construction
+         */
+        afterConstructView : function() {},
+
+        /**
+         HOOK: override to add logic before model construction
+         */
+        beforeConstructModel : function() {},
+
+        /**
+         Constructs {@link XF.Model} object
+         @private
+         */
+        constructModel: function() {
+            if(!this.model || !(this.model instanceof XF.Model)) {
+                if(this.modelClass) {
+                    this.model = new this.modelClass();
+                    if(!(this.model instanceof XF.Model)) {
+                        this.model = new XF.Model();
+                    }
+                } else {
+                    this.model = new XF.Model();
+                }
+            }
+            this.model.component = this;
+        },
+
+        /**
+         HOOK: override to add logic after model construction
+         */
+        afterConstructModel : function() {},
+
+        /**
+         HOOK: override to add custom logic. Default behavior is to call {@link XF.Component#refresh}
+         */
+        init : function() {
+            this.refresh();
+        },
+
+        /**
+         Refreshes model data and then rerenders view
          @private
          */
         refresh : function() {
-
-            if (this.collection && !this.collection.status.loading) {
-                this.collection.refresh();
-            }else if (this.model && !this.model.status.loading) {
-                this.model.refresh();
-            }
-
-            if (this.view && !this.view.status.loading) {
+            /** @ignore */
+            var onModelRefresh = function() {
+                this.model.unbind('refresh', onModelRefresh);
                 this.view.refresh();
-            }
+                this.trigger('refresh');
+            };
 
-        }
+            this.model.bind('refresh', onModelRefresh, this);
+
+            this.model.refresh();
+        },
 
 
     });
