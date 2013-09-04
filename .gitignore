@@ -38,3 +38,5 @@ data.json
 js/collections/customCollection.js
 
 js/models/customModel.js
+
+js/index.js
