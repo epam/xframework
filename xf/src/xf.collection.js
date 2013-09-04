@@ -11,7 +11,7 @@ XF.Collection = BB.Collection.extend({
     },
 
     /**
-     Settings for $ AJAX data request
+     settings for $ AJAX data request
      @type String
      */
     ajaxSettings : null,
@@ -24,13 +24,13 @@ XF.Collection = BB.Collection.extend({
         this._bindListeners();
 
         this.component = options.component;
-        this.url = this.url || XF.Settings.getProperty('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
+        this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || XF.Settings.getProperty('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,

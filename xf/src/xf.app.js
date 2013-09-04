@@ -3,7 +3,7 @@ XF.App = function(options) {
     options.device = options.device || {};
 
     // options.settings
-    _.extend(XF.Settings.options, options.settings);
+    _.extend(XF.settings, options.settings);
 
     this.initialize();
 
