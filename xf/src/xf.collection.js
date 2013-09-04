@@ -1,26 +1,23 @@
 XF.Collection = BB.Collection.extend({
 
-    component: null,
+    _initProperties: function () {
+        this.status = {
+            loaded: false,
+            loading: false,
+            loadingFailed: false
+        };
 
-    root: null,
-
-    status: {
-        loaded: false,
-        loading: false,
-        loadingFailed: false
+        this.root = null;
+        this.ajaxSettings = {};
+        this.component = null;
     },
-
-    /**
-     settings for $ AJAX data request
-     @type String
-     */
-    ajaxSettings : null,
 
     _bindListeners: function () {
         //this.on('change reset sync add', this.onDataChanged, this);
     },
 
     constructor: function (models, options) {
+        this._initProperties();
         this._bindListeners();
 
         this.component = options.component;

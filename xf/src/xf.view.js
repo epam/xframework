@@ -7,56 +7,6 @@
 
     XF.View = BB.View.extend({
 
-        /**
-         Would be dispatched once when the Component inited
-         @name XF.View#init
-         @event
-         */
-
-        /**
-         Would be dispatched once when the Component constructed
-         @name XF.View#construct
-         @event
-         */
-
-        /**
-         Would be dispatched once, when template is ready for use
-         @name XF.View#templateLoaded
-         @event
-         */
-
-        /**
-         Would be dispatched after each render
-         @name XF.View#refresh
-         @event
-         */
-
-        /**
-         Link to the {@link XF.Component} instance
-         @type XF.Component
-         */
-        component : null,
-
-
-
-        /**
-         A flag that indiacates whether that template is currently being loaded
-         @type Boolean
-         @private
-         @static
-         */
-        status: {
-            loaded: false,
-            loading: false,
-            loadingFailed: false
-        },
-
-        template: {
-            src: null,
-            compiled: null,
-            cache: true
-        },
-
         url: function () {
             return XF.settings.property('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
         },
@@ -79,7 +29,26 @@
             this.on('refresh', this.refresh, this);
         },
 
+        _initProperties: function () {
+            this.template = {
+                src: null,
+                compiled: null,
+                cache: true
+            };
+
+            this.status = {
+                loaded: false,
+                loading: false,
+                loadingFailed: false
+            };
+
+            this.component = null;
+        },
+
         constructor: function (options) {
+            // Sorry, BB extend makes all properties static
+            this._initProperties();
+
             this.setElement('[data-id=' + options.attributes['data-id'] + ']');
 
             this.component = options.component;
@@ -88,6 +57,8 @@
             this._bindListeners();
 
             this.load();
+
+
 
             BB.View.apply(this, arguments);
         },
@@ -101,7 +72,11 @@
         },
 
         load: function () {
+
             if (this.template.src) {
+                this.status.loading = false;
+                this.status.loaded = true;
+                this.trigger('loaded');
                 return;
             }
 
@@ -210,8 +185,6 @@
         refresh: function() {
             if (this.status.loaded && this.template.src) {
                 if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
-
-                    console.log('VIEW ReFRESH');
                     this.beforeRender();
                     this.render();
                     this.afterRender();
