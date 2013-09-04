@@ -1,101 +1,77 @@
     /**
-     Instance of {@link XF.SettingsClass}
+     {@link XF.settings}
      @static
      @type {Object}
      */
-    XF.Settings = {
+    XF.settings = {
         /**
-         Contains name-value pairs of all application settings
-         @name XF.Settings#options
-         @type Object
-         @private
+         Used for {@link XF.Cache} clearance when new version released
+         @memberOf XF.settings.prototype
+         @default '1.0.0'
+         @type String
          */
-        options: /** @lends XF.Settings#options */ {
-
-            /**
-             Used for {@link XF.Cache} clearance when new version released
-             @memberOf XF.Settings.prototype
-             @default '1.0.0'
-             @type String
-             */
-            applicationVersion: '1.0.0',
-            /**
-             Deactivates cache usage for the whole app (usefull for developement)
-             @memberOf XF.Settings.prototype
-             @default false
-             @type String
-             */
-            noCache: false,
-            /**
-             Used by default Component URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            componentUrlPrefix: '',
-            /**
-             Used by default Component URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.js'
-             @type String
-             */
-            componentUrlPostfix: '.js',
-            /**
-             Default Component URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @memberOf XF.Settings.prototype
-             @returns {String} Component URL
-             @type Function
-             */
-            componentUrlFormatter: function(compName) {
-                return XF.Settings.property('componentUrlPrefix') + compName + XF.Settings.property('componentUrlPostfix');
-            },
-
-            /**
-             Used by default Template URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            templateUrlPrefix: 'tmpl/',
-            /**
-             Used by default Template URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.tmpl'
-             @type String
-             */
-            templateUrlPostfix: '.tmpl',
-
-
-            /**
-             Used by default Data URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            dataUrlPrefix: '',
-
-
-            ajaxSettings: {
-                      // TODO: fill in ajaxSettings
-            }
+        appVersion: '1.0.0',
+        /**
+         Deactivates cache usage for the whole app (usefull for developement)
+         @memberOf XF.settings.prototype
+         @default false
+         @type String
+         */
+        noCache: false,
+        /**
+         Used by default Component URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default ''
+         @type String
+         */
+        componentUrlPrefix: 'js/components/',
+        /**
+         Used by default Component URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default '.js'
+         @type String
+         */
+        componentUrlPostfix: '.js',
+        /**
+         Default Component URL formatter: prefix + component_name + postfix
+         @param {String} compName Component name
+         @memberOf XF.settings.prototype
+         @returns {String} Component URL
+         @type Function
+         */
+        componentUrl: function(compName) {
+            return XF.settings.property('componentUrlPrefix') + compName + XF.settings.property('componentUrlPostfix');
         },
 
         /**
-         Gets property value by name
-         @param {String} propName
+         Used by default Template URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default ''
+         @type String
          */
-        getProperty: function(propName) {
-            return this.options[propName];
-        },
+        templateUrlPrefix: 'tmpl/',
         /**
-         Sets a new value for one property with
-         @param {String} propName
-         @param {Object} value new value of the property
+         Used by default Template URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default '.tmpl'
+         @type String
          */
-        setProperty: function(propName, value) {
-            this.options[propName] = value;
+        templateUrlPostfix: '.tmpl',
+
+
+        /**
+         Used by default Data URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default ''
+         @type String
+         */
+        dataUrlPrefix: '',
+
+
+        ajaxSettings: {
+                  // TODO: fill in ajaxSettings
         },
+
         /**
          Gets or sets property value (depending on whether the 'value' parameter was passed or not)
          @param {String} propName
@@ -103,9 +79,9 @@
          */
         property: function(propName, value) {
             if(value === undefined) {
-                return this.getProperty(propName);
+                return this[propName];
             } else {
-                this.setProperty(propName, value);
+                this[propName] = value;
             }
         }
     };
