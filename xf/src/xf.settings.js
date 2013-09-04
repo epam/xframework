@@ -5,7 +5,7 @@
      */
     XF.settings = {
         /**
-         Used for {@link XF.Cache} clearance when new version released
+         Used for {@link XF.storage} clearance when new version released
          @memberOf XF.settings.prototype
          @default '1.0.0'
          @type String
