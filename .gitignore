@@ -28,3 +28,7 @@ index.html
 js/app.js
 
 package.json
+
+js/components/cmp.js
+
+tmpl/phone/cmp.tmpl
