@@ -1,5 +1,59 @@
-/*! X-Framework 03-09-2013 */
-;(function (window, $, BB) {/**
+/*! X-Framework 04-09-2013 */
+;(function (window, $, BB) {
+
+    /* $ hooks */
+
+    var _oldhide = $.fn.hide;
+    /** @ignore */
+    $.fn.hide = function(speed, callback) {
+        var res = _oldhide.apply(this,arguments);
+        $(this).trigger('hide');
+        return res;
+    };
+
+    var _oldshow = $.fn.show;
+    /** @ignore */
+    $.fn.show = function(speed, callback) {
+        var res = _oldshow.apply(this,arguments);
+        $(this).trigger('show');
+        return res;
+    };
+
+    var _oldhtml = $.fn.html;
+    /** @ignore */
+    $.fn.html = function(a) {
+        var res = _oldhtml.apply(this,arguments);
+        $(this).trigger('show');
+        $(this).trigger('html');
+        return res;
+    };
+
+    var _oldappend = $.fn.append;
+    /** @ignore */
+    $.fn.append = function() {
+        var res = _oldappend.apply(this,arguments);
+        $(this).trigger('append');
+        return res;
+    };
+
+    var _oldprepend = $.fn.prepend;
+    /** @ignore */
+    $.fn.prepend = function() {
+        var res = _oldprepend.apply(this,arguments);
+        $(this).trigger('prepend');
+        return res;
+    };
+
+    $.fn.animationEnd = function (callback) {
+        var animationEndEvents = 'webkitAnimationEnd oAnimationEnd msAnimationEnd animationend';
+
+        $(this).one(animationEndEvents, callback);
+
+        return this;
+    };
+
+
+/**
  TODO:
  - scrollTop for Zepto
  - wrapInner for Zepto
@@ -409,6 +463,554 @@
 
 
 
+
+    XF.Touches = {
+
+        init : function () {
+            // Default values and device events detection
+            var touchHandler = {},
+                eventsHandler = {
+
+                    // Events for desktop browser, old ios, old android
+                    mouse : {
+                        start : "mousedown",
+                        move : "mousemove",
+                        end : "mouseup",
+                        cancel : "mouseup"
+                    },
+
+                    // Events for modern Windows devices (IE10+)
+                    pointer : {
+                        start : "MSPointerDown",
+                        move : "MSPointerMove",
+                        end : "MSPointerUp",
+                        cancel : "MSPointerCancel"
+                    },
+
+                    // Events for touchable devices
+                    touch : {
+                        start : "touchstart",
+                        move : "touchmove",
+                        end : "touchend",
+                        cancel : "touchcancel"
+                    }
+                },
+                swipeDelta = 30, // Amount of pixels for swipe event
+                isTouch,
+                eventType;
+
+            // Changing events depending on detected data
+            isTouch = (XF.Device.supports.pointerEvents) ? false : (XF.Device.supports.touchEvents ? true : false);
+            eventType = (XF.Device.supports.pointerEvents) ? 'pointer' : (XF.Device.supports.touchEvents ? 'touch' : 'mouse');
+
+            // If target is text
+            var parentIfText = function (node) {
+                return 'tagName' in node ? node : node.parentNode;
+            }
+
+            // Detecting swipe direction
+            var swipeDirection = function (x1, x2, y1, y2) {
+                var xDelta = Math.abs(x1 - x2),
+                    yDelta = Math.abs(y1 - y2);
+                return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
+            }
+
+            var cancelAll = function () {
+                touchHandler = {};
+            }
+
+            $(document).ready(function () {
+                var now,
+                    delta;
+
+                $(document.body).bind(eventsHandler[eventType].start, function(e){
+                    now = Date.now();
+                    delta = now - (touchHandler.last || now);
+                    touchHandler.el = $(parentIfText(e.target));
+                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    touchHandler.last = now;
+                }).bind(eventsHandler[eventType].move, function (e) {
+                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+
+                    if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
+                        e.preventDefault();
+                    }
+                }).bind(eventsHandler[eventType].end, function(e){
+
+                    if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
+                        || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
+                        touchHandler.direction = swipeDirection(touchHandler.x1, touchHandler.x2, touchHandler.y1, touchHandler.y2);
+
+                        // Trigger swipe event
+                        touchHandler.el.trigger('swipe');
+
+                        // Trigger swipe event by it's direction
+                        touchHandler.el.trigger('swipe' + touchHandler.direction);
+                        touchHandler = {};
+                    } else if ('last' in touchHandler) {
+                        touchHandler.el.trigger('tap');
+
+                        // Unbind click event if tap
+                        $(document.body).unbind('click');
+                        touchHandler.el.unbind('click');
+                    }
+                }).bind(eventsHandler[eventType].cancel, cancelAll);
+
+                $(window).bind('scroll', cancelAll);
+            });
+
+            // List of new events
+            ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
+                $.fn[i] = function (callback) {
+                    return this.bind(i, callback)
+                };
+            });
+        }
+
+    };
+    /**
+     Instance of {@link XF.RouterClass}
+     @static
+     @type {XF.Router}
+     */
+    XF.Router = null;
+
+    /**
+     Implements Routing.
+     @class
+     @static
+     @augments XF.Events
+     @param {Object} routes routes has map
+     @param {Object} handlers handlers has map
+     */
+    XF.RouterClass = BB.Router;
+
+    _.extend(XF.RouterClass.prototype, /** @lends XF.RouterClass.prototype */{
+
+
+        /**
+         Initiates Rounting & history listening
+         @private
+         */
+        start : function() {
+            this.bindAnyRoute();
+            XF.history.start();
+            XF.trigger('ui:enhance', $('body'));
+        },
+
+
+        /**
+         Binds a callback to any route
+         @param {Function} callback A function to be called when any route is visited
+         */
+        bindAnyRoute : function() {
+            this.on('route', function (e) {
+                console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
+                if (XF.Pages) {
+                    XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                }
+            });
+        },
+
+        /**
+         Returns page name string by fragment
+         @param String fragment
+         @return String
+         */
+        getPageNameFromFragment : function(fragment) {
+            var parts = fragment.replace(/^\/+/,'').replace(/\/+$/,'').split('/');
+            return parts[0];
+        }
+    });
+    /**
+     @namespace Holds all the reusable util functions
+     */
+    XF.Utils = {};
+
+    /**
+     @namespace Holds all the reusable util functions related to Adress Bar
+     */
+    XF.Utils.AddressBar = {};
+
+    _.extend(XF.Utils.AddressBar, /** @lends XF.Utils.AddressBar */{
+
+        /**
+         Saves scroll value in order to not re-calibrate everytime we call the hide url bar
+         @type Boolean
+         @private
+         */
+        BODY_SCROLL_TOP : false,
+
+        /**
+         Calculates current scroll value
+         @return Number
+         @private
+         */
+        getScrollTop : function(){
+            var win = window,
+                doc = document;
+
+            return win.pageYOffset || doc.compatMode === 'CSS1Compat' && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
+        },
+
+        /**
+         Hides adress bar
+         */
+        hide : function(){
+            console.log('XF :: Utils :: AddressBar :: hide');
+            var win = window;
+
+            // if there is a hash, or XF.Utils.AddressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
+            if( !location.hash && XF.Utils.AddressBar.BODY_SCROLL_TOP !== false){
+                win.scrollTo( 0, XF.Utils.AddressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
+            }
+
+
+            if (XF.Device.isMobile) {
+                var css = document.documentElement.style;
+
+                css.height = '200%';
+                css.overflow = 'visible';
+
+                window.scrollTo(0, 1);
+
+                css.height = window.innerHeight + 'px';
+
+                return true;
+            }
+        },
+
+        /**
+         Hides adress bar on page load
+         */
+        hideOnLoad : function () {
+            console.log('XF :: Utils :: AddressBar :: hideOnLoad');
+            var win = window,
+                doc = win.document;
+
+            // If there's a hash, or addEventListener is undefined, stop here
+            if( !location.hash && win.addEventListener ) {
+
+                //scroll to 1
+                window.scrollTo( 0, 1 );
+                XF.Utils.AddressBar.BODY_SCROLL_TOP = 1;
+
+                //reset to 0 on bodyready, if needed
+                bodycheck = setInterval(function() {
+                    if( doc.body ) {
+                        clearInterval( bodycheck );
+                        XF.Utils.AddressBar.BODY_SCROLL_TOP = XF.Utils.AddressBar.getScrollTop();
+                        //XF.Utils.AddressBar.hide();
+                    }
+                }, 15);
+
+                win.addEventListener( 'load',
+                    function() {
+                        setTimeout(function() {
+                            //at load, if user hasn't scrolled more than 20 or so...
+                            if( XF.Utils.AddressBar.getScrollTop() < 20 ) {
+                                //reset to hide addr bar at onload
+                                //XF.Utils.AddressBar.hide();
+                            }
+                        }, 0);
+                    }
+                );
+            }
+        }
+    });
+    /**
+     XF.Pages
+     @static
+     @public
+     */
+    XF.Pages = {
+
+        /**
+         CSS class used to identify pages
+         @type String
+         @default 'xf-page'
+         */
+        pageClass : 'xf-page',
+
+        /**
+         CSS class used to identify active page
+         @type String
+         @default 'xf-page-active'
+         */
+        activePageClass : 'xf-page-active',
+
+        /**
+         Animation types for page switching ('fade', 'slide', 'none')
+         @type String
+         @default 'fade'
+         */
+        animations: {
+            default: 'slideleft',
+            next: null,
+
+            types : {
+                'none': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'fade': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'slideleft': {
+                    fallback: function (fromPage, toPage) {}
+                },
+                'slideright': {
+                    fallback: function (fromPage, toPage) {}
+                }
+            }
+        },
+
+        /**
+         Saves current active page
+         @type $
+         @private
+         */
+        activePage : null,
+
+        /**
+         Saves current active page name
+         @type $
+         @private
+         */
+        activePageName: '',
+
+        /**
+         Initialises Pages: get current active page and binds necessary routes handling
+         @private
+         */
+        init : function(animations) {
+            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
+            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
+            XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
+            XF.on('pages:start', _.bind(XF.Pages.start, XF.Pages));
+
+            if (_.has(animations, 'types') ) {
+                _.extend(this.animations.types, animations.types);
+            }
+
+            if (_.has(animations, 'default') ) {
+                this.setDefaultAnimationType(animations.default);
+            }
+
+            this.start();
+        },
+
+        start: function (jqObj) {
+            jqObj = jqObj || $('body');
+            console.log('pages start', jqObj);
+            var pages =  jqObj.find(' .' + this.pageClass);
+            if (pages.length) {
+                var preselectedAP = pages.filter('.' + this.activePageClass);
+                if(preselectedAP.length) {
+                    this.activePage = preselectedAP;
+                    this.activePageName = preselectedAP.attr('id');
+                } else {
+                    this.show(pages.first());
+                }
+            }
+        },
+
+        setDefaultAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.default = animationType;
+            }
+        },
+
+        setNextAnimationType: function (animationType) {
+            if (XF.Pages.animations.types[animationType]) {
+                XF.Pages.animations.next = animationType;
+            }
+        },
+
+        /**
+         Executes animation sequence for switching
+         @param $ jqPage
+         */
+        show : function(page, animationType){
+            if (page === this.activePageName) {
+                return;
+            }
+
+            if (page === '') {
+                var pages =  rootDOMObject.find(' .' + this.pageClass);
+                if (pages.length) {
+                    this.show(pages.first());
+                }
+                return;
+            }
+
+            var jqPage = (page instanceof $) ? page : $('.' + XF.Pages.pageClass + '#' + page);
+
+            // preventing animation when the page is already shown
+            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
+                return;
+            }
+            console.log('XF.Pages :: showing page', jqPage.attr('id'));
+
+            var viewport = XF.Device.getViewport();
+            var screenHeight = XF.Device.getScreenHeight();
+
+            if (this.animations.next) {
+                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
+                this.animations.next = null;
+            }else {
+                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
+            }
+
+            var fromPage = this.activePage;
+            var toPage = jqPage;
+
+            this.activePage = toPage;
+            this.activePageName = jqPage.attr('id');
+
+            if (!XF.Device.supports.cssAnimations) {
+                if (_.isFunction(this.animations.types[animationType]['fallback'])) {
+                    toPage.addClass(this.activePageClass);
+                    this.animations.types[animationType].fallback(fromPage, toPage);
+                    return;
+                }
+            }
+
+            if (fromPage) {
+                viewport.addClass('xf-viewport-transitioning');
+
+                fromPage.height(viewport.height()).addClass('out '+ animationType);
+                toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
+                fromPage.animationEnd(function(){
+                    fromPage.height('').removeClass(animationType + ' out in');
+                    fromPage.removeClass(XF.Pages.activePageClass);
+                });
+
+                toPage.animationEnd(function(){
+                    toPage.height('').removeClass(animationType + ' out in');
+                    viewport.removeClass('xf-viewport-transitioning');
+                });
+            } else {
+                // just making it active
+                this.activePage.addClass(this.activePageClass);
+            }
+
+            XF.trigger('ui:enhance', $(this.activePage));
+
+            // looking for components inside the page
+            loadChildComponents(this.activePage[0]);
+        }
+    };
+
+
+    /**
+     @namespace Holds all the logic related to UI elements enhancement
+     */
+    XF.UI = {};
+
+    _.extend(XF.UI, /** @lends XF.UI */ {
+
+        init: function () {
+            XF.on('ui:enhance', _.bind(XF.UI.enhance, XF.UI));
+        },
+
+        /**
+         Reworks markup of a givven $ object
+         @param jqObj $ item
+         */
+
+        enhance : function (jqObj) {
+            if (!jqObj instanceof $) {
+                jqObj = $(jqObj);
+
+                if (!jqObj instanceof $) {
+                    return;
+                }
+            }
+
+            _.each(XF.UI, function (enhancement, index) {
+
+                if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
+
+                    jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
+                        var skip = false;
+
+                        _.each(XF.UI.enhanced.length, function (elem, index) {
+
+                            if (XF.UI.enhanced[i] === this) {
+                                skip = true;
+                            }
+                        });
+
+                        if (!skip & $(this).attr('data-skip-enhance') != 'true') {
+                            var options = $(this).data();
+                            XF.UI.enhanced.push(this);
+                            enhancement.render(this, options);
+                        }
+                    });
+                }
+            });
+
+        },
+
+        /**
+         A list of objects already enhanced (used to skip them while iterating through DOM)
+         @type Array
+         @private
+         */
+        enhanced : [],
+
+        issetElements : [],
+
+        checkInIsset : function (type, id) {
+            type = type || '';
+            id = id || '';
+            var result = [];
+
+            for (var i in this.issetElements) {
+
+                if (id === '') {
+
+                    if (this.issetElements[i].type === type) {
+                        result.push(this.issetElements[i].id);
+                    }
+                } else {
+
+                    if (this.issetElements[i].type === type && this.issetElements[i].id === id) {
+                        result.push(this.issetElements[i].id);
+                    }
+                }
+            }
+
+            return result;
+        },
+
+        removeFromIsset : function (type, id) {
+            type = type || '';
+            id = id || '';
+            var result = [];
+
+            for (var i in this.issetElements) {
+
+                if (id === '') {
+
+                    if (this.issetElements[i].type !== type) {
+                        result.push(this.issetElements[i]);
+                    }
+                } else {
+
+                    if (this.issetElements[i].type !== type && this.issetElements[i].id !== id) {
+                        result.push(this.issetElements[i]);
+                    }
+                }
+            }
+
+            this.issetElements = result;
+        }
+
+    });
+
     /**
      Instance of {@link XF.SettingsClass}
      @static
@@ -519,255 +1121,6 @@
                 this.setProperty(propName, value);
             }
         }
-    };
-    /**
-     Base Component.
-     @class
-     @static
-     @augments XF.Events
-     @see <a href="http://documentcloud.github.com/backbone/#Events">XF.Events Documentation</a>
-     @param {String} name Name of the component
-     @param {String} id ID of the component instance
-     */
-    XF.Component = function(name, id) {
-        /**
-         Would be dispatched once when the Component inited
-         @name XF.Component#init
-         @event
-         */
-
-        /**
-         Would be dispatched once when the Component constructed
-         @name XF.Component#construct
-         @event
-         */
-
-        /**
-         Would be dispatched after each render
-         @name XF.Component#refresh
-         @event
-         */
-
-        /**
-         Name of the component.
-         @default 'default_name'
-         @type String
-         */
-        this.name = name || 'default_name';
-
-        /**
-         ID of the component.
-         @default 'default_id'
-         @type String
-         */
-        this.id = id || 'default_id';
-
-        // merging defaults with custom instance options and class options
-        this.options = _.defaults(XF.getOptionsByID(this.id), this.options, this.defaults);
-        this.initialize();
-    };
-
-
-
-    _.extend(XF.Component.prototype, XF.Events);
-
-    _.extend(XF.Component.prototype, /** @lends XF.Component.prototype */{
-
-        /**
-         Object containing has-map of component options that can be different for each instance & should be set with {@link XF.setOptionsByID}
-         @type Object
-         */
-        defaults : {
-            autoload: true,
-            autorender: true,
-            updateOnShow: false
-        },
-
-        options: {
-
-        },
-
-        /**
-         Returns component selector
-         @return {String} Selector string that can be used for $.find() for example
-         */
-        selector : function() {
-            return '[data-id=' + this.id + ']';
-        },
-
-        /**
-         Defenition of custom Model class extending {@link XF.Model}
-         */
-        modelClass: XF.Model,
-
-        /**
-         Instance of {@link XF.Model} or its subclass
-         @type XF.Model
-         */
-        model: null,
-
-        /**
-         Defenition of custom Collection class extending {@link XF.Collection}
-         */
-        collectionClass: XF.Collection,
-
-        /**
-         Instance of {@link XF.Collection} or its subclass
-         @type XF.Collection
-         */
-        collection: null,
-
-        /**
-         Defenition of custom View class extending {@link XF.View}
-         */
-        viewClass: XF.View,
-
-        /**
-         Instance of {@link XF.View} or its subclass
-         @type XF.View
-         */
-        view : null,
-
-        _bindListeners: function () {
-            this.on('component:'+ this.id +':refresh', _.bind(this.refresh, this));
-        },
-
-        /**
-         Constructs component instance
-         @private
-         */
-        construct : function() {
-
-        },
-
-        
-        initialize: function() {
-            var cmp = this;
-
-            if (this.collectionClass) {
-                this.collection = new this.collectionClass({
-                    url: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
-                });
-                if (this.modelClass) {
-                    this.collection.model = this.modelClass;
-                }
-                this.collection.component = this;
-                this.collection.construct();
-            }else if (this.modelClass) {
-                this.model = new this.modelClass({
-                    urlRoot: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
-                });
-                this.model.component = this;
-                this.model.construct();
-            }
-
-            if (this.viewClass) {
-                var params = {
-                    attributes: {
-                        'data-id': this.id
-                    }
-                };
-
-                if (this.collection) {
-                    params.collection = this.collection;
-                }
-                if (this.model) {
-                    params.model = this.model;
-                }
-
-                this.view = new this.viewClass(params);
-                this.view.component = this;
-                this.view.construct();
-            }
-
-            this._bindListeners();
-
-            this.construct();
-
-            this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-
-            if (this.collection && this.options.autoload) {
-                this.collection.refresh();
-            }else if (this.model && this.options.autoload) {
-                this.model.refresh();
-            }else if (this.view) {
-                this.view.refresh();
-            }
-
-            XF.trigger('component:' + this.id + ':constructed');
-        },
-
-
-        /**
-         Refreshes data and then rerenders view
-         @private
-         */
-        refresh : function() {
-
-            if (this.collection && !this.collection.status.loading) {
-                this.collection.refresh();
-            }else if (this.model && !this.model.status.loading) {
-                this.model.refresh();
-            }
-
-            if (this.view && !this.view.status.loading) {
-                this.view.refresh();
-            }
-
-        }
-
-
-    });
-
-    /**
-     This method allows to extend XF.Component with saving the whole prototype chain
-     @function
-     @static
-     */
-    XF.Component.extend = BB.Model.extend;
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     Describes current component definition status
-     @class
-     @private
-     @memberOf XF
-     @param {String} compSrc Component definition source
-     */
-    var ComponentStatus = function(compSrc) {
-        /**
-         Component definition source
-         @private
-         @type String
-         */
-        this.compSrc = compSrc;
-        /**
-         Component definition
-         @private
-         @type XF.Component
-         */
-        this.compDef = null;
-        /**
-         Flag that determines whether the component definition is currently being loaded
-         @private
-         @type Boolean
-         */
-        this.loading = false;
-        /**
-         Flag that determines whether the component definition has already been loaded
-         @private
-         @type Boolean
-         */
-        this.loaded = false;
-        /**
-         A list of callbacks to call on component definition loading complete
-         @private
-         @type String[]
-         */
-        this.callbacks = [];
     };
     /**
      Instance of {@link XF.CacheClass}
@@ -1227,6 +1580,76 @@
             return vp.eq(0);
         }
     };
+XF.Collection = BB.Collection.extend({
+
+    component: null,
+
+    root: null,
+
+    status: {
+        loaded: false,
+        loading: false,
+        loadingFailed: false
+    },
+
+    /**
+     Settings for $ AJAX data request
+     @type String
+     */
+    ajaxSettings : null,
+
+    _bindListeners: function () {
+        //this.on('change reset sync add', this.onDataChanged, this);
+    },
+
+    /**
+     Constructs model instance
+     @private
+     */
+    initialize : function() {
+        this._bindListeners();
+
+        if (this.component.options.updateOnShow) {
+            $(this.component.selector()).bind('show', _.bind(this.refresh, this));
+        }
+
+        this.ajaxSettings = this.ajaxSettings || XF.Settings.getProperty('ajaxSettings');
+
+        if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
+            var onSuccess = this.ajaxSettings.success,
+                onDataLoaded = _.bind(this.onDataLoaded, this);
+            this.ajaxSettings.success = function () {
+                onDataLoaded();
+                onSuccess();
+            };
+        }else{
+            this.ajaxSettings = _.bind(this.onDataLoaded, this);
+        }
+    },
+
+    construct: function () {
+
+    },
+
+    /**
+     Refreshes data from backend if necessary
+     @private
+     */
+    refresh : function () {
+        this.status.loaded = false;
+        this.status.loading = true;
+
+        this.fetch(this.ajaxSettings);
+    },
+
+    onDataLoaded: function () {
+        this.status.loaded = true;
+        this.status.loading = false;
+
+        this.trigger('fetched');
+    }
+
+});
 XF.Model = BB.Model.extend({
 
     component: null,
@@ -1297,338 +1720,6 @@ XF.Model = BB.Model.extend({
     }
 
 });
-    /**
-     XF.Pages
-     @static
-     @public
-     */
-    XF.Pages = {
-
-        /**
-         CSS class used to identify pages
-         @type String
-         @default 'xf-page'
-         */
-        pageClass : 'xf-page',
-
-        /**
-         CSS class used to identify active page
-         @type String
-         @default 'xf-page-active'
-         */
-        activePageClass : 'xf-page-active',
-
-        /**
-         Animation types for page switching ('fade', 'slide', 'none')
-         @type String
-         @default 'fade'
-         */
-        animations: {
-            default: 'slideleft',
-            next: null,
-
-            types : {
-                'none': {
-                    fallback: function (fromPage, toPage) {}
-                },
-                'fade': {
-                    fallback: function (fromPage, toPage) {}
-                },
-                'slideleft': {
-                    fallback: function (fromPage, toPage) {}
-                },
-                'slideright': {
-                    fallback: function (fromPage, toPage) {}
-                }
-            }
-        },
-
-        /**
-         Saves current active page
-         @type $
-         @private
-         */
-        activePage : null,
-
-        /**
-         Saves current active page name
-         @type $
-         @private
-         */
-        activePageName: '',
-
-        /**
-         Initialises Pages: get current active page and binds necessary routes handling
-         @private
-         */
-        init : function(animations) {
-            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
-            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
-            XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
-            XF.on('pages:start', _.bind(XF.Pages.start, XF.Pages));
-
-            if (_.has(animations, 'types') ) {
-                _.extend(this.animations.types, animations.types);
-            }
-
-            if (_.has(animations, 'default') ) {
-                this.setDefaultAnimationType(animations.default);
-            }
-
-            this.start();
-        },
-
-        start: function (jqObj) {
-            jqObj = jqObj || $('body');
-            console.log('pages start', jqObj);
-            var pages =  jqObj.find(' .' + this.pageClass);
-            if (pages.length) {
-                var preselectedAP = pages.filter('.' + this.activePageClass);
-                if(preselectedAP.length) {
-                    this.activePage = preselectedAP;
-                    this.activePageName = preselectedAP.attr('id');
-                } else {
-                    this.show(pages.first());
-                }
-            }
-        },
-
-        setDefaultAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.default = animationType;
-            }
-        },
-
-        setNextAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.next = animationType;
-            }
-        },
-
-        /**
-         Executes animation sequence for switching
-         @param $ jqPage
-         */
-        show : function(page, animationType){
-            if (page === this.activePageName) {
-                return;
-            }
-
-            if (page === '') {
-                var pages =  rootDOMObject.find(' .' + this.pageClass);
-                if (pages.length) {
-                    this.show(pages.first());
-                }
-                return;
-            }
-
-            var jqPage = (page instanceof $) ? page : $('.' + XF.Pages.pageClass + '#' + page);
-
-            // preventing animation when the page is already shown
-            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
-                return;
-            }
-            console.log('XF.Pages :: showing page', jqPage.attr('id'));
-
-            var viewport = XF.Device.getViewport();
-            var screenHeight = XF.Device.getScreenHeight();
-
-            if (this.animations.next) {
-                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
-                this.animations.next = null;
-            }else {
-                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
-            }
-
-            var fromPage = this.activePage;
-            var toPage = jqPage;
-
-            this.activePage = toPage;
-            this.activePageName = jqPage.attr('id');
-
-            if (!XF.Device.supports.cssAnimations) {
-                if (_.isFunction(this.animations.types[animationType]['fallback'])) {
-                    toPage.addClass(this.activePageClass);
-                    this.animations.types[animationType].fallback(fromPage, toPage);
-                    return;
-                }
-            }
-
-            if (fromPage) {
-                viewport.addClass('xf-viewport-transitioning');
-
-                fromPage.height(viewport.height()).addClass('out '+ animationType);
-                toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
-                fromPage.animationEnd(function(){
-                    fromPage.height('').removeClass(animationType + ' out in');
-                    fromPage.removeClass(XF.Pages.activePageClass);
-                });
-
-                toPage.animationEnd(function(){
-                    toPage.height('').removeClass(animationType + ' out in');
-                    viewport.removeClass('xf-viewport-transitioning');
-                });
-            } else {
-                // just making it active
-                this.activePage.addClass(this.activePageClass);
-            }
-
-            XF.trigger('ui:enhance', $(this.activePage));
-
-            // looking for components inside the page
-            loadChildComponents(this.activePage[0]);
-        }
-    };
-    /**
-     Instance of {@link XF.RouterClass}
-     @static
-     @type {XF.Router}
-     */
-    XF.Router = null;
-
-    /**
-     Implements Routing.
-     @class
-     @static
-     @augments XF.Events
-     @param {Object} routes routes has map
-     @param {Object} handlers handlers has map
-     */
-    XF.RouterClass = BB.Router;
-
-    _.extend(XF.RouterClass.prototype, /** @lends XF.RouterClass.prototype */{
-
-
-        /**
-         Initiates Rounting & history listening
-         @private
-         */
-        start : function() {
-            this.bindAnyRoute();
-            XF.history.start();
-            XF.trigger('ui:enhance', $('body'));
-        },
-
-
-        /**
-         Binds a callback to any route
-         @param {Function} callback A function to be called when any route is visited
-         */
-        bindAnyRoute : function() {
-            this.on('route', function (e) {
-                console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
-                if (XF.Pages) {
-                    XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
-                }
-            });
-        },
-
-        /**
-         Returns page name string by fragment
-         @param String fragment
-         @return String
-         */
-        getPageNameFromFragment : function(fragment) {
-            var parts = fragment.replace(/^\/+/,'').replace(/\/+$/,'').split('/');
-            return parts[0];
-        }
-    });
-    /**
-     @namespace Holds all the reusable util functions
-     */
-    XF.Utils = {};
-
-    /**
-     @namespace Holds all the reusable util functions related to Adress Bar
-     */
-    XF.Utils.AddressBar = {};
-
-    _.extend(XF.Utils.AddressBar, /** @lends XF.Utils.AddressBar */{
-
-        /**
-         Saves scroll value in order to not re-calibrate everytime we call the hide url bar
-         @type Boolean
-         @private
-         */
-        BODY_SCROLL_TOP : false,
-
-        /**
-         Calculates current scroll value
-         @return Number
-         @private
-         */
-        getScrollTop : function(){
-            var win = window,
-                doc = document;
-
-            return win.pageYOffset || doc.compatMode === 'CSS1Compat' && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
-        },
-
-        /**
-         Hides adress bar
-         */
-        hide : function(){
-            console.log('XF :: Utils :: AddressBar :: hide');
-            var win = window;
-
-            // if there is a hash, or XF.Utils.AddressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
-            if( !location.hash && XF.Utils.AddressBar.BODY_SCROLL_TOP !== false){
-                win.scrollTo( 0, XF.Utils.AddressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
-            }
-
-
-            if (XF.Device.isMobile) {
-                var css = document.documentElement.style;
-
-                css.height = '200%';
-                css.overflow = 'visible';
-
-                window.scrollTo(0, 1);
-
-                css.height = window.innerHeight + 'px';
-
-                return true;
-            }
-        },
-
-        /**
-         Hides adress bar on page load
-         */
-        hideOnLoad : function () {
-            console.log('XF :: Utils :: AddressBar :: hideOnLoad');
-            var win = window,
-                doc = win.document;
-
-            // If there's a hash, or addEventListener is undefined, stop here
-            if( !location.hash && win.addEventListener ) {
-
-                //scroll to 1
-                window.scrollTo( 0, 1 );
-                XF.Utils.AddressBar.BODY_SCROLL_TOP = 1;
-
-                //reset to 0 on bodyready, if needed
-                bodycheck = setInterval(function() {
-                    if( doc.body ) {
-                        clearInterval( bodycheck );
-                        XF.Utils.AddressBar.BODY_SCROLL_TOP = XF.Utils.AddressBar.getScrollTop();
-                        //XF.Utils.AddressBar.hide();
-                    }
-                }, 15);
-
-                win.addEventListener( 'load',
-                    function() {
-                        setTimeout(function() {
-                            //at load, if user hasn't scrolled more than 20 or so...
-                            if( XF.Utils.AddressBar.getScrollTop() < 20 ) {
-                                //reset to hide addr bar at onload
-                                //XF.Utils.AddressBar.hide();
-                            }
-                        }, 0);
-                    }
-                );
-            }
-        }
-    });
     /**
      Implements view workaround flow.
      @class
@@ -1818,7 +1909,7 @@ XF.Model = BB.Model.extend({
         /**
          Renders component into placeholder + calling all the necessary hooks & events
          */
-        refresh : function() {
+        refresh: function() {
             if (this.status.loaded && this.template.src) {
                 if ((this.collection && this.collection.loaded) || (this.model && this.model.loaded)) {
                     this.beforeRender();
@@ -1861,332 +1952,255 @@ XF.Model = BB.Model.extend({
         afterRender : function() {}
 
     });
-
-    XF.Touches = {
-
-        init : function () {
-            // Default values and device events detection
-            var touchHandler = {},
-                eventsHandler = {
-
-                    // Events for desktop browser, old ios, old android
-                    mouse : {
-                        start : "mousedown",
-                        move : "mousemove",
-                        end : "mouseup",
-                        cancel : "mouseup"
-                    },
-
-                    // Events for modern Windows devices (IE10+)
-                    pointer : {
-                        start : "MSPointerDown",
-                        move : "MSPointerMove",
-                        end : "MSPointerUp",
-                        cancel : "MSPointerCancel"
-                    },
-
-                    // Events for touchable devices
-                    touch : {
-                        start : "touchstart",
-                        move : "touchmove",
-                        end : "touchend",
-                        cancel : "touchcancel"
-                    }
-                },
-                swipeDelta = 30, // Amount of pixels for swipe event
-                isTouch,
-                eventType;
-
-            // Changing events depending on detected data
-            isTouch = (XF.Device.supports.pointerEvents) ? false : (XF.Device.supports.touchEvents ? true : false);
-            eventType = (XF.Device.supports.pointerEvents) ? 'pointer' : (XF.Device.supports.touchEvents ? 'touch' : 'mouse');
-
-            // If target is text
-            var parentIfText = function (node) {
-                return 'tagName' in node ? node : node.parentNode;
-            }
-
-            // Detecting swipe direction
-            var swipeDirection = function (x1, x2, y1, y2) {
-                var xDelta = Math.abs(x1 - x2),
-                    yDelta = Math.abs(y1 - y2);
-                return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
-            }
-
-            var cancelAll = function () {
-                touchHandler = {};
-            }
-
-            $(document).ready(function () {
-                var now,
-                    delta;
-
-                $(document.body).bind(eventsHandler[eventType].start, function(e){
-                    now = Date.now();
-                    delta = now - (touchHandler.last || now);
-                    touchHandler.el = $(parentIfText(e.target));
-                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
-                    touchHandler.last = now;
-                }).bind(eventsHandler[eventType].move, function (e) {
-                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
-
-                    if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
-                        e.preventDefault();
-                    }
-                }).bind(eventsHandler[eventType].end, function(e){
-
-                    if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
-                        || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
-                        touchHandler.direction = swipeDirection(touchHandler.x1, touchHandler.x2, touchHandler.y1, touchHandler.y2);
-
-                        // Trigger swipe event
-                        touchHandler.el.trigger('swipe');
-
-                        // Trigger swipe event by it's direction
-                        touchHandler.el.trigger('swipe' + touchHandler.direction);
-                        touchHandler = {};
-                    } else if ('last' in touchHandler) {
-                        touchHandler.el.trigger('tap');
-
-                        // Unbind click event if tap
-                        $(document.body).unbind('click');
-                        touchHandler.el.unbind('click');
-                    }
-                }).bind(eventsHandler[eventType].cancel, cancelAll);
-
-                $(window).bind('scroll', cancelAll);
-            });
-
-            // List of new events
-            ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
-                $.fn[i] = function (callback) {
-                    return this.bind(i, callback)
-                };
-            });
-        }
-
-    };
-
-
-    /* $ hooks */
-
-    var _oldhide = $.fn.hide;
-    /** @ignore */
-    $.fn.hide = function(speed, callback) {
-        var res = _oldhide.apply(this,arguments);
-        $(this).trigger('hide');
-        return res;
-    };
-
-    var _oldshow = $.fn.show;
-    /** @ignore */
-    $.fn.show = function(speed, callback) {
-        var res = _oldshow.apply(this,arguments);
-        $(this).trigger('show');
-        return res;
-    };
-
-    var _oldhtml = $.fn.html;
-    /** @ignore */
-    $.fn.html = function(a) {
-        var res = _oldhtml.apply(this,arguments);
-        $(this).trigger('show');
-        $(this).trigger('html');
-        return res;
-    };
-
-    var _oldappend = $.fn.append;
-    /** @ignore */
-    $.fn.append = function() {
-        var res = _oldappend.apply(this,arguments);
-        $(this).trigger('append');
-        return res;
-    };
-
-    var _oldprepend = $.fn.prepend;
-    /** @ignore */
-    $.fn.prepend = function() {
-        var res = _oldprepend.apply(this,arguments);
-        $(this).trigger('prepend');
-        return res;
-    };
-
-    $.fn.animationEnd = function (callback) {
-        var animationEndEvents = 'webkitAnimationEnd oAnimationEnd msAnimationEnd animationend';
-
-        $(this).one(animationEndEvents, callback);
-
-        return this;
-    };
-
-
-
-
-    if (!_.isFunction($.fn.detach)) {
-        $.fn.detach = function(a) {
-            return this.remove(a,!0);
-        }
-    }
-
-    if (!_.isFunction($.fn.wrapInner)) {
-        $.fn.wrapInner = function( html ) {
-            if ( _.isFunction( html ) ) {
-                return this.each(function(i) {
-                    $(this).wrapInner( html.call(this, i) );
-                });
-            }
-
-            return this.each(function() {
-                var self = $( this ),
-                    contents = self.contents();
-
-                if ( contents.length ) {
-                    contents.wrapAll( html );
-
-                } else {
-                    self.append( html );
-                }
-            });
-        }
-    }
-
-    var _olddetach = $.fn.detach;
-    /** @ignore */
-    $.fn.detach = function() {
-        var parent = $(this).parent();
-        var res = _olddetach.apply(this,arguments);
-        parent.trigger('detach');
-        return res;
-    };
-
-    /** @ignore */
-    /** Cannot use $.fn.extend because of Zepto support **/
-    $.fn.outerHtml = function(replacement) {
-
-        if(replacement) {
-            return this.each(function(){
-                $(this).replaceWith(replacement);
-            });
-        }
-
-        var tmp_node = $('<div></div>').append( $(this).clone() );
-        var markup = tmp_node.html();
-
-        tmp_node.remove();
-        return markup;
-    };
-
-
-
     /**
-     @namespace Holds all the logic related to UI elements enhancement
+     Base Component.
+     @class
+     @static
+     @augments XF.Events
+     @see <a href="http://documentcloud.github.com/backbone/#Events">XF.Events Documentation</a>
+     @param {String} name Name of the component
+     @param {String} id ID of the component instance
      */
-    XF.UI = {};
-
-    _.extend(XF.UI, /** @lends XF.UI */ {
-
-        init: function () {
-            XF.on('ui:enhance', _.bind(XF.UI.enhance, XF.UI));
-        },
-
+    XF.Component = function(name, id) {
         /**
-         Reworks markup of a givven $ object
-         @param jqObj $ item
+         Would be dispatched once when the Component inited
+         @name XF.Component#init
+         @event
          */
 
-        enhance : function (jqObj) {
-            if (!jqObj instanceof $) {
-                jqObj = $(jqObj);
+        /**
+         Would be dispatched once when the Component constructed
+         @name XF.Component#construct
+         @event
+         */
 
-                if (!jqObj instanceof $) {
-                    return;
-                }
-            }
+        /**
+         Would be dispatched after each render
+         @name XF.Component#refresh
+         @event
+         */
 
-            _.each(XF.UI, function (enhancement, index) {
+        /**
+         Name of the component.
+         @default 'default_name'
+         @type String
+         */
+        this.name = name || 'default_name';
 
-                if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
+        /**
+         ID of the component.
+         @default 'default_id'
+         @type String
+         */
+        this.id = id || 'default_id';
 
-                    jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
-                        var skip = false;
+        // merging defaults with custom instance options and class options
+        this.options = _.defaults(XF.getOptionsByID(this.id), this.options, this.defaults);
+        this.initialize();
+    };
 
-                        _.each(XF.UI.enhanced.length, function (elem, index) {
 
-                            if (XF.UI.enhanced[i] === this) {
-                                skip = true;
-                            }
-                        });
 
-                        if (!skip & $(this).attr('data-skip-enhance') != 'true') {
-                            var options = $(this).data();
-                            XF.UI.enhanced.push(this);
-                            enhancement.render(this, options);
-                        }
-                    });
-                }
-            });
+    _.extend(XF.Component.prototype, XF.Events);
+
+    _.extend(XF.Component.prototype, /** @lends XF.Component.prototype */{
+
+        /**
+         Object containing has-map of component options that can be different for each instance & should be set with {@link XF.setOptionsByID}
+         @type Object
+         */
+        defaults : {
+            autoload: true,
+            autorender: true,
+            updateOnShow: false
+        },
+
+        options: {
 
         },
 
         /**
-         A list of objects already enhanced (used to skip them while iterating through DOM)
-         @type Array
+         Returns component selector
+         @return {String} Selector string that can be used for $.find() for example
+         */
+        selector : function() {
+            return '[data-id=' + this.id + ']';
+        },
+
+        /**
+         Defenition of custom Model class extending {@link XF.Model}
+         */
+        Model: XF.Model,
+
+        /**
+         Instance of {@link XF.Model} or its subclass
+         @type XF.Model
+         */
+        model: null,
+
+        /**
+         Defenition of custom Collection class extending {@link XF.Collection}
+         */
+        Collection: XF.Collection,
+
+        /**
+         Instance of {@link XF.Collection} or its subclass
+         @type XF.Collection
+         */
+        collection: null,
+
+        /**
+         Defenition of custom View class extending {@link XF.View}
+         */
+        View: XF.View,
+
+        /**
+         Instance of {@link XF.View} or its subclass
+         @type XF.View
+         */
+        view : null,
+
+        _bindListeners: function () {
+            this.on('component:'+ this.id +':refresh', _.bind(this.refresh, this));
+        },
+
+        /**
+         Constructs component instance
          @private
          */
-        enhanced : [],
+        construct : function() {
 
-        issetElements : [],
-
-        checkInIsset : function (type, id) {
-            type = type || '';
-            id = id || '';
-            var result = [];
-
-            for (var i in this.issetElements) {
-
-                if (id === '') {
-
-                    if (this.issetElements[i].type === type) {
-                        result.push(this.issetElements[i].id);
-                    }
-                } else {
-
-                    if (this.issetElements[i].type === type && this.issetElements[i].id === id) {
-                        result.push(this.issetElements[i].id);
-                    }
-                }
-            }
-
-            return result;
         },
 
-        removeFromIsset : function (type, id) {
-            type = type || '';
-            id = id || '';
-            var result = [];
-
-            for (var i in this.issetElements) {
-
-                if (id === '') {
-
-                    if (this.issetElements[i].type !== type) {
-                        result.push(this.issetElements[i]);
-                    }
-                } else {
-
-                    if (this.issetElements[i].type !== type && this.issetElements[i].id !== id) {
-                        result.push(this.issetElements[i]);
-                    }
+        
+        initialize: function() {
+            console.log(this.View);
+            if (this.Collection) {
+                this.collection = new this.Collection({
+                    url: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
+                });
+                if (this.Model) {
+                    this.collection.model = this.Model;
                 }
+                this.collection.component = this;
+                this.collection.construct();
+            }else if (this.Model) {
+                this.model = new this.Model({
+                    urlRoot: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
+                });
+                this.model.component = this;
+                this.model.construct();
             }
 
-            this.issetElements = result;
+            if (this.View) {
+                var params = {
+                    attributes: {
+                        'data-id': this.id
+                    }
+                };
+
+                if (this.collection) {
+                    params.collection = this.collection;
+                }
+                if (this.model) {
+                    params.model = this.model;
+                }
+
+                this.view = new this.View(params);
+
+                this.view.component = this;
+                this.view.construct();
+            }
+
+            this._bindListeners();
+
+            this.construct();
+
+            this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
+
+            if (this.collection && this.options.autoload) {
+                this.collection.refresh();
+            }else if (this.model && this.options.autoload) {
+                this.model.refresh();
+            }else if (this.view) {
+                this.view.refresh();
+            }
+
+            XF.trigger('component:' + this.id + ':constructed');
+        },
+
+
+        /**
+         Refreshes data and then rerenders view
+         @private
+         */
+        refresh : function() {
+
+            if (this.collection && !this.collection.status.loading) {
+                this.collection.refresh();
+            }else if (this.model && !this.model.status.loading) {
+                this.model.refresh();
+            }
+
+            if (this.view && !this.view.status.loading) {
+                this.view.refresh();
+            }
+
         }
+
 
     });
 
+    /**
+     This method allows to extend XF.Component with saving the whole prototype chain
+     @function
+     @static
+     */
+    XF.Component.extend = BB.Model.extend;
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     Describes current component definition status
+     @class
+     @private
+     @memberOf XF
+     @param {String} compSrc Component definition source
+     */
+    var ComponentStatus = function(compSrc) {
+        /**
+         Component definition source
+         @private
+         @type String
+         */
+        this.compSrc = compSrc;
+        /**
+         Component definition
+         @private
+         @type XF.Component
+         */
+        this.compDef = null;
+        /**
+         Flag that determines whether the component definition is currently being loaded
+         @private
+         @type Boolean
+         */
+        this.loading = false;
+        /**
+         Flag that determines whether the component definition has already been loaded
+         @private
+         @type Boolean
+         */
+        this.loaded = false;
+        /**
+         A list of callbacks to call on component definition loading complete
+         @private
+         @type String[]
+         */
+        this.callbacks = [];
+    };
 
     /**
      Make the DOM object look like a button

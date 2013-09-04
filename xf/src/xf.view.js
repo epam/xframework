@@ -187,7 +187,7 @@
         /**
          Renders component into placeholder + calling all the necessary hooks & events
          */
-        refresh : function() {
+        refresh: function() {
             if (this.status.loaded && this.template.src) {
                 if ((this.collection && this.collection.loaded) || (this.model && this.model.loaded)) {
                     this.beforeRender();
