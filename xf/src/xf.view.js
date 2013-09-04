@@ -37,28 +37,7 @@
          */
         component : null,
 
-        /**
-         Template URL
-         @type String
-         */
-        templateURL : null,
 
-        templateName: null,
-
-        /**
-         Component template
-         @type String
-         @static
-         */
-        template: null,
-
-        /**
-         The URL of template that is currently being loaded
-         @type String
-         @private
-         @static
-         */
-        templateURL: null,
 
         /**
          A flag that indiacates whether that template is currently being loaded
@@ -66,175 +45,79 @@
          @private
          @static
          */
-        templateLoaded: false,
+        status: {
+            loaded: false,
+            loading: false,
+            loadingFailed: false
+        },
 
-        /**
-         A flag that indiacates whether that template was successfully loaded
-         @type Boolean
-         @private
-         @static
-         */
-        templateLoading: false,
+        template: {
+            src: null,
+            compiled: null,
+            cache: true
+        },
 
-        /**
-         Compiled component template
-         @type Function
-         @static
-         */
-        compiledTemplate: null,
+        url: function () {
+            return XF.Settings.getProperty('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.Settings.getProperty('templateUrlPostfix');
+        },
 
         /**
          Flag that determines whether the Model update should be ignored by the View (in this case you may launch {@link XF.View#refresh} manualy)
          @default false
          @type Boolean
          */
-        ignoreModelUpdate : false,
 
-        /**
-         Flag that determines whether the view should be rerendered each time the component becomes visible
-         @default false
-         @type Boolean
-         */
-        updateOnShow: false,
-
-        /**
-         Flag that determines whether the template should be stored into {@link XF.Cache}
-         @default false
-         @type Boolean
-         */
-        useCache: false,
-
-        /**
-         Constructs view instance
-         @private
-         */
-        construct : function() {
-            this.templateName = this.templateName || this.component.name;
-
-            /** ignore */
-            var templateLoaded = function() {
-
-                if(this.loadTemplateFailed) {
-                    this.unbind('templateLoaded', templateLoaded);
-                    this.afterLoadTemplateFailed();
-                    return;
+        _bindListeners: function () {
+            if(!this.component.options.autorender) {
+                if (this.component.collection) {
+                    this.listenTo(this.component.collection, 'fetched', this.refresh);
+                }else if (this.component.model) {
+                    this.listenTo(this.component.model, 'fetched', this.refresh);
                 }
+            }
 
-                if(!this.templateLoaded) {
-                    this.loadTemplate();
-                    return;
-                }
-
-                this.unbind('templateLoaded', templateLoaded);
-                this.afterLoadTemplate();
-
-                this.initialize();
-                this.trigger('init');
-
-                if(!this.ignoreModelUpdate) {
-                    this.component.model.bind('changed', this.refresh, this);
-                }
-                if(this.updateOnShow) {
-                    $(this.component.selector()).bind('show', _.bind(this.refresh, this));
-                }
-
-                this.trigger('construct');
-            };
-
-            this.bind('templateLoaded', templateLoaded);
-
-            this.beforeLoadTemplate();
-            this.loadTemplate();
+            this.on('refresh', this.refresh, this);
         },
 
-        /**
-         Stores last device type that was used for template url generation
-         @type String
-         @private
-         */
-        lastDeviceType : null,
+        initialize: function () {
+            this.setElement('[data-id=' + this.attributes['data-id'] + ']');
 
-        /**
-         Generates template url - override if custom format is required and {@link XF.Settings} has no appropriate way to handle it
-         @private
-         */
-        getTemplateURL : function() {
-            // clearing saved template URL - it was erroneous
-            if(this.lastDeviceType) {
-                this.templateURL = null;
-            }
-            if(!this.templateURL) {
-                if(!this.component) {
-                    throw 'XF.View "component" linkage lost';
-                }
+            this._bindListeners();
 
-                this.lastDeviceType = XF.Device.getNextType(this.lastDeviceType);
-
-                // preventing from infinit cycle
-                if(!this.lastDeviceType) {
-                    return null;
-                }
-
-                var templatePath = '';
-                if(this.lastDeviceType && this.lastDeviceType.templatePath) {
-                    templatePath = this.lastDeviceType.templatePath;
-                }
-                this.templateURL = XF.Settings.property('templateUrlFormatter')(this.templateName, templatePath);
-            }
-            return this.templateURL;
+            this.load();
         },
 
-        /**
-         Compiles component template if necessary & executes it with current component instance model
-         @static
-         */
-        getMarkup: function() {
-            if(!this.compiledTemplate) {
-                this.compiledTemplate = _.template(this.template);
-            }
-            return this.compiledTemplate(this.component.model);
+        construct: function () {
+
         },
 
-        /**
-         HOOK: override to add logic before template load
-         */
-        beforeLoadTemplate : function() {},
+        load: function () {
+            if (this.template.src) {
+                return;
+            }
 
-        /**
-         A flag that indicates whether the template loading failed
-         @type Boolean
-         @private
-         */
-        loadTemplateFailed : false,
+            var url = (_.isFunction(this.url)) ? this.url() : this.url;
 
-        /**
-         Loads template
-         @private
-         */
-        loadTemplate : function() {
-
-            var url = this.getTemplateURL();
-            if(url == null) {
-                this.loadTemplateFailed = true;
-                this.trigger('templateLoaded');
+            if(!url) {
+                this.status.loadingFailed = true;
+                this.trigger('loaded');
                 return;
             }
 
             // trying to get template from cache
-            if(this.useCache) {
+            if(this.template.cache && _.has(XF, 'Cache')) {
                 var cachedTemplate = XF.Cache.get(url);
-                if(cachedTemplate) {
-                    this.template = cachedTemplate;
-                    this.templateLoaded = true;
-                    this.trigger('templateLoaded');
+                if (cachedTemplate) {
+                    this.template.src = cachedTemplate;
+                    this.status.loaded = true;
+                    this.trigger('loaded');
                     return;
                 }
             }
 
-            if(!this.templateLoaded && !this.templateLoading) {
+            if(!this.status.loaded && !this.status.loading) {
 
-                this.templateURL = url;
-                this.templateLoading = true;
+                this.status.loading = true;
 
                 var $this = this;
 
@@ -248,44 +131,45 @@
                             var template = jqXHR.responseText;
 
                             // saving template into cache if the option is turned on
-                            if($this.useCache) {
+                            if($this.template.cache && _.has(XF, 'Cache')) {
                                 XF.Cache.set(url, template);
                             }
 
-                            $this.template = jqXHR.responseText;
-                            $this.templateLoading = false;
-                            $this.templateLoaded = true;
-                            $this.trigger('templateLoaded');
-                            XF.trigger('templateLoaded', {url: url, template:template});
+                            $this.template.src = jqXHR.responseText;
+                            $this.status.loading = false;
+                            $this.status.loaded = true;
+                            $this.afterLoadTemplate();
+                            $this.trigger('loaded');
                         } else {
-                            $this.template = null;
-                            $this.templateLoading = false;
-                            $this.templateLoaded = false;
-                            $this.trigger('templateLoaded');
-                            XF.trigger('templateLoaded', {url: url, template : null});
+                            $this.template.src = null;
+                            $this.status.loading = false;
+                            $this.status.loaded = false;
+                            $this.status.loadingFailed = true;
+                            $this.afterLoadTemplateFailed();
+                            $this.trigger('loaded');
                         }
                     }
                 });
-
-            } else if(this.templateLoading) {
-
-                var $this = this;
-                url = this.templateURL;
-
-                /** ignore */
-                var templateLoadedAsync = function(params) {
-                    if(params.url == url) {
-                        XF.unbind('templateLoaded', templateLoadedAsync);
-                        $this.trigger('templateLoaded');
-                    }
-                };
-
-                XF.bind('templateLoaded', templateLoadedAsync);
-
-            } else {
-                this.trigger('templateLoaded');
             }
         },
+
+        /**
+         Compiles component template if necessary & executes it with current component instance model
+         @static
+         */
+        getMarkup: function() {
+            if(!this.template.compiled) {
+                this.template.compiled = _.template(this.template.src);
+            }
+
+            return this.template.compiled();
+        },
+
+        /**
+         HOOK: override to add logic before template load
+         */
+        beforeLoadTemplate : function() {},
+
 
         /**
          HOOK: override to add logic after template load
@@ -303,17 +187,20 @@
         /**
          Renders component into placeholder + calling all the necessary hooks & events
          */
-        refresh : function() {
-            this.preRender();
-            this.render();
-            this.postRender();
-            this.trigger('refresh');
+        refresh: function() {
+            if (this.status.loaded && this.template.src) {
+                if ((this.collection && this.collection.loaded) || (this.model && this.model.loaded)) {
+                    this.beforeRender();
+                    this.render();
+                    this.afterRender();
+                }
+            }
         },
 
         /**
          HOOK: override to add logic before render
          */
-        preRender : function() {},
+        beforeRender : function() {},
 
 
         /**
@@ -327,18 +214,19 @@
          @private
          */
         render : function() {
-            this.renderVersion++;
             this.$el.html(this.getMarkup());
             XF.trigger('ui:enhance', this.$el);
+            this.renderVersion++;
+
+            this.trigger('rendered');
+
+            return this;
         },
 
-        initialize: function () {
-            this.setElement('[data-id=' + this.attributes['data-id'] + ']');
-        },
 
         /**
          HOOK: override to add logic after render
          */
-        postRender : function() {}
+        afterRender : function() {}
 
     });

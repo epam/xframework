@@ -57,7 +57,7 @@
              @default ''
              @type String
              */
-            templateUrlPrefix: '',
+            templateUrlPrefix: 'tmpl/',
             /**
              Used by default Template URL formatter: prefix + component_name + postfix
              @memberOf XF.Settings.prototype
@@ -65,16 +65,7 @@
              @type String
              */
             templateUrlPostfix: '.tmpl',
-            /**
-             Default Template URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @returns {String} Template URL
-             @memberOf XF.Settings.prototype
-             @type Function
-             */
-            templateUrlFormatter: function(compName, templatePath) {
-                return XF.Settings.property('templateUrlPrefix') + templatePath + compName + XF.Settings.property('templateUrlPostfix');
-            },
+
 
             /**
              Used by default Data URL formatter: prefix + component_name + postfix
@@ -83,25 +74,11 @@
              @type String
              */
             dataUrlPrefix: '',
-            /**
-             Used by default Data URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.json'
-             @type String
-             */
-            dataUrlPostfix: '.json',
-            /**
-             Default Data URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @returns {String} Template URL
-             @memberOf XF.Settings.prototype
-             @type Function
-             */
-            dataUrlFormatter: function(compName) {
-                return XF.Settings.property('dataUrlPrefix') + compName + XF.Settings.property('dataUrlPostfix');
+
+
+            ajaxSettings: {
+                      // TODO: fill in ajaxSettings
             }
-
-
         },
 
         /**
