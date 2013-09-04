@@ -12,7 +12,7 @@ module.exports = (function (grunt) {
             'xf/src/xf.pages.js',
             'xf/src/xf.ui.js',
             'xf/src/xf.settings.js',
-            'xf/src/xf.cache.js',
+            'xf/src/xf.storage.js',
             'xf/src/xf.device.js',
             'xf/src/xf.collection.js',
             'xf/src/xf.model.js',

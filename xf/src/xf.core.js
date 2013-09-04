@@ -89,8 +89,8 @@
 
         options = options || {};
 
-        // initializing XF.Cache
-        XF.Cache.init();
+        // initializing XF.storage
+        XF.storage.init();
 
         // initializing XF.Device
         options.device = options.device || {};

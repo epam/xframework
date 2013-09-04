@@ -144,8 +144,8 @@
 
         options = options || {};
 
-        // initializing XF.Cache
-        XF.Cache.init();
+        // initializing XF.storage
+        XF.storage.init();
 
         // initializing XF.Device
         options.device = options.device || {};
@@ -1046,7 +1046,7 @@ XF.App.extend = BB.Model.extend;
      */
     XF.settings = {
         /**
-         Used for {@link XF.Cache} clearance when new version released
+         Used for {@link XF.storage} clearance when new version released
          @memberOf XF.settings.prototype
          @default '1.0.0'
          @type String
@@ -1132,7 +1132,7 @@ XF.App.extend = BB.Model.extend;
      @private
      @type {Object}
      */
-    XF.Cache = {
+    XF.storage = {
 
         /**
          Local reference to the localStorage
@@ -1163,20 +1163,20 @@ XF.App.extend = BB.Model.extend;
             }
 
             // clearing localStorage if stored version is different from current
-            var appVersion = this.get('applicationVersion');
+            var appVersion = this.get('appVersion');
             if(XF.settings.property('noCache')) {
                 // cache is disable for the whole site manualy
-                console.log('XF.Cache :: init - cache is disable for the whole app manually - clearing storage');
+                console.log('XF.storage :: init - cache is disable for the whole app manually - clearing storage');
                 this.clear();
-                this.set('applicationVersion', XF.settings.property('applicationVersion'));
-            } else if(appVersion && appVersion == XF.settings.property('applicationVersion')) {
+                this.set('appVersion', XF.settings.property('appVersion'));
+            } else if(appVersion && appVersion == XF.settings.property('appVersion')) {
                 // same version is cached - useing it as much as possible
-                console.log('XF.Cache :: init - same version is cached - useing it as much as possible');
+                console.log('XF.storage :: init - same version is cached - useing it as much as possible');
             } else {
                 // wrong or no version cached - clearing storage
-                console.log('XF.Cache :: init - wrong or no version cached - clearing storage');
+                console.log('XF.storage :: init - wrong or no version cached - clearing storage');
                 this.clear();
-                this.set('applicationVersion', XF.settings.property('applicationVersion'));
+                this.set('appVersion', XF.settings.property('appVersion'));
             }
         },
 
@@ -1190,7 +1190,7 @@ XF.App.extend = BB.Model.extend;
             if(this.available) {
                 try {
                     result = this.storage.getItem(key);
-                    console.log('XF.Cache :: get - "' + key + '" = "' + result + '"');
+                    console.log('XF.storage :: get - "' + key + '" = "' + result + '"');
                 } catch(e) {
                     result = null;
                 }
@@ -1212,7 +1212,7 @@ XF.App.extend = BB.Model.extend;
                 try {
                     this.storage.setItem(key, value);
                     result = true;
-                    console.log('XF.Cache :: set - "' + key + '" = "' + value + '"');
+                    console.log('XF.storage :: set - "' + key + '" = "' + value + '"');
                 } catch(e) {
                     result = false;
                 }
@@ -1232,7 +1232,7 @@ XF.App.extend = BB.Model.extend;
                 try {
                     this.storage.clear();
                     result = true;
-                    console.log('XF.Cache :: clear');
+                    console.log('XF.storage :: clear');
                 } catch(e) {
                     result = false;
                 }
@@ -1862,8 +1862,8 @@ XF.Model = BB.Model.extend({
             }
 
             // trying to get template from cache
-            if(this.template.cache && _.has(XF, 'Cache')) {
-                var cachedTemplate = XF.Cache.get(url);
+            if(this.template.cache && _.has(XF, 'storage')) {
+                var cachedTemplate = XF.storage.get(url);
                 if (cachedTemplate) {
                     this.template.src = cachedTemplate;
                     this.status.loaded = true;
@@ -1888,8 +1888,8 @@ XF.Model = BB.Model.extend({
                             var template = jqXHR.responseText;
 
                             // saving template into cache if the option is turned on
-                            if($this.template.cache && _.has(XF, 'Cache')) {
-                                XF.Cache.set(url, template);
+                            if($this.template.cache && _.has(XF, 'storage')) {
+                                XF.storage.set(url, template);
                             }
 
                             $this.template.src = jqXHR.responseText;
