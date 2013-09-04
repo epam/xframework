@@ -4,7 +4,7 @@
      @private
      @type {Object}
      */
-    XF.Cache = {
+    XF.storage = {
 
         /**
          Local reference to the localStorage
@@ -35,20 +35,20 @@
             }
 
             // clearing localStorage if stored version is different from current
-            var appVersion = this.get('applicationVersion');
-            if(XF.Settings.property('noCache')) {
+            var appVersion = this.get('appVersion');
+            if(XF.settings.property('noCache')) {
                 // cache is disable for the whole site manualy
-                console.log('XF.Cache :: init - cache is disable for the whole app manually - clearing storage');
+                console.log('XF.storage :: init - cache is disable for the whole app manually - clearing storage');
                 this.clear();
-                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
-            } else if(appVersion && appVersion == XF.Settings.property('applicationVersion')) {
+                this.set('appVersion', XF.settings.property('appVersion'));
+            } else if(appVersion && appVersion == XF.settings.property('appVersion')) {
                 // same version is cached - useing it as much as possible
-                console.log('XF.Cache :: init - same version is cached - useing it as much as possible');
+                console.log('XF.storage :: init - same version is cached - useing it as much as possible');
             } else {
                 // wrong or no version cached - clearing storage
-                console.log('XF.Cache :: init - wrong or no version cached - clearing storage');
+                console.log('XF.storage :: init - wrong or no version cached - clearing storage');
                 this.clear();
-                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
+                this.set('appVersion', XF.settings.property('appVersion'));
             }
         },
 
@@ -62,7 +62,7 @@
             if(this.available) {
                 try {
                     result = this.storage.getItem(key);
-                    console.log('XF.Cache :: get - "' + key + '" = "' + result + '"');
+                    console.log('XF.storage :: get - "' + key + '" = "' + result + '"');
                 } catch(e) {
                     result = null;
                 }
@@ -84,7 +84,7 @@
                 try {
                     this.storage.setItem(key, value);
                     result = true;
-                    console.log('XF.Cache :: set - "' + key + '" = "' + value + '"');
+                    console.log('XF.storage :: set - "' + key + '" = "' + value + '"');
                 } catch(e) {
                     result = false;
                 }
@@ -104,7 +104,7 @@
                 try {
                     this.storage.clear();
                     result = true;
-                    console.log('XF.Cache :: clear');
+                    console.log('XF.storage :: clear');
                 } catch(e) {
                     result = false;
                 }

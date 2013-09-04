@@ -79,7 +79,7 @@
      @function
      @public
      @param {Object} options
-     @param {Object} options.settings User-defined settings which would override {@link XF.Settings}
+     @param {Object} options.settings User-defined settings which would override {@link XF.settings}
      @param {Object} options.router Options required for {@link XF.Router}
      @param {Object} options.router.routes list of routes for {@link XF.Router}
      @param {Object} options.router.handlers list of route handlers for {@link XF.Router}
@@ -89,11 +89,8 @@
 
         options = options || {};
 
-        // options.settings
-        _.extend(XF.Settings.options, options.settings);
-
-        // initializing XF.Cache
-        XF.Cache.init();
+        // initializing XF.storage
+        XF.storage.init();
 
         // initializing XF.Device
         options.device = options.device || {};
@@ -294,7 +291,7 @@
     var getComponent = function(compName, callback) {
         var compStatus = registeredComponents[compName];
         if(!compStatus) {
-            compStatus = XF.registerComponent(compName, XF.Settings.property('componentUrlFormatter')(compName));
+            compStatus = XF.registerComponent(compName, XF.settings.property('componentUrl')(compName));
         }
         if(compStatus.loaded) {
             callback(compStatus.compDef);
