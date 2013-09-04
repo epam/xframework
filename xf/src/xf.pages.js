@@ -81,7 +81,6 @@
 
         start: function (jqObj) {
             jqObj = jqObj || $('body');
-            console.log('pages start', jqObj);
             var pages =  jqObj.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
