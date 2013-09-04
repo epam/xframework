@@ -1,4 +1,4 @@
-/*! X-Framework 03-09-2013 */
+/*! X-Framework 04-09-2013 */
 ;(function (window, $, BB) {/**
  TODO:
  - scrollTop for Zepto
@@ -3153,6 +3153,7 @@ XF.Collection = BB.Collection.extend({
         },
 
         show : function (jqLoader) {
+            jqLoader = jqLoader || this.create();
             jqLoader.show();
         },
 
