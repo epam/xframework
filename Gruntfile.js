@@ -5,6 +5,7 @@ module.exports = (function (grunt) {
         var jsSources = [
             'xf/src/xf.jquery.hooks.js',
             'xf/src/xf.core.js',
+            'xf/src/xf.app.js',
             'xf/src/xf.touch.js',
             'xf/src/xf.router.js',
             'xf/src/xf.utils.js',

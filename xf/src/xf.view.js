@@ -209,7 +209,7 @@
          */
         refresh: function() {
             if (this.status.loaded && this.template.src) {
-                if ((this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
+                if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
 
                     console.log('VIEW ReFRESH');
                     this.beforeRender();
