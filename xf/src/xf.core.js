@@ -195,6 +195,7 @@
                 var compInst = new compDef(compName, compID);
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
+                XF.trigger('component:' + compID + ':constructed');
             }
         });
     };
@@ -341,6 +342,7 @@
      @public
      */
     XF.defineComponent = function(compName, compDef) {
+        console.log(compName, compDef);
         var compStatus = registeredComponents[compName];
         if(!compStatus) {
             compStatus = registeredComponents[compName] = new ComponentStatus(null);

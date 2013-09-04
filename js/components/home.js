@@ -3,7 +3,7 @@ $(function(){
 		'home',
 		XF.Component.extend({
 
-            viewClass : XF.View.extend({
+            View : XF.View.extend({
                 useCache : false,
                 afterLoadTemplateFailed : function() {
                     $('body').html('Something went wrong. Try to reload the page...');
@@ -17,9 +17,8 @@ $(function(){
                 }
             }),
 
-            modelClass : XF.Model.extend({
-                isEmptyData : true
-            })
+            Model : null,
+            Collection: null
 
         })
 	);

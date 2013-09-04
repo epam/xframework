@@ -15,10 +15,14 @@
                 return;
             }
 
+            var headerTitle = jQHeader.find('h1');
+            if (headerTitle.length > 0) {
+                headerTitle.addClass('xf-header-title');
+            }
+
             options.id = options.id || 'xf-header-component-' + Math.floor(Math.random()*10000);
             options.title = options.title || '';
             options.html = jQHeader.html();
-            options.hasTitle = options.title != '' ? true : false;
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
 
             jQHeader.attr({
@@ -30,9 +34,6 @@
             var _template = _.template(
                 '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">'
                 + '<%= html %>'
-                + '<% if(hasTitle) { %>'
-                + '<h1 class="xf-header-title"><%= title %></h1>'
-                + '<% } %>'
                 + '</header>'
             );
 
