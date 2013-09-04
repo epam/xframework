@@ -43,3 +43,9 @@ xf/ui/xf.ui.slidemenu.js
 js/components/cmp.js
 
 tmpl/phone/cmp.tmpl
+
+data.json
+
+js/collections/customCollection.js
+
+js/models/customModel.js
