@@ -195,7 +195,6 @@
                 var compInst = new compDef(compName, compID);
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
-                compInst.construct();
             }
         });
     };
