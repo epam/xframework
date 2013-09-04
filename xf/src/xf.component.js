@@ -120,8 +120,7 @@
 
         
         initialize: function() {
-            var cmp = this;
-
+            console.log(this.View);
             if (this.Collection) {
                 this.collection = new this.Collection({
                     url: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
@@ -154,6 +153,7 @@
                 }
 
                 this.view = new this.View(params);
+
                 this.view.component = this;
                 this.view.construct();
             }
