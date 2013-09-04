@@ -11,7 +11,7 @@ XF.Model = BB.Model.extend({
     },
 
     /**
-     Settings for $ AJAX data request
+     settings for $ AJAX data request
      @type String
      */
     ajaxSettings : null,
@@ -27,13 +27,13 @@ XF.Model = BB.Model.extend({
         this._bindListeners();
 
 
-        this.urlRoot = this.urlRoot || XF.Settings.getProperty('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
+        this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || XF.Settings.getProperty('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,
