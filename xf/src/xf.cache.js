@@ -36,19 +36,19 @@
 
             // clearing localStorage if stored version is different from current
             var appVersion = this.get('applicationVersion');
-            if(XF.Settings.property('noCache')) {
+            if(XF.settings.property('noCache')) {
                 // cache is disable for the whole site manualy
                 console.log('XF.Cache :: init - cache is disable for the whole app manually - clearing storage');
                 this.clear();
-                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
-            } else if(appVersion && appVersion == XF.Settings.property('applicationVersion')) {
+                this.set('applicationVersion', XF.settings.property('applicationVersion'));
+            } else if(appVersion && appVersion == XF.settings.property('applicationVersion')) {
                 // same version is cached - useing it as much as possible
                 console.log('XF.Cache :: init - same version is cached - useing it as much as possible');
             } else {
                 // wrong or no version cached - clearing storage
                 console.log('XF.Cache :: init - wrong or no version cached - clearing storage');
                 this.clear();
-                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
+                this.set('applicationVersion', XF.settings.property('applicationVersion'));
             }
         },
 
