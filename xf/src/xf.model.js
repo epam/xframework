@@ -20,12 +20,14 @@ XF.Model = BB.Model.extend({
 
     },
 
-    /**
-     Constructs model instance
-     @private
-     */
-    initialize : function() {
+    constructor: function (attributes, options) {
+
+        this.component = options.component;
+
         this._bindListeners();
+
+
+        this.urlRoot = this.urlRoot || XF.Settings.getProperty('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
@@ -35,14 +37,24 @@ XF.Model = BB.Model.extend({
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,
-                onDataLoaded = _.bind(this.onDataLoaded, this);
+                onDataLoaded = _.bind(this._onDataLoaded, this);
             this.ajaxSettings.success = function () {
                 onDataLoaded();
                 onSuccess();
             };
         }else{
-            this.ajaxSettings = _.bind(this.onDataLoaded, this);
+            this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
         }
+
+        BB.Model.apply(this, arguments);
+    },
+
+    /**
+     Constructs model instance
+     @private
+     */
+    initialize : function() {
+
     },
 
     construct: function () {
@@ -60,7 +72,7 @@ XF.Model = BB.Model.extend({
         this.fetch(this.ajaxSettings);
     },
 
-    onDataLoaded: function () {
+    _onDataLoaded: function () {
         this.status.loaded = true;
         this.status.loading = false;
 

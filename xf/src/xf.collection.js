@@ -20,12 +20,11 @@ XF.Collection = BB.Collection.extend({
         //this.on('change reset sync add', this.onDataChanged, this);
     },
 
-    /**
-     Constructs model instance
-     @private
-     */
-    initialize : function() {
+    constructor: function (models, options) {
         this._bindListeners();
+
+        this.component = options.component;
+        this.url = this.url || XF.Settings.getProperty('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
@@ -35,14 +34,24 @@ XF.Collection = BB.Collection.extend({
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,
-                onDataLoaded = _.bind(this.onDataLoaded, this);
+                onDataLoaded = _.bind(this._onDataLoaded, this);
             this.ajaxSettings.success = function () {
                 onDataLoaded();
                 onSuccess();
             };
         }else{
-            this.ajaxSettings = _.bind(this.onDataLoaded, this);
+            this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
         }
+
+        BB.Collection.apply(this, arguments);
+    },
+
+    /**
+     Constructs model instance
+     @private
+     */
+    initialize : function() {
+
     },
 
     construct: function () {
@@ -60,7 +69,8 @@ XF.Collection = BB.Collection.extend({
         this.fetch(this.ajaxSettings);
     },
 
-    onDataLoaded: function () {
+    _onDataLoaded: function () {
+        console.log('data loaded');
         this.status.loaded = true;
         this.status.loading = false;
 
