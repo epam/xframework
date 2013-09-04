@@ -39,3 +39,7 @@ styles/sec.*
 images/
 
 xf/ui/xf.ui.slidemenu.js
+
+js/components/cmp.js
+
+tmpl/phone/cmp.tmpl

@@ -177,38 +177,6 @@
         },
 
         /**
-         Chooses the next applicable type in case when previous one's templatePath could not be loaded
-         @param {Object} fallBackFrom If passed, the return type would be taken as dropDown from it (optional)
-         @return {Object} Device type
-         */
-        getNextType : function(fallBackFrom) {
-            var aimType = this.type;
-            if(fallBackFrom) {
-                if(fallBackFrom.fallBackTo) {
-                    aimType = this.getTypeByName(fallBackFrom.fallBackTo);
-                } else {
-                    aimType = this.defaultType;
-                }
-            }
-
-            // just checking if type is ok
-            if(aimType && aimType.templatePath) {
-                // type is ok
-            } else {
-                aimType = this.defaultType;
-            }
-
-            // prevent looping the same type again & again
-            if(aimType == fallBackFrom) {
-                console.log('XF.DeviceClass :: getNextType - infinit cycle of drop down logic detected');
-                console.log('XF.DeviceClass :: getNextType - stop trying, no template is available');
-                return null;
-            }
-
-            return aimType;
-        },
-
-        /**
          Chooses device type by ot's name
          @param {String} typeName Value of 'name' property of the type that should be returnd
          @return {Object} Device type
@@ -372,6 +340,6 @@
                 }
                 vp.addClass('xf-viewport');
             }
-            return vp.eq(0)
+            return vp.eq(0);
         }
     };
