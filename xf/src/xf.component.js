@@ -120,21 +120,16 @@
 
         
         initialize: function() {
-            console.log(this.View);
+
             if (this.Collection) {
-                this.collection = new this.Collection({
-                    url: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
+                this.collection = new this.Collection({}, {
+                    component: this
                 });
-                if (this.Model) {
-                    this.collection.model = this.Model;
-                }
-                this.collection.component = this;
                 this.collection.construct();
             }else if (this.Model) {
-                this.model = new this.Model({
-                    urlRoot: XF.Settings.getProperty('dataUrlPrefix') + '/' + this.name + '/'
+                this.model = new this.Model({}, {
+                    component: this
                 });
-                this.model.component = this;
                 this.model.construct();
             }
 
@@ -142,19 +137,17 @@
                 var params = {
                     attributes: {
                         'data-id': this.id
-                    }
+                    },
+                    component: this
                 };
 
                 if (this.collection) {
                     params.collection = this.collection;
-                }
-                if (this.model) {
+                }else if (this.model) {
                     params.model = this.model;
                 }
 
                 this.view = new this.View(params);
-
-                this.view.component = this;
                 this.view.construct();
             }
 
@@ -171,8 +164,6 @@
             }else if (this.view) {
                 this.view.refresh();
             }
-
-            XF.trigger('component:' + this.id + ':constructed');
         },
 
 

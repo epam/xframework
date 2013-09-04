@@ -68,10 +68,10 @@
          */
 
         _bindListeners: function () {
-            if(!this.component.options.autorender) {
+            if(this.component.options.autorender) {
                 if (this.component.collection) {
                     this.listenTo(this.component.collection, 'fetched', this.refresh);
-                }else if (this.component.model) {
+                }else if (this.model) {
                     this.listenTo(this.component.model, 'fetched', this.refresh);
                 }
             }
@@ -79,12 +79,21 @@
             this.on('refresh', this.refresh, this);
         },
 
-        initialize: function () {
-            this.setElement('[data-id=' + this.attributes['data-id'] + ']');
+        constructor: function (options) {
+            this.setElement('[data-id=' + options.attributes['data-id'] + ']');
+
+            this.component = options.component;
+            _.omit(options, 'component');
 
             this._bindListeners();
 
             this.load();
+
+            BB.View.apply(this, arguments);
+        },
+
+        initialize: function () {
+
         },
 
         construct: function () {
@@ -158,11 +167,22 @@
          @static
          */
         getMarkup: function() {
+            var data = {
+                collection: null,
+                model: null
+            };
+
             if(!this.template.compiled) {
                 this.template.compiled = _.template(this.template.src);
             }
 
-            return this.template.compiled();
+            if (this.component.collection) {
+                data.collection = this.component.collection.toJSON();
+            }else if (this.component.model) {
+                data.model = this.component.model.toJSON();
+            }
+
+            return this.template.compiled(data);
         },
 
         /**
@@ -189,7 +209,9 @@
          */
         refresh: function() {
             if (this.status.loaded && this.template.src) {
-                if ((this.collection && this.collection.loaded) || (this.model && this.model.loaded)) {
+                if ((this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
+
+                    console.log('VIEW ReFRESH');
                     this.beforeRender();
                     this.render();
                     this.afterRender();
