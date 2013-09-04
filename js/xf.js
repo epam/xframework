@@ -134,7 +134,7 @@
      @function
      @public
      @param {Object} options
-     @param {Object} options.settings User-defined settings which would override {@link XF.Settings}
+     @param {Object} options.settings User-defined settings which would override {@link XF.settings}
      @param {Object} options.router Options required for {@link XF.Router}
      @param {Object} options.router.routes list of routes for {@link XF.Router}
      @param {Object} options.router.handlers list of route handlers for {@link XF.Router}
@@ -144,11 +144,8 @@
 
         options = options || {};
 
-        // options.settings
-        _.extend(XF.Settings.options, options.settings);
-
-        // initializing XF.Cache
-        XF.Cache.init();
+        // initializing XF.storage
+        XF.storage.init();
 
         // initializing XF.Device
         options.device = options.device || {};
@@ -349,7 +346,7 @@
     var getComponent = function(compName, callback) {
         var compStatus = registeredComponents[compName];
         if(!compStatus) {
-            compStatus = XF.registerComponent(compName, XF.Settings.property('componentUrlFormatter')(compName));
+            compStatus = XF.registerComponent(compName, XF.settings.property('componentUrl')(compName));
         }
         if(compStatus.loaded) {
             callback(compStatus.compDef);
@@ -464,6 +461,35 @@
 
 
 
+
+XF.App = function(options) {
+    options = options || {};
+    options.device = options.device || {};
+
+    // options.settings
+    _.extend(XF.settings, options.settings);
+
+    this.initialize();
+
+    XF.start(options);
+};
+
+
+_.extend(XF.App.prototype, XF.Events);
+
+_.extend(XF.App.prototype, /** @lends XF.App.prototype */{
+    initialize: function () {
+
+
+    }
+});
+
+/**
+ This method allows to extend XF.App with saving the whole prototype chain
+ @function
+ @static
+ */
+XF.App.extend = BB.Model.extend;
 
 
     XF.Touches = {
@@ -1014,103 +1040,79 @@
     });
 
     /**
-     Instance of {@link XF.SettingsClass}
+     {@link XF.settings}
      @static
      @type {Object}
      */
-    XF.Settings = {
+    XF.settings = {
         /**
-         Contains name-value pairs of all application settings
-         @name XF.Settings#options
-         @type Object
-         @private
+         Used for {@link XF.storage} clearance when new version released
+         @memberOf XF.settings.prototype
+         @default '1.0.0'
+         @type String
          */
-        options: /** @lends XF.Settings#options */ {
-
-            /**
-             Used for {@link XF.Cache} clearance when new version released
-             @memberOf XF.Settings.prototype
-             @default '1.0.0'
-             @type String
-             */
-            applicationVersion: '1.0.0',
-            /**
-             Deactivates cache usage for the whole app (usefull for developement)
-             @memberOf XF.Settings.prototype
-             @default false
-             @type String
-             */
-            noCache: false,
-            /**
-             Used by default Component URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            componentUrlPrefix: '',
-            /**
-             Used by default Component URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.js'
-             @type String
-             */
-            componentUrlPostfix: '.js',
-            /**
-             Default Component URL formatter: prefix + component_name + postfix
-             @param {String} compName Component name
-             @memberOf XF.Settings.prototype
-             @returns {String} Component URL
-             @type Function
-             */
-            componentUrlFormatter: function(compName) {
-                return XF.Settings.property('componentUrlPrefix') + compName + XF.Settings.property('componentUrlPostfix');
-            },
-
-            /**
-             Used by default Template URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            templateUrlPrefix: 'tmpl/',
-            /**
-             Used by default Template URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default '.tmpl'
-             @type String
-             */
-            templateUrlPostfix: '.tmpl',
-
-
-            /**
-             Used by default Data URL formatter: prefix + component_name + postfix
-             @memberOf XF.Settings.prototype
-             @default ''
-             @type String
-             */
-            dataUrlPrefix: '',
-
-
-            ajaxSettings: {
-                      // TODO: fill in ajaxSettings
-            }
+        appVersion: '1.0.0',
+        /**
+         Deactivates cache usage for the whole app (usefull for developement)
+         @memberOf XF.settings.prototype
+         @default false
+         @type String
+         */
+        noCache: false,
+        /**
+         Used by default Component URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default ''
+         @type String
+         */
+        componentUrlPrefix: 'js/components/',
+        /**
+         Used by default Component URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default '.js'
+         @type String
+         */
+        componentUrlPostfix: '.js',
+        /**
+         Default Component URL formatter: prefix + component_name + postfix
+         @param {String} compName Component name
+         @memberOf XF.settings.prototype
+         @returns {String} Component URL
+         @type Function
+         */
+        componentUrl: function(compName) {
+            return XF.settings.property('componentUrlPrefix') + compName + XF.settings.property('componentUrlPostfix');
         },
 
         /**
-         Gets property value by name
-         @param {String} propName
+         Used by default Template URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default ''
+         @type String
          */
-        getProperty: function(propName) {
-            return this.options[propName];
-        },
+        templateUrlPrefix: 'tmpl/',
         /**
-         Sets a new value for one property with
-         @param {String} propName
-         @param {Object} value new value of the property
+         Used by default Template URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default '.tmpl'
+         @type String
          */
-        setProperty: function(propName, value) {
-            this.options[propName] = value;
+        templateUrlPostfix: '.tmpl',
+
+
+        /**
+         Used by default Data URL formatter: prefix + component_name + postfix
+         @memberOf XF.settings.prototype
+         @default ''
+         @type String
+         */
+        dataUrlPrefix: '',
+
+
+        ajaxSettings: {
+                  // TODO: fill in ajaxSettings
         },
+
         /**
          Gets or sets property value (depending on whether the 'value' parameter was passed or not)
          @param {String} propName
@@ -1118,9 +1120,9 @@
          */
         property: function(propName, value) {
             if(value === undefined) {
-                return this.getProperty(propName);
+                return this[propName];
             } else {
-                this.setProperty(propName, value);
+                this[propName] = value;
             }
         }
     };
@@ -1130,7 +1132,7 @@
      @private
      @type {Object}
      */
-    XF.Cache = {
+    XF.storage = {
 
         /**
          Local reference to the localStorage
@@ -1161,20 +1163,20 @@
             }
 
             // clearing localStorage if stored version is different from current
-            var appVersion = this.get('applicationVersion');
-            if(XF.Settings.property('noCache')) {
+            var appVersion = this.get('appVersion');
+            if(XF.settings.property('noCache')) {
                 // cache is disable for the whole site manualy
-                console.log('XF.Cache :: init - cache is disable for the whole app manually - clearing storage');
+                console.log('XF.storage :: init - cache is disable for the whole app manually - clearing storage');
                 this.clear();
-                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
-            } else if(appVersion && appVersion == XF.Settings.property('applicationVersion')) {
+                this.set('appVersion', XF.settings.property('appVersion'));
+            } else if(appVersion && appVersion == XF.settings.property('appVersion')) {
                 // same version is cached - useing it as much as possible
-                console.log('XF.Cache :: init - same version is cached - useing it as much as possible');
+                console.log('XF.storage :: init - same version is cached - useing it as much as possible');
             } else {
                 // wrong or no version cached - clearing storage
-                console.log('XF.Cache :: init - wrong or no version cached - clearing storage');
+                console.log('XF.storage :: init - wrong or no version cached - clearing storage');
                 this.clear();
-                this.set('applicationVersion', XF.Settings.property('applicationVersion'));
+                this.set('appVersion', XF.settings.property('appVersion'));
             }
         },
 
@@ -1188,7 +1190,7 @@
             if(this.available) {
                 try {
                     result = this.storage.getItem(key);
-                    console.log('XF.Cache :: get - "' + key + '" = "' + result + '"');
+                    console.log('XF.storage :: get - "' + key + '" = "' + result + '"');
                 } catch(e) {
                     result = null;
                 }
@@ -1210,7 +1212,7 @@
                 try {
                     this.storage.setItem(key, value);
                     result = true;
-                    console.log('XF.Cache :: set - "' + key + '" = "' + value + '"');
+                    console.log('XF.storage :: set - "' + key + '" = "' + value + '"');
                 } catch(e) {
                     result = false;
                 }
@@ -1230,7 +1232,7 @@
                 try {
                     this.storage.clear();
                     result = true;
-                    console.log('XF.Cache :: clear');
+                    console.log('XF.storage :: clear');
                 } catch(e) {
                     result = false;
                 }
@@ -1599,7 +1601,7 @@ XF.Collection = BB.Collection.extend({
     },
 
     /**
-     Settings for $ AJAX data request
+     settings for $ AJAX data request
      @type String
      */
     ajaxSettings : null,
@@ -1612,13 +1614,13 @@ XF.Collection = BB.Collection.extend({
         this._bindListeners();
 
         this.component = options.component;
-        this.url = this.url || XF.Settings.getProperty('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
+        this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || XF.Settings.getProperty('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,
@@ -1679,7 +1681,7 @@ XF.Model = BB.Model.extend({
     },
 
     /**
-     Settings for $ AJAX data request
+     settings for $ AJAX data request
      @type String
      */
     ajaxSettings : null,
@@ -1695,13 +1697,13 @@ XF.Model = BB.Model.extend({
         this._bindListeners();
 
 
-        this.urlRoot = this.urlRoot || XF.Settings.getProperty('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
+        this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || XF.Settings.getProperty('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,
@@ -1808,7 +1810,7 @@ XF.Model = BB.Model.extend({
         },
 
         url: function () {
-            return XF.Settings.getProperty('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.Settings.getProperty('templateUrlPostfix');
+            return XF.settings.property('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
         },
 
         /**
@@ -1864,8 +1866,8 @@ XF.Model = BB.Model.extend({
             }
 
             // trying to get template from cache
-            if(this.template.cache && _.has(XF, 'Cache')) {
-                var cachedTemplate = XF.Cache.get(url);
+            if(this.template.cache && _.has(XF, 'storage')) {
+                var cachedTemplate = XF.storage.get(url);
                 if (cachedTemplate) {
                     this.template.src = cachedTemplate;
                     this.status.loaded = true;
@@ -1890,8 +1892,8 @@ XF.Model = BB.Model.extend({
                             var template = jqXHR.responseText;
 
                             // saving template into cache if the option is turned on
-                            if($this.template.cache && _.has(XF, 'Cache')) {
-                                XF.Cache.set(url, template);
+                            if($this.template.cache && _.has(XF, 'storage')) {
+                                XF.storage.set(url, template);
                             }
 
                             $this.template.src = jqXHR.responseText;
@@ -1959,7 +1961,7 @@ XF.Model = BB.Model.extend({
          */
         refresh: function() {
             if (this.status.loaded && this.template.src) {
-                if ((this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
+                if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
 
                     console.log('VIEW ReFRESH');
                     this.beforeRender();

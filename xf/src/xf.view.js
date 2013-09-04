@@ -58,7 +58,7 @@
         },
 
         url: function () {
-            return XF.Settings.getProperty('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.Settings.getProperty('templateUrlPostfix');
+            return XF.settings.property('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
         },
 
         /**
@@ -114,8 +114,8 @@
             }
 
             // trying to get template from cache
-            if(this.template.cache && _.has(XF, 'Cache')) {
-                var cachedTemplate = XF.Cache.get(url);
+            if(this.template.cache && _.has(XF, 'storage')) {
+                var cachedTemplate = XF.storage.get(url);
                 if (cachedTemplate) {
                     this.template.src = cachedTemplate;
                     this.status.loaded = true;
@@ -140,8 +140,8 @@
                             var template = jqXHR.responseText;
 
                             // saving template into cache if the option is turned on
-                            if($this.template.cache && _.has(XF, 'Cache')) {
-                                XF.Cache.set(url, template);
+                            if($this.template.cache && _.has(XF, 'storage')) {
+                                XF.storage.set(url, template);
                             }
 
                             $this.template.src = jqXHR.responseText;
@@ -209,7 +209,7 @@
          */
         refresh: function() {
             if (this.status.loaded && this.template.src) {
-                if ((this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
+                if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
 
                     console.log('VIEW ReFRESH');
                     this.beforeRender();
