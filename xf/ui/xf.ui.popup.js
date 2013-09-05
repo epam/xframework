@@ -6,9 +6,7 @@
      */
     XF.ui.popup = {
         render : function () {
-            /*
-             <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
-             */
+
             var id = 'xf-' + Math.floor(Math.random() * 10000),
                 idStack = XF.ui.checkInIsset('popup'),
                 newId = false;
@@ -70,6 +68,7 @@
          @return $ Dialog object
          */
         createDialog : function (headerText, messageText, buttons) {
+            buttons = buttons || [];
 
             /*
              <div class="xf-dialog-box">
@@ -106,16 +105,15 @@
             jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
             var jqBtnContainer = jqDialog.find('.xf-dialog-box-footer');
 
-            if (!buttons) {
-                buttons = [{
+            if (buttons.length < 1) {
+                buttons.push({
                     text: 'OK',
                     handler: function (){
-                        this.hide(jqDialog);
+                        XF.UI.popup.hide(jqDialog);
                     }
-                }]
+                });
             }
-
-            if (buttons) {
+            if (buttons.length > 0) {
                 var btnCount = buttons.length,
                     jqBtn;
 
@@ -135,6 +133,7 @@
                 });
             }
             this.dialog = jqDialog;
+            XF.trigger('ui:enhance', jqDialog);
             return jqDialog;
         },
 
@@ -182,27 +181,11 @@
         },
 
         /**
-         Stores loading notification object
-         @type $
-         @private
-         */
-        loadingNotification : null,
-
-
-        /**
          Stores dialog object
          @type $
          @private
          */
         dialog : null,
-
-        /**
-         Saves passed popup as default loading notification
-         @param jqPopup $ object representing popup
-         */
-        setLoadingNotification : function (jqPopup) {
-            this.loadingNotification = jqPopup;
-        },
 
         /**
          Hides Dialog
@@ -226,12 +209,13 @@
         },
 
         createButton : function (buttonDescr)  {
-            var jQButton = $('<button>/button>'),
+            var jQButton = $('<button></button>'),
                 attrs = {};
 
             attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
             attrs['class'] = buttonDescr.class || '';
             attrs['name'] = buttonDescr.name || attrs.id;
+            buttonDescr.small = buttonDescr.small || '';
 
             jQButton.html(buttonDescr.text);
 
@@ -262,8 +246,15 @@
             if (_.isFunction(buttonDescr.handler)) {
                 jQButton.click(buttonDescr.handler)
             };
+
             jQButton.attr(attrs);
+
+            if (_.isFunction(buttonDescr.handler)) {
+                jQButton.on('tap', buttonDescr.handler);
+            };
+
             XF.ui.button.render(jQButton[0]);
+
             return jQButton;
         }
     };
