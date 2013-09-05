@@ -4,7 +4,7 @@
      @param footer DOM Object
      @private
      */
-    XF.UI.footer = {
+    XF.ui.footer = {
 
         selector : 'footer, [data-role=footer]',
 
@@ -33,11 +33,11 @@
                 if (parentPage[0]) {
                     parentPage.addClass('xf-page-has-fixed-footer');
                 } else {
-                    XF.Device.getViewport().addClass('xf-viewport-has-fixed-footer');
+                    XF.device.getViewport().addClass('xf-viewport-has-fixed-footer');
                 }
             }
 
-            var buttons = jQFooter.find(XF.UI.button.selector);
+            var buttons = jQFooter.find(XF.ui.button.selector);
             options.buttonsClass = 'xf-grid-unit-1of' + buttons.length;
 
             for (var i = 0; i < buttons.length; ++i) {
@@ -52,8 +52,8 @@
                 options.buttons.push(butOpts);
             }
 
-            XF.Router.on('route', function () {
-                XF.UI.footer.selectButton(jQFooter);
+            XF.router.on('route', function () {
+                XF.ui.footer.selectButton(jQFooter);
             });
 
             var _template = _.template(
@@ -73,7 +73,7 @@
 
             jQFooter.html(_template(options));
 
-            XF.UI.footer.selectButton(jQFooter);
+            XF.ui.footer.selectButton(jQFooter);
         },
 
         selectButton : function (el) {

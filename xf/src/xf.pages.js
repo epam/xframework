@@ -1,9 +1,13 @@
     /**
-     XF.Pages
+     XF.pages
      @static
      @public
      */
-    XF.Pages = {
+    XF.pages = {
+
+        status: {
+            started: false
+        },
 
         /**
          CSS class used to identify pages
@@ -59,14 +63,14 @@
         activePageName: '',
 
         /**
-         Initialises Pages: get current active page and binds necessary routes handling
+         Initialises pages: get current active page and binds necessary routes handling
          @private
          */
         init : function(animations) {
-            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
-            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
-            XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
-            XF.on('pages:start', _.bind(XF.Pages.start, XF.Pages));
+            XF.on('pages:show', _.bind(XF.pages.show, XF.pages));
+            XF.on('pages:animation:next', _.bind(XF.pages.setNextAnimationType, XF.pages));
+            XF.on('pages:animation:default', _.bind(XF.pages.setDefaultAnimationType, XF.pages));
+            XF.on('pages:start', _.bind(XF.pages.start, XF.pages));
 
             if (_.has(animations, 'types') ) {
                 _.extend(this.animations.types, animations.types);
@@ -80,6 +84,10 @@
         },
 
         start: function (jqObj) {
+            if (this.status.started) {
+                return;
+            }
+
             jqObj = jqObj || $('body');
             var pages =  jqObj.find(' .' + this.pageClass);
             if (pages.length) {
@@ -90,18 +98,19 @@
                 } else {
                     this.show(pages.first());
                 }
+                this.status.started = true;
             }
         },
 
         setDefaultAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.default = animationType;
+            if (XF.pages.animations.types[animationType]) {
+                XF.pages.animations.default = animationType;
             }
         },
 
         setNextAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.next = animationType;
+            if (XF.pages.animations.types[animationType]) {
+                XF.pages.animations.next = animationType;
             }
         },
 
@@ -122,16 +131,16 @@
                 return;
             }
 
-            var jqPage = (page instanceof $) ? page : $('.' + XF.Pages.pageClass + '#' + page);
+            var jqPage = (page instanceof $) ? page : $('.' + XF.pages.pageClass + '#' + page);
 
             // preventing animation when the page is already shown
             if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
                 return;
             }
-            console.log('XF.Pages :: showing page', jqPage.attr('id'));
+            console.log('XF.pages :: showing page', jqPage.attr('id'));
 
-            var viewport = XF.Device.getViewport();
-            var screenHeight = XF.Device.getScreenHeight();
+            var viewport = XF.device.getViewport();
+            var screenHeight = XF.device.getScreenHeight();
 
             if (this.animations.next) {
                 animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
@@ -146,7 +155,7 @@
             this.activePage = toPage;
             this.activePageName = jqPage.attr('id');
 
-            if (!XF.Device.supports.cssAnimations) {
+            if (!XF.device.supports.cssAnimations) {
                 if (_.isFunction(this.animations.types[animationType]['fallback'])) {
                     toPage.addClass(this.activePageClass);
                     this.animations.types[animationType].fallback(fromPage, toPage);
@@ -161,7 +170,7 @@
                 toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
                 fromPage.animationEnd(function(){
                     fromPage.height('').removeClass(animationType + ' out in');
-                    fromPage.removeClass(XF.Pages.activePageClass);
+                    fromPage.removeClass(XF.pages.activePageClass);
                 });
 
                 toPage.animationEnd(function(){
