@@ -8,7 +8,7 @@ $(function(){
                 afterLoadTemplateFailed : function() {
                     $('body').html('Something went wrong. Try to reload the page...');
                 },
-                postRender : function () {
+                afterRender : function () {
                     $('#firstTabs a').on('tap', function(){
                         var id = $(this).attr('data-params');
                         $(".tabs-list > li").hide();
