@@ -156,6 +156,7 @@
             this.construct();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
+            this.listenToOnce(this.view, 'rendered', function () { XF.trigger('component:' + this.id + ':constructed'); });
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
