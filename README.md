@@ -53,7 +53,7 @@ XF Generator has a number of dependencies such as:
 * [NPM](https://npmjs.org)
 * [Yeoman] (http://yeoman.io)
 
-To install first two of them on Mac OS X or Windows computers you just need to download a package from (nodejs.org/download/)[http://nodejs.org/download/]. For other platforms see the (readme)[https://npmjs.org/doc/README.html].
+To install first two of them on Mac OS X or Windows computers you just need to download a package from [nodejs.org/download/](http://nodejs.org/download/). For other platforms see the [readme](https://npmjs.org/doc/README.html).
 
 After installing node.js and npm go to terminal and install Yeoman writing `npm install -g yo` (with `sudo` if necessary).
 
@@ -70,7 +70,7 @@ Almost there! After these steps you need to install XF Generator with `npm insta
 # XFramework internals
 
 ## XF source modules
-## 
+
 
 # Components
 
