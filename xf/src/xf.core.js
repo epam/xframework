@@ -64,11 +64,15 @@
     });
 
     onComponentCostruct = function (compID) {
-        console.log('constructed', compID);
         var compObj = $(XF.getComponentByID(compID).selector());
-        XF.trigger('pages:start', compObj);
 
-        loadChildComponents(compObj);
+        if (_.has(XF, 'pages')) {
+            if (!XF.pages.status.started) {
+                XF.trigger('pages:start', compObj);
+            }
+        }
+
+        //loadChildComponents(compObj);
     };
 
 
@@ -171,7 +175,7 @@
      @private
      */
     var loadChildComponents = function(DOMObject) {
-        console.log('XF :: loadChildComponents');
+        console.log('XF :: loadChildComponents', DOMObject);
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
@@ -204,28 +208,17 @@
      */
     var bindHideShowListeners = function() {
         $('[data-component]').on('show', function(evt) {
-            if(evt.currentTarget == evt.target) {
+            if ($(evt.target).attr('data-component')) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
                 XF.trigger('ui:enhance', $(this));
+            }else{
+                loadChildComponents($(this));
             }
         });
-
-//         var selector = null;
-//         _.each(XF.ui.enhancementList, function(enhancement, index, enhancementList) {
-//         if(!selector) {
-//         selector = enhancement.selector;
-//         } else {
-//         selector += ', ' + enhancement.selector;
-//         }
-//         });
-//         $(selector).on('show', function() {
-//         XF.ui.enhanceView($(this));
-//         });
-
     };
 
     /**

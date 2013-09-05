@@ -98,6 +98,8 @@
                 } else {
                     this.show(pages.first());
                 }
+
+                XF.off('pages:start');
                 this.status.started = true;
             }
         },
@@ -185,6 +187,6 @@
             XF.trigger('ui:enhance', $(this.activePage));
 
             // looking for components inside the page
-            loadChildComponents(this.activePage[0]);
+            //loadChildComponents(this.activePage[0]);
         }
     };
