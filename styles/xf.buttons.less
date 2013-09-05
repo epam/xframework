@@ -65,7 +65,8 @@
 .xf-button-small-icon-only {
   .xf-button-small;
   min-width: 0;
-  width: 29px;
+  width: 27px;
+  padding-left: 0;
 }
 
 /* Back button */
@@ -90,9 +91,15 @@
 
 .xf-button-small.xf-iconpos-left {
   padding-left: 25px;
+    &.xf-button-small-icon-only {
+        padding-left: 0;
+    }
 }
 .xf-button-small.xf-iconpos-right {
   padding-right: 25px;
+    &.xf-button-small-icon-only {
+        padding-right: 0;
+    }
 }
 .xf-button-small.xf-iconpos-top {
   padding-top: 21px;
