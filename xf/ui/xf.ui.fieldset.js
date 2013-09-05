@@ -4,7 +4,7 @@
      @param textInput DOM Object
      @private
      */
-    XF.UI.fieldset =  {
+    XF.ui.fieldset =  {
 
         selector : 'fieldset[data-role=controlgroup]',
 

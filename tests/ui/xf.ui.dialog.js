@@ -36,7 +36,7 @@ var page = require('webpage').create(),
                 window.setTimeout(function () {
 
                     var result = page.evaluate(function () {
-                        XF.UI.popup.showDialog('Test header', 'Test Dialog');
+                        XF.ui.popup.showDialog('Test header', 'Test Dialog');
 
                         if ($('.xf-dialog').length) {
                             return $('.xf-dialog').find('.xf-dialog-box-content').text();

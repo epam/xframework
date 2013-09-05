@@ -1,4 +1,4 @@
-/*! X-Framework 04-09-2013 */
+/*! X-Framework 05-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -77,7 +77,7 @@
 
     // TODO: comments
     XF.navigate = function (fragment) {
-        XF.Router.navigate(fragment, {trigger: true});
+        XF.router.navigate(fragment, {trigger: true});
     };
 
     XF.on('navigate', XF.navigate);
@@ -135,9 +135,9 @@
      @public
      @param {Object} options
      @param {Object} options.settings User-defined settings which would override {@link XF.settings}
-     @param {Object} options.router Options required for {@link XF.Router}
-     @param {Object} options.router.routes list of routes for {@link XF.Router}
-     @param {Object} options.router.handlers list of route handlers for {@link XF.Router}
+     @param {Object} options.router Options required for {@link XF.router}
+     @param {Object} options.router.routes list of routes for {@link XF.router}
+     @param {Object} options.router.handlers list of route handlers for {@link XF.router}
      @description Launches the app with specified options
      */
     XF.start = function(options) {
@@ -147,13 +147,13 @@
         // initializing XF.storage
         XF.storage.init();
 
-        // initializing XF.Device
+        // initializing XF.device
         options.device = options.device || {};
-        XF.Device.init(options.device.types);
+        XF.device.init(options.device.types);
 
-        // initializing XF.Touches
-        if ('Touches' in XF) {
-            XF.Touches.init();
+        // initializing XF.touches
+        if ('touches' in XF) {
+            XF.touches.init();
         }
 
         // options.router
@@ -163,24 +163,24 @@
         placeAnchorHooks();
         bindHideShowListeners();
 
-        if (_.has(XF, 'UI')) {
-            XF.UI.init();
+        if (_.has(XF, 'ui')) {
+            XF.ui.init();
         }
 
-        XF.Router.start();
+        XF.router.start();
 
         options.animations = options.animations || {};
         options.animations.default = options.animations.default || '';
-        if (_.has(XF.Device.type, 'defaultAnimation')) {
-            options.animations.default = XF.Device.type.defaultAnimation;
+        if (_.has(XF.device.type, 'defaultAnimation')) {
+            options.animations.default = XF.device.type.defaultAnimation;
             console.log('Options.animations', options.animations);
         }
 
-        XF.Pages.init(options.animations);
+        XF.pages.init(options.animations);
 
 
 
-        //XF.Pages.start();
+        //XF.pages.start();
         loadChildComponents(rootDOMObject);
     };
 
@@ -188,23 +188,23 @@
 
 
     /**
-     Creates {@link XF.Router}
+     Creates {@link XF.router}
      @memberOf XF
-     @param {Object} routes list of routes for {@link XF.Router}
-     @param {Object} handlers list of route handlers for {@link XF.Router}
+     @param {Object} routes list of routes for {@link XF.router}
+     @param {Object} handlers list of route handlers for {@link XF.router}
      @private
      */
-    var createRouter = function(options) {   debugger;
-        if(XF.Router) {
+    var createRouter = function(options) {
+        if(XF.router) {
             throw 'XF.createRouter can be called only ONCE!';
         } else {
-            XF.Router = new (XF.RouterClass.extend(options))();
+            XF.router = new (XF.Router.extend(options))();
         }
     };
 
 
     /**
-     Adds listeners to each 'a' tag with 'data-href' attribute on a page - all the clicks should bw delegated to {@link XF.Router}
+     Adds listeners to each 'a' tag with 'data-href' attribute on a page - all the clicks should bw delegated to {@link XF.router}
      @memberOf XF
      @private
      */
@@ -214,7 +214,7 @@
             if (animationType) {
                 XF.trigger('pages:animation:next', animationType);
             }
-            XF.Router.navigate( $(this).data('href'), {trigger: true} );
+            XF.router.navigate( $(this).data('href'), {trigger: true} );
         });
     };
 
@@ -269,7 +269,7 @@
         });
 
 //         var selector = null;
-//         _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
+//         _.each(XF.ui.enhancementList, function(enhancement, index, enhancementList) {
 //         if(!selector) {
 //         selector = enhancement.selector;
 //         } else {
@@ -277,7 +277,7 @@
 //         }
 //         });
 //         $(selector).on('show', function() {
-//         XF.UI.enhanceView($(this));
+//         XF.ui.enhanceView($(this));
 //         });
 
     };
@@ -490,7 +490,7 @@ _.extend(XF.App.prototype, /** @lends XF.App.prototype */{
 XF.App.extend = BB.Model.extend;
 
 
-    XF.Touches = {
+    XF.touches = {
 
         init : function () {
             // Default values and device events detection
@@ -526,8 +526,8 @@ XF.App.extend = BB.Model.extend;
                 eventType;
 
             // Changing events depending on detected data
-            isTouch = (XF.Device.supports.pointerEvents) ? false : (XF.Device.supports.touchEvents ? true : false);
-            eventType = (XF.Device.supports.pointerEvents) ? 'pointer' : (XF.Device.supports.touchEvents ? 'touch' : 'mouse');
+            isTouch = (XF.device.supports.pointerEvents) ? false : (XF.device.supports.touchEvents ? true : false);
+            eventType = (XF.device.supports.pointerEvents) ? 'pointer' : (XF.device.supports.touchEvents ? 'touch' : 'mouse');
 
             // If target is text
             var parentIfText = function (node) {
@@ -599,9 +599,9 @@ XF.App.extend = BB.Model.extend;
     /**
      Instance of {@link XF.RouterClass}
      @static
-     @type {XF.Router}
+     @type {XF.router}
      */
-    XF.Router = null;
+    XF.router = null;
 
     /**
      Implements Routing.
@@ -611,9 +611,9 @@ XF.App.extend = BB.Model.extend;
      @param {Object} routes routes has map
      @param {Object} handlers handlers has map
      */
-    XF.RouterClass = BB.Router;
+    XF.Router = BB.Router;
 
-    _.extend(XF.RouterClass.prototype, /** @lends XF.RouterClass.prototype */{
+    _.extend(XF.Router.prototype, /** @lends XF.Router.prototype */{
 
 
         /**
@@ -633,9 +633,9 @@ XF.App.extend = BB.Model.extend;
          */
         bindAnyRoute : function() {
             this.on('route', function (e) {
-                console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
-                if (XF.Pages) {
-                    XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                console.log('XF.router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
+                if (XF.pages) {
+                    XF.pages.show(this.getPageNameFromFragment(XF.history.fragment));
                 }
             });
         },
@@ -653,14 +653,14 @@ XF.App.extend = BB.Model.extend;
     /**
      @namespace Holds all the reusable util functions
      */
-    XF.Utils = {};
+    XF.utils = {};
 
     /**
      @namespace Holds all the reusable util functions related to Adress Bar
      */
-    XF.Utils.AddressBar = {};
+    XF.utils.addressBar = {};
 
-    _.extend(XF.Utils.AddressBar, /** @lends XF.Utils.AddressBar */{
+    _.extend(XF.utils.addressBar, /** @lends XF.utils.addressBar */{
 
         /**
          Saves scroll value in order to not re-calibrate everytime we call the hide url bar
@@ -685,16 +685,16 @@ XF.App.extend = BB.Model.extend;
          Hides adress bar
          */
         hide : function(){
-            console.log('XF :: Utils :: AddressBar :: hide');
+            console.log('XF :: utils :: addressBar :: hide');
             var win = window;
 
-            // if there is a hash, or XF.Utils.AddressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
-            if( !location.hash && XF.Utils.AddressBar.BODY_SCROLL_TOP !== false){
-                win.scrollTo( 0, XF.Utils.AddressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
+            // if there is a hash, or XF.utils.addressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
+            if( !location.hash && XF.utils.addressBar.BODY_SCROLL_TOP !== false){
+                win.scrollTo( 0, XF.utils.addressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
             }
 
 
-            if (XF.Device.isMobile) {
+            if (XF.device.isMobile) {
                 var css = document.documentElement.style;
 
                 css.height = '200%';
@@ -712,7 +712,7 @@ XF.App.extend = BB.Model.extend;
          Hides adress bar on page load
          */
         hideOnLoad : function () {
-            console.log('XF :: Utils :: AddressBar :: hideOnLoad');
+            console.log('XF :: utils :: addressBar :: hideOnLoad');
             var win = window,
                 doc = win.document;
 
@@ -721,14 +721,14 @@ XF.App.extend = BB.Model.extend;
 
                 //scroll to 1
                 window.scrollTo( 0, 1 );
-                XF.Utils.AddressBar.BODY_SCROLL_TOP = 1;
+                XF.utils.addressBar.BODY_SCROLL_TOP = 1;
 
                 //reset to 0 on bodyready, if needed
                 bodycheck = setInterval(function() {
                     if( doc.body ) {
                         clearInterval( bodycheck );
-                        XF.Utils.AddressBar.BODY_SCROLL_TOP = XF.Utils.AddressBar.getScrollTop();
-                        //XF.Utils.AddressBar.hide();
+                        XF.utils.addressBar.BODY_SCROLL_TOP = XF.utils.addressBar.getScrollTop();
+                        //XF.utils.addressBar.hide();
                     }
                 }, 15);
 
@@ -736,9 +736,9 @@ XF.App.extend = BB.Model.extend;
                     function() {
                         setTimeout(function() {
                             //at load, if user hasn't scrolled more than 20 or so...
-                            if( XF.Utils.AddressBar.getScrollTop() < 20 ) {
+                            if( XF.utils.addressBar.getScrollTop() < 20 ) {
                                 //reset to hide addr bar at onload
-                                //XF.Utils.AddressBar.hide();
+                                //XF.utils.addressBar.hide();
                             }
                         }, 0);
                     }
@@ -747,11 +747,15 @@ XF.App.extend = BB.Model.extend;
         }
     });
     /**
-     XF.Pages
+     XF.pages
      @static
      @public
      */
-    XF.Pages = {
+    XF.pages = {
+
+        status: {
+            started: false
+        },
 
         /**
          CSS class used to identify pages
@@ -807,14 +811,14 @@ XF.App.extend = BB.Model.extend;
         activePageName: '',
 
         /**
-         Initialises Pages: get current active page and binds necessary routes handling
+         Initialises pages: get current active page and binds necessary routes handling
          @private
          */
         init : function(animations) {
-            XF.on('pages:show', _.bind(XF.Pages.show, XF.Pages));
-            XF.on('pages:animation:next', _.bind(XF.Pages.setNextAnimationType, XF.Pages));
-            XF.on('pages:animation:default', _.bind(XF.Pages.setDefaultAnimationType, XF.Pages));
-            XF.on('pages:start', _.bind(XF.Pages.start, XF.Pages));
+            XF.on('pages:show', _.bind(XF.pages.show, XF.pages));
+            XF.on('pages:animation:next', _.bind(XF.pages.setNextAnimationType, XF.pages));
+            XF.on('pages:animation:default', _.bind(XF.pages.setDefaultAnimationType, XF.pages));
+            XF.on('pages:start', _.bind(XF.pages.start, XF.pages));
 
             if (_.has(animations, 'types') ) {
                 _.extend(this.animations.types, animations.types);
@@ -828,6 +832,10 @@ XF.App.extend = BB.Model.extend;
         },
 
         start: function (jqObj) {
+            if (this.status.started) {
+                return;
+            }
+
             jqObj = jqObj || $('body');
             var pages =  jqObj.find(' .' + this.pageClass);
             if (pages.length) {
@@ -838,18 +846,19 @@ XF.App.extend = BB.Model.extend;
                 } else {
                     this.show(pages.first());
                 }
+                this.status.started = true;
             }
         },
 
         setDefaultAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.default = animationType;
+            if (XF.pages.animations.types[animationType]) {
+                XF.pages.animations.default = animationType;
             }
         },
 
         setNextAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.next = animationType;
+            if (XF.pages.animations.types[animationType]) {
+                XF.pages.animations.next = animationType;
             }
         },
 
@@ -870,16 +879,16 @@ XF.App.extend = BB.Model.extend;
                 return;
             }
 
-            var jqPage = (page instanceof $) ? page : $('.' + XF.Pages.pageClass + '#' + page);
+            var jqPage = (page instanceof $) ? page : $('.' + XF.pages.pageClass + '#' + page);
 
             // preventing animation when the page is already shown
             if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
                 return;
             }
-            console.log('XF.Pages :: showing page', jqPage.attr('id'));
+            console.log('XF.pages :: showing page', jqPage.attr('id'));
 
-            var viewport = XF.Device.getViewport();
-            var screenHeight = XF.Device.getScreenHeight();
+            var viewport = XF.device.getViewport();
+            var screenHeight = XF.device.getScreenHeight();
 
             if (this.animations.next) {
                 animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
@@ -894,7 +903,7 @@ XF.App.extend = BB.Model.extend;
             this.activePage = toPage;
             this.activePageName = jqPage.attr('id');
 
-            if (!XF.Device.supports.cssAnimations) {
+            if (!XF.device.supports.cssAnimations) {
                 if (_.isFunction(this.animations.types[animationType]['fallback'])) {
                     toPage.addClass(this.activePageClass);
                     this.animations.types[animationType].fallback(fromPage, toPage);
@@ -909,7 +918,7 @@ XF.App.extend = BB.Model.extend;
                 toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
                 fromPage.animationEnd(function(){
                     fromPage.height('').removeClass(animationType + ' out in');
-                    fromPage.removeClass(XF.Pages.activePageClass);
+                    fromPage.removeClass(XF.pages.activePageClass);
                 });
 
                 toPage.animationEnd(function(){
@@ -930,14 +939,14 @@ XF.App.extend = BB.Model.extend;
 
 
     /**
-     @namespace Holds all the logic related to UI elements enhancement
+     @namespace Holds all the logic related to ui elements enhancement
      */
-    XF.UI = {};
+    XF.ui = {};
 
-    _.extend(XF.UI, /** @lends XF.UI */ {
+    _.extend(XF.ui, /** @lends XF.ui */ {
 
         init: function () {
-            XF.on('ui:enhance', _.bind(XF.UI.enhance, XF.UI));
+            XF.on('ui:enhance', _.bind(XF.ui.enhance, XF.ui));
         },
 
         /**
@@ -954,23 +963,23 @@ XF.App.extend = BB.Model.extend;
                 }
             }
 
-            _.each(XF.UI, function (enhancement, index) {
+            _.each(XF.ui, function (enhancement, index) {
 
                 if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
 
                     jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
                         var skip = false;
 
-                        _.each(XF.UI.enhanced.length, function (elem, index) {
+                        _.each(XF.ui.enhanced.length, function (elem, index) {
 
-                            if (XF.UI.enhanced[i] === this) {
+                            if (XF.ui.enhanced[i] === this) {
                                 skip = true;
                             }
                         });
 
                         if (!skip & $(this).attr('data-skip-enhance') != 'true') {
                             var options = $(this).data();
-                            XF.UI.enhanced.push(this);
+                            XF.ui.enhanced.push(this);
                             enhancement.render(this, options);
                         }
                     });
@@ -1246,7 +1255,7 @@ XF.App.extend = BB.Model.extend;
      @private
      @type {Object}
      */
-    XF.Device = {
+    XF.device = {
 
         /**
          Contains device viewport size: {width; height}
@@ -1318,7 +1327,7 @@ XF.App.extend = BB.Model.extend;
 
 
         /**
-         Initializes {@link XF.Device} instance (runs detection methods)
+         Initializes {@link XF.device} instance (runs detection methods)
          @param {Array} types rray of device types to be choosen from
          */
         init : function(types) {
@@ -1417,7 +1426,7 @@ XF.App.extend = BB.Model.extend;
         /**
          Chooses device type by ot's name
          @param {String} typeName Value of 'name' property of the type that should be returnd
-         @return {Object} Device type
+         @return {Object} device type
          */
         getTypeByName : function(typeName) {
             var res = null;
@@ -1459,7 +1468,7 @@ XF.App.extend = BB.Model.extend;
 
             }, 1, ['touch']);
 
-            console.log('XF.Device :: detectTouchable - device IS ' + (this.supports.touchEvents ? '' : 'NOT ') + 'touchable');
+            console.log('XF.device :: detectTouchable - device IS ' + (this.supports.touchEvents ? '' : 'NOT ') + 'touchable');
 
         },
 
@@ -1745,7 +1754,7 @@ XF.Model = BB.Model.extend({
     XF.View = BB.View.extend({
 
         url: function () {
-            return XF.settings.property('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
+            return XF.settings.property('templateUrlPrefix') + XF.device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
         },
 
         /**
@@ -1913,7 +1922,7 @@ XF.Model = BB.Model.extend({
          */
         afterLoadTemplateFailed : function() {
             console.log('XF.View :: afterLoadTemplateFailed - could not load template for "' + this.component.id + '"');
-            console.log('XF.View :: afterLoadTemplateFailed - @dev: verify XF.Device.types settings & XF.View :: getTemplate URL overrides');
+            console.log('XF.View :: afterLoadTemplateFailed - @dev: verify XF.device.types settings & XF.View :: getTemplate URL overrides');
         },
 
         /**
@@ -2208,7 +2217,7 @@ XF.Model = BB.Model.extend({
      @param button DOM Object
      @private
      */
-    XF.UI.button = {
+    XF.ui.button = {
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
         render : function (button, options) {
@@ -2243,7 +2252,7 @@ XF.Model = BB.Model.extend({
                 enhancedButton.addClass('xf-button-float-' + position);
             }
 
-            if (jQButton.parents(XF.UI.header.selector).length > 0) {
+            if (jQButton.parents(XF.ui.header.selector).length > 0) {
                 enhancedButton.addClass('xf-button-header-' + position);
             }
 
@@ -2331,7 +2340,7 @@ XF.Model = BB.Model.extend({
      @param textInput DOM Object
      @private
      */
-    XF.UI.checkboxRadio = {
+    XF.ui.checkboxRadio = {
 
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
@@ -2397,7 +2406,7 @@ XF.Model = BB.Model.extend({
      @param textInput DOM Object
      @private
      */
-    XF.UI.fieldset =  {
+    XF.ui.fieldset =  {
 
         selector : 'fieldset[data-role=controlgroup]',
 
@@ -2443,7 +2452,7 @@ XF.Model = BB.Model.extend({
      @param footer DOM Object
      @private
      */
-    XF.UI.footer = {
+    XF.ui.footer = {
 
         selector : 'footer, [data-role=footer]',
 
@@ -2472,11 +2481,11 @@ XF.Model = BB.Model.extend({
                 if (parentPage[0]) {
                     parentPage.addClass('xf-page-has-fixed-footer');
                 } else {
-                    XF.Device.getViewport().addClass('xf-viewport-has-fixed-footer');
+                    XF.device.getViewport().addClass('xf-viewport-has-fixed-footer');
                 }
             }
 
-            var buttons = jQFooter.find(XF.UI.button.selector);
+            var buttons = jQFooter.find(XF.ui.button.selector);
             options.buttonsClass = 'xf-grid-unit-1of' + buttons.length;
 
             for (var i = 0; i < buttons.length; ++i) {
@@ -2491,8 +2500,8 @@ XF.Model = BB.Model.extend({
                 options.buttons.push(butOpts);
             }
 
-            XF.Router.on('route', function () {
-                XF.UI.footer.selectButton(jQFooter);
+            XF.router.on('route', function () {
+                XF.ui.footer.selectButton(jQFooter);
             });
 
             var _template = _.template(
@@ -2512,7 +2521,7 @@ XF.Model = BB.Model.extend({
 
             jQFooter.html(_template(options));
 
-            XF.UI.footer.selectButton(jQFooter);
+            XF.ui.footer.selectButton(jQFooter);
         },
 
         selectButton : function (el) {
@@ -2527,7 +2536,7 @@ XF.Model = BB.Model.extend({
      @param header DOM Object
      @private
      */
-    XF.UI.header = {
+    XF.ui.header = {
 
         selector : '[data-role=header]',
 
@@ -2568,7 +2577,7 @@ XF.Model = BB.Model.extend({
      @param list DOM Object
      @private
      */
-    XF.UI.list = {
+    XF.ui.list = {
 
         selector : 'UL[data-role=listview], OL[data-role=listview]',
 
@@ -2663,7 +2672,7 @@ XF.Model = BB.Model.extend({
      @param loader DOM Object
      @private
      */
-    XF.UI.loader = {
+    XF.ui.loader = {
 
         selector : '[data-role=loader]',
 
@@ -2679,7 +2688,7 @@ XF.Model = BB.Model.extend({
 
 
             var id = jqLoader.attr('id') || 'xf-' + Math.floor(Math.random() * 10000),
-                idStack = XF.UI.checkInIsset('loader'),
+                idStack = XF.ui.checkInIsset('loader'),
                 newId = false;
 
             for (var i in idStack) {
@@ -2694,7 +2703,7 @@ XF.Model = BB.Model.extend({
             }
 
             if (!newId) {
-                XF.UI.issetElements.push({type : 'loader', id : id});
+                XF.ui.issetElements.push({type : 'loader', id : id});
             }
 
             jqLoader.attr({'id': id, 'data-skip-enhance' : 'true'});
@@ -2716,12 +2725,12 @@ XF.Model = BB.Model.extend({
 
         remove : function (jqLoader) {
             jqLoader.detach();
-            XF.UI.removeFromIsset('popup', jqLoader.attr('id'));
+            XF.ui.removeFromIsset('popup', jqLoader.attr('id'));
         },
 
         create : function () {
             var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
-            XF.Device.getViewport().append(jqLoader);
+            XF.device.getViewport().append(jqLoader);
             return this.render(jqLoader[0]);
         }
     };
@@ -2731,13 +2740,13 @@ XF.Model = BB.Model.extend({
      @return $
      @private
      */
-    XF.UI.popup = {
+    XF.ui.popup = {
         render : function () {
             /*
              <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
              */
             var id = 'xf-' + Math.floor(Math.random() * 10000),
-                idStack = XF.UI.checkInIsset('popup'),
+                idStack = XF.ui.checkInIsset('popup'),
                 newId = false;
 
             for (var i in idStack) {
@@ -2752,7 +2761,7 @@ XF.Model = BB.Model.extend({
             }
 
             if (!newId) {
-                XF.UI.issetElements.push({type : 'popup', id : id});
+                XF.ui.issetElements.push({type : 'popup', id : id});
             }
             var jqPopup = $('<div class="xf-dialog " id="' + id + '"><div class="xf-dialog-content"></div></div>');
 
@@ -2775,7 +2784,7 @@ XF.Model = BB.Model.extend({
          @param jqPopup $ object representing popup
          */
         show : function (jqPopup) {
-            XF.Device.getViewport().append(jqPopup);
+            XF.device.getViewport().append(jqPopup);
         },
 
         /**
@@ -2784,7 +2793,7 @@ XF.Model = BB.Model.extend({
          */
         hide : function (jqPopup) {
             jqPopup.detach();
-            XF.UI.removeFromIsset('popup', jqPopup.attr('id'));
+            XF.ui.removeFromIsset('popup', jqPopup.attr('id'));
         },
 
 
@@ -2851,7 +2860,7 @@ XF.Model = BB.Model.extend({
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
-                        jqBtn = XF.UI.popup.createButton(btn);
+                        jqBtn = XF.ui.popup.createButton(btn);
                     }
 
                     jqBtnContainer.append(
@@ -2942,7 +2951,7 @@ XF.Model = BB.Model.extend({
         },
 
         hideAll : function () {
-            var idStack = XF.UI.checkInIsset('popup');
+            var idStack = XF.ui.checkInIsset('popup');
 
             for (var i in idStack) {
 
@@ -2990,7 +2999,7 @@ XF.Model = BB.Model.extend({
                 jQButton.click(buttonDescr.handler)
             };
             jQButton.attr(attrs);
-            XF.UI.button.render(jQButton[0]);
+            XF.ui.button.render(jQButton[0]);
             return jQButton;
         }
     };
@@ -3001,7 +3010,7 @@ XF.Model = BB.Model.extend({
      @param scrollable DOM Object
      @private
      */
-    XF.UI.scrollable = {
+    XF.ui.scrollable = {
 
         selector : '[data-scrollable=true]',
 
@@ -3076,7 +3085,7 @@ XF.Model = BB.Model.extend({
      @param footer DOM Object
      @private
      */
-    XF.UI.tabs = {
+    XF.ui.tabs = {
 
         selector : '[data-role=tabs]',
 
@@ -3099,7 +3108,7 @@ XF.Model = BB.Model.extend({
 
             options.tabs = options.tabs || [];
 
-            var buttons = jQTabs.find(XF.UI.button.selector);
+            var buttons = jQTabs.find(XF.ui.button.selector);
             options.rowCount = Math.ceil(buttons.length / options.tabsperrow);
             options.tabsClass = options.tabsclass || '';
 
@@ -3163,7 +3172,7 @@ XF.Model = BB.Model.extend({
             jQTabs.html(_template(options));
 
             jQTabs.find('a').on('tap', function () {
-               XF.UI.tabs.selectTab(jQTabs, $(this));
+               XF.ui.tabs.selectTab(jQTabs, $(this));
             });
         },
 
@@ -3178,7 +3187,7 @@ XF.Model = BB.Model.extend({
      @param textInput DOM Object
      @private
      */
-    XF.UI.input = {
+    XF.ui.input = {
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
                     'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
                     'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
@@ -3414,14 +3423,14 @@ XF.Model = BB.Model.extend({
                     };
 
                     var startThumbDrag = function(event) {
-                        mousePrevX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
+                        mousePrevX = XF.device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         savedVal = selValue;
                         $(document).bind(eventsHandler.end, stopThumbDrag);
                         $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
                     var doThumbDrag = function(event) {
-                        mouseNewX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
+                        mouseNewX = XF.device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         mouseDiff = mouseNewX - mousePrevX;
                         valueDiff = trackDiffToValueDiff(mouseDiff);
                         mousePrevX = mouseNewX;
