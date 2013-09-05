@@ -119,11 +119,15 @@
     });
 
     onComponentCostruct = function (compID) {
-        console.log('constructed', compID);
         var compObj = $(XF.getComponentByID(compID).selector());
-        XF.trigger('pages:start', compObj);
 
-        loadChildComponents(compObj);
+        if (_.has(XF, 'pages')) {
+            if (!XF.pages.status.started) {
+                XF.trigger('pages:start', compObj);
+            }
+        }
+
+        //loadChildComponents(compObj);
     };
 
 
@@ -226,7 +230,7 @@
      @private
      */
     var loadChildComponents = function(DOMObject) {
-        console.log('XF :: loadChildComponents');
+        console.log('XF :: loadChildComponents', DOMObject);
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
@@ -259,28 +263,17 @@
      */
     var bindHideShowListeners = function() {
         $('[data-component]').on('show', function(evt) {
-            if(evt.currentTarget == evt.target) {
+            if ($(evt.target).attr('data-component')) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
                 XF.trigger('ui:enhance', $(this));
+            }else{
+                loadChildComponents($(this));
             }
         });
-
-//         var selector = null;
-//         _.each(XF.ui.enhancementList, function(enhancement, index, enhancementList) {
-//         if(!selector) {
-//         selector = enhancement.selector;
-//         } else {
-//         selector += ', ' + enhancement.selector;
-//         }
-//         });
-//         $(selector).on('show', function() {
-//         XF.ui.enhanceView($(this));
-//         });
-
     };
 
     /**
@@ -847,6 +840,8 @@ XF.App.extend = BB.Model.extend;
                 } else {
                     this.show(pages.first());
                 }
+
+                XF.off('pages:start');
                 this.status.started = true;
             }
         },
@@ -934,7 +929,7 @@ XF.App.extend = BB.Model.extend;
             XF.trigger('ui:enhance', $(this.activePage));
 
             // looking for components inside the page
-            loadChildComponents(this.activePage[0]);
+            //loadChildComponents(this.activePage[0]);
         }
     };
 
@@ -1963,7 +1958,7 @@ XF.Model = BB.Model.extend({
             this.$el.html(this.getMarkup());
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
-
+            console.log('RENDER', this.component.id);
             this.trigger('rendered');
 
             return this;
@@ -2054,7 +2049,7 @@ XF.Model = BB.Model.extend({
         /**
          Defenition of custom Model class extending {@link XF.Model}
          */
-        Model: XF.Model,
+        Model: null,
 
         /**
          Instance of {@link XF.Model} or its subclass
@@ -2085,7 +2080,8 @@ XF.Model = BB.Model.extend({
         view : null,
 
         _bindListeners: function () {
-            this.on('component:'+ this.id +':refresh', _.bind(this.refresh, this));
+            XF.on('component:' + this.id + ':refresh', _.bind(this.refresh, this));
+            this.listenTo(this, 'refresh', this.refresh);
         },
 
         /**
@@ -2134,6 +2130,7 @@ XF.Model = BB.Model.extend({
             this.construct();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
+            this.listenToOnce(this.view, 'rendered', function () { XF.trigger('component:' + this.id + ':constructed'); });
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
@@ -2150,14 +2147,11 @@ XF.Model = BB.Model.extend({
          @private
          */
         refresh : function() {
-
             if (this.collection && !this.collection.status.loading) {
                 this.collection.refresh();
             }else if (this.model && !this.model.status.loading) {
                 this.model.refresh();
-            }
-
-            if (this.view && !this.view.status.loading) {
+            }else if (this.view && !this.view.status.loading) {
                 this.view.refresh();
             }
 

@@ -76,7 +76,7 @@
         /**
          Defenition of custom Model class extending {@link XF.Model}
          */
-        Model: XF.Model,
+        Model: null,
 
         /**
          Instance of {@link XF.Model} or its subclass
@@ -107,7 +107,8 @@
         view : null,
 
         _bindListeners: function () {
-            this.on('component:'+ this.id +':refresh', _.bind(this.refresh, this));
+            XF.on('component:' + this.id + ':refresh', _.bind(this.refresh, this));
+            this.listenTo(this, 'refresh', this.refresh);
         },
 
         /**
@@ -156,6 +157,7 @@
             this.construct();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
+            this.listenToOnce(this.view, 'rendered', function () { XF.trigger('component:' + this.id + ':constructed'); });
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
@@ -172,14 +174,11 @@
          @private
          */
         refresh : function() {
-
             if (this.collection && !this.collection.status.loading) {
                 this.collection.refresh();
             }else if (this.model && !this.model.status.loading) {
                 this.model.refresh();
-            }
-
-            if (this.view && !this.view.status.loading) {
+            }else if (this.view && !this.view.status.loading) {
                 this.view.refresh();
             }
 
