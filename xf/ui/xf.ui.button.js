@@ -39,7 +39,7 @@
                 enhancedButton.addClass('xf-button-float-' + position);
             }
 
-            if (jQButton.parents(XF.UI.header.selector).length > 0) {
+            if (jQButton.parents(XF.ui.header.selector).length > 0) {
                 var hposition = position || 'right';
                 enhancedButton.addClass('xf-button-header-' + hposition);
                 enhancedButton.addClass('xf-button-float-' + hposition);

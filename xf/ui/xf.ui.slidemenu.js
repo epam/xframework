@@ -4,7 +4,7 @@
      @param header DOM Object
      @private
      */
-    XF.UI.slidemenu = {
+    XF.ui.slidemenu = {
 
         selector : '[data-role=slidemenu]',
 
@@ -33,7 +33,7 @@
             menuButtonContainer.find('header').append(menuButton);
             options.menuButton = '<button class="xf-slidemenu-close-button xf-button-float-' +jQMenu.data('button-position')  + ' xf-button-header-' +jQMenu.data('button-position')  + ' xf-button-small-icon-only xf-button-small xf-button" data-position="' +jQMenu.data('button-position')  + '" data-skip-enhance="true"><span class="xf-icon xf-icon-cross xf-icon-small"></span</button>';
 
-            var buttons = jQMenu.find(XF.UI.button.selector);
+            var buttons = jQMenu.find(XF.ui.button.selector);
             options.buttonsClass = '';
 
             for (var i = 0; i < buttons.length; ++i) {
@@ -49,8 +49,8 @@
                 options.buttons.push(butOpts);
             }
 
-            XF.Router.on('route', function () {
-                XF.UI.slidemenu.selectButton(jQMenu);
+            XF.router.on('route', function () {
+                XF.ui.slidemenu.selectButton(jQMenu);
 
                 if ($('.xf-slidemenu-wrapper')) {
                     $('.xf-slidemenu-wrapper').removeClass('xf-slidemenu-show');
@@ -73,7 +73,7 @@
                 return false;
             });
             $('.xf-slidemenu-close-button').on('tap', function () {
-                var delayTime = XF.Device.isIOS ? 300 : 0;
+                var delayTime = XF.device.isIOS ? 300 : 0;
                 setTimeout(function () {
                     $('.xf-slidemenu-wrapper').removeClass('xf-slidemenu-show');
                     $('body').removeClass('blur-page xf-viewport-transitioning');

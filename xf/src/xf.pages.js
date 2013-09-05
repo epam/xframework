@@ -103,8 +103,8 @@
         },
 
         setDefaultAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.standardAnimation = animationType;
+            if (XF.pages.animations.types[animationType]) {
+                XF.pages.animations.standardAnimation = animationType;
             }
         },
 

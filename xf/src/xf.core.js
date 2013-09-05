@@ -117,8 +117,8 @@
         options.animations = options.animations || {};
         options.animations.standardAnimation = options.animations.standardAnimation || '';
 
-        if (_.has(XF.Device.type, 'defaultAnimation')) {
-            options.animations.standardAnimation = XF.Device.type.defaultAnimation;
+        if (_.has(XF.device.type, 'defaultAnimation')) {
+            options.animations.standardAnimation = XF.device.type.defaultAnimation;
             console.log('Options.animations', options.animations);
         }
 

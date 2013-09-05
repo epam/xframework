@@ -172,8 +172,8 @@
         options.animations = options.animations || {};
         options.animations.standardAnimation = options.animations.standardAnimation || '';
 
-        if (_.has(XF.Device.type, 'defaultAnimation')) {
-            options.animations.standardAnimation = XF.Device.type.defaultAnimation;
+        if (_.has(XF.device.type, 'defaultAnimation')) {
+            options.animations.standardAnimation = XF.device.type.defaultAnimation;
             console.log('Options.animations', options.animations);
         }
 
@@ -852,8 +852,8 @@ XF.App.extend = BB.Model.extend;
         },
 
         setDefaultAnimationType: function (animationType) {
-            if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.standardAnimation = animationType;
+            if (XF.pages.animations.types[animationType]) {
+                XF.pages.animations.standardAnimation = animationType;
             }
         },
 
@@ -2257,7 +2257,7 @@ XF.Model = BB.Model.extend({
                 enhancedButton.addClass('xf-button-float-' + position);
             }
 
-            if (jQButton.parents(XF.UI.header.selector).length > 0) {
+            if (jQButton.parents(XF.ui.header.selector).length > 0) {
                 var hposition = position || 'right';
                 enhancedButton.addClass('xf-button-header-' + hposition);
                 enhancedButton.addClass('xf-button-float-' + hposition);
@@ -3081,7 +3081,7 @@ XF.Model = BB.Model.extend({
      @param header DOM Object
      @private
      */
-    XF.UI.slidemenu = {
+    XF.ui.slidemenu = {
 
         selector : '[data-role=slidemenu]',
 
@@ -3110,7 +3110,7 @@ XF.Model = BB.Model.extend({
             menuButtonContainer.find('header').append(menuButton);
             options.menuButton = '<button class="xf-slidemenu-close-button xf-button-float-' +jQMenu.data('button-position')  + ' xf-button-header-' +jQMenu.data('button-position')  + ' xf-button-small-icon-only xf-button-small xf-button" data-position="' +jQMenu.data('button-position')  + '" data-skip-enhance="true"><span class="xf-icon xf-icon-cross xf-icon-small"></span</button>';
 
-            var buttons = jQMenu.find(XF.UI.button.selector);
+            var buttons = jQMenu.find(XF.ui.button.selector);
             options.buttonsClass = '';
 
             for (var i = 0; i < buttons.length; ++i) {
@@ -3126,8 +3126,8 @@ XF.Model = BB.Model.extend({
                 options.buttons.push(butOpts);
             }
 
-            XF.Router.on('route', function () {
-                XF.UI.slidemenu.selectButton(jQMenu);
+            XF.router.on('route', function () {
+                XF.ui.slidemenu.selectButton(jQMenu);
 
                 if ($('.xf-slidemenu-wrapper')) {
                     $('.xf-slidemenu-wrapper').removeClass('xf-slidemenu-show');
@@ -3150,7 +3150,7 @@ XF.Model = BB.Model.extend({
                 return false;
             });
             $('.xf-slidemenu-close-button').on('tap', function () {
-                var delayTime = XF.Device.isIOS ? 300 : 0;
+                var delayTime = XF.device.isIOS ? 300 : 0;
                 setTimeout(function () {
                     $('.xf-slidemenu-wrapper').removeClass('xf-slidemenu-show');
                     $('body').removeClass('blur-page xf-viewport-transitioning');
