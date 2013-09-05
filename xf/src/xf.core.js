@@ -31,7 +31,7 @@
 
     XF.on('all', function (eventName) {
         console.log('XF:all - ', eventName);
-        console.log(typeof eventName);
+
         if (!compEventSplitter.test(eventName)) {
             return;
         }
@@ -170,10 +170,13 @@
      @private
      */
     var loadChildComponents = function(DOMObject) {
+<<<<<<< HEAD
         console.log('XF :: loadChildComponents', DOMObject);
         debugger;
+=======
+        console.log('XF :: loadChildComponents');
+>>>>>>> 94a96aad5f276a7f2398a2260c22bd84df1167bf
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
-            console.log(value)
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
             loadChildComponent(compID, compName, true);
@@ -205,7 +208,6 @@
      */
     var bindHideShowListeners = function() {
         $('[data-component]').on('show', function(evt) {
-            console.log('SHOWED', evt.target);
             if(evt.currentTarget == evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {

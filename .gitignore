@@ -51,3 +51,7 @@ js/collections/customCollection.js
 js/models/customModel.js
 
 js/index.js
+
+js/components/cmp2.js
+
+tmpl/phone/cmp2.tmpl
