@@ -64,6 +64,7 @@
     });
 
     onComponentCostruct = function (compID) {
+          console.log('CONSTRUCTED', compID);
         var compObj = $(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
@@ -72,7 +73,7 @@
             }
         }
 
-        //loadChildComponents(compObj);
+        loadChildComponents(compObj);
     };
 
 
@@ -192,10 +193,15 @@
      */
     var loadChildComponent = function(compID, compName) {
         getComponent(compName, function(compDef) {
+            console.log('ADDING', compID);
+            console.log(components);
+            console.log(components[compID]);
             if(!components[compID]) {
                 var compInst = new compDef(compName, compID);
+                console.log('CREATED', compInst);
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
+                compInst.construct();
                 XF.trigger('component:' + compID + ':constructed');
             }
         });
@@ -208,15 +214,13 @@
      */
     var bindHideShowListeners = function() {
         $('[data-component]').on('show', function(evt) {
-            if ($(evt.target).attr('data-component')) {
+            if (evt.currentTarget === evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
                 XF.trigger('ui:enhance', $(this));
-            }else{
-                loadChildComponents($(this));
             }
         });
     };
@@ -283,9 +287,11 @@
     var getComponent = function(compName, callback) {
         var compStatus = registeredComponents[compName];
         if(!compStatus) {
+            console.log('REGISTERING', compName);
             compStatus = XF.registerComponent(compName, XF.settings.property('componentUrl')(compName));
         }
         if(compStatus.loaded) {
+            console.log('STATUS LOADED', compName);
             callback(compStatus.compDef);
             return;
         }
