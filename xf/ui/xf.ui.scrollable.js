@@ -4,7 +4,7 @@
      @param scrollable DOM Object
      @private
      */
-    XF.UI.scrollable = {
+    XF.ui.scrollable = {
 
         selector : '[data-scrollable=true]',
 

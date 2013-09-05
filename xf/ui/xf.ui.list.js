@@ -4,7 +4,7 @@
      @param list DOM Object
      @private
      */
-    XF.UI.list = {
+    XF.ui.list = {
 
         selector : 'UL[data-role=listview], OL[data-role=listview]',
 

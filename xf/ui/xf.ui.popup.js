@@ -4,13 +4,13 @@
      @return $
      @private
      */
-    XF.UI.popup = {
+    XF.ui.popup = {
         render : function () {
             /*
              <div class="xf-dialog "><div class="xf-dialog-content"></div></div>
              */
             var id = 'xf-' + Math.floor(Math.random() * 10000),
-                idStack = XF.UI.checkInIsset('popup'),
+                idStack = XF.ui.checkInIsset('popup'),
                 newId = false;
 
             for (var i in idStack) {
@@ -25,7 +25,7 @@
             }
 
             if (!newId) {
-                XF.UI.issetElements.push({type : 'popup', id : id});
+                XF.ui.issetElements.push({type : 'popup', id : id});
             }
             var jqPopup = $('<div class="xf-dialog " id="' + id + '"><div class="xf-dialog-content"></div></div>');
 
@@ -48,7 +48,7 @@
          @param jqPopup $ object representing popup
          */
         show : function (jqPopup) {
-            XF.Device.getViewport().append(jqPopup);
+            XF.device.getViewport().append(jqPopup);
         },
 
         /**
@@ -57,7 +57,7 @@
          */
         hide : function (jqPopup) {
             jqPopup.detach();
-            XF.UI.removeFromIsset('popup', jqPopup.attr('id'));
+            XF.ui.removeFromIsset('popup', jqPopup.attr('id'));
         },
 
 
@@ -124,7 +124,7 @@
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
-                        jqBtn = XF.UI.popup.createButton(btn);
+                        jqBtn = XF.ui.popup.createButton(btn);
                     }
 
                     jqBtnContainer.append(
@@ -215,7 +215,7 @@
         },
 
         hideAll : function () {
-            var idStack = XF.UI.checkInIsset('popup');
+            var idStack = XF.ui.checkInIsset('popup');
 
             for (var i in idStack) {
 
@@ -263,7 +263,7 @@
                 jQButton.click(buttonDescr.handler)
             };
             jQButton.attr(attrs);
-            XF.UI.button.render(jQButton[0]);
+            XF.ui.button.render(jQButton[0]);
             return jQButton;
         }
     };

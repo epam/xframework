@@ -4,7 +4,7 @@
      @param button DOM Object
      @private
      */
-    XF.UI.button = {
+    XF.ui.button = {
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
         render : function (button, options) {
@@ -39,7 +39,7 @@
                 enhancedButton.addClass('xf-button-float-' + position);
             }
 
-            if (jQButton.parents(XF.UI.header.selector).length > 0) {
+            if (jQButton.parents(XF.ui.header.selector).length > 0) {
                 enhancedButton.addClass('xf-button-header-' + position);
             }
 
