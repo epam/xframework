@@ -1,14 +1,14 @@
 
 
     /**
-     @namespace Holds all the logic related to UI elements enhancement
+     @namespace Holds all the logic related to ui elements enhancement
      */
-    XF.UI = {};
+    XF.ui = {};
 
-    _.extend(XF.UI, /** @lends XF.UI */ {
+    _.extend(XF.ui, /** @lends XF.ui */ {
 
         init: function () {
-            XF.on('ui:enhance', _.bind(XF.UI.enhance, XF.UI));
+            XF.on('ui:enhance', _.bind(XF.ui.enhance, XF.ui));
         },
 
         /**
@@ -25,23 +25,23 @@
                 }
             }
 
-            _.each(XF.UI, function (enhancement, index) {
+            _.each(XF.ui, function (enhancement, index) {
 
                 if (typeof enhancement === 'object' && enhancement.hasOwnProperty('selector')) {
 
                     jqObj.find(enhancement.selector).not('[data-skip-enhance=true]').each(function (){
                         var skip = false;
 
-                        _.each(XF.UI.enhanced.length, function (elem, index) {
+                        _.each(XF.ui.enhanced.length, function (elem, index) {
 
-                            if (XF.UI.enhanced[i] === this) {
+                            if (XF.ui.enhanced[i] === this) {
                                 skip = true;
                             }
                         });
 
                         if (!skip & $(this).attr('data-skip-enhance') != 'true') {
                             var options = $(this).data();
-                            XF.UI.enhanced.push(this);
+                            XF.ui.enhanced.push(this);
                             enhancement.render(this, options);
                         }
                     });

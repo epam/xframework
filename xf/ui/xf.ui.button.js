@@ -4,7 +4,7 @@
      @param button DOM Object
      @private
      */
-    XF.UI.button = {
+    XF.ui.button = {
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
         render : function (button, options) {

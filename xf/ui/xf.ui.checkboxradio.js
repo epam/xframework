@@ -4,7 +4,7 @@
      @param textInput DOM Object
      @private
      */
-    XF.UI.checkboxRadio = {
+    XF.ui.checkboxRadio = {
 
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 

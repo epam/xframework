@@ -1,9 +1,9 @@
     /**
      Instance of {@link XF.RouterClass}
      @static
-     @type {XF.Router}
+     @type {XF.router}
      */
-    XF.Router = null;
+    XF.router = null;
 
     /**
      Implements Routing.
@@ -13,9 +13,9 @@
      @param {Object} routes routes has map
      @param {Object} handlers handlers has map
      */
-    XF.RouterClass = BB.Router;
+    XF.Router = BB.Router;
 
-    _.extend(XF.RouterClass.prototype, /** @lends XF.RouterClass.prototype */{
+    _.extend(XF.Router.prototype, /** @lends XF.Router.prototype */{
 
 
         /**
@@ -35,9 +35,9 @@
          */
         bindAnyRoute : function() {
             this.on('route', function (e) {
-                console.log('XF.Router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
-                if (XF.Pages) {
-                    XF.Pages.show(this.getPageNameFromFragment(XF.history.fragment));
+                console.log('XF.router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
+                if (XF.pages) {
+                    XF.pages.show(this.getPageNameFromFragment(XF.history.fragment));
                 }
             });
         },

@@ -4,7 +4,7 @@
      @param textInput DOM Object
      @private
      */
-    XF.UI.input = {
+    XF.ui.input = {
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
                     'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
                     'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
@@ -240,14 +240,14 @@
                     };
 
                     var startThumbDrag = function(event) {
-                        mousePrevX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
+                        mousePrevX = XF.device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         savedVal = selValue;
                         $(document).bind(eventsHandler.end, stopThumbDrag);
                         $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
                     var doThumbDrag = function(event) {
-                        mouseNewX = XF.Device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
+                        mouseNewX = XF.device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         mouseDiff = mouseNewX - mousePrevX;
                         valueDiff = trackDiffToValueDiff(mouseDiff);
                         mousePrevX = mouseNewX;

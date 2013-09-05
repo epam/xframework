@@ -22,7 +22,7 @@
 
     // TODO: comments
     XF.navigate = function (fragment) {
-        XF.Router.navigate(fragment, {trigger: true});
+        XF.router.navigate(fragment, {trigger: true});
     };
 
     XF.on('navigate', XF.navigate);
@@ -80,9 +80,9 @@
      @public
      @param {Object} options
      @param {Object} options.settings User-defined settings which would override {@link XF.settings}
-     @param {Object} options.router Options required for {@link XF.Router}
-     @param {Object} options.router.routes list of routes for {@link XF.Router}
-     @param {Object} options.router.handlers list of route handlers for {@link XF.Router}
+     @param {Object} options.router Options required for {@link XF.router}
+     @param {Object} options.router.routes list of routes for {@link XF.router}
+     @param {Object} options.router.handlers list of route handlers for {@link XF.router}
      @description Launches the app with specified options
      */
     XF.start = function(options) {
@@ -92,13 +92,13 @@
         // initializing XF.storage
         XF.storage.init();
 
-        // initializing XF.Device
+        // initializing XF.device
         options.device = options.device || {};
-        XF.Device.init(options.device.types);
+        XF.device.init(options.device.types);
 
-        // initializing XF.Touches
-        if ('Touches' in XF) {
-            XF.Touches.init();
+        // initializing XF.touches
+        if ('touches' in XF) {
+            XF.touches.init();
         }
 
         // options.router
@@ -108,24 +108,25 @@
         placeAnchorHooks();
         bindHideShowListeners();
 
-        if (_.has(XF, 'UI')) {
-            XF.UI.init();
+        if (_.has(XF, 'ui')) {
+            XF.ui.init();
         }
 
-        XF.Router.start();
+        XF.router.start();
 
         options.animations = options.animations || {};
         options.animations.standardAnimation = options.animations.standardAnimation || '';
+
         if (_.has(XF.Device.type, 'defaultAnimation')) {
             options.animations.standardAnimation = XF.Device.type.defaultAnimation;
             console.log('Options.animations', options.animations);
         }
 
-        XF.Pages.init(options.animations);
+        XF.pages.init(options.animations);
 
 
 
-        //XF.Pages.start();
+        //XF.pages.start();
         loadChildComponents(rootDOMObject);
     };
 
@@ -133,23 +134,23 @@
 
 
     /**
-     Creates {@link XF.Router}
+     Creates {@link XF.router}
      @memberOf XF
-     @param {Object} routes list of routes for {@link XF.Router}
-     @param {Object} handlers list of route handlers for {@link XF.Router}
+     @param {Object} routes list of routes for {@link XF.router}
+     @param {Object} handlers list of route handlers for {@link XF.router}
      @private
      */
-    var createRouter = function(options) {   debugger;
-        if(XF.Router) {
+    var createRouter = function(options) {
+        if(XF.router) {
             throw 'XF.createRouter can be called only ONCE!';
         } else {
-            XF.Router = new (XF.RouterClass.extend(options))();
+            XF.router = new (XF.Router.extend(options))();
         }
     };
 
 
     /**
-     Adds listeners to each 'a' tag with 'data-href' attribute on a page - all the clicks should bw delegated to {@link XF.Router}
+     Adds listeners to each 'a' tag with 'data-href' attribute on a page - all the clicks should bw delegated to {@link XF.router}
      @memberOf XF
      @private
      */
@@ -159,7 +160,7 @@
             if (animationType) {
                 XF.trigger('pages:animation:next', animationType);
             }
-            XF.Router.navigate( $(this).data('href'), {trigger: true} );
+            XF.router.navigate( $(this).data('href'), {trigger: true} );
         });
     };
 
@@ -214,7 +215,7 @@
         });
 
 //         var selector = null;
-//         _.each(XF.UI.enhancementList, function(enhancement, index, enhancementList) {
+//         _.each(XF.ui.enhancementList, function(enhancement, index, enhancementList) {
 //         if(!selector) {
 //         selector = enhancement.selector;
 //         } else {
@@ -222,7 +223,7 @@
 //         }
 //         });
 //         $(selector).on('show', function() {
-//         XF.UI.enhanceView($(this));
+//         XF.ui.enhanceView($(this));
 //         });
 
     };

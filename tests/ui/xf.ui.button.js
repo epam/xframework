@@ -36,7 +36,7 @@ var page = require('webpage').create(),
                 window.setTimeout(function () {
 
                     var result = page.evaluate(function () {
-                        $('body').append(XF.UI.popup.createButton({text: 'Test button text'}));
+                        $('body').append(XF.ui.popup.createButton({text: 'Test button text'}));
 
                         if ($('.xf-button').length) {
                             return $('.xf-button').find('.xf-button-text').text();
