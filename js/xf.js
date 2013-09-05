@@ -1,4 +1,4 @@
-/*! X-Framework 04-09-2013 */
+/*! X-Framework 05-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -2086,7 +2086,7 @@ XF.Model = BB.Model.extend({
 
         },
 
-
+        
         initialize: function() {
 
             if (this.Collection) {
@@ -3630,6 +3630,6 @@ XF.Model = BB.Model.extend({
             }
         }
     };
-}).call(this, window, $, Backbone);
+}).call(this, window, $, Backbone); 
 
 /* License text */
