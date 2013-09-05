@@ -661,6 +661,10 @@ XF.App.extend = BB.Model.extend;
      */
     XF.utils.addressBar = {};
 
+    XF.utils.uniqueID = function () {
+        return 'xf-' + Math.floor(Math.random()*100000);
+    };
+
     _.extend(XF.utils.addressBar, /** @lends XF.utils.addressBar */{
 
         /**
@@ -2250,8 +2254,9 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            var isSmall = options.small === true || options.appearance == 'backbtn';
-            var position = options.position || '';
+            var isSmall = options.small === true || options.appearance == 'backbtn',
+                position = options.position || '',
+                id = jQButton.attr('id') || XF.utils.uniqueID();
 
             if (position !== '') {
                 enhancedButton.addClass('xf-button-float-' + position);
@@ -2334,6 +2339,8 @@ XF.Model = BB.Model.extend({
             if (options.alert == true) {
                 enhancedButton.addClass('xf-button-alert');
             }
+
+            enhancedButton.attr('id', id);
         }
     };
 
@@ -2365,7 +2372,7 @@ XF.Model = BB.Model.extend({
             }
 
             jQChbRbInput.attr({'data-skip-enhance':true});
-            options.id = jQChbRbInput.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            options.id = jQChbRbInput.attr('id') || XF.utils.uniqueID();
             options.input = jQChbRbInput.wrap("<span></span>").parent().html();
             jQChbRbInput.attr('id', options.id);
             var chbRbInputLabel = $('label[for=' + options.id + ']');
@@ -2420,7 +2427,7 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            var id = jQFieldset.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            var id = jQFieldset.attr('id') || XF.utils.uniqueID();
 
             jQFieldset.attr({'data-skip-enhance':  true, 'id' : id});
 
@@ -2467,7 +2474,7 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            options.id = options.id || 'xf-footer-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
 
             jQFooter.attr({
                 'data-id': options.id,
@@ -2555,7 +2562,7 @@ XF.Model = BB.Model.extend({
                 headerTitle.addClass('xf-header-title');
             }
 
-            options.id = options.id || 'xf-header-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.html = jQHeader.html();
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
@@ -2595,7 +2602,7 @@ XF.Model = BB.Model.extend({
                 linkItems = listItems.children('a'),
                 listItemsScope = [],
                 fullWidth = options.fullwidth || 'false',
-                listId = jQList.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+                listId = jQList.attr('id') || XF.utils.uniqueID();
 
             linkItems.addClass('xf-li-btn').children('.xf-count-bubble').parent().addClass('xf-li-has-count');
             listItems.not(linkItems.parent()).not('[data-role=divider]').addClass('xf-li-static');
@@ -2691,7 +2698,7 @@ XF.Model = BB.Model.extend({
             }
 
 
-            var id = jqLoader.attr('id') || 'xf-' + Math.floor(Math.random() * 10000),
+            var id = jqLoader.attr('id') || XF.utils.uniqueID(),
                 idStack = XF.ui.checkInIsset('loader'),
                 newId = false;
 
@@ -2748,7 +2755,7 @@ XF.Model = BB.Model.extend({
     XF.ui.popup = {
         render : function () {
 
-            var id = 'xf-' + Math.floor(Math.random() * 10000),
+            var id = XF.utils.uniqueID(),
                 idStack = XF.ui.checkInIsset('popup'),
                 newId = false;
 
@@ -2953,7 +2960,7 @@ XF.Model = BB.Model.extend({
             var jQButton = $('<button></button>'),
                 attrs = {};
 
-            attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
+            attrs['id'] = buttonDescr.id || XF.utils.uniqueID();
             attrs['class'] = buttonDescr.class || '';
             attrs['name'] = buttonDescr.name || attrs.id;
             buttonDescr.small = buttonDescr.small || '';
@@ -3017,7 +3024,7 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            var id = jQScrollable.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            var id = jQScrollable.attr('id') || XF.utils.uniqueID();
 
             jQScrollable.attr({'data-skip-enhance':true, 'id' : id});
 
@@ -3092,7 +3099,7 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            options.id = options.id || 'xf-slidemenu-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.hasTitle = options.title != '' ? true : false;
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
@@ -3185,7 +3192,7 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            options.id = options.id || 'xf-tabs-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.tabsperrow = options.tabsperrow || 4;
 
             jQTabs.attr({

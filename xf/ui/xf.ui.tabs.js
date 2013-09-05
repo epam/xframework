@@ -16,7 +16,7 @@
                 return;
             }
 
-            options.id = options.id || 'xf-tabs-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.tabsperrow = options.tabsperrow || 4;
 
             jQTabs.attr({

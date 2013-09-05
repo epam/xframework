@@ -16,7 +16,7 @@
                 return;
             }
 
-            options.id = options.id || 'xf-footer-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
 
             jQFooter.attr({
                 'data-id': options.id,

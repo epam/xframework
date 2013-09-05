@@ -19,7 +19,7 @@
             }
 
 
-            var id = jqLoader.attr('id') || 'xf-' + Math.floor(Math.random() * 10000),
+            var id = jqLoader.attr('id') || XF.utils.uniqueID(),
                 idStack = XF.ui.checkInIsset('loader'),
                 newId = false;
 
