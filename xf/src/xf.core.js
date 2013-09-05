@@ -115,9 +115,10 @@
         XF.router.start();
 
         options.animations = options.animations || {};
-        options.animations.default = options.animations.default || '';
+        options.animations.standardAnimation = options.animations.standardAnimation || '';
+
         if (_.has(XF.device.type, 'defaultAnimation')) {
-            options.animations.default = XF.device.type.defaultAnimation;
+            options.animations.standardAnimation = XF.device.type.defaultAnimation;
             console.log('Options.animations', options.animations);
         }
 
