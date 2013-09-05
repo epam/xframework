@@ -1,5 +1,5 @@
 
-    XF.Touches = {
+    XF.touches = {
 
         init : function () {
             // Default values and device events detection
@@ -35,8 +35,8 @@
                 eventType;
 
             // Changing events depending on detected data
-            isTouch = (XF.Device.supports.pointerEvents) ? false : (XF.Device.supports.touchEvents ? true : false);
-            eventType = (XF.Device.supports.pointerEvents) ? 'pointer' : (XF.Device.supports.touchEvents ? 'touch' : 'mouse');
+            isTouch = (XF.device.supports.pointerEvents) ? false : (XF.device.supports.touchEvents ? true : false);
+            eventType = (XF.device.supports.pointerEvents) ? 'pointer' : (XF.device.supports.touchEvents ? 'touch' : 'mouse');
 
             // If target is text
             var parentIfText = function (node) {

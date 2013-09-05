@@ -4,7 +4,7 @@
      @param header DOM Object
      @private
      */
-    XF.UI.header = {
+    XF.ui.header = {
 
         selector : '[data-role=header]',
 

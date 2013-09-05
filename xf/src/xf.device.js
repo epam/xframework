@@ -4,7 +4,7 @@
      @private
      @type {Object}
      */
-    XF.Device = {
+    XF.device = {
 
         /**
          Contains device viewport size: {width; height}
@@ -80,7 +80,7 @@
 
 
         /**
-         Initializes {@link XF.Device} instance (runs detection methods)
+         Initializes {@link XF.device} instance (runs detection methods)
          @param {Array} types rray of device types to be choosen from
          */
         init : function(types) {
@@ -179,7 +179,7 @@
         /**
          Chooses device type by ot's name
          @param {String} typeName Value of 'name' property of the type that should be returnd
-         @return {Object} Device type
+         @return {Object} device type
          */
         getTypeByName : function(typeName) {
             var res = null;
@@ -221,7 +221,7 @@
 
             }, 1, ['touch']);
 
-            console.log('XF.Device :: detectTouchable - device IS ' + (this.supports.touchEvents ? '' : 'NOT ') + 'touchable');
+            console.log('XF.device :: detectTouchable - device IS ' + (this.supports.touchEvents ? '' : 'NOT ') + 'touchable');
 
         },
 

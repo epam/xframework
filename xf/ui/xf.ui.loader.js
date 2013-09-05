@@ -4,7 +4,7 @@
      @param loader DOM Object
      @private
      */
-    XF.UI.loader = {
+    XF.ui.loader = {
 
         selector : '[data-role=loader]',
 
@@ -20,7 +20,7 @@
 
 
             var id = jqLoader.attr('id') || 'xf-' + Math.floor(Math.random() * 10000),
-                idStack = XF.UI.checkInIsset('loader'),
+                idStack = XF.ui.checkInIsset('loader'),
                 newId = false;
 
             for (var i in idStack) {
@@ -35,7 +35,7 @@
             }
 
             if (!newId) {
-                XF.UI.issetElements.push({type : 'loader', id : id});
+                XF.ui.issetElements.push({type : 'loader', id : id});
             }
 
             jqLoader.attr({'id': id, 'data-skip-enhance' : 'true'});
@@ -58,12 +58,12 @@
 
         remove : function (jqLoader) {
             jqLoader.detach();
-            XF.UI.removeFromIsset('popup', jqLoader.attr('id'));
+            XF.ui.removeFromIsset('popup', jqLoader.attr('id'));
         },
 
         create : function () {
             var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
-            XF.Device.getViewport().append(jqLoader);
+            XF.device.getViewport().append(jqLoader);
             return this.render(jqLoader[0]);
         }
     };
