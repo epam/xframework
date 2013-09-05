@@ -98,6 +98,8 @@
                 } else {
                     this.show(pages.first());
                 }
+
+                XF.off('pages:start');
                 this.status.started = true;
             }
         },

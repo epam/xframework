@@ -847,6 +847,8 @@ XF.App.extend = BB.Model.extend;
                 } else {
                     this.show(pages.first());
                 }
+
+                XF.off('pages:start');
                 this.status.started = true;
             }
         },
@@ -2134,6 +2136,7 @@ XF.Model = BB.Model.extend({
             this.construct();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
+            this.listenToOnce(this.view, 'rendered', function () { XF.trigger('component:' + this.id + ':constructed'); });
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
