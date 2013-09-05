@@ -3319,7 +3319,7 @@ XF.Model = BB.Model.extend({
                     newTIAttrs[attribute.name] = attribute.value;
                 });
                 newTextInput.attr(newTIAttrs);
-                jQTextInput.outerHtml(newTextInput);
+//                jQTextInput.outerHtml(newTextInput);
                 jQTextInput = newTextInput;
                 textInput = newTextInput[0];
 
