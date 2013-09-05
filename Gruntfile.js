@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 module.exports = (function (grunt) {
 
     grunt.registerTask('build', "X-Framework build", function () {
@@ -23,6 +25,10 @@ module.exports = (function (grunt) {
         // Run through files and detect icons to use
         var lessSources = [];
 
+        // License text
+
+        var license = fs.readFileSync('./LICENSE.txt');
+
 
         // TODO modules to add
 
@@ -43,7 +49,7 @@ module.exports = (function (grunt) {
                 options: {
                     separator: '\n',
                     banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n;(function (window, $, BB) {',
-                    footer: '}).call(this, window, $, Backbone);'
+                    footer: '}).call(this, window, $, Backbone); \n\n' + license
                 },
                 dist: {
                     src: jsSources,

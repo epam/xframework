@@ -25,7 +25,7 @@
          @default 'fade'
          */
         animations: {
-            default: 'slideleft',
+            standardAnimation: 'slideleft',
             next: null,
 
             types : {
@@ -72,8 +72,8 @@
                 _.extend(this.animations.types, animations.types);
             }
 
-            if (_.has(animations, 'default') ) {
-                this.setDefaultAnimationType(animations.default);
+            if (_.has(animations, 'standardAnimation') ) {
+                this.setDefaultAnimationType(animations.standardAnimation);
             }
 
             this.start();
@@ -95,7 +95,7 @@
 
         setDefaultAnimationType: function (animationType) {
             if (XF.Pages.animations.types[animationType]) {
-                XF.Pages.animations.default = animationType;
+                XF.Pages.animations.standardAnimation = animationType;
             }
         },
 
@@ -134,10 +134,10 @@
             var screenHeight = XF.Device.getScreenHeight();
 
             if (this.animations.next) {
-                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.default);
+                animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.standardAnimation);
                 this.animations.next = null;
             }else {
-                animationType = (this.animations.types[animationType] ? animationType : this.animations.default);
+                animationType = (this.animations.types[animationType] ? animationType : this.animations.standardAnimation);
             }
 
             var fromPage = this.activePage;

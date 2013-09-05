@@ -48,6 +48,7 @@
         },
 
         show : function (jqLoader) {
+            jqLoader = jqLoader || this.create();
             jqLoader.show();
         },
 

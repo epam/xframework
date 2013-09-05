@@ -339,7 +339,7 @@
             }
 
             var textInputID = (jQTextInput[0].nodeName === 'INPUT') ? jQTextInput.attr('id') : jQTextInput.find('input').eq(0).attr('id');
-            var textInputLabel = (textInputID.length) ? $('label[for=' + textInputID + ']') : [];
+            var textInputLabel = (textInputID && textInputID.length) ? $('label[for=' + textInputID + ']') : [];
 
             // If the input doesn't have an associated label, quit
             if(textInputLabel.length) {

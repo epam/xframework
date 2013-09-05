@@ -106,16 +106,12 @@
             }
 
             // If data-special="true" attribute is present add xf-button-special class.
-            if (options.special == 'true') {
+            if (options.special == true) {
                 enhancedButton.addClass('xf-button-special');
             }
 
-            if (options.alert == 'true') {
-                enhancedButton.addClass('xf-button-alert');
-            }
-
             // If data-alert="true" attribute is present add xf-button-alert class.
-            if (options.alert == 'true') {
+            if (options.alert == true) {
                 enhancedButton.addClass('xf-button-alert');
             }
         }
