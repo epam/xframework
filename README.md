@@ -7,7 +7,7 @@ XFramework
 
 Version 0.9.1
 
-XFramework (next XF) is a small yet powerful Javascript framework for quick development of cross-device web applications. Honestly saying, XF is a high-level framework based on (Backbone.js)[http://backbonejs.org] that implements its own architecture paradigm, based on MV* on the component level.
+XFramework (next XF) is a small yet powerful Javascript framework for quick development of cross-device web applications. Honestly saying, XF is a high-level framework based on [Backbone.js](http://backbonejs.org) that implements its own architecture paradigm, based on MV* on the component level.
 
 XFramework makes it easy to reuse the application logic and provide various layouts or widgets for different devices based on the criteria that you define.
 
