@@ -27,12 +27,12 @@ module.exports = (function (grunt) {
         // TODO modules to add
 
         if (arguments.length === 0) {
-            console.log('Adding all UI components');
+            console.log('Adding all ui components');
             jsSources.push('xf/ui/*.js');
         } else {
 
             for (var i in arguments) {
-                console.log('Adding UI for "' + arguments[i] + '"');
+                console.log('Adding ui for "' + arguments[i] + '"');
                 jsSources.push('xf/ui/xf.ui.' + arguments[i] + '.js');
             }
         }
