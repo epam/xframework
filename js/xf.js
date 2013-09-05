@@ -86,7 +86,7 @@
 
     XF.on('all', function (eventName) {
         console.log('XF:all - ', eventName);
-        console.log(typeof eventName);
+
         if (!compEventSplitter.test(eventName)) {
             return;
         }
@@ -225,10 +225,8 @@
      @private
      */
     var loadChildComponents = function(DOMObject) {
-        console.log('XF :: loadChildComponents', DOMObject);
-        debugger;
+        console.log('XF :: loadChildComponents');
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
-            console.log(value)
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
             loadChildComponent(compID, compName, true);
@@ -260,7 +258,6 @@
      */
     var bindHideShowListeners = function() {
         $('[data-component]').on('show', function(evt) {
-            console.log('SHOWED', evt.target);
             if(evt.currentTarget == evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
@@ -832,7 +829,6 @@ XF.App.extend = BB.Model.extend;
 
         start: function (jqObj) {
             jqObj = jqObj || $('body');
-            console.log('pages start', jqObj);
             var pages =  jqObj.find(' .' + this.pageClass);
             if (pages.length) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
@@ -1591,27 +1587,24 @@ XF.App.extend = BB.Model.extend;
     };
 XF.Collection = BB.Collection.extend({
 
-    component: null,
+    _initProperties: function () {
+        this.status = {
+            loaded: false,
+            loading: false,
+            loadingFailed: false
+        };
 
-    root: null,
-
-    status: {
-        loaded: false,
-        loading: false,
-        loadingFailed: false
+        this.root = null;
+        this.ajaxSettings = {};
+        this.component = null;
     },
-
-    /**
-     settings for $ AJAX data request
-     @type String
-     */
-    ajaxSettings : null,
 
     _bindListeners: function () {
         //this.on('change reset sync add', this.onDataChanged, this);
     },
 
     constructor: function (models, options) {
+        this._initProperties();
         this._bindListeners();
 
         this.component = options.component;
@@ -1671,32 +1664,27 @@ XF.Collection = BB.Collection.extend({
 });
 XF.Model = BB.Model.extend({
 
-    component: null,
+    _initProperties: function () {
+        this.status = {
+            loaded: false,
+            loading: false,
+            loadingFailed: false
+        };
 
-    root: null,
-
-    status: {
-        loaded: false,
-        loading: false,
-        loadingFailed: false
+        this.root = null;
+        this.ajaxSettings = {};
+        this.component = null;
     },
-
-    /**
-     settings for $ AJAX data request
-     @type String
-     */
-    ajaxSettings : null,
 
     _bindListeners: function () {
 
     },
 
     constructor: function (attributes, options) {
-
-        this.component = options.component;
-
+        this._initProperties();
         this._bindListeners();
 
+        this.component = options.component;
 
         this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
@@ -1760,56 +1748,6 @@ XF.Model = BB.Model.extend({
 
     XF.View = BB.View.extend({
 
-        /**
-         Would be dispatched once when the Component inited
-         @name XF.View#init
-         @event
-         */
-
-        /**
-         Would be dispatched once when the Component constructed
-         @name XF.View#construct
-         @event
-         */
-
-        /**
-         Would be dispatched once, when template is ready for use
-         @name XF.View#templateLoaded
-         @event
-         */
-
-        /**
-         Would be dispatched after each render
-         @name XF.View#refresh
-         @event
-         */
-
-        /**
-         Link to the {@link XF.Component} instance
-         @type XF.Component
-         */
-        component : null,
-
-
-
-        /**
-         A flag that indiacates whether that template is currently being loaded
-         @type Boolean
-         @private
-         @static
-         */
-        status: {
-            loaded: false,
-            loading: false,
-            loadingFailed: false
-        },
-
-        template: {
-            src: null,
-            compiled: null,
-            cache: true
-        },
-
         url: function () {
             return XF.settings.property('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
         },
@@ -1832,7 +1770,26 @@ XF.Model = BB.Model.extend({
             this.on('refresh', this.refresh, this);
         },
 
+        _initProperties: function () {
+            this.template = {
+                src: null,
+                compiled: null,
+                cache: true
+            };
+
+            this.status = {
+                loaded: false,
+                loading: false,
+                loadingFailed: false
+            };
+
+            this.component = null;
+        },
+
         constructor: function (options) {
+            // Sorry, BB extend makes all properties static
+            this._initProperties();
+
             this.setElement('[data-id=' + options.attributes['data-id'] + ']');
 
             this.component = options.component;
@@ -1841,6 +1798,8 @@ XF.Model = BB.Model.extend({
             this._bindListeners();
 
             this.load();
+
+
 
             BB.View.apply(this, arguments);
         },
@@ -1854,7 +1813,11 @@ XF.Model = BB.Model.extend({
         },
 
         load: function () {
+
             if (this.template.src) {
+                this.status.loading = false;
+                this.status.loaded = true;
+                this.trigger('loaded');
                 return;
             }
 
@@ -1963,8 +1926,6 @@ XF.Model = BB.Model.extend({
         refresh: function() {
             if (this.status.loaded && this.template.src) {
                 if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
-
-                    console.log('VIEW ReFRESH');
                     this.beforeRender();
                     this.render();
                     this.afterRender();
@@ -2125,7 +2086,7 @@ XF.Model = BB.Model.extend({
 
         },
 
-        
+
         initialize: function() {
 
             if (this.Collection) {
@@ -3669,6 +3630,6 @@ XF.Model = BB.Model.extend({
             }
         }
     };
-}).call(this, window, $, Backbone); 
+}).call(this, window, $, Backbone);
 
 /* License text */

@@ -1,31 +1,26 @@
 XF.Model = BB.Model.extend({
 
-    component: null,
+    _initProperties: function () {
+        this.status = {
+            loaded: false,
+            loading: false,
+            loadingFailed: false
+        };
 
-    root: null,
-
-    status: {
-        loaded: false,
-        loading: false,
-        loadingFailed: false
+        this.root = null;
+        this.ajaxSettings = {};
+        this.component = null;
     },
-
-    /**
-     settings for $ AJAX data request
-     @type String
-     */
-    ajaxSettings : null,
 
     _bindListeners: function () {
 
     },
 
     constructor: function (attributes, options) {
-
-        this.component = options.component;
-
+        this._initProperties();
         this._bindListeners();
 
+        this.component = options.component;
 
         this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
