@@ -119,6 +119,7 @@
     });
 
     onComponentCostruct = function (compID) {
+          console.log('CONSTRUCTED', compID);
         var compObj = $(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
@@ -127,7 +128,7 @@
             }
         }
 
-        //loadChildComponents(compObj);
+        loadChildComponents(compObj);
     };
 
 
@@ -247,10 +248,15 @@
      */
     var loadChildComponent = function(compID, compName) {
         getComponent(compName, function(compDef) {
+            console.log('ADDING', compID);
+            console.log(components);
+            console.log(components[compID]);
             if(!components[compID]) {
                 var compInst = new compDef(compName, compID);
+                console.log('CREATED', compInst);
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
+                compInst.construct();
                 XF.trigger('component:' + compID + ':constructed');
             }
         });
@@ -263,15 +269,13 @@
      */
     var bindHideShowListeners = function() {
         $('[data-component]').on('show', function(evt) {
-            if ($(evt.target).attr('data-component')) {
+            if (evt.currentTarget === evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
                     var compName = $(this).attr('data-component');
                     loadChildComponent(compID, compName);
                 }
                 XF.trigger('ui:enhance', $(this));
-            }else{
-                loadChildComponents($(this));
             }
         });
     };
@@ -338,9 +342,11 @@
     var getComponent = function(compName, callback) {
         var compStatus = registeredComponents[compName];
         if(!compStatus) {
+            console.log('REGISTERING', compName);
             compStatus = XF.registerComponent(compName, XF.settings.property('componentUrl')(compName));
         }
         if(compStatus.loaded) {
+            console.log('STATUS LOADED', compName);
             callback(compStatus.compDef);
             return;
         }
@@ -929,7 +935,7 @@ XF.App.extend = BB.Model.extend;
             XF.trigger('ui:enhance', $(this.activePage));
 
             // looking for components inside the page
-            //loadChildComponents(this.activePage[0]);
+            loadChildComponents(this.activePage[0]);
         }
     };
 
@@ -1958,7 +1964,7 @@ XF.Model = BB.Model.extend({
             this.$el.html(this.getMarkup());
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
-            console.log('RENDER', this.component.id);
+
             this.trigger('rendered');
 
             return this;
@@ -2015,7 +2021,6 @@ XF.Model = BB.Model.extend({
 
         // merging defaults with custom instance options and class options
         this.options = _.defaults(XF.getOptionsByID(this.id), this.options, this.defaults);
-        this.initialize();
     };
 
 
@@ -2088,12 +2093,13 @@ XF.Model = BB.Model.extend({
          Constructs component instance
          @private
          */
-        construct : function() {
+
+        initialize: function() {
 
         },
 
         
-        initialize: function() {
+        construct: function () {
 
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
@@ -2127,10 +2133,10 @@ XF.Model = BB.Model.extend({
 
             this._bindListeners();
 
-            this.construct();
+            this.initialize();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-            this.listenToOnce(this.view, 'rendered', function () { XF.trigger('component:' + this.id + ':constructed'); });
+            this.view.once('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':constructed'); }, this));
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();

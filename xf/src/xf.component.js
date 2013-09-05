@@ -42,7 +42,6 @@
 
         // merging defaults with custom instance options and class options
         this.options = _.defaults(XF.getOptionsByID(this.id), this.options, this.defaults);
-        this.initialize();
     };
 
 
@@ -115,12 +114,13 @@
          Constructs component instance
          @private
          */
-        construct : function() {
+
+        initialize: function() {
 
         },
 
         
-        initialize: function() {
+        construct: function () {
 
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
@@ -154,10 +154,10 @@
 
             this._bindListeners();
 
-            this.construct();
+            this.initialize();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-            this.listenToOnce(this.view, 'rendered', function () { XF.trigger('component:' + this.id + ':constructed'); });
+            this.view.once('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':constructed'); }, this));
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
