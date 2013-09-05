@@ -171,6 +171,7 @@
      */
     var loadChildComponents = function(DOMObject) {
         console.log('XF :: loadChildComponents', DOMObject);
+        debugger;
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
             console.log(value)
             var compID = $(value).attr('data-id');
