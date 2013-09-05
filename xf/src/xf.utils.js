@@ -1,14 +1,14 @@
     /**
      @namespace Holds all the reusable util functions
      */
-    XF.Utils = {};
+    XF.utils = {};
 
     /**
      @namespace Holds all the reusable util functions related to Adress Bar
      */
-    XF.Utils.AddressBar = {};
+    XF.utils.addressBar = {};
 
-    _.extend(XF.Utils.AddressBar, /** @lends XF.Utils.AddressBar */{
+    _.extend(XF.utils.addressBar, /** @lends XF.utils.addressBar */{
 
         /**
          Saves scroll value in order to not re-calibrate everytime we call the hide url bar
@@ -33,16 +33,16 @@
          Hides adress bar
          */
         hide : function(){
-            console.log('XF :: Utils :: AddressBar :: hide');
+            console.log('XF :: utils :: addressBar :: hide');
             var win = window;
 
-            // if there is a hash, or XF.Utils.AddressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
-            if( !location.hash && XF.Utils.AddressBar.BODY_SCROLL_TOP !== false){
-                win.scrollTo( 0, XF.Utils.AddressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
+            // if there is a hash, or XF.utils.addressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
+            if( !location.hash && XF.utils.addressBar.BODY_SCROLL_TOP !== false){
+                win.scrollTo( 0, XF.utils.addressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
             }
 
 
-            if (XF.Device.isMobile) {
+            if (XF.device.isMobile) {
                 var css = document.documentElement.style;
 
                 css.height = '200%';
@@ -60,7 +60,7 @@
          Hides adress bar on page load
          */
         hideOnLoad : function () {
-            console.log('XF :: Utils :: AddressBar :: hideOnLoad');
+            console.log('XF :: utils :: addressBar :: hideOnLoad');
             var win = window,
                 doc = win.document;
 
@@ -69,14 +69,14 @@
 
                 //scroll to 1
                 window.scrollTo( 0, 1 );
-                XF.Utils.AddressBar.BODY_SCROLL_TOP = 1;
+                XF.utils.addressBar.BODY_SCROLL_TOP = 1;
 
                 //reset to 0 on bodyready, if needed
                 bodycheck = setInterval(function() {
                     if( doc.body ) {
                         clearInterval( bodycheck );
-                        XF.Utils.AddressBar.BODY_SCROLL_TOP = XF.Utils.AddressBar.getScrollTop();
-                        //XF.Utils.AddressBar.hide();
+                        XF.utils.addressBar.BODY_SCROLL_TOP = XF.utils.addressBar.getScrollTop();
+                        //XF.utils.addressBar.hide();
                     }
                 }, 15);
 
@@ -84,9 +84,9 @@
                     function() {
                         setTimeout(function() {
                             //at load, if user hasn't scrolled more than 20 or so...
-                            if( XF.Utils.AddressBar.getScrollTop() < 20 ) {
+                            if( XF.utils.addressBar.getScrollTop() < 20 ) {
                                 //reset to hide addr bar at onload
-                                //XF.Utils.AddressBar.hide();
+                                //XF.utils.addressBar.hide();
                             }
                         }, 0);
                     }

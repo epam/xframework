@@ -8,7 +8,7 @@
     XF.View = BB.View.extend({
 
         url: function () {
-            return XF.settings.property('templateUrlPrefix') + XF.Device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
+            return XF.settings.property('templateUrlPrefix') + XF.device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
         },
 
         /**
@@ -176,7 +176,7 @@
          */
         afterLoadTemplateFailed : function() {
             console.log('XF.View :: afterLoadTemplateFailed - could not load template for "' + this.component.id + '"');
-            console.log('XF.View :: afterLoadTemplateFailed - @dev: verify XF.Device.types settings & XF.View :: getTemplate URL overrides');
+            console.log('XF.View :: afterLoadTemplateFailed - @dev: verify XF.device.types settings & XF.View :: getTemplate URL overrides');
         },
 
         /**

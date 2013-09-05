@@ -4,7 +4,7 @@
      @param footer DOM Object
      @private
      */
-    XF.UI.tabs = {
+    XF.ui.tabs = {
 
         selector : '[data-role=tabs]',
 
@@ -27,7 +27,7 @@
 
             options.tabs = options.tabs || [];
 
-            var buttons = jQTabs.find(XF.UI.button.selector);
+            var buttons = jQTabs.find(XF.ui.button.selector);
             options.rowCount = Math.ceil(buttons.length / options.tabsperrow);
             options.tabsClass = options.tabsclass || '';
 
@@ -91,7 +91,7 @@
             jQTabs.html(_template(options));
 
             jQTabs.find('a').on('tap', function () {
-               XF.UI.tabs.selectTab(jQTabs, $(this));
+               XF.ui.tabs.selectTab(jQTabs, $(this));
             });
         },
 
