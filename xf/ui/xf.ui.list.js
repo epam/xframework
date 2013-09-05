@@ -18,7 +18,7 @@
                 linkItems = listItems.children('a'),
                 listItemsScope = [],
                 fullWidth = options.fullwidth || 'false',
-                listId = jQList.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+                listId = jQList.attr('id') || XF.utils.uniqueID();
 
             linkItems.addClass('xf-li-btn').children('.xf-count-bubble').parent().addClass('xf-li-has-count');
             listItems.not(linkItems.parent()).not('[data-role=divider]').addClass('xf-li-static');

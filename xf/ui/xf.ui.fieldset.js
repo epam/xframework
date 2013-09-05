@@ -15,7 +15,7 @@
                 return;
             }
 
-            var id = jQFieldset.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            var id = jQFieldset.attr('id') || XF.utils.uniqueID();
 
             jQFieldset.attr({'data-skip-enhance':  true, 'id' : id});
 

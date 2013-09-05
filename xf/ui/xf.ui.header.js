@@ -20,7 +20,7 @@
                 headerTitle.addClass('xf-header-title');
             }
 
-            options.id = options.id || 'xf-header-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.html = jQHeader.html();
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;

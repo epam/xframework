@@ -15,7 +15,7 @@
                 return;
             }
 
-            options.id = options.id || 'xf-slidemenu-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.hasTitle = options.title != '' ? true : false;
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
