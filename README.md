@@ -7,7 +7,7 @@ XFramework
 
 Version 0.9.1
 
-XFramework (next XF) is a small yet powerful Javascript framework for quick development of cross-device web applications. Honestly saying, XF is a high-level framework based on (Backbone.js)[http://backbonejs.org] that implements its own architecture paradigm, based on MV* on the component level.
+XFramework (next XF) is a small yet powerful Javascript framework for quick development of cross-device web applications. Honestly saying, XF is a high-level framework based on [Backbone.js](http://backbonejs.org) that implements its own architecture paradigm, based on MV* on the component level.
 
 XFramework makes it easy to reuse the application logic and provide various layouts or widgets for different devices based on the criteria that you define.
 
@@ -53,7 +53,7 @@ XF Generator has a number of dependencies such as:
 * [NPM](https://npmjs.org)
 * [Yeoman] (http://yeoman.io)
 
-To install first two of them on Mac OS X or Windows computers you just need to download a package from (nodejs.org/download/)[http://nodejs.org/download/]. For other platforms see the (readme)[https://npmjs.org/doc/README.html].
+To install first two of them on Mac OS X or Windows computers you just need to download a package from [nodejs.org/download/](http://nodejs.org/download/). For other platforms see the [readme](https://npmjs.org/doc/README.html).
 
 After installing node.js and npm go to terminal and install Yeoman writing `npm install -g yo` (with `sudo` if necessary).
 
@@ -70,7 +70,7 @@ Almost there! After these steps you need to install XF Generator with `npm insta
 # XFramework internals
 
 ## XF source modules
-## 
+
 
 # Components
 
