@@ -40,7 +40,9 @@
             }
 
             if (jQButton.parents(XF.UI.header.selector).length > 0) {
-                enhancedButton.addClass('xf-button-header-' + position);
+                var hposition = position || 'right';
+                enhancedButton.addClass('xf-button-header-' + hposition);
+                enhancedButton.addClass('xf-button-float-' + hposition);
             }
 
             // The class xf-button is added to the button.
