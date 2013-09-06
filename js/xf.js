@@ -268,7 +268,6 @@
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
                 compInst.construct();
-                XF.trigger('component:' + compID + ':constructed');
             }
         });
     };
@@ -1976,6 +1975,7 @@ XF.Model = BB.Model.extend({
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
 
+            console.log('RENDERED', this.component.id);
             this.trigger('rendered');
 
             return this;
