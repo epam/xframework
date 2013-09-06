@@ -1,5 +1,5 @@
 
-    XF.touches = {
+    XF.touch = {
 
         init : function () {
             // Default values and device events detection

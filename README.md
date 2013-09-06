@@ -69,10 +69,43 @@ Almost there! After these steps you need to install XF Generator with `npm insta
 
 # XFramework internals
 
+XFramework itself has its own building blocks that drives it on. Some blocks are mandatory to include in the build of XFramework, other ones are not required.
+
+Mandatory XF src modules are:
+* `xf.jquery.hooks.js`
+* `xf.core.js`
+* `xf.app.js`
+* `xf.router.js`
+* `xf.pages.js`
+* `xf.model.js`
+* `xf.collection.js`
+* `xf.view.js`
+* `xf.component.js`
+
+Optional XF src modules are:
+* `xf.ui.js`
+* `xf.ui.*.js`
+* `xf.storage.js`
+* `xf.touch.js`
+
 ## XF source modules
+### XF.core
+### XF.router
+### XF.pages
+### XF.App
+### XF.device
+### XF.touch
+### XF.storage
+### XF.utils
 
 
-# Components
+
+### XF.zepto.support.js
+
+**Attention**! Include this module on your own fear and risk. It is in experimental status right away.
+
+
+# Components 
 
 ## XF.Component
 ## XF.Collection
@@ -80,7 +113,7 @@ Almost there! After these steps you need to install XF Generator with `npm insta
 ## XF.View
 ## XFramework list of events
 
-# UI Elements
+# UI Elements / XF.ui
 
 
 
