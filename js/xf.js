@@ -3655,4 +3655,3 @@ XF.Model = BB.Model.extend({
     };
 }).call(this, window, $, Backbone); 
 
-/* License text */
