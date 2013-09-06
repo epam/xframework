@@ -101,9 +101,9 @@
         options.device = options.device || {};
         XF.device.init(options.device.types);
 
-        // initializing XF.touches
-        if ('touches' in XF) {
-            XF.touches.init();
+        // initializing XF.touch
+        if ('touch' in XF) {
+            XF.touch.init();
         }
 
         // options.router

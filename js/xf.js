@@ -156,9 +156,9 @@
         options.device = options.device || {};
         XF.device.init(options.device.types);
 
-        // initializing XF.touches
-        if ('touches' in XF) {
-            XF.touches.init();
+        // initializing XF.touch
+        if ('touch' in XF) {
+            XF.touch.init();
         }
 
         // options.router
@@ -490,7 +490,7 @@ _.extend(XF.App.prototype, /** @lends XF.App.prototype */{
 XF.App.extend = BB.Model.extend;
 
 
-    XF.touches = {
+    XF.touch = {
 
         init : function () {
             // Default values and device events detection
