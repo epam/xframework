@@ -177,12 +177,24 @@
      */
     var loadChildComponents = function(DOMObject) {
         console.log('XF :: loadChildComponents', DOMObject);
+
+        if ($(DOMObject).attr('[data-component]')) {
+            if ($(DOMObject).is(':visible')) {
+                var compID = $(value).attr('data-id');
+                var compName = $(value).attr('data-component');
+                loadChildComponent(compID, compName);
+            }
+        }
+
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
-            loadChildComponent(compID, compName, true);
+            if (compID && compName) {
+                loadChildComponent(compID, compName);
+            }
         });
     };
+    XF.on('core:loadChildComponents', loadChildComponents);
 
     /**
      Loads component definition and creates its instance
@@ -213,7 +225,7 @@
      @private
      */
     var bindHideShowListeners = function() {
-        $('[data-component]').on('show', function(evt) {
+        $('body').on('show html append prepend', function(evt) {
             if (evt.currentTarget === evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {

@@ -1,4 +1,4 @@
-/*! X-Framework 05-09-2013 */
+/*! X-Framework 06-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -14,33 +14,32 @@
     var _oldshow = $.fn.show;
     /** @ignore */
     $.fn.show = function(speed, callback) {
-        var res = _oldshow.apply(this,arguments);
-        $(this).trigger('show');
+        var res = _oldshow.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldhtml = $.fn.html;
     /** @ignore */
     $.fn.html = function(a) {
-        var res = _oldhtml.apply(this,arguments);
-        $(this).trigger('show');
-        $(this).trigger('html');
+        var res = _oldhtml.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldappend = $.fn.append;
     /** @ignore */
     $.fn.append = function() {
-        var res = _oldappend.apply(this,arguments);
-        $(this).trigger('append');
+        var res = _oldappend.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldprepend = $.fn.prepend;
     /** @ignore */
     $.fn.prepend = function() {
-        var res = _oldprepend.apply(this,arguments);
-        $(this).trigger('prepend');
+        var res = _oldprepend.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
@@ -232,12 +231,24 @@
      */
     var loadChildComponents = function(DOMObject) {
         console.log('XF :: loadChildComponents', DOMObject);
+
+        if ($(DOMObject).attr('[data-component]')) {
+            if ($(DOMObject).is(':visible')) {
+                var compID = $(value).attr('data-id');
+                var compName = $(value).attr('data-component');
+                loadChildComponent(compID, compName);
+            }
+        }
+
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
-            loadChildComponent(compID, compName, true);
+            if (compID && compName) {
+                loadChildComponent(compID, compName);
+            }
         });
     };
+    XF.on('core:loadChildComponents', loadChildComponents);
 
     /**
      Loads component definition and creates its instance
@@ -268,7 +279,7 @@
      @private
      */
     var bindHideShowListeners = function() {
-        $('[data-component]').on('show', function(evt) {
+        $('body').on('show html append prepend', function(evt) {
             if (evt.currentTarget === evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
