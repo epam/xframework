@@ -213,6 +213,7 @@
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
 
+            console.log('RENDERED', this.component.id);
             this.trigger('rendered');
 
             return this;
