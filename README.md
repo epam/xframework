@@ -69,11 +69,14 @@ Almost there! After these steps you need to install XF Generator with `npm insta
 
 # XFramework internals
 
+## XF source modules
+
 XFramework itself has its own building blocks that drives it on. Some blocks are mandatory to include in the build of XFramework, other ones are not required.
 
 Mandatory XF src modules are:
 * `xf.jquery.hooks.js`
 * `xf.core.js`
+* `xf.settings.js`
 * `xf.app.js`
 * `xf.router.js`
 * `xf.pages.js`
@@ -87,16 +90,24 @@ Optional XF src modules are:
 * `xf.ui.*.js`
 * `xf.storage.js`
 * `xf.touch.js`
+* `xf.utils.js`
+* `xf.storage.js`
+* `xf.zepto.support.js`
 
-## XF source modules
-### XF.core
-### XF.router
-### XF.pages
-### XF.App
-### XF.device
-### XF.touch
-### XF.storage
-### XF.utils
+
+## XF.Router
+
+`XF.Router` is an extended [Backbone.Router]. XF cares about creation of router instance and makes the creation of routes and handlers much more easy.
+
+To define you
+
+## XF.pages
+## XF.App
+## XF.device
+## XF.settings
+## XF.touch
+## XF.storage
+## XF.utils
 
 
 
@@ -105,13 +116,13 @@ Optional XF src modules are:
 **Attention**! Include this module on your own fear and risk. It is in experimental status right away.
 
 
-# Components 
+# XFramework Components 
 
-## XF.Component
-## XF.Collection
-## XF.Model
-## XF.View
-## XFramework list of events
+## Component
+## Collection
+## Model
+## View
+## List of built-in events
 
 # UI Elements / XF.ui
 
