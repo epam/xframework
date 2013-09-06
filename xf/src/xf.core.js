@@ -214,7 +214,6 @@
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
                 compInst.construct();
-                XF.trigger('component:' + compID + ':constructed');
             }
         });
     };
