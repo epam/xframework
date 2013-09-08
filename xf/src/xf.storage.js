@@ -16,7 +16,7 @@
          Indicates whether accessibility test for localStorage was passed at launch time
          @type {Object}
          */
-        available: false,
+        isAvailable: false,
 
         /**
          Runs accessibility test for localStorage & clears it if the applicationVersion is too old
@@ -29,9 +29,9 @@
             try {
                 this.storage.setItem('check', 'check');
                 this.storage.removeItem('check');
-                this.available = true;
+                this.isAvailable = true;
             } catch(e) {
-                this.available = false;
+                this.isAvailable = false;
             }
 
             // clearing localStorage if stored version is different from current
@@ -59,7 +59,7 @@
          */
         get : function(key) {
             var result;
-            if(this.available) {
+            if(this.isAvailable) {
                 try {
                     result = this.storage.getItem(key);
                     console.log('XF.storage :: get - "' + key + '" = "' + result + '"');
@@ -80,7 +80,7 @@
          */
         set : function(key, value) {
             var result;
-            if(this.available) {
+            if(this.isAvailable) {
                 try {
                     this.storage.setItem(key, value);
                     result = true;
@@ -100,7 +100,7 @@
          */
         clear : function() {
             var result;
-            if(this.available) {
+            if(this.isAvailable) {
                 try {
                     this.storage.clear();
                     result = true;
