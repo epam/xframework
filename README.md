@@ -79,7 +79,7 @@ Almost there! After these steps you need to install XF Generator with `npm insta
 
 ## XF source modules
 
-XFramework has its own building blocks that drives it on. Some blocks are mandatory to include in the build of XFramework, other ones are not required.
+XFramework has its own building blocks that drive it on. Some blocks are mandatory to include in the build of XFramework, other ones are not required.
 
 Mandatory XF src modules are:
 * `xf.jquery.hooks.js`
@@ -159,9 +159,27 @@ var app = new MyApp({
 
 ## XF.pages
 
+
+
 ## XF.App
 
+`XF.App` is a 'class' that you able to extend with your own methods and properties needed in the application. In this case an instance of this class is something like a main controller of the whole app. 
 
+```javascript
+// if the app boilerplate was created via XF Generator
+// these lines can be found in `app.js` file
+var MyApp = XF.App.extend({
+    initialize: function () {
+    	// this code will be executed before XF will be started 
+			// but you can put the preparation code here
+			// …			
+			this.myAwesomeMethod();
+    },
+		myAwesomeMethod: function () {
+
+		}
+});
+```
 
 ## XF.device
 
@@ -250,6 +268,7 @@ XF.storage.clear();
 
 ## XF.utils
 
+This source module will contain all the helpers will needed to make the work with XF much more easier. Right now it contains only address bar hiding helper for iOS and Android mobile phones.
 
 
 ## XF.zepto.support.js
@@ -266,6 +285,19 @@ XF.storage.clear();
 ## List of built-in events
 
 # UI Elements
+
+## Buttons
+## Lists
+## Form elements
+## Your own XF UI Element
+
+# Contributing to XF
+
+## Workflow
+
+## Roadmap
+
+## Information channels
 
 
 
