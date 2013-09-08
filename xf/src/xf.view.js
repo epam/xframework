@@ -51,14 +51,13 @@
 
             this.setElement('[data-id=' + options.attributes['data-id'] + ']');
 
+            // TODO: add checking the availability of options.component
             this.component = options.component;
             _.omit(options, 'component');
 
             this._bindListeners();
 
             this.load();
-
-
 
             BB.View.apply(this, arguments);
         },
