@@ -977,7 +977,7 @@ XF.App.extend = BB.Model.extend;
          */
 
         enhance : function (jqObj) {
-            if (!jqObj instanceof $) {
+            if (!(jqObj instanceof $)) {
                 jqObj = $(jqObj);
 
                 if (!jqObj instanceof $) {
@@ -2250,7 +2250,7 @@ XF.Model = BB.Model.extend({
                 enhancedButton,
                 innerStuff;
 
-            if (!button || !jQButton instanceof $ || jQButton.attr('data-skip-enhance') == 'true') {
+            if (!button || !(jQButton instanceof $) || jQButton.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2383,7 +2383,7 @@ XF.Model = BB.Model.extend({
                     label : ''
                 };
 
-            if (!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
+            if (!chbRbInput || !(jQChbRbInput instanceof $) || jQChbRbInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2439,7 +2439,7 @@ XF.Model = BB.Model.extend({
         render : function(fieldset, options) {
             var jQFieldset = $(fieldset);
 
-            if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
+            if (!fieldset || !(jQFieldset instanceof $) || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2488,7 +2488,7 @@ XF.Model = BB.Model.extend({
             var jQFooter = $(footer),
                 _self = this;
 
-            if (!footer || !jQFooter instanceof $ || jQFooter.attr('data-skip-enhance') == 'true') {
+            if (!footer || !(jQFooter instanceof $) || jQFooter.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2571,7 +2571,7 @@ XF.Model = BB.Model.extend({
         render : function (header, options) {
             var jQHeader = $(header);
 
-            if (!header || !jQHeader instanceof $ || jQHeader.attr('data-skip-enhance') == 'true') {
+            if (!header || !(jQHeader instanceof $) || jQHeader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2613,7 +2613,7 @@ XF.Model = BB.Model.extend({
         render : function (list, options) {
             var jQList = $(list);
 
-            if (!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
+            if (!list || !(jQList instanceof $) || jQList.attr('data-skip-enhance') == 'true') {
                 return;
             }
             var listItems = jQList.children('li'),
@@ -2711,7 +2711,7 @@ XF.Model = BB.Model.extend({
                 _self = this,
                 options = options || {};
 
-            if (!loader || !jqLoader instanceof $ || jqLoader.attr('data-skip-enhance') == 'true') {
+            if (!loader || !(jqLoader instanceof $) || jqLoader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2759,7 +2759,7 @@ XF.Model = BB.Model.extend({
         },
 
         create : function () {
-            var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
+            var jqLoader = $('<div class="xf-loader" data-role="loader"><div class="xf-loader-content"><div class="loading"></div></div></div>');
             XF.device.getViewport().append(jqLoader);
             return this.render(jqLoader[0]);
         }
@@ -3038,7 +3038,7 @@ XF.Model = BB.Model.extend({
         render : function (scrollable) {
 
             var jQScrollable = $(scrollable);
-            if (!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
+            if (!scrollable || !(jQScrollable instanceof $) || jQScrollable.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -3113,7 +3113,7 @@ XF.Model = BB.Model.extend({
         render : function (menu, options) {
             var jQMenu = $(menu);
 
-            if (!menu || !jQMenu instanceof $ || jQMenu.attr('data-skip-enhance') == 'true') {
+            if (!menu || !(jQMenu instanceof $) || jQMenu.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -3206,7 +3206,7 @@ XF.Model = BB.Model.extend({
             var jQTabs = $(tabs),
                 _self = this;
 
-            if (!tabs || !jQTabs instanceof $ || jQTabs.attr('data-skip-enhance') == 'true') {
+            if (!tabs || !(jQTabs instanceof $) || jQTabs.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -3316,7 +3316,7 @@ XF.Model = BB.Model.extend({
                     end : 'mouseup touchend MSPointerUp',
                 };
 
-            if (!textInput || !jQTextInput instanceof $ || jQTextInput.attr('data-skip-enhance') == 'true') {
+            if (!textInput || !(jQTextInput instanceof $) || jQTextInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
