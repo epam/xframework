@@ -1,4 +1,4 @@
-/*! X-Framework 06-09-2013 */
+/*! X-Framework 08-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -199,6 +199,7 @@
      @param {Object} handlers list of route handlers for {@link XF.router}
      @private
      */
+    // TODO: pass options to history and make them changable from options.history
     var createRouter = function(options) {
         if(XF.router) {
             throw 'XF.createRouter can be called only ONCE!';
@@ -268,7 +269,6 @@
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
                 compInst.construct();
-                XF.trigger('component:' + compID + ':constructed');
             }
         });
     };
@@ -402,6 +402,7 @@
      @param {Object} compDef Component definition
      @public
      */
+    //TODO: extend defineCompoennt to define Views, Models and Collections as well
     XF.defineComponent = function(compName, compDef) {
         console.log(compName, compDef);
         var compStatus = registeredComponents[compName];
@@ -1167,7 +1168,7 @@ XF.App.extend = BB.Model.extend;
          Indicates whether accessibility test for localStorage was passed at launch time
          @type {Object}
          */
-        available: false,
+        isAvailable: false,
 
         /**
          Runs accessibility test for localStorage & clears it if the applicationVersion is too old
@@ -1180,9 +1181,9 @@ XF.App.extend = BB.Model.extend;
             try {
                 this.storage.setItem('check', 'check');
                 this.storage.removeItem('check');
-                this.available = true;
+                this.isAvailable = true;
             } catch(e) {
-                this.available = false;
+                this.isAvailable = false;
             }
 
             // clearing localStorage if stored version is different from current
@@ -1210,7 +1211,7 @@ XF.App.extend = BB.Model.extend;
          */
         get : function(key) {
             var result;
-            if(this.available) {
+            if(this.isAvailable) {
                 try {
                     result = this.storage.getItem(key);
                     console.log('XF.storage :: get - "' + key + '" = "' + result + '"');
@@ -1231,7 +1232,7 @@ XF.App.extend = BB.Model.extend;
          */
         set : function(key, value) {
             var result;
-            if(this.available) {
+            if(this.isAvailable) {
                 try {
                     this.storage.setItem(key, value);
                     result = true;
@@ -1251,7 +1252,7 @@ XF.App.extend = BB.Model.extend;
          */
         clear : function() {
             var result;
-            if(this.available) {
+            if(this.isAvailable) {
                 try {
                     this.storage.clear();
                     result = true;
@@ -1980,6 +1981,7 @@ XF.Model = BB.Model.extend({
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
 
+            console.log('RENDERED', this.component.id);
             this.trigger('rendered');
 
             return this;
