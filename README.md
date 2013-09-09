@@ -47,6 +47,7 @@ The roadmap for the next versions can be found on [GitHub](https://github.com/ep
 ## The idea behind
 
 There are some rules behind the XFramework:
+
 * Component-based event-driven architecture
 * Components easily customizable with options
 * Lazy loading of components
@@ -84,6 +85,7 @@ Almost there! After these steps you need to install XF Generator with `npm insta
 XFramework has its own building blocks that drive it on. Some blocks are mandatory to include in the build of XFramework, other ones are not required.
 
 Mandatory XF src modules are:
+
 * `xf.jquery.hooks.js`
 * `xf.core.js`
 * `xf.settings.js`
@@ -96,6 +98,7 @@ Mandatory XF src modules are:
 * `xf.component.js`
 
 Optional XF src modules are:
+
 * `xf.ui.js`
 * `xf.ui.*.js`
 * `xf.touch.js`
@@ -127,6 +130,7 @@ var MyApp = XF.App.extend({
 ## XF.device
 
 `XF.device` contains the information about current user device app was launched:
+
 * `XF.device.supports.touchEvents`
 * `XF.device.supports.pointerEvents`
 * `XF.device.supports.cssAnimations`
@@ -159,7 +163,7 @@ var app = new MyApp({
 
 ## XF.Router
 
-`XF.Router` is an extended [Backbone.Router]. XF cares about creation of router instance, its starting, binding handlers and so on. Everything you just need to do is to pass your routes and handlers with starting options for the application
+`XF.Router` is an extended [Backbone.Router]. XF cares about creation of router instance, its starting, binding handlers and so on. Everything you just need to do is to pass your routes and handlers with starting options for the application:
 
 ```javascript
 	// if the app boilerplate was created via XF Generator
@@ -213,11 +217,13 @@ var app = new MyApp({
 ```
 
 To force navigation to another url fragment a number of ways is available:
+
 * `XF.router.navigate('books/fiction', {trigger: true})`
 * `XF.navigate('books/fiction')` is the syntax sugar for the first  approach. `{trigger: true}` set by default
 * `XF.trigger('navigate', 'books/fiction')` is much more preferable for consistency and integrity of the application
 
 All elements with the attribute `data-href` or `href` will work on changing url fragment.
+
 ```html
 <a data-href="books/fiction">Books</a>
 ```
@@ -235,6 +241,7 @@ To create a page you just need to make a `<div>` with necessary classes):
 `id` is used to make page switching work together with the router. It should be equal to first url fragment of the route (e.g. `books/:cat(/:subcat)`) or the name of the handler (e.g. `showBooksCategory`). In this case the page with such id attribute will be shown automatically when the route (e.g. `books/fiction`) will be triggered.
 
 To show the page without changing the url or using route binding:
+
 ```javascript
 XF.trigger('pages:show', 'books', 'fade');
 
@@ -243,6 +250,7 @@ XF.pages.show('books', 'fade');
 ```
 
 To define the default animation type for all device types it's needed to set up the necessary properties on the start of app:
+
 ```javascript
 var app = new MyApp({
 		// …
@@ -254,6 +262,7 @@ var app = new MyApp({
 ```
 
 If you want to create your own animation type and use it for page switching you (please care about necessary CSS animations in `xf.animations.less` file):
+
 ```javascript
 var app = new MyApp({
 		// …
@@ -272,6 +281,7 @@ var app = new MyApp({
 ```
 
 To define the default animation for each of device types it's needed to pass such parameters together with device options on the start of application or set it in the runtime:
+
 ```javascript
 var app = new MyApp({
 		// …
@@ -301,15 +311,18 @@ XF.trigger('pages:animation:default', 'fade');
 
 // …or not so elegant way
 XF.setDefaultAnimationType('fade');
-
 ```
 
 The situations if changing of the next animation type for the page is needed are not so uncommon, e.g. back button tap should force `slide right` animation instead of `slideleft`. In such cases there are some ways to do it:
+
 * Define `data-animation` attribute on the element with `data-href`:
+
 ```html
 <a data-href="books/" data-animations="slideright">Back</a>
 ```
+
 * Set the next animation type programmatically:
+
 ```javascript
 XF.trigger('pages:animation:next', 'slideright');
 
@@ -317,10 +330,10 @@ XF.trigger('pages:animation:next', 'slideright');
 XF.setNextAnimationType('slideright');
 ```
 
-
 ## XF.settings
 
 This simple object contains the settings for the application, that could be overridden on the start:
+
 * appVersion (default: `1.0.0`)
 * noCache (default: `true`)
 * componentUrlPrefix (default: `js/components/`)
@@ -354,8 +367,9 @@ var app = new MyApp({
 `XF.touch` makes the life in such a multidevice world easier — it is an adapter for all types of user contexts: touch screens, mouse, pointers.
 
 For now it contains the following user interaction events:
+
 * `tap`: it doesn't matter if it is a click or a touch to the screen. Just bind on tap events for all types of devices and that's it!
-*`XF.touch` fixes the 300ms gap between click and touch events as well*
+* `XF.touch` fixes the 300ms gap between click and touch events as well*
 * `swipe`, `swipeUp`, `swipeDown`, `swipeLeft`, `swipeRight`
 
 ## XF.storage
@@ -892,7 +906,6 @@ Inputs of type `number`, `range` will automatically be converted to rich widgets
 					</select>
 				</div>
 			</div>
-
 
 
 ## Tabs
