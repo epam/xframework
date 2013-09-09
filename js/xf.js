@@ -270,7 +270,7 @@
                 console.log('CREATED', compInst);
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
-                compInst.constructor();
+                compInst._constructor();
             }
         });
     };
@@ -1621,8 +1621,12 @@ XF.Collection = BB.Collection.extend({
             loadingFailed: false
         };
 
-        this.root = null;
-        this.ajaxSettings = {};
+        if (!_.has(this, 'root')) {
+            this.root = null;
+        }
+        if (!_.has(this, 'ajaxSettings')) {
+            this.ajaxSettings = null;
+        }
         this.component = null;
     },
 
@@ -1634,7 +1638,11 @@ XF.Collection = BB.Collection.extend({
         this._initProperties();
         this._bindListeners();
 
-        this.component = options.component;
+        if (options.component) {
+            this.component = options.component;
+        }
+        _.omit(options, 'component');
+
         this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
@@ -1698,8 +1706,12 @@ XF.Model = BB.Model.extend({
             loadingFailed: false
         };
 
-        this.root = null;
-        this.ajaxSettings = {};
+        if (!_.has(this, 'root')) {
+            this.root = null;
+        }
+        if (!_.has(this, 'ajaxSettings')) {
+            this.ajaxSettings = null;
+        }
         this.component = null;
     },
 
@@ -1711,7 +1723,10 @@ XF.Model = BB.Model.extend({
         this._initProperties();
         this._bindListeners();
 
-        this.component = options.component;
+        if (options.component) {
+            this.component = options.component;
+        }
+        _.omit(options, 'component');
 
         this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
@@ -1820,7 +1835,9 @@ XF.Model = BB.Model.extend({
             this.setElement('[data-id=' + options.attributes['data-id'] + ']');
 
             // TODO: add checking the availability of options.component
-            this.component = options.component;
+            if (options.component) {
+                this.component = options.component;
+            }
             _.omit(options, 'component');
 
             this._bindListeners();
@@ -1909,22 +1926,19 @@ XF.Model = BB.Model.extend({
          @static
          */
         getMarkup: function() {
-            var data = {
-                collection: null,
-                model: null
-            };
+            var data = {};
 
             if(!this.template.compiled) {
                 this.template.compiled = _.template(this.template.src);
             }
 
             if (this.component.collection) {
-                data.collection = this.component.collection.toJSON();
+                data = this.component.collection.toJSON();
             }else if (this.component.model) {
-                data.model = this.component.model.toJSON();
+                data = this.component.model.toJSON();
             }
 
-            return this.template.compiled(data);
+            return this.template.compiled({data: data});
         },
 
         /**
@@ -2118,7 +2132,7 @@ XF.Model = BB.Model.extend({
 
         },
 
-        constructor: function () {
+        _constructor: function () {
             this.construct();
             if (this.Collection) {
                 this.collection = new this.Collection({}, {

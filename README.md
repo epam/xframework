@@ -486,25 +486,25 @@ Be aware of proper usage Collections and Models. By default `XF.Component` has `
 
 `XF.Component` properties:
 
-* `id`
-* `name`
-* `options`
-* `selector`
-* `Model`
-* `model`
-* `Collection`
-* `collection`
-* `View`
-* `view`
+* `id`: component id
+* `name`: component name
+* `options`: component options (defaults merged with passed options for component). Default: `{autoload: true, autorender: true, updateOnShow: false}`. `autoload` and `autorender` will load the data for collection or model with creation of component and then render the template with fetched data.
+* `selector`: component selector, e.g. `[data-id="componentId"]`
+* `Model`: model class for this component. Default: `null`.
+* `model`: instance of `Model` that will be created on the constructing of the component.
+* `Collection`: collection class for this component. Default: `XF.Collection`.
+* `collection`: instance of `Model` that will be created on the constructing of the component.
+* `View`: view class for this component. Default: `XF.View`.
+* `view`: instance of `View` that will be created on the constructing of the component.
 
 `XF.Component` methods:
 
-* `refresh`
+* `refresh`: refreshes the data (model or collection) and then refreshes the view. Triggers `refresh` method for view and collection/model. 
 
 `XF.Component` hooks:
 
-* `initialize`
-* `construct`
+* `construct`: overwrite it for your own needs. Called on the construction of component.
+* `initialize`: overwrite it for your own needs. Called on the initialization of component.
 
 ## Collection
 
@@ -512,19 +512,19 @@ Be aware of proper usage Collections and Models. By default `XF.Component` has `
 
 `XF.Collection` properties:
 
-* `status`
-* `component`
-* `ajaxSettings`
+* `status`: status of the data in the collection. Default: `{ loaded: false, loading: false, loadingFailed: false }`.
+* `component`: a link to the component for this collection.
+* `ajaxSettings`: settings for ajax requests to the server for this collection. If not set global `ajaxSettings` will be used. The format is the same as for `$.ajax` method.
 
 `XF.Collection` methods:
 
-* `refresh`
+* `url`: the url to the data. Could be a function or a property.
+* `refresh`: refreshes the data and triggers the view refreshing.
 
 `XF.Collection` hooks:
 
-* `url`
-* `initialize`
-* `construct`
+* `construct`: overwrite it for your own needs. Called on the construction of collection.
+* `initialize`: overwrite it for your own needs. Called on the initialization of collection.
 
 For other methods, properties and hooks available see [Backbone.Collection](http://backbonejs.org/#Collection).
 
@@ -534,19 +534,19 @@ For other methods, properties and hooks available see [Backbone.Collection](http
 
 `XF.Model` properties:
 
-* `status`
-* `component`
-* `ajaxSettings`
+* `status`: status of the data in the model. Default: `{ loaded: false, loading: false, loadingFailed: false }`.
+* `component`: a link to the component for this model.
+* `ajaxSettings`: settings for ajax requests to the server for this model. If not set global `ajaxSettings` will be used. The format is the same as for `$.ajax` method.
 
 `XF.Model` methods:
 
-* `refresh`
+* `url`: the url to the data. Could be a function or a property.
+* `refresh`: refreshes the data and triggers the view refreshing.
 
 `XF.Model` hooks:
 
-* `url`
-* `initialize`
-* `construct`
+* `construct`: overwrite it for your own needs. Called on the construction of model.
+* `initialize`: overwrite it for your own needs. Called on the initialization of model.
 
 For other methods, properties and hooks available see [Backbone.Model](http://backbonejs.org/#Model).
 
@@ -556,28 +556,29 @@ For other methods, properties and hooks available see [Backbone.Model](http://ba
 
 `XF.View` properties:
 
-* `template`
-* `status`
-* `component`
+* `template`: contains source of the loaded template and the compiled version of it. Default: `{src: null, compiled: null, cache: true }`.
+* `status`: status of the data in the view. Default: `{ loaded: false, loading: false, loadingFailed: false }`.
+* `component`: a link to the component for this view.
 
 `XF.View` methods:
 
-* `load`
-* `render`
-* `refresh`
-* `getMarkup`
-* `load`
+* `load`: loads the template from the cache or remotely.
+* `render`: renders the view. Please use `refresh` instead to use it together with hooks available.
+* `refresh`: refreshes the view.
+* `getMarkup`: returns the markup using the current data.
 
 `XF.View` hooks:
 
-* `url`
-* `initialize`
-* `construct`
-* `beforeLoadTemplate`
-* `afterLoadTemplate`
-* `afterLoadTemplateFailed`
-* `beforeRender`
-* `afterRender`
+* `url`: the url to the template file. Could be a function or a property.
+* `construct`: overwrite it for your own needs. Called on the construction of view.
+* `initialize`: overwrite it for your own needs. Called on the initialization of view.
+* `beforeLoadTemplate`: called before loading of the template started.
+* `afterLoadTemplate`: called after loading of the template completed.
+* `afterLoadTemplateFailed`: called after loading of the template completed and failed.
+* `beforeRender`: called before rendering of the template.
+* `afterRender`: called after rendering of the template.
+
+*Note that `collection` or `model` of the component available in the template through localized variable `data`*.
 
 For other methods, properties and hooks available see [Backbone.View](http://backbonejs.org/#View).
 
