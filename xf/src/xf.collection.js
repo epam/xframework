@@ -7,8 +7,12 @@ XF.Collection = BB.Collection.extend({
             loadingFailed: false
         };
 
-        this.root = null;
-        this.ajaxSettings = {};
+        if (!_.has(this, 'root')) {
+            this.root = null;
+        }
+        if (!_.has(this, 'ajaxSettings')) {
+            this.ajaxSettings = null;
+        }
         this.component = null;
     },
 
