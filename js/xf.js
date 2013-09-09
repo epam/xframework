@@ -1,4 +1,4 @@
-/*! X-Framework 08-09-2013 */
+/*! X-Framework 09-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -187,6 +187,8 @@
 
         //XF.pages.start();
         loadChildComponents(rootDOMObject);
+
+        XF.trigger('app:started');
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,7 +270,7 @@
                 console.log('CREATED', compInst);
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
-                compInst.construct();
+                compInst.constructor();
             }
         });
     };
@@ -880,6 +882,8 @@ XF.App.extend = BB.Model.extend;
          Executes animation sequence for switching
          @param $ jqPage
          */
+        // TODO: implement animations fallback and test it!
+        // TODO: test animationType property
         show : function(page, animationType){
             if (page === this.activePageName) {
                 return;
@@ -1815,14 +1819,13 @@ XF.Model = BB.Model.extend({
 
             this.setElement('[data-id=' + options.attributes['data-id'] + ']');
 
+            // TODO: add checking the availability of options.component
             this.component = options.component;
             _.omit(options, 'component');
 
             this._bindListeners();
 
             this.load();
-
-
 
             BB.View.apply(this, arguments);
         },
@@ -2107,13 +2110,16 @@ XF.Model = BB.Model.extend({
          @private
          */
 
-        initialize: function() {
+        initialize: function () {
 
         },
 
-        
         construct: function () {
 
+        },
+
+        constructor: function () {
+            this.construct();
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
                     component: this

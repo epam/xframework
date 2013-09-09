@@ -115,13 +115,16 @@
          @private
          */
 
-        initialize: function() {
+        initialize: function () {
 
         },
 
-        
         construct: function () {
 
+        },
+
+        constructor: function () {
+            this.construct();
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
                     component: this
