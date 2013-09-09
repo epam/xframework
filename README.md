@@ -909,16 +909,119 @@ Inputs of type `number`, `range` will automatically be converted to rich widgets
 
 
 ## Tabs
+
+Below you can find an example of tabs UI element:
+
+```html
+<div data-role="tabs">
+	<button data-active="true">Link 1</button>
+	<button>Link 2</button>
+	<button>Link 3</button>
+	<button>Link 4</button>
+</div>
+```
+
+Such code will be transformed into:
+
+```html
+<div data-role="tabs" data-id="xf-37715" id="xf-37715" data-skip-enhance="true">
+	<ul class="xf-tabs">
+		<li class="xf-grid-unit  xf-grid-unit-1of4">
+			<a class="xf-tabs-button  xf-corner-tl  xf-corner-bl" id="xf-71177">
+				<span class="xf-tabs-button-text">Link 1</span>
+			</a>
+		</li>
+		<li class="xf-grid-unit  xf-grid-unit-1of4">
+			<a class="xf-tabs-button" id="xf-7896">
+				<span class="xf-tabs-button-text">Link 2</span>
+			</a>
+		</li>
+		<li class="xf-grid-unit  xf-grid-unit-1of4">
+			<a class="xf-tabs-button" id="xf-62398">
+				<span class="xf-tabs-button-text">Link 3</span>
+			</a>
+		</li>
+		<li class="xf-grid-unit  xf-grid-unit-1of4">
+			<a class="xf-tabs-button  xf-corner-tr  xf-corner-br xf-tabs-button-active" id="xf-83850">
+				<span class="xf-tabs-button-text">Link 4</span>
+			</a>
+		</li>
+	</ul>
+</div>
+```
+
 ## Header
+
+Below you can find an example of header UI element:
+
+```html
+<div data-role="header" data-fixed="true">
+	<button data-small="true" data-icon="backbtn" data-position="left"></button>
+	<h1>Title</h1>
+</div>
+```
+
+Such code will be transformed into:
+
+```html
+<div data-role="header" data-id="xf-18586" id="xf-18586" data-skip-enhance="true">
+	<header class="xf-header ">
+		<button data-small="true" data-icon="backbtn" id="backbtn" data-position="left" data-animation="slideright"  data-skip-enhance="true" class="xf-button-float-left xf-button-header-left xf-button-small xf-iconpos-left xf-button-small-icon-only">
+			<span class="xf-icon xf-icon-backbtn xf-icon-small"></span>
+		</button>
+		<h1 class="xf-header-title">Title</h1>
+	</header>
+</div>
+```
+
+
 ## Footer
 
-# Contributing to XF
+Below you can find an example of footer UI element:
 
-## Workflow
+```html
+<div data-role="footer" data-fixed="true">
+	<button data-icon="star">Link 1</button>
+	<button data-icon="help">Link 2</button>
+	<button data-icon="heart">Link 3</button>
+	<button data-icon="print">Link 4</button>
+</div>
+```
 
-## Roadmap
+Such code will be transformed into:
 
-## Information channels
+```html
+<div data-role="footer" data-fixed="true" data-id="xf-29339" id="xf-29339" data-skip-enhance="true">
+	<div class="xf-footer  xf-footer-fixed ">
+		<ul class="xf-nav">
+			<li class="xf-grid-unit xf-grid-unit-1of4">
+				<a data-href="" class="xf-nav-item xf-iconpos-top" id="xf-29339-item0">
+					<div class="xf-icon xf-icon-big xf-icon-star"></div>
+					<div class="xf-nav-item-text ">Link 1</div>
+				</a>
+			</li>
+			<li class="xf-grid-unit xf-grid-unit-1of4">
+				<a data-href="" class="xf-nav-item xf-iconpos-top" id="xf-29339-item1">
+					<div class="xf-icon xf-icon-big xf-icon-help"></div>
+					<div class="xf-nav-item-text ">Link 2</div>
+				</a>
+			</li>
+			<li class="xf-grid-unit xf-grid-unit-1of4">
+				<a data-href="" class="xf-nav-item xf-iconpos-top" id="xf-29339-item2">
+					<div class="xf-icon xf-icon-big xf-icon-heart"></div>
+					<div class="xf-nav-item-text ">Link 3</div>
+				</a>
+			</li>
+			<li class="xf-grid-unit xf-grid-unit-1of4">
+				<a data-href="" class="xf-nav-item xf-iconpos-top" id="xf-29339-item3">
+					<div class="xf-icon xf-icon-big xf-icon-print"></div>
+					<div class="xf-nav-item-text ">Link 4</div>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>
+```
 
 
 
