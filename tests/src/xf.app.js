@@ -1,12 +1,19 @@
 $(function () {
 
+    var tap = false,
+        swipeLeft = false,
+        swipeRight = false,
+        swipeUp = false,
+        swipeDown = false,
+        swipe = false;
+
     App = new XF.App({
 
 		settings: {
-			applicationVersion: '1.1'+ Math.random(),
+			applicationVersion: '1.1',
 			noCache: true,
 			componentUrlPrefix: 'components/',
-			templateUrlPrefix: ''
+			templateUrlPrefix: './'
 
 		},
 

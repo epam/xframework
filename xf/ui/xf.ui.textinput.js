@@ -48,7 +48,10 @@
                     newTIAttrs[attribute.name] = attribute.value;
                 });
                 newTextInput.attr(newTIAttrs);
-//                jQTextInput.outerHtml(newTextInput);
+
+                if (jQTextInput.hasOwnProperty('outerHTML')) {
+                    jQTextInput.outerHtml(newTextInput);
+                }
                 jQTextInput = newTextInput;
                 textInput = newTextInput[0];
 
