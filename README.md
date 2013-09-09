@@ -407,130 +407,68 @@ There are two ways to create a component:
 
 Every component should extend `XF.Component` that allows general functionality, loading and rendering processes work without your input.
 
-```javascript
-XF.defineComponent(
-	'categoryList',
-	XF.Component.extend({
-		construct
+First of all, you will need a JavaScript file which defines component's logic and may override some XF.Component properties to achieve specific behavior.
 
+```javascript
+XF.define(
+	'MyApp.components.categoryList', // just 'categoryList' is fine as well
+	XF.Component.extend({
+		construct: function () {
+			// will be called on the start of construction 
+		},
+
+		initialize: function () {
+			// this method will be called after component construction
+		},
+
+		// for more flexibility you can define Views in separate files
 		View: XF.View.extend({
 			initialize: function () {
-				// 
+
 			}
 		}),
+
+		// for more flexibility you can define Collections in separate files
+		Collection: XF.Collection.extend({
+			url: 'books.json',
+			initialize: function () {
+
+			}
+		})
 	})
 );
 ```
 
-Letâ€™s get back to our RootComponent subclass example named HomeComponent. First of all, you will need a JS file (its content is shown above) which defines componentâ€™s logic and may override some XF.Component (or XF.RootComponent) properties to achieve specific behavior.
-
-XF.defineComponent(
-	'HomeComponent',
-	XF.RootComponent.extend(extending, {})
-);
 This call defines a new component via two arguments: component name and component class.
 
-Component name: used to setup a placeholder (-s) for instance (-s) of the component and should be unique within the application.
+**Component name**: used to setup a placeholder (-s) for instance (-s) of the component and should be unique within the application.
 
-Component class: definition is created via XF.[some_base_component].extend() call. Here you should pass two objects with properties and methods you want to add to the base class functionality as non-static and static part of a class respectively.
+**Component class**: definition is created via XF.[some_base_component].extend() call. Here you should pass properties and methods you want to add to the base class functionality as non-static and static part of a class respectively.
 
-Letâ€™s take a look at what we are passing for the HomeComponent as extension to XF.RootComponent:
+You may add/override properties of the component model, collection and view. Basically you are able to modify everything you see.
 
-{
-	modelClass: XF.Model.extend({
-		isEmptyData: true
-	}),
-	viewClass: XF.View.extend({
-		afterLoadTemplateFailed: function() {
-			$('body').html('<h1>ERROR</h1>');
-		}
-	})
-}
-There are only two properties that would override existing XF.Component functionality: modelClass and viewClass. They are also inherited from built-in classes: XF.Model and XF.View in the same manner as the whole component does.
+Be aware of proper usage Collections and Models. By default `XF.Component` has `XF.View` and `XF.Collection` classes (`XF.Component.Model` is not defined). If the component has linkage to Collection and Model classes the collection will be created.
 
-You may add/override properties of the component model and view. Basically you are able to modify everything you see.
-
-In the example you can see that we are overriding isEmptyData property value with true , this would prevent component model from data retrieval. To be clear that thereâ€™s no necessity to get data for the RootComponent instead of getting specific piece of data from some smaller parts (component). This would shorten traffic capacity and prevent possible bandwidth problems; also it may decrease latency and improve user experience, because you donâ€™t need to wait for data that is currently useless.
-
-XF.Model properties
-
-isEmptyData
-Flag that determines whether there is necessity to get data for the RootComponent
-isStaticData
-Flag that determines whether the data should be loaded once
-isStringData
-Flag that determines whether the data type is string (otherwise JSON)
-autoUpdateInterval
-Interval in milliseconds defining how often data should be retrieved from the server; use '0' to turn autoUpdate off
-dataURL
-Data source URL
-updateInBackground
-Flag that determines whether the data should be updating (with autoUpdate) even if the component is currently hidden
-updateOnShow
-Flag that determines whether the data should be updated each time the component becomes visible
-XF.View properties
-
-XF.View has several customization variables:
-
-ignoreModelUpdate
-Flag that determines whether the Model update should be ignored by the View (in this case you may launch XF.View.refresh() manually)
-templateURL
-Template URL
-updateOnShow
-Flag that determines whether the view should be rerendered each time the component becomes visible
-useCache
-Flag that determines whether the template should be stored into XF.Cache
-As for the viewClass property, new XF.View subclass overrides a single method of the basic class.
-
-XF.Component hooks
-
-afterConstructModel()
-HOOK: override to add logic after model construction
-afterConstructView()
-HOOK: override to add logic after view construction
-beforeConstructModel()
-HOOK: override to add logic before model construction
-beforeConstructView()
-HOOK: override to add logic before view construction
-There are a number of entry points for modification of default behavior: these hooks are called at a specific time of execution to let you add some custom code at the moment it is required. So the inside implementation looks like the following abstract algorithm:
-
-call "beforeConstructModelâ€;
-create Model;
-call "afterConstructModelâ€;
-call "beforeConstructViewâ€;
-create View;
-call "afterConstructViewâ€;
-The same logic is used for the rest of the hooks which are called if youâ€™ve overridden them or not.
-
-Hooks for XF.Model
-
-afterLoadData()
-HOOK: override to add logic after data load
-beforeLoadData()
-HOOK: override to add logic before data load
-init()
-HOOK: override to add logic.
-Hooks for XF.View
-
-afterLoadTemplate()
-HOOK: override to add logic after template load
-afterLoadTemplateFailed()
-HOOK: override to add logic for the case when it's impossible to load template
-beforeLoadTemplate()
-HOOK: override to add logic before template load
-init()
-HOOK: override to add custom logic on init
-postRender()
-HOOK: override to add logic after render
-preRender()
-HOOK: override to add logic before render
-In summary, you are able to override existing properties, hook (and functions) and add your own properties and methods for any subclass of XF.Component, XF.Model or XF.View.
+TODO: XF.Component properties and methods
 
 ## Collection
 
+`XF.Collection` is an extended version of [Backbone.Collection](http://backbonejs.org/#Collection) to make it perfectly fit XF Component based architecture.
+
+TODO: XF.Collection properties and methods
+
 ## Model
 
+`XF.Model` is an extended version of [Backbone.Model](http://backbonejs.org/#Model) to make it perfectly fit XF Component based architecture.
+
+TODO: XF.Model properties and methods
+
 ## View
+
+`XF.View` is an extended version of [Backbone.View](http://backbonejs.org/#View) to make it perfectly fit XF Component based architecture.
+
+TODO: XF.View properties and methods
+
 
 ## List of built-in events
 ### XF level
@@ -542,6 +480,54 @@ In summary, you are able to override existing properties, hook (and functions) a
 # UI Elements
 
 ## Basics
+
+XFramework UI element is 'an extended version of Document Object' or the another parallel could be done with jQuery Plugin. It fills the gap with Rich UI Elements for all the browsers.
+
+Each UI element has a simple markup that will be enhanced into the rich element.
+
+```html
+<ul data-role="listview">
+	<li data-role="divider">A</li>
+	<li>
+		<h2>Header</h2>
+		<p>No link</p>
+	</li>
+	<li><a href="#">Simple link</a></li>
+	<li data-role="divider">Divider</li>
+	<li><a href="#">
+		<h2>Header</h2>
+		<p>Header and description</p>
+	</a></li>
+</ul>
+
+Will be converted to:
+
+<ul data-role="listview" data-skip-enhance="true" id="xf-8293" class="xf-listview">
+	<li class=" xf-li xf-li-divider">A</li>
+	<li class="xf-li-static xf-li">
+		<div class="xf-li-wrap">
+			<h2 class="xf-li-header">Header</h2>
+			<p class="xf-li-desc">No link</p>
+		</div>
+	</li>
+	<li class=" xf-li">
+		<a href="#" class="xf-li-btn">
+			Simple link
+			<div class="xf-btn-text"></div>
+		</a>
+	</li>
+	<li class=" xf-li xf-li-divider">Divider</li>
+	<li class=" xf-li">
+		<a href="#" class="xf-li-btn">
+			<div class="xf-btn-text">
+				<h2 class="xf-li-header">Header</h2>
+				<p class="xf-li-desc">Header and description</p>
+			</div>
+		</a>
+	</li>
+</ul>
+```
+
 ## Buttons
 ## Lists
 ## Form elements

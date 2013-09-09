@@ -20,7 +20,11 @@ XF.Collection = BB.Collection.extend({
         this._initProperties();
         this._bindListeners();
 
-        this.component = options.component;
+        if (options.component) {
+            this.component = options.component;
+        }
+        _.omit(options, 'component');
+
         this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
