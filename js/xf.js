@@ -1,4 +1,4 @@
-/*! X-Framework 05-09-2013 */
+/*! X-Framework 06-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -14,33 +14,32 @@
     var _oldshow = $.fn.show;
     /** @ignore */
     $.fn.show = function(speed, callback) {
-        var res = _oldshow.apply(this,arguments);
-        $(this).trigger('show');
+        var res = _oldshow.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldhtml = $.fn.html;
     /** @ignore */
     $.fn.html = function(a) {
-        var res = _oldhtml.apply(this,arguments);
-        $(this).trigger('show');
-        $(this).trigger('html');
+        var res = _oldhtml.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldappend = $.fn.append;
     /** @ignore */
     $.fn.append = function() {
-        var res = _oldappend.apply(this,arguments);
-        $(this).trigger('append');
+        var res = _oldappend.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldprepend = $.fn.prepend;
     /** @ignore */
     $.fn.prepend = function() {
-        var res = _oldprepend.apply(this,arguments);
-        $(this).trigger('prepend');
+        var res = _oldprepend.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
@@ -156,9 +155,9 @@
         options.device = options.device || {};
         XF.device.init(options.device.types);
 
-        // initializing XF.touches
-        if ('touches' in XF) {
-            XF.touches.init();
+        // initializing XF.touch
+        if ('touch' in XF) {
+            XF.touch.init();
         }
 
         // options.router
@@ -232,12 +231,24 @@
      */
     var loadChildComponents = function(DOMObject) {
         console.log('XF :: loadChildComponents', DOMObject);
+
+        if ($(DOMObject).attr('[data-component]')) {
+            if ($(DOMObject).is(':visible')) {
+                var compID = $(value).attr('data-id');
+                var compName = $(value).attr('data-component');
+                loadChildComponent(compID, compName);
+            }
+        }
+
         $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
             var compID = $(value).attr('data-id');
             var compName = $(value).attr('data-component');
-            loadChildComponent(compID, compName, true);
+            if (compID && compName) {
+                loadChildComponent(compID, compName);
+            }
         });
     };
+    XF.on('core:loadChildComponents', loadChildComponents);
 
     /**
      Loads component definition and creates its instance
@@ -268,7 +279,7 @@
      @private
      */
     var bindHideShowListeners = function() {
-        $('[data-component]').on('show', function(evt) {
+        $('body').on('show html append prepend', function(evt) {
             if (evt.currentTarget === evt.target) {
                 var compID = $(this).attr('data-id');
                 if(!components[compID]) {
@@ -490,7 +501,7 @@ _.extend(XF.App.prototype, /** @lends XF.App.prototype */{
 XF.App.extend = BB.Model.extend;
 
 
-    XF.touches = {
+    XF.touch = {
 
         init : function () {
             // Default values and device events detection
@@ -552,18 +563,20 @@ XF.App.extend = BB.Model.extend;
                 $(document.body).bind(eventsHandler[eventType].start, function(e){
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
-                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.target));
-                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
+                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
+                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
                     touchHandler.last = now;
                 }).bind(eventsHandler[eventType].move, function (e) {
-                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
+                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
 
                     if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
                         e.preventDefault();
                     }
                 }).bind(eventsHandler[eventType].end, function(e){
+
+//                    alert(Math.abs(touchHandler.x1 - touchHandler.x2))
 
                     if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
                         || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
@@ -2451,7 +2464,9 @@ XF.Model = BB.Model.extend({
                     newLegendAttrs[attribute.name] = attribute.value;
                 });
                 legendDiv.attr(newLegendAttrs).addClass('xf-label').html(legend.html());
-                legend.outerHtml(legendDiv.outerHtml());
+                if (legend.hasOwnProperty('outerHTML')) {
+                    legend.outerHtml(legendDiv.outerHtml());
+                }
             }
         }
     };
@@ -3326,7 +3341,10 @@ XF.Model = BB.Model.extend({
                     newTIAttrs[attribute.name] = attribute.value;
                 });
                 newTextInput.attr(newTIAttrs);
-//                jQTextInput.outerHtml(newTextInput);
+
+                if (jQTextInput.hasOwnProperty('outerHTML')) {
+                    jQTextInput.outerHtml(newTextInput);
+                }
                 jQTextInput = newTextInput;
                 textInput = newTextInput[0];
 

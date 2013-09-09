@@ -1,5 +1,5 @@
 
-    XF.touches = {
+    XF.touch = {
 
         init : function () {
             // Default values and device events detection
@@ -61,18 +61,20 @@
                 $(document.body).bind(eventsHandler[eventType].start, function(e){
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
-                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.target));
-                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
+                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
+                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
                     touchHandler.last = now;
                 }).bind(eventsHandler[eventType].move, function (e) {
-                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
+                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
 
                     if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
                         e.preventDefault();
                     }
                 }).bind(eventsHandler[eventType].end, function(e){
+
+//                    alert(Math.abs(touchHandler.x1 - touchHandler.x2))
 
                     if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
                         || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {

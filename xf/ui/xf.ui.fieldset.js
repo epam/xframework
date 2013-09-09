@@ -39,7 +39,9 @@
                     newLegendAttrs[attribute.name] = attribute.value;
                 });
                 legendDiv.attr(newLegendAttrs).addClass('xf-label').html(legend.html());
-                legend.outerHtml(legendDiv.outerHtml());
+                if (legend.hasOwnProperty('outerHTML')) {
+                    legend.outerHtml(legendDiv.outerHtml());
+                }
             }
         }
     };

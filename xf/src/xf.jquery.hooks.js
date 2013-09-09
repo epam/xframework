@@ -13,33 +13,32 @@
     var _oldshow = $.fn.show;
     /** @ignore */
     $.fn.show = function(speed, callback) {
-        var res = _oldshow.apply(this,arguments);
-        $(this).trigger('show');
+        var res = _oldshow.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldhtml = $.fn.html;
     /** @ignore */
     $.fn.html = function(a) {
-        var res = _oldhtml.apply(this,arguments);
-        $(this).trigger('show');
-        $(this).trigger('html');
+        var res = _oldhtml.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldappend = $.fn.append;
     /** @ignore */
     $.fn.append = function() {
-        var res = _oldappend.apply(this,arguments);
-        $(this).trigger('append');
+        var res = _oldappend.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
     var _oldprepend = $.fn.prepend;
     /** @ignore */
     $.fn.prepend = function() {
-        var res = _oldprepend.apply(this,arguments);
-        $(this).trigger('prepend');
+        var res = _oldprepend.apply(this, arguments);
+        XF.trigger('core:loadChildComponents', this);
         return res;
     };
 
