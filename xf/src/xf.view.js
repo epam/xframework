@@ -143,22 +143,19 @@
          @static
          */
         getMarkup: function() {
-            var data = {
-                collection: null,
-                model: null
-            };
+            var data = {};
 
             if(!this.template.compiled) {
                 this.template.compiled = _.template(this.template.src);
             }
 
             if (this.component.collection) {
-                data.collection = this.component.collection.toJSON();
+                data = this.component.collection.toJSON();
             }else if (this.component.model) {
-                data.model = this.component.model.toJSON();
+                data = this.component.model.toJSON();
             }
 
-            return this.template.compiled(data);
+            return this.template.compiled({data: data});
         },
 
         /**
