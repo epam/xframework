@@ -404,7 +404,7 @@ Such an approach lets a developer build asynchronuous UIs and avoid loading extr
 
 There's a way to customize the component with the starting options from outside: 
 
-``html
+```html
 	<div data-component="categoryList" data-id="categoryListBooks">
 			This content will be shown while component is loading...
 			<script>
