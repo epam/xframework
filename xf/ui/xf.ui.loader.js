@@ -62,7 +62,7 @@
         },
 
         create : function () {
-            var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
+            var jqLoader = $('<div class="xf-loader" data-role="loader"><div class="xf-loader-content"><div class="loading"></div></div></div>');
             XF.device.getViewport().append(jqLoader);
             return this.render(jqLoader[0]);
         }
