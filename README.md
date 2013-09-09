@@ -16,12 +16,12 @@ XFramework is designed to be extremely modular, flexible, fast, and easy to use.
 *TODO: update!*
 XFramework currently features:
 
-* A solid app architecture
-* Separation of templates for different devices and/or screens
-* Commonly needed reusable UI elements like headers, footers, tabs, lists, dialogs
-* Touch-friendly form elements
-* A set of vector icons
-
+* TOTALLY CROSS-PLATFORM. XF supports all the popular devices and platroms. It is built in the way that allows you easily to change templates for each of the platforms without huge effort.
+* SCALABLE ARCHITECTURE. Component-based modular event-driven architecture provides a possibility to build scalable and maintainable web apps with high-reusability of components.
+* CUTE & CUSTOMIZABLE. XF uses LESS as preprocessor for CSS. It goes with a default theme that could be easily customized changing some lines of CSS code.
+* LIBRARY OF COMPONENTS. Reusability is a king! XF is flexible and extandable to the roots: it goes with a library of predefined components but feel free to write your own components and submit it to us!
+* POWERFUL RICH UI-ELEMENTS. Set of powerful rich UI-elements (e.g. form elements, buttons, lists) for different platforms gives a ability to provide the best user experience for each device type. And the number of UI-elements s growing!
+* FLEXIBILITY TO FEEL THE FREEDOM. Build process allows you to create a custom build of XFramework and use it together with your favorite UI-library like [jQuery Mobile](http://jquerymobile.com) or [Ratchet](http://maker.github.io/ratchet/).
 
 
 ## Supported Platforms and Browsers
@@ -70,13 +70,30 @@ Almost there! After these steps you need to install XF Generator with `npm insta
 
 ## Your first XF web app
 
-[XF Hello World App](http://xframeworkjs.org/helloworld/)
+To create the first XF application the simplest way is to use XF Generator through `yo xf:application init [appName]`.
+
+For now it scaffolds an app in the way you can see by example: [XF Hello World App](http://xframeworkjs.org/helloworld/).
 
 ## Building your XF app for testing and production
 
+`yo xf:application build [appName]`
+
 ## Creation of custom XFramework build
 
+Custom xf.js and xf.min js build:
+
+* `yo xf:build` — create build with all UI elements and source modules
+* `yo xf:build [srcModule1:srcModule2]` — create build with all UI elements and source modules
+
+Full list of available elements can be found at `xf/ui` and `xf/src` directory of XFramework repository.
+
 ## Updating XF and dependencies
+
+XF Generator allows you to update sources and dependencies:
+
+* `yo xf:update [all]` — update less and js files of XFramework, check latest versions of jQuery, Backbone, Underscore
+* `yo xf:update scripts` — update js files (inluding thirdparty libraries) of XFramework, check latest versions of jQuery, Backbone, Underscore
+* `yo xf:update styles` — update less files of XFramework
 
 # XFramework internals
 
@@ -437,7 +454,7 @@ You can use `XF.setOptionsByID` method in the place you decided but before compo
 
 There are two ways to create a component:
 
-* Using XF Generator `yo xf …` that will scaffold a javascript file together with templates for all device types
+* Using XF Generator `yo xf:component [name]` that will scaffold a javascript file together with templates for all device types
 * Manually 
 
 Every component should extend `XF.Component` that allows general functionality, loading and rendering processes work without your input.
@@ -510,6 +527,8 @@ Be aware of proper usage Collections and Models. By default `XF.Component` has `
 
 `XF.Collection` is an extended version of [Backbone.Collection](http://backbonejs.org/#Collection) to make it perfectly fit XF Component based architecture.
 
+To create a standalone view XF Generator can be used with `yo xf:collection [name]`.
+
 `XF.Collection` properties:
 
 * `status`: status of the data in the collection. Default: `{ loaded: false, loading: false, loadingFailed: false }`.
@@ -532,6 +551,8 @@ For other methods, properties and hooks available see [Backbone.Collection](http
 
 `XF.Model` is an extended version of [Backbone.Model](http://backbonejs.org/#Model) to make it perfectly fit XF Component based architecture.
 
+To create a standalone view XF Generator can be used with `yo xf:model [name]`.
+
 `XF.Model` properties:
 
 * `status`: status of the data in the model. Default: `{ loaded: false, loading: false, loadingFailed: false }`.
@@ -553,6 +574,8 @@ For other methods, properties and hooks available see [Backbone.Model](http://ba
 ## View
 
 `XF.View` is an extended version of [Backbone.View](http://backbonejs.org/#View) to make it perfectly fit XF Component based architecture.
+
+To create a standalone view XF Generator can be used with `yo xf:view [name]`.
 
 `XF.View` properties:
 
