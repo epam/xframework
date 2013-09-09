@@ -2750,7 +2750,12 @@ XF.Model = BB.Model.extend({
         },
 
         hide : function (jqLoader) {
-            jqLoader.hide();
+            jqLoader = jqLoader || null;
+            if (jqLoader === null) {
+                $('.xf-loader').hide();
+            } else {
+                jqLoader.hide();
+            }
         },
 
         remove : function (jqLoader) {
