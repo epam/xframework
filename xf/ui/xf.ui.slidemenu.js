@@ -11,7 +11,7 @@
         render : function (menu, options) {
             var jQMenu = $(menu);
 
-            if (!menu || !jQMenu instanceof $ || jQMenu.attr('data-skip-enhance') == 'true') {
+            if (!menu || !(jQMenu instanceof )$ || jQMenu.attr('data-skip-enhance') == 'true') {
                 return;
             }
 

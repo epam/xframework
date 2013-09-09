@@ -18,7 +18,7 @@ $(function() {
 
         test('button', 1, function () {
             equal($(XF.ui.button.selector).attr('data-skip-enhance'), 'true');
-//            $(XF.ui.button.selector).remove();
+            $(XF.ui.button.selector).remove();
         });
 
         test('checkbox & radio', 1, function () {

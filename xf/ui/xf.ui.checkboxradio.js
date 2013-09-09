@@ -21,7 +21,7 @@
                     label : ''
                 };
 
-            if (!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
+            if (!chbRbInput || !(jQChbRbInput instanceof $) || jQChbRbInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 

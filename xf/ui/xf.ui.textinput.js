@@ -20,7 +20,7 @@
                     end : 'mouseup touchend MSPointerUp',
                 };
 
-            if (!textInput || !jQTextInput instanceof $ || jQTextInput.attr('data-skip-enhance') == 'true') {
+            if (!textInput || !(jQTextInput instanceof $) || jQTextInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 

@@ -12,7 +12,7 @@
                 enhancedButton,
                 innerStuff;
 
-            if (!button || !jQButton instanceof $ || jQButton.attr('data-skip-enhance') == 'true') {
+            if (!button || !(jQButton instanceof $) || jQButton.attr('data-skip-enhance') == 'true') {
                 return;
             }
 

@@ -11,7 +11,7 @@
         render : function (scrollable) {
 
             var jQScrollable = $(scrollable);
-            if (!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
+            if (!scrollable || !(jQScrollable instanceof $) || jQScrollable.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
