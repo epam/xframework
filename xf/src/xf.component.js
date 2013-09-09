@@ -123,7 +123,7 @@
 
         },
 
-        constructor: function () {
+        _constructor: function () {
             this.construct();
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
