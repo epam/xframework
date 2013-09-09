@@ -481,7 +481,7 @@ TODO: XF.View properties and methods
 
 ## Basics
 
-XFramework UI element is 'an extended version of Document Object' or the another parallel could be done with jQuery Plugin. It fills the gap with Rich UI Elements for all the browsers.
+XFramework UI element is 'an extended version of Document Object' or the another parallel could be done with jQuery Plugin. It fills the gap with Rich UI Elements for all the browsers. It means that XFramework will parse your HTML and add some markup to make UI controls user- and developer-friendly.
 
 Each UI element has a simple markup that will be enhanced into the rich element.
 
@@ -528,9 +528,278 @@ Will be converted to:
 </ul>
 ```
 
+The look of form inputs, buttons will be enhanced automatically, but you can use certain attributes to customize some of them. See full list of the data- attributes below.
+
 ## Buttons
-## Lists
+
+Inputs of types submit, reset, button, `<button>`s, and links with attribute `[data-role=button]` will be styled as buttons. For example a usual `input[type=submit]` will look like this:
+
+```html 
+<a data-role="button">A button</a>
+```
+
+<a data-role="button">A button</a>
+
+Buttons can be of several types: normal, special and alert. They differ only in appearance.
+
+A special button is displayed in an accented color, blue by default, generally needed to highlight the most important button among several. To make a button special add data-special=true attribute to it.
+
+The following code:
+
+```html
+<a data-special="true"
+   data-appearance="button" href="#">
+   A special button
+</a>
+```
+
+Will produce the following button:
+
+<a data-special="true"
+   data-appearance="button" href="#">
+   A special button
+</a>
+
+An alert button is red by default and is recommended to be used for actions that may cause data loss, e.g. for a delete button. Add data-alert=true attribute to get such a button:
+
+```html 
+<button data-alert="true">An alert button</button>
+```
+
+Will produce the following button:
+
+<button data-alert="true">An alert button</button>
+
+You may need to use smaller buttons in your app. To make them, add a [data-small=true] attribute to the necessary controls.
+
+To make a common back button use a [data-back=true] attribute. It will go back in browser history by default.
+
+```html
+<a data-appearance="button" data-small="true" href="#">A small button</a>
+<a data-appearance="backbtn" href="#"> Back button</a>
+```
+
+<a data-appearance="button" data-small="true" href="#">A small button</a>
+<a data-appearance="backbtn" href="#"> Back button</a>
+
+## Listview
+
+To make a data list add a `[data-role="listview"]` attribute to a UL or OL element.
+
+If list elements must be clickable wrap all the contents of the list items in A elements: `UL[data-role=listview] > LI > A > whatever`.
+
+To make a divider between list items make another LI with a `data-role="divider"` attribute.
+
+See code and result lower in this section.
+
+### List items with icons
+
+Just like with buttons icons can be added to list items using `data-icon` and `data-iconpos` attributes. Note that `[data-iconpos=top]` and `[data-iconpos=bottom]` values are not supported on list items.
+
+List elements can have a count bubble. Just add a `SPAN.xf-count-bubble` inside them
+
+### Lists with thumbnails
+
+If you need to have thumbnails inside list items, you don't need to do anything special, just put the image inside the list item, and it will be displayed on the left hand side. The image can be moved to the right side by adding `[data-thumbpos="right"]` attribute to the corresponding `LI` element.
+
+Sample listview markup:
+
+```html
+<ul data-role="listview">
+	<li data-role="divider">A</li>
+	<li>
+		<h2>Header</h2>
+		<p>No link</p>
+	</li>
+	<li><a href="#">Simple link</a></li>
+	<li data-role="divider">Divider</li>
+	<li><a href="#">
+		<h2>Header</h2>
+		<p>Header and description</p>
+	</a></li>
+	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+		<h2>With Icon</h2>
+		<p>List item  with icon on the right</p>
+	</a></li>
+	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+		<h2>With Icon and Count</h2>
+		<p>List item  with icon on the right and count</p>
+		<span class="xf-count-bubble">32</span>
+	</a></li>
+	<li data-thumbpos="right"><a href="#">
+		<img src="../img/_thumb1.jpg" alt="">
+		<h2>With Thumbnail on the right</h2>
+		<p>List item  with a thumbnail on the right</p>
+	</a></li>
+</ul>
+```
+
+The above code will result in:
+
+<ul data-role="listview">
+	<li data-role="divider">A</li>
+	<li>
+		<h2>Header</h2>
+		<p>No link</p>
+	</li>
+	<li><a href="#">Simple link</a></li>
+	<li data-role="divider">Divider</li>
+	<li><a href="#">
+		<h2>Header</h2>
+		<p>Header and description</p>
+	</a></li>
+	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+		<h2>With Icon</h2>
+		<p>List item  with icon on the right</p>
+	</a></li>
+	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+		<h2>With Icon and Count</h2>
+		<p>List item  with icon on the right and count</p>
+		<span class="xf-count-bubble">32</span>
+	</a></li>
+	<li data-thumbpos="right"><a href="#">
+		<img src="../img/_thumb1.jpg" alt="">
+		<h2>With Thumbnail on the right</h2>
+		<p>List item  with a thumbnail on the right</p>
+	</a></li>
+</ul>
+
 ## Form elements
+
+Most form elements will be enhanced automatically, namely all kinds of text inputs, checkboxes and radiobuttons, and select menus. But	there are some things to keep in mind while developing. All inputs must have an associated `label` element, i.e. the label must have a `for` attribute with a value equal to input `id`.
+
+### Text Inputs
+
+<div class="xf-form-unit">
+	<label for="input-1">This is a <code>label</code> for the 'input' below:</label>
+	<input type="text" placeholder="Input[type=text]" id="input-1" />
+</div>
+
+X-Framework provides iOS-style split inputs. Add `[data-appearance=split]` attribute to the necessary `input` to get the following control:
+
+			<div class="xf-form-unit">
+				<label for="input-split-1">Here's an input <code>[data-appearance=split]</code>:</label>
+				<input type="text" placeholder="placeholder value" id="input-split-1" data-appearance="split"/>
+			</div>
+
+
+			<div class="xf-form-unit">
+				<label>This is a <code>textarea</code>, nothing special:</label>
+				<textarea placeholder="Textarea"></textarea>
+			</div>
+
+
+### Radiobuttons
+
+To create a set of options wrap the `input`-`label` pairs in a `fieldset[data-role=controlgroup]`. Note that the `for` attribute is mandatory for `label`.
+
+```html
+<fieldset data-role="controlgroup">
+	<legend>Legend for radio buttons</legend>
+	<input type="radio" name="radiogroup1" id="radio7" value="1">
+	<label for="radio7">Milk</label>
+	<input type="radio" name="radiogroup1" id="radio8" value="2">
+	<label for="radio8">Toast</label>
+</fieldset>
+```
+
+The code above produces the following output:
+
+<fieldset data-role="controlgroup">
+					<legend>Legend for radio buttons</legend>
+
+					<input type="radio" name="radiogroup1" id="radio7" value="1">
+					<label for="radio7">Milk</label>
+
+					<input type="radio" name="radiogroup1" id="radio8" value="2">
+					<label for="radio8">Toast</label>
+</fieldset>
+
+### Checkboxes
+
+Follow tha same rules as for radiobuttons to make checkboxes.
+
+			<div class="xf-form-unit">
+
+				<fieldset data-role="controlgroup">
+					<legend>Fieldset with checkboxes:</legend>
+					<label for="check1">Milk</label>
+					<input type="checkbox" name="check1" id="check1" value="1">
+					<label for="check2">Toast</label>
+					<input type="checkbox" name="check2" id="check2" value="2">
+					<label for="check3">Honey</label>
+					<input type="checkbox" name="check3" id="check3" value="3">
+				</fieldset>
+
+			</div>
+
+### Single checkbox
+
+			<div class="xf-form-unit">
+
+				<label for="check4">Single checkbox</label>
+				<input type="checkbox" name="check4" id="check4" value="4">
+
+			</div>
+
+
+### Switch
+
+`Input[type=checkbox][data-role=switch]` is converted into a switch. An associated `label` element is mandatory, the same as for split text input.
+
+			<div class="example">
+				<label for="wifi-switch">Wi-Fi Switch</label>
+				<input type="checkbox" id="wifi-switch" data-role="switch" checked>
+			</div>
+
+
+### Slider/Spinner
+
+Inputs of type `number`, `range` will automatically be converted to rich widgets:
+
+			<div class="example">
+
+				<label class="xf-label"><code>input[type=number]</code></label>
+				<input type="number" min="0" max="1200" value="400">
+
+			</div>
+
+
+			<div class="example">
+				<label class="xf-label"><code>input[type=range]</code></label>
+				<input type="range" min="0" max="1200" value="400">
+			</div>
+
+### Switch
+
+			<div class="xf-form-unit">
+				<p class="xf-label">Simple on/off switch. Checkbox with <code>data-role="switch"</code>:</p>
+
+				<label for="check5">On/Off Switch (checkbox)</label>
+				<input type="checkbox" id="check5" data-role="switch">
+
+			</div>
+
+
+### Select
+
+			<div class="xf-form-unit">
+				<label class="xf-label">Simple select:</label>
+				<div class="xf-input-select">
+
+					<select name="" id="select-1">
+						<option value="">Option 1</option>
+						<option value="">Option 2</option>
+						<option value="">Option 3</option>
+					</select>
+				</div>
+			</div>
+
+
+
+## Tabs
+## Header
+## Footer
 ## Your own XF UI Element
 
 # Contributing to XF
