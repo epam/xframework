@@ -12,7 +12,7 @@
             var jQFooter = $(footer),
                 _self = this;
 
-            if (!footer || !jQFooter instanceof $ || jQFooter.attr('data-skip-enhance') == 'true') {
+            if (!footer || !(jQFooter instanceof $) || jQFooter.attr('data-skip-enhance') == 'true') {
                 return;
             }
 

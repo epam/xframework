@@ -14,7 +14,7 @@
                 _self = this,
                 options = options || {};
 
-            if (!loader || !jqLoader instanceof $ || jqLoader.attr('data-skip-enhance') == 'true') {
+            if (!loader || !(jqLoader instanceof $) || jqLoader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 

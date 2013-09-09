@@ -11,7 +11,7 @@
         render : function (list, options) {
             var jQList = $(list);
 
-            if (!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
+            if (!list || !(jQList instanceof $) || jQList.attr('data-skip-enhance') == 'true') {
                 return;
             }
             var listItems = jQList.children('li'),

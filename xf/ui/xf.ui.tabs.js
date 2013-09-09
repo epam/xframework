@@ -12,7 +12,7 @@
             var jQTabs = $(tabs),
                 _self = this;
 
-            if (!tabs || !jQTabs instanceof $ || jQTabs.attr('data-skip-enhance') == 'true') {
+            if (!tabs || !(jQTabs instanceof $) || jQTabs.attr('data-skip-enhance') == 'true') {
                 return;
             }
 

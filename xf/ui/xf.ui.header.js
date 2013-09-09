@@ -11,7 +11,7 @@
         render : function (header, options) {
             var jQHeader = $(header);
 
-            if (!header || !jQHeader instanceof $ || jQHeader.attr('data-skip-enhance') == 'true') {
+            if (!header || !(jQHeader instanceof $) || jQHeader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
