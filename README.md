@@ -46,7 +46,11 @@ The roadmap for the next versions can be found on [GitHub](https://github.com/ep
 
 ## The idea behind
 
-...
+There are some rules behind the XFramework:
+* Component-based event-driven architecture
+* Components easily customizable with options
+* Lazy loading of components
+* Different templates for each of device types
 
 ## Installing XFramework Generator
 
@@ -398,6 +402,23 @@ See an example of two nested components declared in the page markup:
 	
 Such an approach lets a developer build asynchronuous UIs and avoid loading extraneous resources.
 
+There's a way to customize the component with the starting options from outside: 
+
+``html
+	<div data-component="categoryList" data-id="categoryListBooks">
+			This content will be shown while component is loading...
+			<script>
+				XF.setOptionsByID('categoryListBooks',
+					{
+						currentPage: 2
+					}
+				);
+			</script>
+		</div>	
+```
+
+You can use `XF.setOptionsByID` method in the place you decided but before component instance was created.
+
 ## Component creation
 
 There are two ways to create a component:
@@ -449,25 +470,102 @@ You may add/override properties of the component model, collection and view. Bas
 
 Be aware of proper usage Collections and Models. By default `XF.Component` has `XF.View` and `XF.Collection` classes (`XF.Component.Model` is not defined). If the component has linkage to Collection and Model classes the collection will be created.
 
-TODO: XF.Component properties and methods
+`XF.Component` properties:
+
+* `id`
+* `name`
+* `options`
+* `selector`
+* `Model`
+* `model`
+* `Collection`
+* `collection`
+* `View`
+* `view`
+
+`XF.Component` methods:
+
+* `refresh`
+
+`XF.Component` hooks:
+
+* `initialize`
+* `construct`
 
 ## Collection
 
 `XF.Collection` is an extended version of [Backbone.Collection](http://backbonejs.org/#Collection) to make it perfectly fit XF Component based architecture.
 
-TODO: XF.Collection properties and methods
+`XF.Collection` properties:
+
+* `status`
+* `component`
+* `ajaxSettings`
+
+`XF.Collection` methods:
+
+* `refresh`
+
+`XF.Collection` hooks:
+
+* `url`
+* `initialize`
+* `construct`
+
+For other methods, properties and hooks available see [Backbone.Collection](http://backbonejs.org/#Collection).
 
 ## Model
 
 `XF.Model` is an extended version of [Backbone.Model](http://backbonejs.org/#Model) to make it perfectly fit XF Component based architecture.
 
-TODO: XF.Model properties and methods
+`XF.Model` properties:
+
+* `status`
+* `component`
+* `ajaxSettings`
+
+`XF.Model` methods:
+
+* `refresh`
+
+`XF.Model` hooks:
+
+* `url`
+* `initialize`
+* `construct`
+
+For other methods, properties and hooks available see [Backbone.Model](http://backbonejs.org/#Model).
 
 ## View
 
 `XF.View` is an extended version of [Backbone.View](http://backbonejs.org/#View) to make it perfectly fit XF Component based architecture.
 
-TODO: XF.View properties and methods
+`XF.View` properties:
+
+* `template`
+* `status`
+* `component`
+
+`XF.View` methods:
+
+* `load`
+* `render`
+* `refresh`
+* `getMarkup`
+* `load`
+
+`XF.View` hooks:
+
+* `url`
+* `initialize`
+* `construct`
+* `beforeLoadTemplate`
+* `afterLoadTemplate`
+* `afterLoadTemplateFailed`
+* `beforeRender`
+* `afterRender`
+
+For other methods, properties and hooks available see [Backbone.View](http://backbonejs.org/#View).
 
 
 ## List of built-in events
@@ -678,13 +776,13 @@ Most form elements will be enhanced automatically, namely all kinds of text inpu
 X-Framework provides iOS-style split inputs. Add `[data-appearance=split]` attribute to the necessary `input` to get the following control:
 
 			<div class="xf-form-unit">
-				<label for="input-split-1">Here's an input <code>[data-appearance=split]</code>:</label>
+				<label for="input-split-1">Here's an input `[data-appearance=split]`:</label>
 				<input type="text" placeholder="placeholder value" id="input-split-1" data-appearance="split"/>
 			</div>
 
 
 			<div class="xf-form-unit">
-				<label>This is a <code>textarea</code>, nothing special:</label>
+				<label>This is a `textarea`, nothing special:</label>
 				<textarea placeholder="Textarea"></textarea>
 			</div>
 
@@ -787,7 +885,7 @@ Inputs of type `number`, `range` will automatically be converted to rich widgets
 				<label class="xf-label">Simple select:</label>
 				<div class="xf-input-select">
 
-					<select name="" id="select-1">
+					<select id="select-1">
 						<option value="">Option 1</option>
 						<option value="">Option 2</option>
 						<option value="">Option 3</option>
@@ -800,7 +898,6 @@ Inputs of type `number`, `range` will automatically be converted to rich widgets
 ## Tabs
 ## Header
 ## Footer
-## Your own XF UI Element
 
 # Contributing to XF
 
