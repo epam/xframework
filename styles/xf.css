@@ -3059,11 +3059,11 @@ ol.xf-listview .xf-li-wrap:before {
 }
 .xf-li-with-icon-left .xf-icon-big,
 .xf-li-with-icon-right .xf-icon-big {
-  margin-top: -7px;
+  margin-top: -15px;
 }
 .xf-li-with-icon-left .xf-icon-small,
 .xf-li-with-icon-right .xf-icon-small {
-  margin-top: -6px;
+  margin-top: -12px;
 }
 .xf-li-with-icon-left .xf-icon {
   left: 10px;
