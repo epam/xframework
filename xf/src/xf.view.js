@@ -30,10 +30,11 @@
         },
 
         _initProperties: function () {
+            this.template = this.template || {};
             this.template = {
-                src: null,
-                compiled: null,
-                cache: true
+                src: this.template.src || null,
+                compiled: this.template.compiled || null,
+                cache: this.template.cache || true
             };
 
             this.status = {
