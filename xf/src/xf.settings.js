@@ -69,7 +69,7 @@
 
 
         ajaxSettings: {
-                  // TODO: fill in ajaxSettings
+
         },
 
         /**

@@ -21,12 +21,12 @@
                     label : ''
                 };
 
-            if (!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
+            if (!chbRbInput || !(jQChbRbInput instanceof $) || jQChbRbInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
             jQChbRbInput.attr({'data-skip-enhance':true});
-            options.id = jQChbRbInput.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            options.id = jQChbRbInput.attr('id') || XF.utils.uniqueID();
             options.input = jQChbRbInput.wrap("<span></span>").parent().html();
             jQChbRbInput.attr('id', options.id);
             var chbRbInputLabel = $('label[for=' + options.id + ']');

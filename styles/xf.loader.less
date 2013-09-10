@@ -1,0 +1,96 @@
+/*	Loader
+=========================================== */
+ .xf-loader {
+    position: fixed;
+    display: block;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    text-align: center;
+    background: @dialog-dim-color;
+}
+    .xf-loader:before {
+        height: 100%;
+        content:"";
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: -4px;
+    }
+.xf-loader-content {
+    background: @notification-bg-color;
+    width: 110px;
+    height: 110px;
+    padding: 10px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -65px;
+    margin-top: -65px;
+}
+.loading {
+    width: 3em;
+    height: 3em;
+    margin: 32px;
+    -moz-animation: rotatex 0.6s linear 0s infinite;
+    -ms-animation: rotatex 0.6s linear 0s infinite;
+    -o-animation: rotatex 0.6s linear 0s infinite;
+    -webkit-animation: rotatex 0.6s linear 0s infinite;
+    animation: rotatex 0.6s linear 0s infinite;
+    -moz-box-shadow: inset 0.15em 0 0 rgba(255, 0, 0, 0.5), inset 0 0.15em 0 rgba(252, 150, 0, 0.5), inset -0.15em 0 0 rgba(0, 255, 0, 0.5), inset 0 -0.15em 0 rgba(0, 150, 255, 0.5);
+    -o-box-shadow: inset 0.15em 0 0 rgba(255, 0, 0, 0.5), inset 0 0.15em 0 rgba(252, 150, 0, 0.5), inset -0.15em 0 0 rgba(0, 255, 0, 0.5), inset 0 -0.15em 0 rgba(0, 150, 255, 0.5);
+    -webkit-box-shadow: inset 0.15em 0 1px rgba(255, 0, 0, 0.5), inset 0 0.15em 1px rgba(252, 150, 0, 0.5), inset -0.15em 0 1px rgba(0, 255, 0, 0.5), inset 0 -0.15em 1px rgba(0, 150, 255, 0.5);
+    box-shadow: inset 0.15em 0 0 rgba(255, 0, 0, 0.5), inset 0 0.15em 0 rgba(252, 150, 0, 0.5), inset -0.15em 0 0 rgba(0, 255, 0, 0.5), inset 0 -0.15em 0 rgba(0, 150, 255, 0.5);
+    -o-transition: 1s linear rotate(3600deg);
+}
+.loading, .loading:before, .loading:after {
+    border-radius: 10em;
+    -webkit-border-radius: 10em;
+    -moz-border-radius: 10em;
+    -o-border-radius: 10em;
+}
+@-moz-keyframes rotatex {
+    0% {
+        -moz-transform: rotate(0deg);
+    }
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+@-o-keyframes rotatex {
+    0% {
+        -o-transform: rotate(0deg);
+    }
+    100% {
+        -o-transform: rotate(360deg);
+    }
+}
+@-ms-keyframes rotatex {
+    0% {
+        -ms-transform: rotate(0deg);
+    }
+    100% {
+        -ms-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes rotatex {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes rotatex {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
