@@ -13,6 +13,7 @@ XFramework makes it easy to reuse the application logic and provide various layo
 
 XFramework is designed to be extremely modular, flexible, fast, and easy to use. To develop an app in X-Framework a developer should be familiar with common web technologies such as HTML/CSS/JS, LESS for editing styles, Handlebars-style templating and have an understanding of how MV* architecture works. Experience using Backbone.js, Angular.js, Ember.js, jQuery Mobile or other framework will be helpful.
 
+*TODO: update!*
 XFramework currently features:
 
 * TOTALLY CROSS-PLATFORM. XF supports all the popular devices and platroms. It is built in the way that allows you easily to change templates for each of the platforms without huge effort.
@@ -57,10 +58,9 @@ There are some rules behind the XFramework:
 You don't need to download the source code from the repo, create  all the necessary files for the web app, writing two thousands line of code just to create a `Hello world!` app. XFramework Generator can make everything for you.
 
 XF Generator has a number of dependencies such as:
-
 * [node.js](http://nodejs.org)
 * [NPM](https://npmjs.org)
-* [Yeoman](http://yeoman.io)
+* [Yeoman] (http://yeoman.io)
 
 To install first two of them on Mac OS X or Windows computers you just need to download a package from [nodejs.org/download/](http://nodejs.org/download/). For other platforms see the [readme](https://npmjs.org/doc/README.html).
 
@@ -228,7 +228,7 @@ var app = new MyApp({
 		// other settings for the application
     history: {
 				pushState: false,
-				root: 'books/fiction'
+				root: 'books/fiction'    
     }
 });
 ```
@@ -255,7 +255,6 @@ To create a page you just need to make a `<div>` with necessary classes):
 <div class="xf-page" id="books"></div>
 ```
 
-<<<<<<< HEAD
 `id` is used to make page switching work together with the router. It should be equal to first url fragment of the route (e.g. `books/:cat(/:subcat)`) or the name of the handler (e.g. `showBooksCategory`). In this case the page with such id attribute will be shown automatically when the route (e.g. `books/fiction`) will be triggered.
 
 To show the page without changing the url or using route binding:
@@ -266,21 +265,6 @@ XF.trigger('pages:show', 'books', 'fade');
 // …directly 
 XF.pages.show('books', 'fade');
 ```
-=======
-`XF.App` is a 'class' that you able to extend with your own methods and properties needed in the application. In this case an instance of this class is something like a main controller of the whole app.
-
-```javascript
-// if the app boilerplate was created via XF Generator
-// these lines can be found in `app.js` file
-var MyApp = XF.App.extend({
-    initialize: function () {
-    	// this code will be executed before XF will be started
-			// but you can put the preparation code here
-			// …
-			this.myAwesomeMethod();
-    },
-		myAwesomeMethod: function () {
->>>>>>> 4da00e27f941b8e09cee59a7e8cd8d6fd27b4d8a
 
 To define the default animation type for all device types it's needed to set up the necessary properties on the start of app:
 
@@ -296,7 +280,6 @@ var app = new MyApp({
 
 If you want to create your own animation type and use it for page switching you (please care about necessary CSS animations in `xf.animations.less` file):
 
-<<<<<<< HEAD
 ```javascript
 var app = new MyApp({
 		// …
@@ -315,15 +298,6 @@ var app = new MyApp({
 ```
 
 To define the default animation for each of device types it's needed to pass such parameters together with device options on the start of application or set it in the runtime:
-=======
-`XF.device` contains the information about current user device app was launched:
-
-* `XF.device.supports.touchEvents`
-* `XF.device.supports.pointerEvents`
-* `XF.device.supports.cssAnimations`
-* `XF.device.isMobile`. It was a necessary trick to detect mobile OS's using `navigator.userAgent`.
-* `XF.device.type` is a selected type of devices from specified in options passed on the start of application. Based on this selected device type the necessary template for the component will be loaded.
->>>>>>> 4da00e27f941b8e09cee59a7e8cd8d6fd27b4d8a
 
 ```javascript
 var app = new MyApp({
@@ -398,11 +372,11 @@ var app = new MyApp({
 
         ajaxSettings: {
         	// settings that are provided to collections and models to fetch and sync the data
-					// see $.ajax options
-					crossDomain: true
+					// see $.ajax options	 
+					crossDomain: true        
         }
     }
-});
+});	
 ```
 
 ## XF.touch
@@ -412,11 +386,7 @@ var app = new MyApp({
 For now it contains the following user interaction events:
 
 * `tap`: it doesn't matter if it is a click or a touch to the screen. Just bind on tap events for all types of devices and that's it!
-<<<<<<< HEAD
 * `XF.touch` fixes the 300ms gap between click and touch events as well*
-=======
-* `XF.touch` fixes the 300ms gap between click and touch events as well
->>>>>>> 4da00e27f941b8e09cee59a7e8cd8d6fd27b4d8a
 * `swipe`, `swipeUp`, `swipeDown`, `swipeLeft`, `swipeRight`
 
 ## XF.storage
@@ -443,7 +413,7 @@ This piece enables the support of [zepto.js](http://zeptojs.com)  instead of jQu
 **Attention**! Include this module on your own fear and risk. It is in experimental status right away.
 
 
-# XFramework Components
+# XFramework Components 
 
 ## Component
 
@@ -821,11 +791,11 @@ Sample listview markup:
 		<h2>Header</h2>
 		<p>Header and description</p>
 	</a></li>
-	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+	<li data-icon="chevron-thin-right" data-iconpos="right"><a href="#">
 		<h2>With Icon</h2>
 		<p>List item  with icon on the right</p>
 	</a></li>
-	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+	<li data-icon="chevron-thin-right" data-iconpos="right"><a href="#">
 		<h2>With Icon and Count</h2>
 		<p>List item  with icon on the right and count</p>
 		<span class="xf-count-bubble">32</span>
@@ -852,11 +822,11 @@ The above code will result in:
 		<h2>Header</h2>
 		<p>Header and description</p>
 	</a></li>
-	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+	<li data-icon="chevron-thin-right" data-iconpos="right"><a href="#">
 		<h2>With Icon</h2>
 		<p>List item  with icon on the right</p>
 	</a></li>
-	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+	<li data-icon="chevron-thin-right" data-iconpos="right"><a href="#">
 		<h2>With Icon and Count</h2>
 		<p>List item  with icon on the right and count</p>
 		<span class="xf-count-bubble">32</span>
