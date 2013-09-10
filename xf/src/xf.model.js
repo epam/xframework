@@ -7,8 +7,12 @@ XF.Model = BB.Model.extend({
             loadingFailed: false
         };
 
-        this.root = null;
-        this.ajaxSettings = {};
+        if (!_.has(this, 'root')) {
+            this.root = null;
+        }
+        if (!_.has(this, 'ajaxSettings')) {
+            this.ajaxSettings = null;
+        }
         this.component = null;
     },
 
@@ -20,7 +24,10 @@ XF.Model = BB.Model.extend({
         this._initProperties();
         this._bindListeners();
 
-        this.component = options.component;
+        if (options.component) {
+            this.component = options.component;
+        }
+        _.omit(options, 'component');
 
         this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 

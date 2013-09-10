@@ -1,4 +1,4 @@
-/*! X-Framework 09-09-2013 */
+/*! X-Framework 10-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -270,7 +270,7 @@
                 console.log('CREATED', compInst);
                 console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
-                compInst.construct();
+                compInst._constructor();
             }
         });
     };
@@ -888,6 +888,8 @@ XF.App.extend = BB.Model.extend;
          Executes animation sequence for switching
          @param $ jqPage
          */
+        // TODO: implement animations fallback and test it!
+        // TODO: test animationType property
         show : function(page, animationType){
             if (page === this.activePageName) {
                 return;
@@ -1625,8 +1627,12 @@ XF.Collection = BB.Collection.extend({
             loadingFailed: false
         };
 
-        this.root = null;
-        this.ajaxSettings = {};
+        if (!_.has(this, 'root')) {
+            this.root = null;
+        }
+        if (!_.has(this, 'ajaxSettings')) {
+            this.ajaxSettings = null;
+        }
         this.component = null;
     },
 
@@ -1638,7 +1644,11 @@ XF.Collection = BB.Collection.extend({
         this._initProperties();
         this._bindListeners();
 
-        this.component = options.component;
+        if (options.component) {
+            this.component = options.component;
+        }
+        _.omit(options, 'component');
+
         this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {
@@ -1702,8 +1712,12 @@ XF.Model = BB.Model.extend({
             loadingFailed: false
         };
 
-        this.root = null;
-        this.ajaxSettings = {};
+        if (!_.has(this, 'root')) {
+            this.root = null;
+        }
+        if (!_.has(this, 'ajaxSettings')) {
+            this.ajaxSettings = null;
+        }
         this.component = null;
     },
 
@@ -1715,7 +1729,10 @@ XF.Model = BB.Model.extend({
         this._initProperties();
         this._bindListeners();
 
-        this.component = options.component;
+        if (options.component) {
+            this.component = options.component;
+        }
+        _.omit(options, 'component');
 
         this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
@@ -1824,7 +1841,9 @@ XF.Model = BB.Model.extend({
             this.setElement('[data-id=' + options.attributes['data-id'] + ']');
 
             // TODO: add checking the availability of options.component
-            this.component = options.component;
+            if (options.component) {
+                this.component = options.component;
+            }
             _.omit(options, 'component');
 
             this._bindListeners();
@@ -1913,22 +1932,19 @@ XF.Model = BB.Model.extend({
          @static
          */
         getMarkup: function() {
-            var data = {
-                collection: null,
-                model: null
-            };
+            var data = {};
 
             if(!this.template.compiled) {
                 this.template.compiled = _.template(this.template.src);
             }
 
             if (this.component.collection) {
-                data.collection = this.component.collection.toJSON();
+                data = this.component.collection.toJSON();
             }else if (this.component.model) {
-                data.model = this.component.model.toJSON();
+                data = this.component.model.toJSON();
             }
 
-            return this.template.compiled(data);
+            return this.template.compiled({data: data});
         },
 
         /**
@@ -2114,13 +2130,16 @@ XF.Model = BB.Model.extend({
          @private
          */
 
-        initialize: function() {
+        initialize: function () {
 
         },
 
-        
         construct: function () {
 
+        },
+
+        _constructor: function () {
+            this.construct();
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
                     component: this
@@ -2263,7 +2282,10 @@ XF.Model = BB.Model.extend({
             } else if (button.nodeName == 'INPUT') {
                 // The input is assigned a class xf-input-hidden
                 enhancedButton = $('<div></div>').append(jQButton.clone().addClass('xf-input-hidden').attr({'data-skip-enhance':true}));
-                jQButton.outerHtml(enhancedButton);
+
+                if (jQButton.hasOwnProperty('outerHtml')) {
+                    jQButton.outerHtml(enhancedButton);
+                }
                 innerStuff = jQButton.attr('value');
             } else {
                 // how did U get there? o_O

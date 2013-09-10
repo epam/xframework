@@ -4,7 +4,6 @@ $(function(){
 		XF.Component.extend({
 
             View : XF.View.extend({
-                useCache : false,
                 afterLoadTemplateFailed : function() {
                     $('body').html('Something went wrong. Try to reload the page...');
                 },
@@ -14,11 +13,22 @@ $(function(){
                         $(".tabs-list > li").hide();
                         $('#tab_'+id).show();
                     });
+                },
+                initialize: function () {
+                    this.template.cache = false;
                 }
             }),
 
-            Model : null,
-            Collection: null
+            Collection: XF.Collection.extend({
+                url: 'http://evbyminsd7001.minsk.epam.com:4502/bin/epamsec/tracks.json?token=' + XF.storage.get('token'),
+                parse: function (data) {
+
+                    if (_.has(data, 'tracks')) {
+                        return data.tracks;
+                    }
+                    else return data;
+                }
+            })
 
         })
 	);

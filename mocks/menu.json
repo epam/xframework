@@ -1,131 +1,147 @@
+[
 {
-"xframework_internals": {
-                    "title": 	"XFramework internals",
+                    "title": 	"Getting started",
                     "url":		"what_is_xframework_",
                     "isHeader":	true
                 },
-"what_is_xframework_": {
+{
                 "title": 	"What is XFramework?",
                 "url":		"what_is_xframework_"
             },
-"supported_platforms_and_browsers": {
+{
                 "title": 	"Supported Platforms and Browsers",
                 "url":		"supported_platforms_and_browsers"
             },
-"the_idea_behind": {
+{
                 "title": 	"The idea behind",
                 "url":		"the_idea_behind"
             },
-"installing_xframework_generator": {
+{
                 "title": 	"Installing XFramework Generator",
                 "url":		"installing_xframework_generator"
             },
-"your_first_xf_web_app": {
+{
                 "title": 	"Your first XF web app",
                 "url":		"your_first_xf_web_app"
             },
-"building_your_xf_app_for_testing_and_production": {
+{
                 "title": 	"Building your XF app for testing and production",
                 "url":		"building_your_xf_app_for_testing_and_production"
             },
-"creation_of_custom_xframework_build": {
+{
                 "title": 	"Creation of custom XFramework build",
                 "url":		"creation_of_custom_xframework_build"
             },
-"updating_xf_and_dependencies": {
+{
                 "title": 	"Updating XF and dependencies",
                 "url":		"updating_xf_and_dependencies"
             },
-"xframework_components": {
-                    "title": 	"XFramework Components",
+{
+                    "title": 	"XFramework internals",
                     "url":		"xf_source_modules",
                     "isHeader":	true
                 },
-"xf_source_modules": {
+{
                 "title": 	"XF source modules",
                 "url":		"xf_source_modules"
             },
-"xf_router": {
-                "title": 	"XF.Router",
-                "url":		"xf_router"
-            },
-"xf_pages": {
-                "title": 	"XF.pages",
-                "url":		"xf_pages"
-            },
-"xf_app": {
+{
                 "title": 	"XF.App",
                 "url":		"xf_app"
             },
-"xf_device": {
+{
                 "title": 	"XF.device",
                 "url":		"xf_device"
             },
-"xf_settings": {
+{
+                "title": 	"XF.Router",
+                "url":		"xf_router"
+            },
+{
+                "title": 	"XF.pages",
+                "url":		"xf_pages"
+            },
+{
                 "title": 	"XF.settings",
                 "url":		"xf_settings"
             },
-"xf_touch": {
+{
                 "title": 	"XF.touch",
                 "url":		"xf_touch"
             },
-"xf_storage": {
+{
                 "title": 	"XF.storage",
                 "url":		"xf_storage"
             },
-"xf_utils": {
+{
                 "title": 	"XF.utils",
                 "url":		"xf_utils"
             },
-"xf_zepto_support_js": {
+{
                 "title": 	"XF.zepto.support.js",
                 "url":		"xf_zepto_support_js"
             },
-"ui_elements": {
-                    "title": 	"UI Elements",
+{
+                    "title": 	"XFramework Components",
                     "url":		"component",
                     "isHeader":	true
                 },
-"component": {
+{
                 "title": 	"Component",
                 "url":		"component"
             },
-"collection": {
+{
+                "title": 	"Component creation",
+                "url":		"component_creation"
+            },
+{
                 "title": 	"Collection",
                 "url":		"collection"
             },
-"model": {
+{
                 "title": 	"Model",
                 "url":		"model"
             },
-"view": {
+{
                 "title": 	"View",
                 "url":		"view"
             },
-"list_of_built-in_events": {
+{
                 "title": 	"List of built-in events",
                 "url":		"list_of_built-in_events"
             },
-"contributing_to_xf": {
-                    "title": 	"Contributing to XF",
-                    "url":		"buttons",
+{
+                    "title": 	"UI Elements",
+                    "url":		"basics",
                     "isHeader":	true
                 },
-"buttons": {
+{
+                "title": 	"Basics",
+                "url":		"basics"
+            },
+{
                 "title": 	"Buttons",
                 "url":		"buttons"
             },
-"lists": {
-                "title": 	"Lists",
-                "url":		"lists"
+{
+                "title": 	"Listview",
+                "url":		"listview"
             },
-"form_elements": {
+{
                 "title": 	"Form elements",
                 "url":		"form_elements"
             },
-"your_own_xf_ui_element": {
-                "title": 	"Your own XF UI Element",
-                "url":		"your_own_xf_ui_element"
+{
+                "title": 	"Tabs",
+                "url":		"tabs"
             },
+{
+                "title": 	"Header",
+                "url":		"header"
+            },
+{
+                "title": 	"Footer",
+                "url":		"footer"
+            }
 
-}
+]
