@@ -17,7 +17,7 @@ XF.Model = BB.Model.extend({
     },
 
     _bindListeners: function () {
-
+        this.on('refresh', this.refresh, this);
     },
 
     constructor: function (attributes, options) {
