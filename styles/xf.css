@@ -2789,8 +2789,7 @@ textarea::-webkit-input-placeholder {
   right: 0;
   top: 0;
 }
-.xf-page-has-fixed-header .xf-page-content,
-.xf-viewport-has-fixed-header .xf-page-content {
+.xf-has-header {
   margin-top: 44px;
 }
 /*  Footer Navigation
@@ -2852,8 +2851,7 @@ textarea::-webkit-input-placeholder {
   left: -15px;
   margin-left: 50%;
 }
-.xf-page-has-fixed-footer .xf-page-content,
-.xf-viewport-has-fixed-footer .xf-page-content {
+.xf-has-footer {
   margin-bottom: 50px;
 }
 .xf-nav-item-active {
