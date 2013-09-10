@@ -12,11 +12,11 @@
             var jQTabs = $(tabs),
                 _self = this;
 
-            if (!tabs || !jQTabs instanceof $ || jQTabs.attr('data-skip-enhance') == 'true') {
+            if (!tabs || !(jQTabs instanceof $) || jQTabs.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            options.id = options.id || 'xf-tabs-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.tabsperrow = options.tabsperrow || 4;
 
             jQTabs.attr({

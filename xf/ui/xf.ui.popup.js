@@ -7,7 +7,7 @@
     XF.ui.popup = {
         render : function () {
 
-            var id = 'xf-' + Math.floor(Math.random() * 10000),
+            var id = XF.utils.uniqueID(),
                 idStack = XF.ui.checkInIsset('popup'),
                 newId = false;
 
@@ -212,7 +212,7 @@
             var jQButton = $('<button></button>'),
                 attrs = {};
 
-            attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
+            attrs['id'] = buttonDescr.id || XF.utils.uniqueID();
             attrs['class'] = buttonDescr.class || '';
             attrs['name'] = buttonDescr.name || attrs.id;
             buttonDescr.small = buttonDescr.small || '';

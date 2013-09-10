@@ -121,7 +121,6 @@
          @param $ jqPage
          */
         // TODO: implement animations fallback and test it!
-        // TODO: test animationType property
         show : function(page, animationType){
             if (page === this.activePageName) {
                 return;

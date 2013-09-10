@@ -12,7 +12,7 @@
                 enhancedButton,
                 innerStuff;
 
-            if (!button || !jQButton instanceof $ || jQButton.attr('data-skip-enhance') == 'true') {
+            if (!button || !(jQButton instanceof $) || jQButton.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -32,8 +32,9 @@
                 return;
             }
 
-            var isSmall = options.small === true || options.appearance == 'backbtn';
-            var position = options.position || '';
+            var isSmall = options.small === true || options.appearance == 'backbtn',
+                position = options.position || '',
+                id = jQButton.attr('id') || XF.utils.uniqueID();
 
             if (position !== '') {
                 enhancedButton.addClass('xf-button-float-' + position);
@@ -116,5 +117,7 @@
             if (options.alert == true) {
                 enhancedButton.addClass('xf-button-alert');
             }
+
+            enhancedButton.attr('id', id);
         }
     };
