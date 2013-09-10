@@ -7,20 +7,29 @@ XF.Collection = BB.Collection.extend({
             loadingFailed: false
         };
 
-        this.root = null;
-        this.ajaxSettings = {};
+        if (!_.has(this, 'root')) {
+            this.root = null;
+        }
+        if (!_.has(this, 'ajaxSettings')) {
+            this.ajaxSettings = null;
+        }
         this.component = null;
     },
 
     _bindListeners: function () {
         //this.on('change reset sync add', this.onDataChanged, this);
+        this.on('refresh', this.refresh, this);
     },
 
     constructor: function (models, options) {
         this._initProperties();
         this._bindListeners();
 
-        this.component = options.component;
+        if (options.component) {
+            this.component = options.component;
+        }
+        _.omit(options, 'component');
+
         this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
 
         if (this.component.options.updateOnShow) {

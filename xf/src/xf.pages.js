@@ -120,6 +120,7 @@
          Executes animation sequence for switching
          @param $ jqPage
          */
+        // TODO: implement animations fallback and test it!
         show : function(page, animationType){
             if (page === this.activePageName) {
                 return;
