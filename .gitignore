@@ -55,3 +55,5 @@ js/index.js
 js/components/cmp2.js
 
 tmpl/phone/cmp2.tmpl
+
+tmpl/phone/App.components.cmp.tmpl
