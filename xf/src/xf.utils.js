@@ -8,6 +8,10 @@
      */
     XF.utils.addressBar = {};
 
+    XF.utils.uniqueID = function () {
+        return 'xf-' + Math.floor(Math.random()*100000);
+    };
+
     _.extend(XF.utils.addressBar, /** @lends XF.utils.addressBar */{
 
         /**

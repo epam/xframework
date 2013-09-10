@@ -12,11 +12,11 @@
             var jQFooter = $(footer),
                 _self = this;
 
-            if (!footer || !jQFooter instanceof $ || jQFooter.attr('data-skip-enhance') == 'true') {
+            if (!footer || !(jQFooter instanceof $) || jQFooter.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            options.id = options.id || 'xf-footer-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
 
             jQFooter.attr({
                 'data-id': options.id,

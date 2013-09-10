@@ -11,11 +11,11 @@
         render : function (scrollable) {
 
             var jQScrollable = $(scrollable);
-            if (!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
+            if (!scrollable || !(jQScrollable instanceof $) || jQScrollable.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            var id = jQScrollable.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            var id = jQScrollable.attr('id') || XF.utils.uniqueID();
 
             jQScrollable.attr({'data-skip-enhance':true, 'id' : id});
 
