@@ -18,6 +18,7 @@ XF.Collection = BB.Collection.extend({
 
     _bindListeners: function () {
         //this.on('change reset sync add', this.onDataChanged, this);
+        this.on('refresh', this.refresh, this);
     },
 
     constructor: function (models, options) {
