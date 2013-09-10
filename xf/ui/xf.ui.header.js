@@ -25,6 +25,15 @@
             options.html = jQHeader.html();
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
 
+            var parentPages = $(this.selector).parents('.xf-page'),
+                siblingPages = $(this.selector).siblings('.xf-page');
+            if (!_.isEmpty(parentPages)) {
+                parentPages.addClass('xf-has-header');
+            }
+            if (!_.isEmpty(siblingPages)) {
+                siblingPages.addClass('xf-has-header');
+            }
+
             jQHeader.attr({
                 'data-id': options.id,
                 'id': options.id,
