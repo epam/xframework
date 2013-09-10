@@ -27,7 +27,7 @@ module.exports = (function (grunt) {
 
         // License text
 
-        var license = fs.readFileSync('./LICENSE.txt');
+        var license = '';//fs.readFileSync('./LICENSE.txt');
 
 
         // TODO modules to add

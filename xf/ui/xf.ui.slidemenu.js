@@ -11,11 +11,11 @@
         render : function (menu, options) {
             var jQMenu = $(menu);
 
-            if (!menu || !jQMenu instanceof $ || jQMenu.attr('data-skip-enhance') == 'true') {
+            if (!menu || !(jQMenu instanceof $) || jQMenu.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            options.id = options.id || 'xf-slidemenu-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.hasTitle = options.title != '' ? true : false;
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;

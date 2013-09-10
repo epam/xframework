@@ -14,12 +14,12 @@
                 _self = this,
                 options = options || {};
 
-            if (!loader || !jqLoader instanceof $ || jqLoader.attr('data-skip-enhance') == 'true') {
+            if (!loader || !(jqLoader instanceof $) || jqLoader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
 
-            var id = jqLoader.attr('id') || 'xf-' + Math.floor(Math.random() * 10000),
+            var id = jqLoader.attr('id') || XF.utils.uniqueID(),
                 idStack = XF.ui.checkInIsset('loader'),
                 newId = false;
 
@@ -53,7 +53,12 @@
         },
 
         hide : function (jqLoader) {
-            jqLoader.hide();
+            jqLoader = jqLoader || null;
+            if (jqLoader === null) {
+                $('.xf-loader').hide();
+            } else {
+                jqLoader.hide();
+            }
         },
 
         remove : function (jqLoader) {
@@ -62,7 +67,7 @@
         },
 
         create : function () {
-            var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
+            var jqLoader = $('<div class="xf-loader" data-role="loader"><div class="xf-loader-content"><div class="loading"></div></div></div>');
             XF.device.getViewport().append(jqLoader);
             return this.render(jqLoader[0]);
         }
