@@ -11,11 +11,11 @@
         render : function(fieldset, options) {
             var jQFieldset = $(fieldset);
 
-            if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
+            if (!fieldset || !(jQFieldset instanceof $) || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            var id = jQFieldset.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            var id = jQFieldset.attr('id') || XF.utils.uniqueID();
 
             jQFieldset.attr({'data-skip-enhance':  true, 'id' : id});
 
@@ -39,7 +39,9 @@
                     newLegendAttrs[attribute.name] = attribute.value;
                 });
                 legendDiv.attr(newLegendAttrs).addClass('xf-label').html(legend.html());
-                legend.outerHtml(legendDiv.outerHtml());
+                if (legend.hasOwnProperty('outerHTML')) {
+                    legend.outerHtml(legendDiv.outerHtml());
+                }
             }
         }
     };

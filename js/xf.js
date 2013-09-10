@@ -204,7 +204,7 @@
      @param {Object} handlers list of route handlers for {@link XF.router}
      @private
      */
-    // TODO: pass options to history and make them changable from options.history
+
     var createRouter = function(options) {
         if(XF.router) {
             throw 'XF.createRouter can be called only ONCE!';
@@ -442,7 +442,7 @@
      @param {Object} compDef Component definition
      @public
      */
-    //TODO: extend defineCompoennt to define Views, Models and Collections as well
+
     XF.define = XF.defineComponent = function(ns, def) {
         console.log(ns);
         var namespace = createNamespace(ns, def),
@@ -620,18 +620,20 @@ XF.App.extend = BB.Model.extend;
                 $(document.body).bind(eventsHandler[eventType].start, function(e){
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
-                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.target));
-                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
+                    touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
+                    touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
                     touchHandler.last = now;
                 }).bind(eventsHandler[eventType].move, function (e) {
-                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
-                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
+                    touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
 
                     if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
                         e.preventDefault();
                     }
                 }).bind(eventsHandler[eventType].end, function(e){
+
+//                    alert(Math.abs(touchHandler.x1 - touchHandler.x2))
 
                     if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
                         || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
@@ -727,6 +729,10 @@ XF.App.extend = BB.Model.extend;
      @namespace Holds all the reusable util functions related to Adress Bar
      */
     XF.utils.addressBar = {};
+
+    XF.utils.uniqueID = function () {
+        return 'xf-' + Math.floor(Math.random()*100000);
+    };
 
     _.extend(XF.utils.addressBar, /** @lends XF.utils.addressBar */{
 
@@ -937,7 +943,6 @@ XF.App.extend = BB.Model.extend;
          @param $ jqPage
          */
         // TODO: implement animations fallback and test it!
-        // TODO: test animationType property
         show : function(page, animationType){
             if (page === this.activePageName) {
                 return;
@@ -1027,7 +1032,7 @@ XF.App.extend = BB.Model.extend;
          */
 
         enhance : function (jqObj) {
-            if (!jqObj instanceof $) {
+            if (!(jqObj instanceof $)) {
                 jqObj = $(jqObj);
 
                 if (!jqObj instanceof $) {
@@ -1188,7 +1193,7 @@ XF.App.extend = BB.Model.extend;
 
 
         ajaxSettings: {
-                  // TODO: fill in ajaxSettings
+
         },
 
         /**
@@ -1889,7 +1894,7 @@ XF.Model = BB.Model.extend({
 
             this.setElement('[data-id=' + options.attributes['data-id'] + ']');
 
-            // TODO: add checking the availability of options.component
+
             if (options.component) {
                 this.component = options.component;
             }
@@ -2318,7 +2323,7 @@ XF.Model = BB.Model.extend({
                 enhancedButton,
                 innerStuff;
 
-            if (!button || !jQButton instanceof $ || jQButton.attr('data-skip-enhance') == 'true') {
+            if (!button || !(jQButton instanceof $) || jQButton.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2338,8 +2343,9 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            var isSmall = options.small === true || options.appearance == 'backbtn';
-            var position = options.position || '';
+            var isSmall = options.small === true || options.appearance == 'backbtn',
+                position = options.position || '',
+                id = jQButton.attr('id') || XF.utils.uniqueID();
 
             if (position !== '') {
                 enhancedButton.addClass('xf-button-float-' + position);
@@ -2422,6 +2428,8 @@ XF.Model = BB.Model.extend({
             if (options.alert == true) {
                 enhancedButton.addClass('xf-button-alert');
             }
+
+            enhancedButton.attr('id', id);
         }
     };
 
@@ -2448,12 +2456,12 @@ XF.Model = BB.Model.extend({
                     label : ''
                 };
 
-            if (!chbRbInput || !jQChbRbInput instanceof $ || jQChbRbInput.attr('data-skip-enhance') == 'true') {
+            if (!chbRbInput || !(jQChbRbInput instanceof $) || jQChbRbInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
             jQChbRbInput.attr({'data-skip-enhance':true});
-            options.id = jQChbRbInput.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            options.id = jQChbRbInput.attr('id') || XF.utils.uniqueID();
             options.input = jQChbRbInput.wrap("<span></span>").parent().html();
             jQChbRbInput.attr('id', options.id);
             var chbRbInputLabel = $('label[for=' + options.id + ']');
@@ -2504,11 +2512,11 @@ XF.Model = BB.Model.extend({
         render : function(fieldset, options) {
             var jQFieldset = $(fieldset);
 
-            if (!fieldset || !jQFieldset instanceof $ || jQFieldset.attr('data-skip-enhance') == 'true') {
+            if (!fieldset || !(jQFieldset instanceof $) || jQFieldset.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            var id = jQFieldset.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            var id = jQFieldset.attr('id') || XF.utils.uniqueID();
 
             jQFieldset.attr({'data-skip-enhance':  true, 'id' : id});
 
@@ -2532,7 +2540,9 @@ XF.Model = BB.Model.extend({
                     newLegendAttrs[attribute.name] = attribute.value;
                 });
                 legendDiv.attr(newLegendAttrs).addClass('xf-label').html(legend.html());
-                legend.outerHtml(legendDiv.outerHtml());
+                if (legend.hasOwnProperty('outerHTML')) {
+                    legend.outerHtml(legendDiv.outerHtml());
+                }
             }
         }
     };
@@ -2551,11 +2561,11 @@ XF.Model = BB.Model.extend({
             var jQFooter = $(footer),
                 _self = this;
 
-            if (!footer || !jQFooter instanceof $ || jQFooter.attr('data-skip-enhance') == 'true') {
+            if (!footer || !(jQFooter instanceof $) || jQFooter.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            options.id = options.id || 'xf-footer-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
 
             jQFooter.attr({
                 'data-id': options.id,
@@ -2634,7 +2644,7 @@ XF.Model = BB.Model.extend({
         render : function (header, options) {
             var jQHeader = $(header);
 
-            if (!header || !jQHeader instanceof $ || jQHeader.attr('data-skip-enhance') == 'true') {
+            if (!header || !(jQHeader instanceof $) || jQHeader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -2643,7 +2653,7 @@ XF.Model = BB.Model.extend({
                 headerTitle.addClass('xf-header-title');
             }
 
-            options.id = options.id || 'xf-header-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.html = jQHeader.html();
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
@@ -2676,14 +2686,14 @@ XF.Model = BB.Model.extend({
         render : function (list, options) {
             var jQList = $(list);
 
-            if (!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
+            if (!list || !(jQList instanceof $) || jQList.attr('data-skip-enhance') == 'true') {
                 return;
             }
             var listItems = jQList.children('li'),
                 linkItems = listItems.children('a'),
                 listItemsScope = [],
                 fullWidth = options.fullwidth || 'false',
-                listId = jQList.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+                listId = jQList.attr('id') || XF.utils.uniqueID();
 
             linkItems.addClass('xf-li-btn').children('.xf-count-bubble').parent().addClass('xf-li-has-count');
             listItems.not(linkItems.parent()).not('[data-role=divider]').addClass('xf-li-static');
@@ -2774,12 +2784,12 @@ XF.Model = BB.Model.extend({
                 _self = this,
                 options = options || {};
 
-            if (!loader || !jqLoader instanceof $ || jqLoader.attr('data-skip-enhance') == 'true') {
+            if (!loader || !(jqLoader instanceof $) || jqLoader.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
 
-            var id = jqLoader.attr('id') || 'xf-' + Math.floor(Math.random() * 10000),
+            var id = jqLoader.attr('id') || XF.utils.uniqueID(),
                 idStack = XF.ui.checkInIsset('loader'),
                 newId = false;
 
@@ -2813,7 +2823,12 @@ XF.Model = BB.Model.extend({
         },
 
         hide : function (jqLoader) {
-            jqLoader.hide();
+            jqLoader = jqLoader || null;
+            if (jqLoader === null) {
+                $('.xf-loader').hide();
+            } else {
+                jqLoader.hide();
+            }
         },
 
         remove : function (jqLoader) {
@@ -2822,7 +2837,7 @@ XF.Model = BB.Model.extend({
         },
 
         create : function () {
-            var jqLoader = $('<div class="xf-loader" data-role="loader"></div>');
+            var jqLoader = $('<div class="xf-loader" data-role="loader"><div class="xf-loader-content"><div class="loading"></div></div></div>');
             XF.device.getViewport().append(jqLoader);
             return this.render(jqLoader[0]);
         }
@@ -2836,7 +2851,7 @@ XF.Model = BB.Model.extend({
     XF.ui.popup = {
         render : function () {
 
-            var id = 'xf-' + Math.floor(Math.random() * 10000),
+            var id = XF.utils.uniqueID(),
                 idStack = XF.ui.checkInIsset('popup'),
                 newId = false;
 
@@ -3041,7 +3056,7 @@ XF.Model = BB.Model.extend({
             var jQButton = $('<button></button>'),
                 attrs = {};
 
-            attrs['id'] = buttonDescr.id || 'xf-' + Math.floor(Math.random() * 10000);
+            attrs['id'] = buttonDescr.id || XF.utils.uniqueID();
             attrs['class'] = buttonDescr.class || '';
             attrs['name'] = buttonDescr.name || attrs.id;
             buttonDescr.small = buttonDescr.small || '';
@@ -3101,11 +3116,11 @@ XF.Model = BB.Model.extend({
         render : function (scrollable) {
 
             var jQScrollable = $(scrollable);
-            if (!scrollable || !jQScrollable instanceof $ || jQScrollable.attr('data-skip-enhance') == 'true') {
+            if (!scrollable || !(jQScrollable instanceof $) || jQScrollable.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            var id = jQScrollable.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+            var id = jQScrollable.attr('id') || XF.utils.uniqueID();
 
             jQScrollable.attr({'data-skip-enhance':true, 'id' : id});
 
@@ -3176,11 +3191,11 @@ XF.Model = BB.Model.extend({
         render : function (menu, options) {
             var jQMenu = $(menu);
 
-            if (!menu || !jQMenu instanceof $ || jQMenu.attr('data-skip-enhance') == 'true') {
+            if (!menu || !(jQMenu instanceof $) || jQMenu.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            options.id = options.id || 'xf-slidemenu-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.hasTitle = options.title != '' ? true : false;
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
@@ -3269,11 +3284,11 @@ XF.Model = BB.Model.extend({
             var jQTabs = $(tabs),
                 _self = this;
 
-            if (!tabs || !jQTabs instanceof $ || jQTabs.attr('data-skip-enhance') == 'true') {
+            if (!tabs || !(jQTabs instanceof $) || jQTabs.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
-            options.id = options.id || 'xf-tabs-component-' + Math.floor(Math.random()*10000);
+            options.id = options.id || XF.utils.uniqueID();
             options.tabsperrow = options.tabsperrow || 4;
 
             jQTabs.attr({
@@ -3379,7 +3394,7 @@ XF.Model = BB.Model.extend({
                     end : 'mouseup touchend MSPointerUp',
                 };
 
-            if (!textInput || !jQTextInput instanceof $ || jQTextInput.attr('data-skip-enhance') == 'true') {
+            if (!textInput || !(jQTextInput instanceof $) || jQTextInput.attr('data-skip-enhance') == 'true') {
                 return;
             }
 
@@ -3407,7 +3422,10 @@ XF.Model = BB.Model.extend({
                     newTIAttrs[attribute.name] = attribute.value;
                 });
                 newTextInput.attr(newTIAttrs);
-                jQTextInput.outerHtml(newTextInput);
+
+                if (jQTextInput.hasOwnProperty('outerHTML')) {
+                    jQTextInput.outerHtml(newTextInput);
+                }
                 jQTextInput = newTextInput;
                 textInput = newTextInput[0];
 
@@ -3736,4 +3754,3 @@ XF.Model = BB.Model.extend({
     };
 }).call(this, window, $, Backbone); 
 
-/* License text */

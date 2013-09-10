@@ -11,14 +11,14 @@
         render : function (list, options) {
             var jQList = $(list);
 
-            if (!list || !jQList instanceof $ || jQList.attr('data-skip-enhance') == 'true') {
+            if (!list || !(jQList instanceof $) || jQList.attr('data-skip-enhance') == 'true') {
                 return;
             }
             var listItems = jQList.children('li'),
                 linkItems = listItems.children('a'),
                 listItemsScope = [],
                 fullWidth = options.fullwidth || 'false',
-                listId = jQList.attr('id') || 'xf-' + Math.floor(Math.random()*10000);
+                listId = jQList.attr('id') || XF.utils.uniqueID();
 
             linkItems.addClass('xf-li-btn').children('.xf-count-bubble').parent().addClass('xf-li-has-count');
             listItems.not(linkItems.parent()).not('[data-role=divider]').addClass('xf-li-static');

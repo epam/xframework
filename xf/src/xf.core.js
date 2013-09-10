@@ -150,7 +150,7 @@
      @param {Object} handlers list of route handlers for {@link XF.router}
      @private
      */
-    // TODO: pass options to history and make them changable from options.history
+
     var createRouter = function(options) {
         if(XF.router) {
             throw 'XF.createRouter can be called only ONCE!';
@@ -388,7 +388,7 @@
      @param {Object} compDef Component definition
      @public
      */
-    //TODO: extend defineCompoennt to define Views, Models and Collections as well
+
     XF.define = XF.defineComponent = function(ns, def) {
         console.log(ns);
         var namespace = createNamespace(ns, def),
