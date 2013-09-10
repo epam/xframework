@@ -25,7 +25,10 @@
             } else if (button.nodeName == 'INPUT') {
                 // The input is assigned a class xf-input-hidden
                 enhancedButton = $('<div></div>').append(jQButton.clone().addClass('xf-input-hidden').attr({'data-skip-enhance':true}));
-                jQButton.outerHtml(enhancedButton);
+
+                if (jQButton.hasOwnProperty('outerHtml')) {
+                    jQButton.outerHtml(enhancedButton);
+                }
                 innerStuff = jQButton.attr('value');
             } else {
                 // how did U get there? o_O
