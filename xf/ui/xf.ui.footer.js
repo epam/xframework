@@ -31,7 +31,7 @@
 
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
-            if (!_.isEmpty(parentPages)) {
+            if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-footer');
             }
             if (!_.isEmpty(siblingPages)) {
