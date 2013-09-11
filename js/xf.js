@@ -1,4 +1,4 @@
-/*! X-Framework 10-09-2013 */
+/*! X-Framework 11-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -405,12 +405,10 @@
     var createNamespace = function ( namespace, data ) {
         if (typeof namespace !== 'string') {
             throw ('Namespace should be a string');
-            return false;
         }
 
         if (!/^[a-z0-9_\.]+$/i.test(namespace)) {
             throw ('Namespace string "'+ namespace + '" is wrong. It can contain only numbers, letters and dot char');
-            return false;
         }
 
         var parts = namespace.split('.'),
@@ -421,7 +419,7 @@
         for (i = 0; i < plen; i++) {
             if (typeof parent[parts[i]] === 'undefined') {
                 parent[parts[i]] = {};
-                if (data && plen == (i + 1)) {
+                if (data && plen === (i + 1)) {
                     parent[parts[i]] = data;
                 }
             }
@@ -444,9 +442,13 @@
      */
 
     XF.define = XF.defineComponent = function(ns, def) {
-        console.log(ns);
-        var namespace = createNamespace(ns, def),
+
+        console.log('NS', ns);
+        console.log('DEF', def);
+        var namespace,
             shortNs;
+
+        namespace  = createNamespace(ns, def);
 
         if (!namespace) {
             return false;
@@ -466,6 +468,7 @@
         }
 
         shortNs = getLastNamespacePart(ns);
+        console.log('SHORT', shortNs);
         if (shortNs !== ns) {
             XF.define(shortNs, registeredComponents[ns].compDef);
         }
@@ -2195,6 +2198,7 @@ XF.Model = BB.Model.extend({
 
         _constructor: function () {
             this.construct();
+            XF.trigger('component:' + this.id + ':constructed');
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
                     component: this
@@ -2230,7 +2234,7 @@ XF.Model = BB.Model.extend({
             this.initialize();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-            this.view.once('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':constructed'); }, this));
+            this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
