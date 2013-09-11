@@ -23,18 +23,12 @@ js/lib/backbone.js
 
 js/lib/jquery.js
 
-js/components/*.js
 
-js/app.js
 
-index.html
 
 package.json
 
-tmpl/desktop/
-tmpl/mobile
 
-styles/sec.*
 
 images/
 
@@ -61,3 +55,5 @@ tmpl/phone/App.components.cmp.tmpl
 docs.js
 
 mocks/menu.json
+
+tmpl/phone/page2.tmpl

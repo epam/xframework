@@ -43,7 +43,7 @@
                     dataHrefString : button.attr('data-href') ? button.attr('data-href') : '',
                     textClass : button.attr('data-text-class') ? button.attr('data-text-class') : '',
                     id : button.attr('data-id') ? button.attr('data-id') : options.id + '-item' + i,
-                    class : button.attr('data-class') || '',
+                    class_ : button.attr('data-class') || '',
                     text : button.val() || button.text() || ''
                 };
                 options.buttons.push(butOpts);

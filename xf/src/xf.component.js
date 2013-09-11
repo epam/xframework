@@ -125,6 +125,7 @@
 
         _constructor: function () {
             this.construct();
+            XF.trigger('component:' + this.id + ':constructed');
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
                     component: this
@@ -160,7 +161,7 @@
             this.initialize();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-            this.view.once('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':constructed'); }, this));
+            this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();

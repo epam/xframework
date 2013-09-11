@@ -1,0 +1,28 @@
+<div>
+    <div class="clearfix">
+        <div class="sec-video-frame">
+            <iframe src="//videoportalqa.epam.com/stream/iframe.html?stream=dwJvdo6W&source=camera_stream" width="100%" height="500" frameborder="0" border="0" scroll="no" scrolling="no"></iframe>
+        </div>
+
+        <div class="sec-presenation-author-info">
+            <img src="<% if (data[0].presenters[0].photoURL != '') { %><%= data[0].presenters[0].photoURL %><% } else { %>/images/sec.jpg<% } %>?token=<%= localStorage.token %>" class="sec-presentation-author-image" />
+            <div class="sec-presenation-author-descr">
+                <h3><a href="#speaker/1"><%= data[0].presenters[0].firstName %> <%= data[0].presenters[0].lastName %></a></h3>
+                <h4><%= data[0].presenters[0].description %></h4>
+                <h4><%= data[0].presenters[0].position %> &nbsp;</h4>
+                <h4><ins><%= data[0].track %></ins></h4>
+            </div>
+        </div>
+
+        <div class="sec-presenation-info">
+            <h1><%= data[0].title %></h1>
+            <h4><ins>Room 1A, 10.00-11.30</ins></h4>
+            <p><%= data[0].description %></p>
+        </div>
+
+    </div>
+
+    <!--<button data-alert="true" title="Favourites" data-small="true" data-icon="star">Rate</button> 5 Stars &nbsp; &nbsp;-->
+    <button data-position="" data-small="true" data-icon="thumbs-up">Like</button> <%= data[0].likesCount %> Likes
+    <button data-href="#coms/<%= XF.router.EventID %>">Show <%= data[0].commentsCount %> comments</button>
+</div>
