@@ -106,7 +106,7 @@
         view : null,
 
         _bindListeners: function () {
-            XF.on('component:' + this.id + ':refresh', _.bind(this.refresh, this));
+            XF.on('component:' + this.id + ':refresh', this.refresh, this);
             this.listenTo(this, 'refresh', this.refresh);
         },
 
@@ -160,8 +160,10 @@
 
             this.initialize();
 
-            this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-            this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
+            if (this.view) {
+                this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
+                this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
+            }
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
@@ -169,6 +171,16 @@
                 this.model.refresh();
             }else if (this.view) {
                 this.view.refresh();
+            }
+        },
+
+        _removeChildComponents: function () {
+            if (this.view) {
+                var ids = [];
+                this.view.$el.find('[data-component]').each(function () {
+                    ids.push($(this).data('id'));
+                });
+                XF._removeComponents(ids);
             }
         },
 
@@ -185,7 +197,6 @@
             }else if (this.view && !this.view.status.loading) {
                 this.view.refresh();
             }
-
         }
 
 

@@ -329,6 +329,16 @@
         return components[compID];
     };
 
+    XF._removeComponents = function (ids) {
+        if (!_.isEmpty(ids)) {
+            _.each(ids, function (id) {
+                console.log('DELETING', id);
+                components = _.omit(components, id);
+            });
+        }
+        console.log('COMPONENTS', components);
+    };
+
     /**
      Registers component source
      @param {String} compName Component name

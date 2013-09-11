@@ -15,7 +15,7 @@
     /** @ignore */
     $.fn.show = function(speed, callback) {
         var res = _oldshow.apply(this, arguments);
-        XF.trigger('xf:loadChildComponents', this);
+        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -23,7 +23,7 @@
     /** @ignore */
     $.fn.html = function(a) {
         var res = _oldhtml.apply(this, arguments);
-        XF.trigger('xf:loadChildComponents', this);
+        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -31,7 +31,7 @@
     /** @ignore */
     $.fn.append = function() {
         var res = _oldappend.apply(this, arguments);
-        XF.trigger('xf:loadChildComponents', this);
+        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -39,7 +39,7 @@
     /** @ignore */
     $.fn.prepend = function() {
         var res = _oldprepend.apply(this, arguments);
-        XF.trigger('xf:loadChildComponents', this);
+        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -100,11 +100,6 @@
 
         XF._defferedCompEvents || (XF._defferedCompEvents = {});
 
-        //on component constructed
-        if (parts[0] === 'component' && parts[2] === 'constructed') {
-            onComponentCostruct(compID);
-        }
-
         if (parts[0] === 'component' && parts[2] === 'rendered') {
             onComponentRender(compID);
         }
@@ -120,10 +115,6 @@
         }
 
     });
-
-    onComponentCostruct = function (compID) {
-
-    };
 
     onComponentRender = function (compID) {
         var compObj = $(XF.getComponentByID(compID).selector());
@@ -390,6 +381,16 @@
      */
     XF.getComponentByID = function(compID) {
         return components[compID];
+    };
+
+    XF._removeComponents = function (ids) {
+        if (!_.isEmpty(ids)) {
+            _.each(ids, function (id) {
+                console.log('DELETING', id);
+                components = _.omit(components, id);
+            });
+        }
+        console.log('COMPONENTS', components);
     };
 
     /**
@@ -1723,11 +1724,12 @@ XF.Collection = BB.Collection.extend({
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || _.defaults({}, XF.settings.property('ajaxSettings'));
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
-            var onSuccess = this.ajaxSettings.success,
-                onDataLoaded = _.bind(this._onDataLoaded, this);
+            var onDataLoaded = _.bind(this._onDataLoaded, this),
+                onSuccess = this.ajaxSettings.success;
+
             this.ajaxSettings.success = function () {
                 onDataLoaded();
                 onSuccess();
@@ -1759,11 +1761,13 @@ XF.Collection = BB.Collection.extend({
         this.status.loaded = false;
         this.status.loading = true;
 
+        this.reset();
+        this.ajaxSettings.silent = false;
         this.fetch(this.ajaxSettings);
     },
 
     _onDataLoaded: function () {
-        console.log('data loaded');
+        console.log('data loaded', this);
         this.status.loaded = true;
         this.status.loading = false;
 
@@ -2039,8 +2043,10 @@ XF.Model = BB.Model.extend({
          Renders component into placeholder + calling all the necessary hooks & events
          */
         refresh: function() {
+            console.log(this.component.id, 'REFRESHED VIEW');
             if (this.status.loaded && this.template.src) {
                 if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
+                    console.log(this.component.id, 'RENDERED VIEW', this.component.collection);
                     this.beforeRender();
                     this.render();
                     this.afterRender();
@@ -2065,6 +2071,10 @@ XF.Model = BB.Model.extend({
          @private
          */
         render : function() {
+            if (this.component) {
+                this.component._removeChildComponents();
+            }
+
             this.$el.html(this.getMarkup());
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
@@ -2190,7 +2200,7 @@ XF.Model = BB.Model.extend({
         view : null,
 
         _bindListeners: function () {
-            XF.on('component:' + this.id + ':refresh', _.bind(this.refresh, this));
+            XF.on('component:' + this.id + ':refresh', this.refresh, this);
             this.listenTo(this, 'refresh', this.refresh);
         },
 
@@ -2244,8 +2254,10 @@ XF.Model = BB.Model.extend({
 
             this.initialize();
 
-            this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-            this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
+            if (this.view) {
+                this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
+                this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
+            }
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
@@ -2253,6 +2265,16 @@ XF.Model = BB.Model.extend({
                 this.model.refresh();
             }else if (this.view) {
                 this.view.refresh();
+            }
+        },
+
+        _removeChildComponents: function () {
+            if (this.view) {
+                var ids = [];
+                this.view.$el.find('[data-component]').each(function () {
+                    ids.push($(this).data('id'));
+                });
+                XF._removeComponents(ids);
             }
         },
 
@@ -2269,7 +2291,6 @@ XF.Model = BB.Model.extend({
             }else if (this.view && !this.view.status.loading) {
                 this.view.refresh();
             }
-
         }
 
 
