@@ -34,16 +34,28 @@
 
             types : {
                 'none': {
-                    fallback: function (fromPage, toPage) {}
+                    fallback: function (fromPage, toPage) {
+                        fromPage.removeClass(this.activePageClass);
+                        toPage.addClass(this.activePageClass);
+                    }
                 },
                 'fade': {
-                    fallback: function (fromPage, toPage) {}
+                    fallback: function (fromPage, toPage) {
+                        $(fromPage).removeClass(this.activePageClass);
+                        $(toPage).addClass(this.activePageClass);
+                    }
                 },
                 'slideleft': {
-                    fallback: function (fromPage, toPage) {}
+                    fallback: function (fromPage, toPage) {
+                        $(fromPage).removeClass(this.activePageClass);
+                        $(toPage).addClass(this.activePageClass);
+                    }
                 },
                 'slideright': {
-                    fallback: function (fromPage, toPage) {}
+                    fallback: function (fromPage, toPage) {
+                        $(fromPage).removeClass(this.activePageClass);
+                        $(toPage).addClass(this.activePageClass);
+                    }
                 }
             }
         },
@@ -120,7 +132,6 @@
          Executes animation sequence for switching
          @param $ jqPage
          */
-        // TODO: implement animations fallback and test it!
         show : function(page, animationType){
             if (page === this.activePageName) {
                 return;
@@ -160,29 +171,27 @@
 
             if (!XF.device.supports.cssAnimations) {
                 if (_.isFunction(this.animations.types[animationType]['fallback'])) {
-                    toPage.addClass(this.activePageClass);
-                    this.animations.types[animationType].fallback(fromPage, toPage);
-                    return;
+                    _.bind(this.animations.types[animationType].fallback, this)(fromPage, toPage);
                 }
-            }
+            }else{
+                if (fromPage) {
+                    viewport.addClass('xf-viewport-transitioning');
 
-            if (fromPage) {
-                viewport.addClass('xf-viewport-transitioning');
+                    fromPage.height(viewport.height()).addClass('out '+ animationType);
+                    toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
+                    fromPage.animationEnd(function(){
+                        fromPage.height('').removeClass(animationType + ' out in');
+                        fromPage.removeClass(XF.pages.activePageClass);
+                    });
 
-                fromPage.height(viewport.height()).addClass('out '+ animationType);
-                toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
-                fromPage.animationEnd(function(){
-                    fromPage.height('').removeClass(animationType + ' out in');
-                    fromPage.removeClass(XF.pages.activePageClass);
-                });
-
-                toPage.animationEnd(function(){
-                    toPage.height('').removeClass(animationType + ' out in');
-                    viewport.removeClass('xf-viewport-transitioning');
-                });
-            } else {
-                // just making it active
-                this.activePage.addClass(this.activePageClass);
+                    toPage.animationEnd(function(){
+                        toPage.height('').removeClass(animationType + ' out in');
+                        viewport.removeClass('xf-viewport-transitioning');
+                    });
+                } else {
+                    // just making it active
+                    this.activePage.addClass(this.activePageClass);
+                }
             }
 
             XF.trigger('ui:enhance', $(this.activePage));

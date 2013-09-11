@@ -46,9 +46,8 @@
 
         XF._defferedCompEvents || (XF._defferedCompEvents = {});
 
-        //on component constructed
-        if (parts[0] === 'component' && parts[2] === 'constructed') {
-            onComponentCostruct(compID);
+        if (parts[0] === 'component' && parts[2] === 'rendered') {
+            onComponentRender(compID);
         }
 
         if (!XF.getComponentByID(compID)) {
@@ -63,8 +62,7 @@
 
     });
 
-    onComponentCostruct = function (compID) {
-          console.log('CONSTRUCTED', compID);
+    onComponentRender = function (compID) {
         var compObj = $(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
@@ -72,8 +70,6 @@
                 XF.trigger('pages:start', compObj);
             }
         }
-
-        loadChildComponents(compObj);
     };
 
 
@@ -181,7 +177,7 @@
      @param {Object} DOMObject Base object to look for components
      @private
      */
-    var loadChildComponents = function(DOMObject) {
+    var loadChildComponents = XF.loadChildComponents = function(DOMObject) {
         console.log('XF :: loadChildComponents', DOMObject);
 
         if ($(DOMObject).attr('[data-component]')) {
@@ -200,7 +196,7 @@
             }
         });
     };
-    XF.on('core:loadChildComponents', loadChildComponents);
+    XF.on('xf:loadChildComponents', XF.loadChildComponents);
 
     /**
      Loads component definition and creates its instance
@@ -214,7 +210,8 @@
             console.log('ADDING', compID);
             console.log(components);
             console.log(components[compID]);
-            if(!components[compID]) {
+            if(!components[compID] && _.isFunction(compDef)) {
+                console.log(compDef);
                 var compInst = new compDef(compName, compID);
                 console.log('CREATED', compInst);
                 console.log('XF :: loadChildComponent - created : ' + compID);
@@ -266,6 +263,7 @@
         } else {  //Others
             /** @ignore */
             script.onload = function() {
+                console.log('script loaded');
                 if(callback) {
                     callback();
                 }
@@ -351,12 +349,10 @@
     var createNamespace = function ( namespace, data ) {
         if (typeof namespace !== 'string') {
             throw ('Namespace should be a string');
-            return false;
         }
 
         if (!/^[a-z0-9_\.]+$/i.test(namespace)) {
             throw ('Namespace string "'+ namespace + '" is wrong. It can contain only numbers, letters and dot char');
-            return false;
         }
 
         var parts = namespace.split('.'),
@@ -365,9 +361,10 @@
 
         plen = parts.length;
         for (i = 0; i < plen; i++) {
+            console.log(parts[i]);
             if (typeof parent[parts[i]] === 'undefined') {
                 parent[parts[i]] = {};
-                if (data && plen == (i + 1)) {
+                if (data && plen === (i + 1)) {
                     parent[parts[i]] = data;
                 }
             }
@@ -390,13 +387,8 @@
      */
 
     XF.define = XF.defineComponent = function(ns, def) {
-        console.log(ns);
-        var namespace = createNamespace(ns, def),
+        var namespace,
             shortNs;
-
-        if (!namespace) {
-            return false;
-        }
 
         var compStatus = registeredComponents[ns];
         if(!compStatus) {
@@ -405,16 +397,20 @@
 
         registeredComponents[ns].loading = false;
         registeredComponents[ns].loaded = true;
-        registeredComponents[ns].compDef = namespace;
+        registeredComponents[ns].compDef = def;
+
+        namespace = createNamespace(ns, registeredComponents[ns].compDef);
 
         while(compStatus.callbacks.length) {
             compStatus.callbacks.pop()(compStatus.compDef);
         }
 
-        shortNs = getLastNamespacePart(ns);
-        if (shortNs !== ns) {
-            XF.define(shortNs, registeredComponents[ns].compDef);
-        }
+        // TODO: uncomment and solve the problem with window.DOMobject
+        //shortNs = getLastNamespacePart(ns);
+        //console.log('SHORT', shortNs);
+        //if (shortNs !== ns) {
+            //XF.define(shortNs, registeredComponents[ns].compDef);
+        //}
     };
 
     XF.getRegisteredComponents = function () {
