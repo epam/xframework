@@ -14,8 +14,8 @@ $(function(){
                         $('#tab_'+id).show();
                     });
                 },
-                initialize: function () {
-                    this.template.cache = false;
+                template : {
+                    cache : false
                 }
             }),
 

@@ -28,13 +28,14 @@
             options.fixed = options.fixed === true ? true : false;
             options.buttons = options.buttons || [];
 
-            if (options.fixed) {
-                var parentPage = $(this.selector).parents('.xf-page');
-                if (parentPage[0]) {
-                    parentPage.addClass('xf-page-has-fixed-footer');
-                } else {
-                    XF.device.getViewport().addClass('xf-viewport-has-fixed-footer');
-                }
+
+            var parentPages = $(this.selector).parents('.xf-page'),
+                siblingPages = $(this.selector).siblings('.xf-page');
+            if (!_.isEmpty(parentPages)) {
+                parentPages.addClass('xf-has-footer');
+            }
+            if (!_.isEmpty(siblingPages)) {
+                siblingPages.addClass('xf-has-footer');
             }
 
             var buttons = jQFooter.find(XF.ui.button.selector);

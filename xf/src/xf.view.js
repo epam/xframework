@@ -30,10 +30,11 @@
         },
 
         _initProperties: function () {
+            this.template = this.template || {};
             this.template = {
-                src: null,
-                compiled: null,
-                cache: true
+                src: this.template.src || null,
+                compiled: this.template.compiled || null,
+                cache: this.template.cache || true
             };
 
             this.status = {
@@ -51,7 +52,7 @@
 
             this.setElement('[data-id=' + options.attributes['data-id'] + ']');
 
-            // TODO: add checking the availability of options.component
+
             if (options.component) {
                 this.component = options.component;
             }

@@ -58,10 +58,9 @@ There are some rules behind the XFramework:
 You don't need to download the source code from the repo, create  all the necessary files for the web app, writing two thousands line of code just to create a `Hello world!` app. XFramework Generator can make everything for you.
 
 XF Generator has a number of dependencies such as:
-
 * [node.js](http://nodejs.org)
 * [NPM](https://npmjs.org)
-* [Yeoman](http://yeoman.io)
+* [Yeoman] (http://yeoman.io)
 
 To install first two of them on Mac OS X or Windows computers you just need to download a package from [nodejs.org/download/](http://nodejs.org/download/). For other platforms see the [readme](https://npmjs.org/doc/README.html).
 
@@ -386,12 +385,7 @@ var app = new MyApp({
 
 For now it contains the following user interaction events:
 
-* `tap`: it doesn't matter if it is a click or a touch to the screen. Just bind on tap events for all types of devices and that's it!
-<<<<<<< HEAD
-* `XF.touch` fixes the 300ms gap between click and touch events as well
-=======
-* `XF.touch` fixes the 300ms gap between click and touch events as well*
->>>>>>> epam-master
+* `tap`: it doesn't matter if it is a click or a touch to the screen. Just bind on tap events for all types of devices and that's it! `XF.touch` fixes the 300ms gap between click and touch events as well
 * `swipe`, `swipeUp`, `swipeDown`, `swipeLeft`, `swipeRight`
 
 ## XF.storage
@@ -431,9 +425,9 @@ To use a component a developer places a marker where the component will be rende
 See an example of two nested components declared in the page markup:
 
 ```html
-		<div data-component="categoryList" data-id="categoryListBooks">
-			This content will be shown while component is loading...
-		</div>
+<div data-component="categoryList" data-id="categoryListBooks">
+    This content will be shown while component is loading...
+</div>
 ```
 
 Such an approach lets a developer build asynchronuous UIs and avoid loading extraneous resources.
@@ -606,17 +600,53 @@ To create a standalone view XF Generator can be used with `yo xf:view [name]`.
 * `beforeRender`: called before rendering of the template.
 * `afterRender`: called after rendering of the template.
 
-*Note that `collection` or `model` of the component available in the template through localized variable `data`*.
+*Note that data from `collection` or `model` of the component is available in the template via localized variable `data`*.
 
 For other methods, properties and hooks available see [Backbone.View](http://backbonejs.org/#View).
 
 
 ## List of built-in events
-### XF level
+
+### XF level (`XF.on`, `XF.off`, `XF.trigger`, etc.)
+
+* `app:started`: when the app has started
+* `component:componentID:constructed`: when the component with id `componentID` has been constructed
+
+* `pages:show`: command to switch the page to another one. `XF.trigger('pages:show', 'books')`
+* `pages:animation:next`: command to set the type of the next animation. `XF.trigger('pages:animation:next', 'fade')`
+* `pages:animation:default`: command to set the default type of the animations. `XF.trigger('pages:animation:default', 'fade')`
+* `ui:enhance`: command to enhance all inside the DOM element. Selector or jQuery object can be passed. `XF.trigger('ui:enhance', '.cart')`
+* `navigate`: command to change the url, triggers the router that could trigger page switching. `XF.trigger('navigate', 'books/fiction')`
+* `component:componentID:refresh`: command to refresh the component with id `componentID`
+
+You can fire any event to the desired component in format `component:componentID:eventName`. Even if there is no component with such id these events will be delayed until it will be rendered.
+
 ### Component level
+
+* `refresh`: command to refresh the component
+
 ### Model level
+
+* `fetched`: when the data has been loaded from the backend
+* `refresh`: command to refresh the data of model
+
+Keep in mind that all [Backbone.js built-in events](http://backbonejs.org/#Events-catalog) are available.
+
 ### Collection level
+
+* `fetched`: when the data has been loaded from the backend
+* `refresh`: command to refresh the data of collection
+
+Keep in mind that all [Backbone.js built-in events](http://backbonejs.org/#Events-catalog) are available.
+
 ### View level
+
+* `rendered`: when the view has been rendered
+* `loaded`: when the template has been loaded
+* `refresh`: command to rerender the view
+
+
+Keep in mind that all [Backbone.js built-in events](http://backbonejs.org/#Events-catalog) are available.
 
 # UI Elements
 
@@ -640,9 +670,11 @@ Each UI element has a simple markup that will be enhanced into the rich element.
 		<p>Header and description</p>
 	</a></li>
 </ul>
+```
 
 Will be converted to:
 
+```html
 <ul data-role="listview" data-skip-enhance="true" id="xf-8293" class="xf-listview">
 	<li class=" xf-li xf-li-divider">A</li>
 	<li class="xf-li-static xf-li">
@@ -758,11 +790,11 @@ Sample listview markup:
 		<h2>Header</h2>
 		<p>Header and description</p>
 	</a></li>
-	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+	<li data-icon="chevron-thin-right" data-iconpos="right"><a href="#">
 		<h2>With Icon</h2>
 		<p>List item  with icon on the right</p>
 	</a></li>
-	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+	<li data-icon="chevron-thin-right" data-iconpos="right"><a href="#">
 		<h2>With Icon and Count</h2>
 		<p>List item  with icon on the right and count</p>
 		<span class="xf-count-bubble">32</span>
@@ -789,11 +821,11 @@ The above code will result in:
 		<h2>Header</h2>
 		<p>Header and description</p>
 	</a></li>
-	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+	<li data-icon="chevron-thin-right" data-iconpos="right"><a href="#">
 		<h2>With Icon</h2>
 		<p>List item  with icon on the right</p>
 	</a></li>
-	<li data-icon="right-circled" data-iconpos="right"><a href="#">
+	<li data-icon="chevron-thin-right" data-iconpos="right"><a href="#">
 		<h2>With Icon and Count</h2>
 		<p>List item  with icon on the right and count</p>
 		<span class="xf-count-bubble">32</span>
