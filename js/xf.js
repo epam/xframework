@@ -1714,7 +1714,7 @@ XF.Collection = BB.Collection.extend({
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || new XF.settings.property('ajaxSettings');
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,
@@ -1799,7 +1799,7 @@ XF.Model = BB.Model.extend({
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || new XF.settings.property('ajaxSettings');
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,
@@ -2030,8 +2030,6 @@ XF.Model = BB.Model.extend({
          Renders component into placeholder + calling all the necessary hooks & events
          */
         refresh: function() {
-
-            console.log(this)
             console.log('REFRESHING VIEW', this.component.id, this.component.collection);
             if (this.status.loaded && this.template.src) {
                 if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {

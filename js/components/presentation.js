@@ -8,15 +8,15 @@ $(function(){
 //            },
 
             updateData : function () {
-                //XF.trigger('component:comments:refresh');
+                XF.trigger('component:presentation:refresh');
             },
 
             construct: function () {
                 var _self = this;
-                //XF.bind('component:presentation:refresh', function() {
-                //    _self.updateData();
-                //});
-
+                XF.bind('component:presentation:fetched', function() {
+                    _self.updateData();
+                });
+                this.updateData();
             },
 
             View : XF.View.extend({

@@ -23,12 +23,18 @@ js/lib/backbone.js
 
 js/lib/jquery.js
 
+js/components/*.js
 
+js/app.js
 
+index.html
 
 package.json
 
+tmpl/desktop/
+tmpl/mobile
 
+styles/sec.*
 
 images/
 

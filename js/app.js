@@ -51,7 +51,9 @@ $(document).ready(function (){
 			},
 
             login: function () {
-//                XF.api.showLogin();
+                if (XF.storage.get('token') && XF.storage.get('token') != '') {
+                    XF.navigate('agenda');
+                }
             },
 
             agenda: function () {
@@ -61,7 +63,7 @@ $(document).ready(function (){
             presentation: function (id) {
                 $('#backbtn').removeData('href').attr('data-href', '#agenda').show();
                 this.EventID = id;
-                //XF.trigger('component:presentation:refresh');
+                XF.trigger('component:presentation:refresh');
             },
 
             comments: function (id) {

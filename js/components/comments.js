@@ -9,7 +9,7 @@ $(function(){
                     $('body').html('Something went wrong. Try to reload the page...');
                 },
                 afterRender: function () {
-                    alert();
+                    debugger;
                 }
             }),
 
@@ -21,7 +21,7 @@ $(function(){
                 },
                 parse: function (data) {
                     if (_.has(data, 'comments')) {
-
+                        data.comments = data.comments.reverse();
                         return data.comments;
                     }
                     else return data;
