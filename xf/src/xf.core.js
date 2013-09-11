@@ -93,6 +93,9 @@
     XF.start = function(options) {
 
         options = options || {};
+        options.history = options.history || {
+            'pushState': false
+        };
 
         // initializing XF.storage
         XF.storage.init();
@@ -117,7 +120,7 @@
             XF.ui.init();
         }
 
-        XF.router.start();
+        XF.router.start(options.history);
 
         options.animations = options.animations || {};
         options.animations.standardAnimation = options.animations.standardAnimation || '';
@@ -147,7 +150,7 @@
      @param {Object} handlers list of route handlers for {@link XF.router}
      @private
      */
-    // TODO: pass options to history and make them changable from options.history
+
     var createRouter = function(options) {
         if(XF.router) {
             throw 'XF.createRouter can be called only ONCE!';
@@ -337,11 +340,46 @@
      */
     XF.registerComponent = function(compName, compSrc) {
         var compStatus = registeredComponents[compName];
+        console.log(compName, compStatus);
         if(compStatus) {
             return compStatus;
         }
         registeredComponents[compName] = new ComponentStatus(compSrc);
         return registeredComponents[compName];
+    };
+
+    var createNamespace = function ( namespace, data ) {
+        if (typeof namespace !== 'string') {
+            throw ('Namespace should be a string');
+            return false;
+        }
+
+        if (!/^[a-z0-9_\.]+$/i.test(namespace)) {
+            throw ('Namespace string "'+ namespace + '" is wrong. It can contain only numbers, letters and dot char');
+            return false;
+        }
+
+        var parts = namespace.split('.'),
+            parent = window,
+            plen, i;
+
+        plen = parts.length;
+        for (i = 0; i < plen; i++) {
+            if (typeof parent[parts[i]] === 'undefined') {
+                parent[parts[i]] = {};
+                if (data && plen == (i + 1)) {
+                    parent[parts[i]] = data;
+                }
+            }
+            parent = parent[parts[i]];
+        }
+
+        return parent;
+    };
+
+
+    var getLastNamespacePart = function (ns) {
+        return ns.substr(ns.lastIndexOf(".") + 1);
     };
 
     /**
@@ -350,21 +388,37 @@
      @param {Object} compDef Component definition
      @public
      */
-    //TODO: extend defineCompoennt to define Views, Models and Collections as well
-    XF.defineComponent = function(compName, compDef) {
-        console.log(compName, compDef);
-        var compStatus = registeredComponents[compName];
-        if(!compStatus) {
-            compStatus = registeredComponents[compName] = new ComponentStatus(null);
+
+    XF.define = XF.defineComponent = function(ns, def) {
+        console.log(ns);
+        var namespace = createNamespace(ns, def),
+            shortNs;
+
+        if (!namespace) {
+            return false;
         }
 
-        registeredComponents[compName].loading = false;
-        registeredComponents[compName].loaded = true;
-        registeredComponents[compName].compDef = compDef;
+        var compStatus = registeredComponents[ns];
+        if(!compStatus) {
+            compStatus = registeredComponents[ns] = new ComponentStatus(null);
+        }
+
+        registeredComponents[ns].loading = false;
+        registeredComponents[ns].loaded = true;
+        registeredComponents[ns].compDef = namespace;
 
         while(compStatus.callbacks.length) {
             compStatus.callbacks.pop()(compStatus.compDef);
         }
+
+        shortNs = getLastNamespacePart(ns);
+        if (shortNs !== ns) {
+            XF.define(shortNs, registeredComponents[ns].compDef);
+        }
+    };
+
+    XF.getRegisteredComponents = function () {
+        return registeredComponents;
     };
 
     /**

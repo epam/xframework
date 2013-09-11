@@ -114,14 +114,14 @@
                 });
             }
             if (buttons.length > 0) {
-                var btnCount = buttons.length,
-                    jqBtn;
+                var jqBtn;
 
                 _.each(buttons, function (btn, index, buttons){
 
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
+                        console.log(btn);
                         jqBtn = XF.ui.popup.createButton(btn);
                     }
 

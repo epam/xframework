@@ -22,9 +22,9 @@
          Initiates Rounting & history listening
          @private
          */
-        start : function() {
+        start : function(options) {
             this.bindAnyRoute();
-            XF.history.start();
+            XF.history.start(options);
             XF.trigger('ui:enhance', $('body'));
         },
 
