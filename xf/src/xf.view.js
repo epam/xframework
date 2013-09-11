@@ -182,6 +182,9 @@
          Renders component into placeholder + calling all the necessary hooks & events
          */
         refresh: function() {
+
+            console.log(this)
+            console.log('REFRESHING VIEW', this.component.id, this.component.collection);
             if (this.status.loaded && this.template.src) {
                 if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
                     this.beforeRender();
@@ -208,6 +211,7 @@
          @private
          */
         render : function() {
+            console.log('RENDERING VIEW', this.component.id, this.component.collection);
             this.$el.html(this.getMarkup());
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;

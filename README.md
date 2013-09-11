@@ -611,6 +611,7 @@ For other methods, properties and hooks available see [Backbone.View](http://bac
 
 * `app:started`: when the app has started
 * `component:componentID:constructed`: when the component with id `componentID` has been constructed
+* `component:componentID:rendered`: when the component with id `componentID` has been rendered
 
 * `pages:show`: command to switch the page to another one. `XF.trigger('pages:show', 'books')`
 * `pages:animation:next`: command to set the type of the next animation. `XF.trigger('pages:animation:next', 'fade')`

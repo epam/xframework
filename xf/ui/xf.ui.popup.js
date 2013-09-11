@@ -121,6 +121,7 @@
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
+                        console.log('BUTTON');
                         console.log(btn);
                         jqBtn = XF.ui.popup.createButton(btn);
                     }

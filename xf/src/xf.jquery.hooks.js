@@ -6,7 +6,7 @@
     /** @ignore */
     $.fn.hide = function(speed, callback) {
         var res = _oldhide.apply(this,arguments);
-        $(this).trigger('hide');
+        //$(this).trigger('hide');
         return res;
     };
 
@@ -14,7 +14,7 @@
     /** @ignore */
     $.fn.show = function(speed, callback) {
         var res = _oldshow.apply(this, arguments);
-        XF.trigger('core:loadChildComponents', this);
+        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -22,7 +22,7 @@
     /** @ignore */
     $.fn.html = function(a) {
         var res = _oldhtml.apply(this, arguments);
-        XF.trigger('core:loadChildComponents', this);
+        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -30,7 +30,7 @@
     /** @ignore */
     $.fn.append = function() {
         var res = _oldappend.apply(this, arguments);
-        XF.trigger('core:loadChildComponents', this);
+        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -38,7 +38,7 @@
     /** @ignore */
     $.fn.prepend = function() {
         var res = _oldprepend.apply(this, arguments);
-        XF.trigger('core:loadChildComponents', this);
+        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
