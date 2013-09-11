@@ -1,4 +1,4 @@
-/*! X-Framework 10-09-2013 */
+/*! X-Framework 11-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -7,7 +7,7 @@
     /** @ignore */
     $.fn.hide = function(speed, callback) {
         var res = _oldhide.apply(this,arguments);
-        $(this).trigger('hide');
+        //$(this).trigger('hide');
         return res;
     };
 
@@ -15,7 +15,7 @@
     /** @ignore */
     $.fn.show = function(speed, callback) {
         var res = _oldshow.apply(this, arguments);
-        XF.trigger('core:loadChildComponents', this);
+        XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -23,7 +23,7 @@
     /** @ignore */
     $.fn.html = function(a) {
         var res = _oldhtml.apply(this, arguments);
-        XF.trigger('core:loadChildComponents', this);
+        XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -31,7 +31,7 @@
     /** @ignore */
     $.fn.append = function() {
         var res = _oldappend.apply(this, arguments);
-        XF.trigger('core:loadChildComponents', this);
+        XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -39,7 +39,7 @@
     /** @ignore */
     $.fn.prepend = function() {
         var res = _oldprepend.apply(this, arguments);
-        XF.trigger('core:loadChildComponents', this);
+        XF.trigger('xf:loadChildComponents', this);
         return res;
     };
 
@@ -105,6 +105,10 @@
             onComponentCostruct(compID);
         }
 
+        if (parts[0] === 'component' && parts[2] === 'rendered') {
+            onComponentRender(compID);
+        }
+
         if (!XF.getComponentByID(compID)) {
             var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []);
             events.push(eventName);
@@ -118,7 +122,10 @@
     });
 
     onComponentCostruct = function (compID) {
-          console.log('CONSTRUCTED', compID);
+
+    };
+
+    onComponentRender = function (compID) {
         var compObj = $(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
@@ -126,8 +133,6 @@
                 XF.trigger('pages:start', compObj);
             }
         }
-
-        loadChildComponents(compObj);
     };
 
 
@@ -235,7 +240,7 @@
      @param {Object} DOMObject Base object to look for components
      @private
      */
-    var loadChildComponents = function(DOMObject) {
+    var loadChildComponents = XF.loadChildComponents = function(DOMObject) {
         console.log('XF :: loadChildComponents', DOMObject);
 
         if ($(DOMObject).attr('[data-component]')) {
@@ -254,7 +259,7 @@
             }
         });
     };
-    XF.on('core:loadChildComponents', loadChildComponents);
+    XF.on('xf:loadChildComponents', XF.loadChildComponents);
 
     /**
      Loads component definition and creates its instance
@@ -268,7 +273,8 @@
             console.log('ADDING', compID);
             console.log(components);
             console.log(components[compID]);
-            if(!components[compID]) {
+            if(!components[compID] && _.isFunction(compDef)) {
+                console.log(compDef);
                 var compInst = new compDef(compName, compID);
                 console.log('CREATED', compInst);
                 console.log('XF :: loadChildComponent - created : ' + compID);
@@ -320,6 +326,7 @@
         } else {  //Others
             /** @ignore */
             script.onload = function() {
+                console.log('script loaded');
                 if(callback) {
                     callback();
                 }
@@ -405,12 +412,10 @@
     var createNamespace = function ( namespace, data ) {
         if (typeof namespace !== 'string') {
             throw ('Namespace should be a string');
-            return false;
         }
 
         if (!/^[a-z0-9_\.]+$/i.test(namespace)) {
             throw ('Namespace string "'+ namespace + '" is wrong. It can contain only numbers, letters and dot char');
-            return false;
         }
 
         var parts = namespace.split('.'),
@@ -419,9 +424,10 @@
 
         plen = parts.length;
         for (i = 0; i < plen; i++) {
+            console.log(parts[i]);
             if (typeof parent[parts[i]] === 'undefined') {
                 parent[parts[i]] = {};
-                if (data && plen == (i + 1)) {
+                if (data && plen === (i + 1)) {
                     parent[parts[i]] = data;
                 }
             }
@@ -444,13 +450,8 @@
      */
 
     XF.define = XF.defineComponent = function(ns, def) {
-        console.log(ns);
-        var namespace = createNamespace(ns, def),
+        var namespace,
             shortNs;
-
-        if (!namespace) {
-            return false;
-        }
 
         var compStatus = registeredComponents[ns];
         if(!compStatus) {
@@ -459,16 +460,20 @@
 
         registeredComponents[ns].loading = false;
         registeredComponents[ns].loaded = true;
-        registeredComponents[ns].compDef = namespace;
+        registeredComponents[ns].compDef = def;
+
+        namespace = createNamespace(ns, registeredComponents[ns].compDef);
 
         while(compStatus.callbacks.length) {
             compStatus.callbacks.pop()(compStatus.compDef);
         }
 
-        shortNs = getLastNamespacePart(ns);
-        if (shortNs !== ns) {
-            XF.define(shortNs, registeredComponents[ns].compDef);
-        }
+        // TODO: uncomment and solve the problem with window.DOMobject
+        //shortNs = getLastNamespacePart(ns);
+        //console.log('SHORT', shortNs);
+        //if (shortNs !== ns) {
+            //XF.define(shortNs, registeredComponents[ns].compDef);
+        //}
     };
 
     XF.getRegisteredComponents = function () {
@@ -856,16 +861,28 @@ XF.App.extend = BB.Model.extend;
 
             types : {
                 'none': {
-                    fallback: function (fromPage, toPage) {}
+                    fallback: function (fromPage, toPage) {
+                        fromPage.removeClass(this.activePageClass);
+                        toPage.addClass(this.activePageClass);
+                    }
                 },
                 'fade': {
-                    fallback: function (fromPage, toPage) {}
+                    fallback: function (fromPage, toPage) {
+                        $(fromPage).removeClass(this.activePageClass);
+                        $(toPage).addClass(this.activePageClass);
+                    }
                 },
                 'slideleft': {
-                    fallback: function (fromPage, toPage) {}
+                    fallback: function (fromPage, toPage) {
+                        $(fromPage).removeClass(this.activePageClass);
+                        $(toPage).addClass(this.activePageClass);
+                    }
                 },
                 'slideright': {
-                    fallback: function (fromPage, toPage) {}
+                    fallback: function (fromPage, toPage) {
+                        $(fromPage).removeClass(this.activePageClass);
+                        $(toPage).addClass(this.activePageClass);
+                    }
                 }
             }
         },
@@ -942,7 +959,6 @@ XF.App.extend = BB.Model.extend;
          Executes animation sequence for switching
          @param $ jqPage
          */
-        // TODO: implement animations fallback and test it!
         show : function(page, animationType){
             if (page === this.activePageName) {
                 return;
@@ -982,29 +998,27 @@ XF.App.extend = BB.Model.extend;
 
             if (!XF.device.supports.cssAnimations) {
                 if (_.isFunction(this.animations.types[animationType]['fallback'])) {
-                    toPage.addClass(this.activePageClass);
-                    this.animations.types[animationType].fallback(fromPage, toPage);
-                    return;
+                    _.bind(this.animations.types[animationType].fallback, this)(fromPage, toPage);
                 }
-            }
+            }else{
+                if (fromPage) {
+                    viewport.addClass('xf-viewport-transitioning');
 
-            if (fromPage) {
-                viewport.addClass('xf-viewport-transitioning');
+                    fromPage.height(viewport.height()).addClass('out '+ animationType);
+                    toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
+                    fromPage.animationEnd(function(){
+                        fromPage.height('').removeClass(animationType + ' out in');
+                        fromPage.removeClass(XF.pages.activePageClass);
+                    });
 
-                fromPage.height(viewport.height()).addClass('out '+ animationType);
-                toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
-                fromPage.animationEnd(function(){
-                    fromPage.height('').removeClass(animationType + ' out in');
-                    fromPage.removeClass(XF.pages.activePageClass);
-                });
-
-                toPage.animationEnd(function(){
-                    toPage.height('').removeClass(animationType + ' out in');
-                    viewport.removeClass('xf-viewport-transitioning');
-                });
-            } else {
-                // just making it active
-                this.activePage.addClass(this.activePageClass);
+                    toPage.animationEnd(function(){
+                        toPage.height('').removeClass(animationType + ' out in');
+                        viewport.removeClass('xf-viewport-transitioning');
+                    });
+                } else {
+                    // just making it active
+                    this.activePage.addClass(this.activePageClass);
+                }
             }
 
             XF.trigger('ui:enhance', $(this.activePage));
@@ -2195,6 +2209,7 @@ XF.Model = BB.Model.extend({
 
         _constructor: function () {
             this.construct();
+            XF.trigger('component:' + this.id + ':constructed');
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
                     component: this
@@ -2230,7 +2245,7 @@ XF.Model = BB.Model.extend({
             this.initialize();
 
             this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-            this.view.once('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':constructed'); }, this));
+            this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
@@ -2581,7 +2596,7 @@ XF.Model = BB.Model.extend({
 
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
-            if (!_.isEmpty(parentPages)) {
+            if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-footer');
             }
             if (!_.isEmpty(siblingPages)) {
@@ -2662,7 +2677,7 @@ XF.Model = BB.Model.extend({
 
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
-            if (!_.isEmpty(parentPages)) {
+            if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-header');
             }
             if (!_.isEmpty(siblingPages)) {
