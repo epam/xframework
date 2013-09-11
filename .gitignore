@@ -61,3 +61,5 @@ tmpl/phone/App.components.cmp.tmpl
 docs.js
 
 mocks/menu.json
+
+tmpl/phone/page2.tmpl
