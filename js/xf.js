@@ -2585,7 +2585,7 @@ XF.Model = BB.Model.extend({
 
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
-            if (!_.isEmpty(parentPages)) {
+            if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-footer');
             }
             if (!_.isEmpty(siblingPages)) {
@@ -2666,7 +2666,7 @@ XF.Model = BB.Model.extend({
 
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
-            if (!_.isEmpty(parentPages)) {
+            if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-header');
             }
             if (!_.isEmpty(siblingPages)) {
