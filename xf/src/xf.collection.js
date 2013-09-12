@@ -36,11 +36,12 @@ XF.Collection = BB.Collection.extend({
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || _.defaults({}, XF.settings.property('ajaxSettings'));
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
-            var onSuccess = this.ajaxSettings.success,
-                onDataLoaded = _.bind(this._onDataLoaded, this);
+            var onDataLoaded = _.bind(this._onDataLoaded, this),
+                onSuccess = this.ajaxSettings.success;
+
             this.ajaxSettings.success = function () {
                 onDataLoaded();
                 onSuccess();
@@ -72,11 +73,13 @@ XF.Collection = BB.Collection.extend({
         this.status.loaded = false;
         this.status.loading = true;
 
+        this.reset();
+        this.ajaxSettings.silent = false;
         this.fetch(this.ajaxSettings);
     },
 
     _onDataLoaded: function () {
-        console.log('data loaded');
+        console.log('data loaded', this);
         this.status.loaded = true;
         this.status.loading = false;
 

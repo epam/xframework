@@ -80,12 +80,12 @@
                 if (role !== '') {
                     class_ += ' xf-li-' + role;
                 }
-                listItemsScope.push({'html': html, 'class': class_, 'id': id});
+                listItemsScope.push({'html': html, 'class_': class_, 'id': id});
             });
 
             var _template = _.template(
                 '<% _.each(listItemsScope, function(item) { %> '
-                    + '<li class="<%= item.class %>" id="<%= item.id %>"><%= item.html %></li>'
+                    + '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>'
                 + '<% }); %>'
             );
 

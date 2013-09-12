@@ -40,7 +40,7 @@
 
             // If target is text
             var parentIfText = function (node) {
-                return 'tagName' in node ? node : node.parentNode;
+                if (node) return node.hasOwnProperty('tagName') ? node : node.parentNode;
             }
 
             // Detecting swipe direction
@@ -59,7 +59,7 @@
                     delta;
 
                 $(document.body).bind(eventsHandler[eventType].start, function(e){
-                    now = Date.now();
+                    now = new Date().getTime();
                     delta = now - (touchHandler.last || now);
                     touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
@@ -99,7 +99,7 @@
             });
 
             // List of new events
-            ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
+            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i){
                 $.fn[i] = function (callback) {
                     return this.bind(i, callback)
                 };
