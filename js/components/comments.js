@@ -7,9 +7,6 @@ $(function(){
                 useCache : false,
                 afterLoadTemplateFailed : function() {
                     $('body').html('Something went wrong. Try to reload the page...');
-                },
-                afterRender: function () {
-                    debugger;
                 }
             }),
 

@@ -1,4 +1,4 @@
-/*! X-Framework 11-09-2013 */
+/*! X-Framework 12-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -383,6 +383,16 @@
         return components[compID];
     };
 
+    XF._removeComponents = function (ids) {
+        if (!_.isEmpty(ids)) {
+            _.each(ids, function (id) {
+                console.log('DELETING', id);
+                components = _.omit(components, id);
+            });
+        }
+        console.log('COMPONENTS', components);
+    };
+
     /**
      Registers component source
      @param {String} compName Component name
@@ -595,7 +605,7 @@ XF.App.extend = BB.Model.extend;
 
             // If target is text
             var parentIfText = function (node) {
-                return 'tagName' in node ? node : node.parentNode;
+                if (node) return node.hasOwnProperty('tagName') ? node : node.parentNode;
             }
 
             // Detecting swipe direction
@@ -614,7 +624,7 @@ XF.App.extend = BB.Model.extend;
                     delta;
 
                 $(document.body).bind(eventsHandler[eventType].start, function(e){
-                    now = Date.now();
+                    now = new Date().getTime();
                     delta = now - (touchHandler.last || now);
                     touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
@@ -654,7 +664,7 @@ XF.App.extend = BB.Model.extend;
             });
 
             // List of new events
-            ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
+            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i){
                 $.fn[i] = function (callback) {
                     return this.bind(i, callback)
                 };
@@ -1714,11 +1724,12 @@ XF.Collection = BB.Collection.extend({
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || new XF.settings.property('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || _.defaults({}, XF.settings.property('ajaxSettings'));
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
-            var onSuccess = this.ajaxSettings.success,
-                onDataLoaded = _.bind(this._onDataLoaded, this);
+            var onDataLoaded = _.bind(this._onDataLoaded, this),
+                onSuccess = this.ajaxSettings.success;
+
             this.ajaxSettings.success = function () {
                 onDataLoaded();
                 onSuccess();
@@ -1750,11 +1761,13 @@ XF.Collection = BB.Collection.extend({
         this.status.loaded = false;
         this.status.loading = true;
 
+        this.reset();
+        this.ajaxSettings.silent = false;
         this.fetch(this.ajaxSettings);
     },
 
     _onDataLoaded: function () {
-        console.log('data loaded');
+        console.log('data loaded', this);
         this.status.loaded = true;
         this.status.loading = false;
 
@@ -1799,7 +1812,7 @@ XF.Model = BB.Model.extend({
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
-        this.ajaxSettings = this.ajaxSettings || new XF.settings.property('ajaxSettings');
+        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
 
         if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
             var onSuccess = this.ajaxSettings.success,
@@ -2030,9 +2043,10 @@ XF.Model = BB.Model.extend({
          Renders component into placeholder + calling all the necessary hooks & events
          */
         refresh: function() {
-            console.log('REFRESHING VIEW', this.component.id, this.component.collection);
+            console.log(this.component.id, 'REFRESHED VIEW');
             if (this.status.loaded && this.template.src) {
                 if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
+                    console.log(this.component.id, 'RENDERED VIEW', this.component.collection);
                     this.beforeRender();
                     this.render();
                     this.afterRender();
@@ -2057,7 +2071,10 @@ XF.Model = BB.Model.extend({
          @private
          */
         render : function() {
-            console.log('RENDERING VIEW', this.component.id, this.component.collection);
+            if (this.component) {
+                this.component._removeChildComponents();
+            }
+
             this.$el.html(this.getMarkup());
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
@@ -2183,7 +2200,7 @@ XF.Model = BB.Model.extend({
         view : null,
 
         _bindListeners: function () {
-            XF.on('component:' + this.id + ':refresh', _.bind(this.refresh, this));
+            XF.on('component:' + this.id + ':refresh', this.refresh, this);
             this.listenTo(this, 'refresh', this.refresh);
         },
 
@@ -2237,8 +2254,10 @@ XF.Model = BB.Model.extend({
 
             this.initialize();
 
-            this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-            this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
+            if (this.view) {
+                this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
+                this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
+            }
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
@@ -2246,6 +2265,16 @@ XF.Model = BB.Model.extend({
                 this.model.refresh();
             }else if (this.view) {
                 this.view.refresh();
+            }
+        },
+
+        _removeChildComponents: function () {
+            if (this.view) {
+                var ids = [];
+                this.view.$el.find('[data-component]').each(function () {
+                    ids.push($(this).data('id'));
+                });
+                XF._removeComponents(ids);
             }
         },
 
@@ -2262,7 +2291,6 @@ XF.Model = BB.Model.extend({
             }else if (this.view && !this.view.status.loading) {
                 this.view.refresh();
             }
-
         }
 
 
@@ -2777,12 +2805,12 @@ XF.Model = BB.Model.extend({
                 if (role !== '') {
                     class_ += ' xf-li-' + role;
                 }
-                listItemsScope.push({'html': html, 'class': class_, 'id': id});
+                listItemsScope.push({'html': html, 'class_': class_, 'id': id});
             });
 
             var _template = _.template(
                 '<% _.each(listItemsScope, function(item) { %> '
-                    + '<li class="<%= item.class %>" id="<%= item.id %>"><%= item.html %></li>'
+                    + '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>'
                 + '<% }); %>'
             );
 
@@ -3080,7 +3108,7 @@ XF.Model = BB.Model.extend({
                 attrs = {};
 
             attrs['id'] = buttonDescr.id || XF.utils.uniqueID();
-            attrs['class'] = buttonDescr.class || '';
+            attrs['class'] = buttonDescr['class'] || '';
             attrs['name'] = buttonDescr.name || attrs.id;
             buttonDescr.small = buttonDescr.small || '';
 
@@ -3208,10 +3236,11 @@ XF.Model = BB.Model.extend({
      @private
      */
     XF.ui.slidemenu = {
-
         selector : '[data-role=slidemenu]',
 
         render : function (menu, options) {
+        debugger;
+
             var jQMenu = $(menu);
 
             if (!menu || !(jQMenu instanceof $) || jQMenu.attr('data-skip-enhance') == 'true') {
@@ -3242,12 +3271,12 @@ XF.Model = BB.Model.extend({
             for (var i = 0; i < buttons.length; ++i) {
                 var button = buttons.eq(i);
                 var butOpts = {
-                    iconClass : button.attr('data-icon') ? 'xf-icon-' + button.attr('data-icon') : '',
-                    dataHrefString : button.attr('data-href') ? button.attr('data-href') : '',
-                    textClass : button.attr('data-text-class') ? button.attr('data-text-class') : '',
-                    id : button.attr('data-id') ? button.attr('data-id') : options.id + '-item' + i,
-                    class_ : button.attr('data-class') || '',
-                    text : button.val() || button.text() || ''
+                    'iconClass' : button.attr('data-icon') ? 'xf-icon-' + button.attr('data-icon') : '',
+                    'dataHrefString' : button.attr('data-href') ? button.attr('data-href') : '',
+                    'textClass' : button.attr('data-text-class') ? button.attr('data-text-class') : '',
+                    'id' : button.attr('data-id') ? button.attr('data-id') : options.id + '-item' + i,
+                    'class' : button.attr('data-class') || '',
+                    'text' : button.val() || button.text() || ''
                 };
                 options.buttons.push(butOpts);
             }
@@ -3414,7 +3443,7 @@ XF.Model = BB.Model.extend({
                 eventsHandler = {
                     start : 'mousedown touchstart MSPointerDown',
                     move : 'mousemove touchmove MSPointerMove',
-                    end : 'mouseup touchend MSPointerUp',
+                    end : 'mouseup touchend MSPointerUp'
                 };
 
             if (!textInput || !(jQTextInput instanceof $) || jQTextInput.attr('data-skip-enhance') == 'true') {

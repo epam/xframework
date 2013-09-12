@@ -214,7 +214,7 @@
                 attrs = {};
 
             attrs['id'] = buttonDescr.id || XF.utils.uniqueID();
-            attrs['class'] = buttonDescr.class || '';
+            attrs['class'] = buttonDescr['class'] || '';
             attrs['name'] = buttonDescr.name || attrs.id;
             buttonDescr.small = buttonDescr.small || '';
 
