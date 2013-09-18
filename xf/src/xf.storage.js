@@ -39,11 +39,10 @@
             if(XF.settings.property('noCache')) {
                 // cache is disable for the whole site manualy
                 console.log('XF.storage :: init - cache is disable for the whole app manually - clearing storage');
-                this.clear();
                 this.set('appVersion', XF.settings.property('appVersion'));
             } else if(appVersion && appVersion == XF.settings.property('appVersion')) {
                 // same version is cached - useing it as much as possible
-                console.log('XF.storage :: init - same version is cached - useing it as much as possible');
+                console.log('XF.storage :: init - same version is cached - using it as much as possible');
             } else {
                 // wrong or no version cached - clearing storage
                 console.log('XF.storage :: init - wrong or no version cached - clearing storage');
