@@ -1,4 +1,4 @@
-/*! X-Framework 12-09-2013 */
+/*! X-Framework 17-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -3239,7 +3239,6 @@ XF.Model = BB.Model.extend({
         selector : '[data-role=slidemenu]',
 
         render : function (menu, options) {
-        debugger;
 
             var jQMenu = $(menu);
 

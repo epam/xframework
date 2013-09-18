@@ -14,7 +14,7 @@ $(function(){
 //            Collection:null
             Collection: XF.Collection.extend({
                 url: function() {
-                    return 'http://evbyminsd7001.minsk.epam.com:4502/bin/epamsec/comment.json?token=' + XF.storage.get('token') + '&eventid=' + XF.router.EventID ;
+                    return 'http://evbyminsd7001.minsk.epam.com:4502/bin/epamsec/comment.json?token=' + XF.storage.get('token') + '&eventid=' + XF.storage.get('id') ;
                 },
                 parse: function (data) {
                     if (_.has(data, 'comments')) {
