@@ -1,42 +1,35 @@
-/**
- TODO:
- - scrollTop for Zepto
- - wrapInner for Zepto
- **/
-
+    // Root DOM Object for starting the application
+    // TODO: should be moved to app settings
     var rootDOMObject = $('body');
 
-    /**
-     @namespace Holds visible functionality of the framework
-     */
+    // Namespaceolds visible functionality of the framework
     var XF = window.XF = window.XF || {};
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     Implements basic Events dispatching logic.
-     @class
-     */
+    // Linking Backbone.Events to XF.Events
+    // And making XF a global event bus
     XF.Events = BB.Events;
     _.extend(XF, XF.Events);
 
-    // TODO: comments
+    // XF.navigate is a syntax sugar for navigating between routes with event dispatching
+    // Needed to make pages switching automatically
     XF.navigate = function (fragment) {
         XF.router.navigate(fragment, {trigger: true});
     };
 
+    // Event bidnings for global XF commands
     XF.on('navigate', XF.navigate);
 
-    var compEventSplitter = /\:/;
 
+    // Listening to all global XF events to push them to necessary component if it's constructed
     XF.on('all', function (eventName) {
-        console.log('XF:all - ', eventName);
+        var compEventSplitter = /\:/,
+            parts;
 
         if (!compEventSplitter.test(eventName)) {
             return;
         }
 
-        var parts = eventName.split(compEventSplitter);
+        parts = eventName.split(compEventSplitter);
 
         if (parts[0] !== 'component' && parts.length < 3) {
             return;
@@ -62,6 +55,8 @@
 
     });
 
+    // Searching for pages inside every component
+    // Pages should be on the one level and can be started only once
     onComponentRender = function (compID) {
         var compObj = $(XF.getComponentByID(compID).selector());
 
@@ -72,20 +67,7 @@
         }
     };
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     @function
-     @public
-     @param {Object} options
-     @param {Object} options.settings User-defined settings which would override {@link XF.settings}
-     @param {Object} options.router Options required for {@link XF.router}
-     @param {Object} options.router.routes list of routes for {@link XF.router}
-     @param {Object} options.router.handlers list of route handlers for {@link XF.router}
-     @description Launches the app with specified options
-     */
+    //
     XF.start = function(options) {
 
         options = options || {};
@@ -110,7 +92,6 @@
         createRouter(options.router);
 
         placeAnchorHooks();
-        bindHideShowListeners();
 
         if (_.has(XF, 'ui')) {
             XF.ui.init();
@@ -139,14 +120,8 @@
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    /**
-     Creates {@link XF.router}
-     @memberOf XF
-     @param {Object} routes list of routes for {@link XF.router}
-     @param {Object} handlers list of route handlers for {@link XF.router}
-     @private
-     */
-
+    // Router creation from XF.Router
+    // Passing parameters with routes to constructor
     var createRouter = function(options) {
         if(XF.router) {
             throw 'XF.createRouter can be called only ONCE!';
@@ -156,11 +131,9 @@
     };
 
 
-    /**
-     Adds listeners to each 'a' tag with 'data-href' attribute on a page - all the clicks should bw delegated to {@link XF.router}
-     @memberOf XF
-     @private
-     */
+    // Making each element with `data-href` attribute tappable (touchable, clickable)
+    // It will work with application routes and pages
+    // `data-animation` on such element will set the next animation type for the page
     var placeAnchorHooks = function() {
         $('body').on('tap click', '[data-href]', function() {
             var animationType = $(this).data('animation') || null;
@@ -171,15 +144,9 @@
         });
     };
 
-    /**
-     Loads component definitions for each visible component placeholder found
-     @memberOf XF
-     @param {Object} DOMObject Base object to look for components
-     @private
-     */
+    // Loads component definitions for each visible component placeholder found
+    // Searches inside DOMObject passed
     var loadChildComponents = XF.loadChildComponents = function(DOMObject) {
-        console.log('XF :: loadChildComponents', DOMObject);
-
         if ($(DOMObject).attr('[data-component]')) {
             if ($(DOMObject).is(':visible')) {
                 var compID = $(value).attr('data-id');
@@ -196,25 +163,14 @@
             }
         });
     };
+
     XF.on('xf:loadChildComponents', XF.loadChildComponents);
 
-    /**
-     Loads component definition and creates its instance
-     @memberOf XF
-     @param {String} compID Data-id property value of a component instance
-     @param {String} compName Name of the Component to be loaded
-     @private
-     */
+    // Loads component definition and creates its instance
     var loadChildComponent = function(compID, compName) {
         getComponent(compName, function(compDef) {
-            console.log('ADDING', compID);
-            console.log(components);
-            console.log(components[compID]);
             if(!components[compID] && _.isFunction(compDef)) {
-                console.log(compDef);
                 var compInst = new compDef(compName, compID);
-                console.log('CREATED', compInst);
-                console.log('XF :: loadChildComponent - created : ' + compID);
                 components[compID] = compInst;
                 compInst._constructor();
             }
@@ -226,7 +182,7 @@
      @memberOf XF
      @private
      */
-    var bindHideShowListeners = function() {
+    /*var bindHideShowListeners = function() {
         $('body').on('show html append prepend', function(evt) {
             if (evt.currentTarget === evt.target) {
                 var compID = $(this).attr('data-id');
@@ -237,15 +193,9 @@
                 XF.trigger('ui:enhance', $(this));
             }
         });
-    };
+    };   */
 
-    /**
-     Loads script
-     @memberOf XF
-     @param {String} url Component definition URL
-     @param {Function} callback Function to be executed when the component definition would be loaded
-     @private
-     */
+    // Loads script from passed url and after it calls the function in callback
     var loadScript = function(url, callback){
 
         var script = document.createElement('script');
@@ -274,39 +224,19 @@
         document.getElementsByTagName('head')[0].appendChild(script);
     };
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     Stores instances of {@link XF.Component} and its subclasses
-     @memberOf XF
-     @private
-     */
+    // Stores instances of XF.Component and its subclasses
     var components = {};
 
-    /**
-     Stores instances of {@link XF.ComponentStatus} - registered Components
-     @memberOf XF
-     @private
-     */
+    // Stores instances of XF.ComponentStatus — registered Components
     var registeredComponents = {};
 
-    /**
-     Loads component definition if necessary and passes it to callback function
-     @memberOf XF
-     @param {String} compName Component definition name
-     @param {Function} callback Function to be executed when the component definition would be loaded
-     @private
-     */
+    // Loads component definition if necessary and passes it to callback function
     var getComponent = function(compName, callback) {
         var compStatus = registeredComponents[compName];
         if(!compStatus) {
-            console.log('REGISTERING', compName);
             compStatus = XF.registerComponent(compName, XF.settings.property('componentUrl')(compName));
         }
         if(compStatus.loaded) {
-            console.log('STATUS LOADED', compName);
             callback(compStatus.compDef);
             return;
         }
@@ -319,36 +249,23 @@
         }
     };
 
-    /**
-     Returns component instance by its id
-     @param {String} compID Component instance id
-     @returns {XF.Component} Appropriate component instance
-     @public
-     */
+    // Returns component instance by its id
     XF.getComponentByID = function(compID) {
         return components[compID];
     };
 
+    // Removes component instances with ids in array `ids` from `components`
     XF._removeComponents = function (ids) {
         if (!_.isEmpty(ids)) {
             _.each(ids, function (id) {
-                console.log('DELETING', id);
                 components = _.omit(components, id);
             });
         }
-        console.log('COMPONENTS', components);
     };
 
-    /**
-     Registers component source
-     @param {String} compName Component name
-     @param {String} compSrc Component definition source
-     @returns {XF.ComponentStatus} Component status descriptor
-     @public
-     */
+    // Registers component source
     XF.registerComponent = function(compName, compSrc) {
         var compStatus = registeredComponents[compName];
-        console.log(compName, compStatus);
         if(compStatus) {
             return compStatus;
         }
@@ -356,6 +273,7 @@
         return registeredComponents[compName];
     };
 
+    // Creates namespace from passing string and sets the data if it's passed
     var createNamespace = function ( namespace, data ) {
         if (typeof namespace !== 'string') {
             throw ('Namespace should be a string');
@@ -371,7 +289,6 @@
 
         plen = parts.length;
         for (i = 0; i < plen; i++) {
-            console.log(parts[i]);
             if (typeof parent[parts[i]] === 'undefined') {
                 parent[parts[i]] = {};
                 if (data && plen === (i + 1)) {
@@ -385,17 +302,12 @@
     };
 
 
+    // Returns the last part of namespace string
     var getLastNamespacePart = function (ns) {
         return ns.substr(ns.lastIndexOf(".") + 1);
     };
 
-    /**
-     Defines component class and calls registered callbacks if necessary
-     @param {String} compName Component name
-     @param {Object} compDef Component definition
-     @public
-     */
-
+    // Defines class and calls registered callbacks if necessary
     XF.define = XF.defineComponent = function(ns, def) {
         var namespace,
             shortNs;
@@ -423,56 +335,30 @@
         //}
     };
 
+    // Returns all registered components
     XF.getRegisteredComponents = function () {
         return registeredComponents;
     };
 
-    /**
-     Should invoke component loading & call callback function as soon as component would be available
-     @param {String} compName Component name
-     @param {Function} callback Callback to execute when component definition is ready
-     @public
-     */
+    // Should invoke component loading & call callback function as soon as component would be available
     XF.requireComponent = function(compName, callback) {
         getComponent(compName, callback);
     };
 
-    /**
-     Stores custom options for {@link XF.Component} or its subclasses instances
-     @memberOf XF
-     @private
-     */
+    // Stores custom options for XF.Component or its subclasses instances
     var componentOptions = {};
 
-    /**
-     Defines component instance custom options
-     @param {String} compID Component instance id
-     @param {Object} options Object containing custom options for appropriate component instance
-     @public
-     */
+    // Defines component instance custom options
     XF.setOptionsByID = function(compID, options) {
         componentOptions[compID] = options;
     };
 
-    /**
-     Returns custom instance options by component instance ID
-     @memberOf XF
-     @param {String} compID Component instance id
-     @returns {Object} Object containing custom options for appropriate component instance
-     @private
-     */
+    // Returns custom instance options by component instance ID
     XF.getOptionsByID = function(compID) {
         return componentOptions[compID] || {};
     };
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     Instance of {@link XF.HistoryClass}
-     @static
-     @type {XF.HistoryClass}
-     */
+    // Linking Backbone.history to XF.history
     XF.history = BB.history;
 
 

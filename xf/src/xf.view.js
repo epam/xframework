@@ -30,12 +30,16 @@
         },
 
         _initProperties: function () {
-            this.template = this.template || {};
-            this.template = {
-                src: this.template.src || null,
-                compiled: this.template.compiled || null,
-                cache: this.template.cache || true
+            var template = {
+                src: null,
+                compiled: null,
+                cache: true
             };
+
+            this.template = this.template || {};
+            console.log('VIEW OPTIONS', this.template);
+            this.template = _.defaults(this.template, template);
+            console.log('VIEW OPTIONS', this.template);
 
             this.status = {
                 loaded: false,
@@ -91,13 +95,15 @@
             }
 
             // trying to get template from cache
-            if(this.template.cache && _.has(XF, 'storage')) {
-                var cachedTemplate = XF.storage.get(url);
-                if (cachedTemplate) {
-                    this.template.src = cachedTemplate;
-                    this.status.loaded = true;
-                    this.trigger('loaded');
-                    return;
+            if (!XF.settings.noCache) {
+                if(this.template.cache && _.has(XF, 'storage')) {
+                    var cachedTemplate = XF.storage.get(url);
+                    if (cachedTemplate) {
+                        this.template.src = cachedTemplate;
+                        this.status.loaded = true;
+                        this.trigger('loaded');
+                        return;
+                    }
                 }
             }
 
@@ -117,8 +123,10 @@
                             var template = jqXHR.responseText;
 
                             // saving template into cache if the option is turned on
-                            if($this.template.cache && _.has(XF, 'storage')) {
-                                XF.storage.set(url, template);
+                            if (!XF.settings.noCache) {
+                                if($this.template.cache && _.has(XF, 'storage')) {
+                                    XF.storage.set(url, template);
+                                }
                             }
 
                             $this.template.src = jqXHR.responseText;
