@@ -62,18 +62,21 @@ $(document).ready(function (){
 
             presentation: function (id) {
                 $('#backbtn').removeData('href').attr('data-href', '#agenda').show();
-                this.EventID = id;
+                XF.storage.set('id',id);
+                console.log('GET ID: ', XF.storage.get('id'));
                 XF.trigger('component:presentation:refresh');
+                XF.trigger('setid', id);
             },
 
             comments: function (id) {
                 $('#backbtn').removeData('href').attr('data-href', '#pr/' + id).show();
-                this.EventID = id;
+                XF.storage.set('id',id);
                 XF.trigger('component:comments:refresh');
             },
 
             favourites: function (id) {
                 $('#backbtn').removeData('href').attr('data-href', '#agenda').show();
+                XF.trigger('component:favourites:refresh');
             },
 
             speakers: function (id) {
@@ -90,6 +93,10 @@ $(document).ready(function (){
         }
 
 	});
+
+    XF.router.on('route', function () {
+
+    });
 
     XF.api = {
         checkToken : function () {
@@ -182,7 +189,7 @@ $(document).ready(function (){
                 type: 'POST',
                 url: 'http://evbyminsd7001.minsk.epam.com:4502/bin/epamsec/comment.json',
                 data: {
-                    eventid: XF.router.EventID,
+                    eventid: XF.storage.get('id'),
                     token: XF.api.token,
                     text : text
                 },
