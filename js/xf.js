@@ -1,4 +1,4 @@
-/*! X-Framework 18-09-2013 */
+/*! X-Framework 19-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -491,7 +491,7 @@ XF.App.extend = BB.Model.extend;
 
             // If target is text
             var parentIfText = function (node) {
-                if (node) return node.hasOwnProperty('tagName') ? node : node.parentNode;
+                return 'tagName' in node ? node : node.parentNode;
             }
 
             // Detecting swipe direction
@@ -510,7 +510,7 @@ XF.App.extend = BB.Model.extend;
                     delta;
 
                 $(document.body).bind(eventsHandler[eventType].start, function(e){
-                    now = new Date().getTime();
+                    now = Date.now();
                     delta = now - (touchHandler.last || now);
                     touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
@@ -550,9 +550,9 @@ XF.App.extend = BB.Model.extend;
             });
 
             // List of new events
-            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i){
-                $.fn[i] = function (callback) {
-                    return this.bind(i, callback)
+            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i, key){
+                $.fn[key] = function (callback) {
+                    return this.bind(key, callback)
                 };
             });
         }
