@@ -126,16 +126,16 @@ Optional XF src modules are:
 
 ## XF.App
 
-`XF.App` is a 'class' that you able to extend with your own methods and properties needed in the application. In this case an instance of this class is something like a main controller of the whole app. 
+`XF.App` is a 'class' that you able to extend with your own methods and properties needed in the application. In this case an instance of this class is something like a main controller of the whole app.
 
 ```javascript
 // if the app boilerplate was created via XF Generator
 // these lines can be found in `app.js` file
 var MyApp = XF.App.extend({
     initialize: function () {
-    	// this code will be executed before XF will be started 
+    	// this code will be executed before XF will be started
 			// but you can put the preparation code here
-			// …			
+			// …
 			this.myAwesomeMethod();
     },
 		myAwesomeMethod: function () {
@@ -228,7 +228,7 @@ var app = new MyApp({
 		// other settings for the application
     history: {
 				pushState: false,
-				root: 'books/fiction'    
+				root: 'books/fiction'
     }
 });
 ```
@@ -262,7 +262,7 @@ To show the page without changing the url or using route binding:
 ```javascript
 XF.trigger('pages:show', 'books', 'fade');
 
-// …directly 
+// …directly
 XF.pages.show('books', 'fade');
 ```
 
@@ -318,7 +318,7 @@ var app = new MyApp({
                 max : 568,
                 min : null
             },
-            templatePath : 'phone/' 
+            templatePath : 'phone/'
 						// 'slide left' will be used for device type 'phone'
         }]
     }
@@ -372,11 +372,11 @@ var app = new MyApp({
 
         ajaxSettings: {
         	// settings that are provided to collections and models to fetch and sync the data
-					// see $.ajax options	 
-					crossDomain: true        
+					// see $.ajax options
+					crossDomain: true
         }
     }
-});	
+});
 ```
 
 ## XF.touch
@@ -385,8 +385,7 @@ var app = new MyApp({
 
 For now it contains the following user interaction events:
 
-* `tap`: it doesn't matter if it is a click or a touch to the screen. Just bind on tap events for all types of devices and that's it!
-* `XF.touch` fixes the 300ms gap between click and touch events as well*
+* `tap`: it doesn't matter if it is a click or a touch to the screen. Just bind on tap events for all types of devices and that's it! `XF.touch` fixes the 300ms gap between click and touch events as well
 * `swipe`, `swipeUp`, `swipeDown`, `swipeLeft`, `swipeRight`
 
 ## XF.storage
@@ -413,7 +412,7 @@ This piece enables the support of [zepto.js](http://zeptojs.com)  instead of jQu
 **Attention**! Include this module on your own fear and risk. It is in experimental status right away.
 
 
-# XFramework Components 
+# XFramework Components
 
 ## Component
 
@@ -430,10 +429,10 @@ See an example of two nested components declared in the page markup:
     This content will be shown while component is loading...
 </div>
 ```
-	
+
 Such an approach lets a developer build asynchronuous UIs and avoid loading extraneous resources.
 
-There's a way to customize the component with the starting options from outside: 
+There's a way to customize the component with the starting options from outside:
 
 ```html
 	<div data-component="categoryList" data-id="categoryListBooks">
@@ -445,7 +444,7 @@ There's a way to customize the component with the starting options from outside:
 					}
 				);
 			</script>
-		</div>	
+		</div>
 ```
 
 You can use `XF.setOptionsByID` method in the place you decided but before component instance was created.
@@ -455,7 +454,7 @@ You can use `XF.setOptionsByID` method in the place you decided but before compo
 There are two ways to create a component:
 
 * Using XF Generator `yo xf:component [name]` that will scaffold a javascript file together with templates for all device types
-* Manually 
+* Manually
 
 Every component should extend `XF.Component` that allows general functionality, loading and rendering processes work without your input.
 
@@ -466,7 +465,7 @@ XF.define(
 	'MyApp.components.categoryList', // just 'categoryList' is fine as well
 	XF.Component.extend({
 		construct: function () {
-			// will be called on the start of construction 
+			// will be called on the start of construction
 		},
 
 		initialize: function () {
@@ -516,7 +515,7 @@ Be aware of proper usage Collections and Models. By default `XF.Component` has `
 
 `XF.Component` methods:
 
-* `refresh`: refreshes the data (model or collection) and then refreshes the view. Triggers `refresh` method for view and collection/model. 
+* `refresh`: refreshes the data (model or collection) and then refreshes the view. Triggers `refresh` method for view and collection/model.
 
 `XF.Component` hooks:
 
@@ -709,7 +708,7 @@ The look of form inputs, buttons will be enhanced automatically, but you can use
 
 Inputs of types submit, reset, button, `<button>`s, and links with attribute `[data-role=button]` will be styled as buttons. For example a usual `input[type=submit]` will look like this:
 
-```html 
+```html
 <a data-role="button">A button</a>
 ```
 
@@ -737,7 +736,7 @@ Will produce the following button:
 
 An alert button is red by default and is recommended to be used for actions that may cause data loss, e.g. for a delete button. Add data-alert=true attribute to get such a button:
 
-```html 
+```html
 <button data-alert="true">An alert button</button>
 ```
 

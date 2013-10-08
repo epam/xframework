@@ -8,3 +8,4 @@ before_script:
   - npm install nws -g
   - sleep 5
 script: nws -p 9292 && phantomjs tests/ui/xf.ui.button.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.fieldset.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.dialog.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.list.js http://localhost:9292/tests/test.html
+

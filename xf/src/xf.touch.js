@@ -99,9 +99,9 @@
             });
 
             // List of new events
-            ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
-                $.fn[i] = function (callback) {
-                    return this.bind(i, callback)
+            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i, key){
+                $.fn[key] = function (callback) {
+                    return this.bind(key, callback)
                 };
             });
         }

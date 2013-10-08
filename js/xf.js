@@ -1,4 +1,4 @@
-/*! X-Framework 18-09-2013 */
+/*! X-Framework 19-09-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -550,9 +550,9 @@ XF.App.extend = BB.Model.extend;
             });
 
             // List of new events
-            ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'].forEach(function (i){
-                $.fn[i] = function (callback) {
-                    return this.bind(i, callback)
+            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i, key){
+                $.fn[key] = function (callback) {
+                    return this.bind(key, callback)
                 };
             });
         }
@@ -2266,7 +2266,10 @@ XF.Model = BB.Model.extend({
             } else if (button.nodeName == 'INPUT') {
                 // The input is assigned a class xf-input-hidden
                 enhancedButton = $('<div></div>').append(jQButton.clone().addClass('xf-input-hidden').attr({'data-skip-enhance':true}));
-                jQButton.outerHtml(enhancedButton);
+
+                if (jQButton.hasOwnProperty('outerHtml')) {
+                    jQButton.outerHtml(enhancedButton);
+                }
                 innerStuff = jQButton.attr('value');
             } else {
                 // how did U get there? o_O
@@ -2695,12 +2698,12 @@ XF.Model = BB.Model.extend({
                 if (role !== '') {
                     class_ += ' xf-li-' + role;
                 }
-                listItemsScope.push({'html': html, 'class': class_, 'id': id});
+                listItemsScope.push({'html': html, 'class_': class_, 'id': id});
             });
 
             var _template = _.template(
                 '<% _.each(listItemsScope, function(item) { %> '
-                    + '<li class="<%= item.class %>" id="<%= item.id %>"><%= item.html %></li>'
+                    + '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>'
                 + '<% }); %>'
             );
 
@@ -2898,14 +2901,15 @@ XF.Model = BB.Model.extend({
                 });
             }
             if (buttons.length > 0) {
-                var btnCount = buttons.length,
-                    jqBtn;
+                var jqBtn;
 
                 _.each(buttons, function (btn, index, buttons){
 
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
+                        console.log('BUTTON');
+                        console.log(btn);
                         jqBtn = XF.ui.popup.createButton(btn);
                     }
 
@@ -2997,7 +3001,7 @@ XF.Model = BB.Model.extend({
                 attrs = {};
 
             attrs['id'] = buttonDescr.id || XF.utils.uniqueID();
-            attrs['class'] = buttonDescr.class || '';
+            attrs['class'] = buttonDescr['class'] || '';
             attrs['name'] = buttonDescr.name || attrs.id;
             buttonDescr.small = buttonDescr.small || '';
 
@@ -3125,10 +3129,10 @@ XF.Model = BB.Model.extend({
      @private
      */
     XF.ui.slidemenu = {
-
         selector : '[data-role=slidemenu]',
 
         render : function (menu, options) {
+
             var jQMenu = $(menu);
 
             if (!menu || !(jQMenu instanceof $) || jQMenu.attr('data-skip-enhance') == 'true') {
@@ -3159,12 +3163,12 @@ XF.Model = BB.Model.extend({
             for (var i = 0; i < buttons.length; ++i) {
                 var button = buttons.eq(i);
                 var butOpts = {
-                    iconClass : button.attr('data-icon') ? 'xf-icon-' + button.attr('data-icon') : '',
-                    dataHrefString : button.attr('data-href') ? button.attr('data-href') : '',
-                    textClass : button.attr('data-text-class') ? button.attr('data-text-class') : '',
-                    id : button.attr('data-id') ? button.attr('data-id') : options.id + '-item' + i,
-                    class : button.attr('data-class') || '',
-                    text : button.val() || button.text() || ''
+                    'iconClass' : button.attr('data-icon') ? 'xf-icon-' + button.attr('data-icon') : '',
+                    'dataHrefString' : button.attr('data-href') ? button.attr('data-href') : '',
+                    'textClass' : button.attr('data-text-class') ? button.attr('data-text-class') : '',
+                    'id' : button.attr('data-id') ? button.attr('data-id') : options.id + '-item' + i,
+                    'class' : button.attr('data-class') || '',
+                    'text' : button.val() || button.text() || ''
                 };
                 options.buttons.push(butOpts);
             }
@@ -3331,7 +3335,7 @@ XF.Model = BB.Model.extend({
                 eventsHandler = {
                     start : 'mousedown touchstart MSPointerDown',
                     move : 'mousemove touchmove MSPointerMove',
-                    end : 'mouseup touchend MSPointerUp',
+                    end : 'mouseup touchend MSPointerUp'
                 };
 
             if (!textInput || !(jQTextInput instanceof $) || jQTextInput.attr('data-skip-enhance') == 'true') {

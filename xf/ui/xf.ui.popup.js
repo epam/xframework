@@ -114,14 +114,15 @@
                 });
             }
             if (buttons.length > 0) {
-                var btnCount = buttons.length,
-                    jqBtn;
+                var jqBtn;
 
                 _.each(buttons, function (btn, index, buttons){
 
                     if (btn instanceof $){
                         jqBtn = btn;
                     } else {
+                        console.log('BUTTON');
+                        console.log(btn);
                         jqBtn = XF.ui.popup.createButton(btn);
                     }
 
@@ -213,7 +214,7 @@
                 attrs = {};
 
             attrs['id'] = buttonDescr.id || XF.utils.uniqueID();
-            attrs['class'] = buttonDescr.class || '';
+            attrs['class'] = buttonDescr['class'] || '';
             attrs['name'] = buttonDescr.name || attrs.id;
             buttonDescr.small = buttonDescr.small || '';
 
