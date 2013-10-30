@@ -1,4 +1,4 @@
-/*! X-Framework 19-09-2013 */
+/*! X-Framework 30-10-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -2242,10 +2242,10 @@ XF.Model = BB.Model.extend({
 
     /**
      Make the DOM object look like a button
-     @param button DOM Object
-     @private
      */
     XF.ui.button = {
+        
+        // Selectors will be used to detect button's elements on the page
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
         render : function (button, options) {
@@ -2369,11 +2369,10 @@ XF.Model = BB.Model.extend({
 
     /**
      Enhances checkbox or radio button input view
-     @param textInput DOM Object
-     @private
      */
     XF.ui.checkboxRadio = {
 
+        // Selectors will be used to detect checkboxes' and radios' on the page
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
         render : function(chbRbInput, options) {
@@ -2418,6 +2417,7 @@ XF.Model = BB.Model.extend({
                 wrapper.append(chbRbInputLabel);
                 options.labelFor = chbRbInputLabel.wrap("<span></span>").parent().html();
 
+                // Underscore template for label and element
                 var _template = _.template(
                     '<div class="<%= options.wrapperClass %>"><label for="<%= options.id %>" class="<%= options.labelClass %>">'
                     + '<%= options.input %><% if(options.isSwitch) { %>'
@@ -2435,11 +2435,10 @@ XF.Model = BB.Model.extend({
 
     /**
      Enhances fieldset view
-     @param textInput DOM Object
-     @private
      */
     XF.ui.fieldset =  {
 
+        // Selectors will be used to detect filedsets on the page
         selector : 'fieldset[data-role=controlgroup]',
 
         render : function(fieldset, options) {
@@ -2483,11 +2482,10 @@ XF.Model = BB.Model.extend({
 
     /**
      Enhances footers view
-     @param footer DOM Object
-     @private
      */
     XF.ui.footer = {
 
+        // Selectors will be used to detect footer's element on the page
         selector : 'footer, [data-role=footer]',
 
         render : function (footer, options) {
@@ -2507,19 +2505,22 @@ XF.Model = BB.Model.extend({
                 'data-skip-enhance' : 'true'
             });
 
+            // detect if data-fixed is true
             options.fixed = options.fixed === true ? true : false;
             options.buttons = options.buttons || [];
 
-
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
+                
             if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-footer');
             }
+            
             if (!_.isEmpty(siblingPages)) {
                 siblingPages.addClass('xf-has-footer');
             }
 
+            // selects buttons inside of footer
             var buttons = jQFooter.find(XF.ui.button.selector);
             options.buttonsClass = 'xf-grid-unit-1of' + buttons.length;
 
@@ -2539,6 +2540,7 @@ XF.Model = BB.Model.extend({
                 XF.ui.footer.selectButton(jQFooter);
             });
 
+            // Underscore template for footer
             var _template = _.template(
                 '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">'
                 + '<ul class="xf-nav">'
@@ -2559,6 +2561,7 @@ XF.Model = BB.Model.extend({
             XF.ui.footer.selectButton(jQFooter);
         },
 
+        // detect if button is active
         selectButton : function (el) {
             var page = XF.history.fragment;
             el.find('.xf-nav a').removeClass('xf-nav-item-active');
@@ -2568,11 +2571,10 @@ XF.Model = BB.Model.extend({
 
     /**
      Enhances headers view
-     @param header DOM Object
-     @private
      */
     XF.ui.header = {
 
+        // Selectors will be used to detect header's element on the page
         selector : '[data-role=header]',
 
         render : function (header, options) {
@@ -2582,6 +2584,7 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
+            // detect if we have title
             var headerTitle = jQHeader.find('h1');
             if (headerTitle.length > 0) {
                 headerTitle.addClass('xf-header-title');
@@ -2594,9 +2597,11 @@ XF.Model = BB.Model.extend({
 
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
+                
             if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-header');
             }
+            
             if (!_.isEmpty(siblingPages)) {
                 siblingPages.addClass('xf-has-header');
             }
@@ -2607,6 +2612,7 @@ XF.Model = BB.Model.extend({
                 'data-skip-enhance' : 'true'
             });
 
+            // Underscore template for header
             var _template = _.template(
                 '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">'
                 + '<%= html %>'
@@ -2619,8 +2625,6 @@ XF.Model = BB.Model.extend({
 
     /**
      Enhances ul/ol lists view
-     @param list DOM Object
-     @private
      */
     XF.ui.list = {
 
@@ -2680,7 +2684,8 @@ XF.Model = BB.Model.extend({
                         )
                 );
             });
-
+            
+            // detect headers inside of list
             listItems.find('h1, h2, h3, h4, h5, h6').addClass('xf-li-header');
 
             listItems.find('p').addClass('xf-li-desc');
@@ -2698,9 +2703,12 @@ XF.Model = BB.Model.extend({
                 if (role !== '') {
                     class_ += ' xf-li-' + role;
                 }
+                
+                // use `class_` instead of `class` beacuse of IE <=8 has problems
                 listItemsScope.push({'html': html, 'class_': class_, 'id': id});
             });
 
+            // Underscore template for list
             var _template = _.template(
                 '<% _.each(listItemsScope, function(item) { %> '
                     + '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>'
@@ -2714,11 +2722,10 @@ XF.Model = BB.Model.extend({
 
     /**
      Enhances loaders view
-     @param loader DOM Object
-     @private
      */
     XF.ui.loader = {
 
+        // Selectors will be used to detect loader's element on the page
         selector : '[data-role=loader]',
 
         render : function (loader, options) {
@@ -2760,11 +2767,13 @@ XF.Model = BB.Model.extend({
             return jqLoader;
         },
 
+        // show loader or create newone and show it
         show : function (jqLoader) {
             jqLoader = jqLoader || this.create();
             jqLoader.show();
         },
 
+        // hide loader or hide all
         hide : function (jqLoader) {
             jqLoader = jqLoader || null;
             if (jqLoader === null) {
@@ -2774,11 +2783,13 @@ XF.Model = BB.Model.extend({
             }
         },
 
+        // remove loader's dom-element
         remove : function (jqLoader) {
             jqLoader.detach();
             XF.ui.removeFromIsset('popup', jqLoader.attr('id'));
         },
 
+        //add new loader to the page
         create : function () {
             var jqLoader = $('<div class="xf-loader" data-role="loader"><div class="xf-loader-content"><div class="loading"></div></div></div>');
             XF.device.getViewport().append(jqLoader);
@@ -2788,8 +2799,6 @@ XF.Model = BB.Model.extend({
 
     /**
      Generates basic popup container
-     @return $
-     @private
      */
     XF.ui.popup = {
         render : function () {
@@ -2817,43 +2826,25 @@ XF.Model = BB.Model.extend({
             return jqPopup;
         },
 
-        /**
-         Shorthand to show dialogs
-         @param headerText String to show in dialog header
-         @param messageText String to show in dialog body
-         @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
-         */
+        // Shorthand to show dialogs
         showDialog : function (headerText, messageText, buttons) {
             var popup = this.createDialog(headerText, messageText, buttons);
             this.show(popup);
         },
 
-        /**
-         Attaches popup (dialog/notification/etc.) to the page
-         @param jqPopup $ object representing popup
-         */
+        // Attaches popup (dialog/notification/etc.) to the page
         show : function (jqPopup) {
             XF.device.getViewport().append(jqPopup);
         },
 
-        /**
-         Detaches popup (dialog/notification/etc.) from the page
-         @param jqPopup $ object representing popup
-         */
+        // Detaches popup (dialog/notification/etc.) from the page
         hide : function (jqPopup) {
             jqPopup.detach();
             XF.ui.removeFromIsset('popup', jqPopup.attr('id'));
         },
 
 
-        /**
-         Generates a dialog with header, message and buttons
-         @param headerText String to show in dialog header
-         @param messageText String to show in dialog body
-         @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
-         @param modal Boolean Flag which indicates whether the dialog is modal
-         @return $ Dialog object
-         */
+        // Generates a dialog with header, message and buttons
         createDialog : function (headerText, messageText, buttons) {
             buttons = buttons || [];
 
@@ -2925,12 +2916,7 @@ XF.Model = BB.Model.extend({
             return jqDialog;
         },
 
-        /**
-         Generates a notification with text and icon
-         @param messageText String to show in dialog body
-         @param iconName Icon name (optional)
-         @return $ Notification object
-         */
+        // Generates a notification with text and icon
         createNotification : function (messageText, iconName) {
 
             /*
@@ -2968,16 +2954,10 @@ XF.Model = BB.Model.extend({
             return jqNotification;
         },
 
-        /**
-         Stores dialog object
-         @type $
-         @private
-         */
+        // Stores dialog object
         dialog : null,
 
-        /**
-         Hides Dialog
-         */
+        // Hides Dialog
         hideDialog : function () {
 
             if (this.dialog) {
@@ -2996,6 +2976,7 @@ XF.Model = BB.Model.extend({
             }
         },
 
+        // Creates button within the dialog with parameters
         createButton : function (buttonDescr)  {
             var jQButton = $('<button></button>'),
                 attrs = {};

@@ -1,8 +1,6 @@
 
     /**
      Enhances ul/ol lists view
-     @param list DOM Object
-     @private
      */
     XF.ui.list = {
 
@@ -62,7 +60,8 @@
                         )
                 );
             });
-
+            
+            // detect headers inside of list
             listItems.find('h1, h2, h3, h4, h5, h6').addClass('xf-li-header');
 
             listItems.find('p').addClass('xf-li-desc');
@@ -80,9 +79,12 @@
                 if (role !== '') {
                     class_ += ' xf-li-' + role;
                 }
+                
+                // use `class_` instead of `class` beacuse of IE <=8 has problems
                 listItemsScope.push({'html': html, 'class_': class_, 'id': id});
             });
 
+            // Underscore template for list
             var _template = _.template(
                 '<% _.each(listItemsScope, function(item) { %> '
                     + '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>'
