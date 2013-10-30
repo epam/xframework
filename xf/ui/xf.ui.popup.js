@@ -1,8 +1,6 @@
 
     /**
      Generates basic popup container
-     @return $
-     @private
      */
     XF.ui.popup = {
         render : function () {
@@ -30,43 +28,25 @@
             return jqPopup;
         },
 
-        /**
-         Shorthand to show dialogs
-         @param headerText String to show in dialog header
-         @param messageText String to show in dialog body
-         @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
-         */
+        // Shorthand to show dialogs
         showDialog : function (headerText, messageText, buttons) {
             var popup = this.createDialog(headerText, messageText, buttons);
             this.show(popup);
         },
 
-        /**
-         Attaches popup (dialog/notification/etc.) to the page
-         @param jqPopup $ object representing popup
-         */
+        // Attaches popup (dialog/notification/etc.) to the page
         show : function (jqPopup) {
             XF.device.getViewport().append(jqPopup);
         },
 
-        /**
-         Detaches popup (dialog/notification/etc.) from the page
-         @param jqPopup $ object representing popup
-         */
+        // Detaches popup (dialog/notification/etc.) from the page
         hide : function (jqPopup) {
             jqPopup.detach();
             XF.ui.removeFromIsset('popup', jqPopup.attr('id'));
         },
 
 
-        /**
-         Generates a dialog with header, message and buttons
-         @param headerText String to show in dialog header
-         @param messageText String to show in dialog body
-         @param buttons Array of buttons to show ($ objects or objects with button description for createButton() method)
-         @param modal Boolean Flag which indicates whether the dialog is modal
-         @return $ Dialog object
-         */
+        // Generates a dialog with header, message and buttons
         createDialog : function (headerText, messageText, buttons) {
             buttons = buttons || [];
 
@@ -138,12 +118,7 @@
             return jqDialog;
         },
 
-        /**
-         Generates a notification with text and icon
-         @param messageText String to show in dialog body
-         @param iconName Icon name (optional)
-         @return $ Notification object
-         */
+        // Generates a notification with text and icon
         createNotification : function (messageText, iconName) {
 
             /*
@@ -181,16 +156,10 @@
             return jqNotification;
         },
 
-        /**
-         Stores dialog object
-         @type $
-         @private
-         */
+        // Stores dialog object
         dialog : null,
 
-        /**
-         Hides Dialog
-         */
+        // Hides Dialog
         hideDialog : function () {
 
             if (this.dialog) {
@@ -209,6 +178,7 @@
             }
         },
 
+        // Creates button within the dialog with parameters
         createButton : function (buttonDescr)  {
             var jQButton = $('<button></button>'),
                 attrs = {};

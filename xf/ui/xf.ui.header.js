@@ -1,11 +1,10 @@
 
     /**
      Enhances headers view
-     @param header DOM Object
-     @private
      */
     XF.ui.header = {
 
+        // Selectors will be used to detect header's element on the page
         selector : '[data-role=header]',
 
         render : function (header, options) {
@@ -15,6 +14,7 @@
                 return;
             }
 
+            // detect if we have title
             var headerTitle = jQHeader.find('h1');
             if (headerTitle.length > 0) {
                 headerTitle.addClass('xf-header-title');
@@ -27,9 +27,11 @@
 
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
+                
             if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-header');
             }
+            
             if (!_.isEmpty(siblingPages)) {
                 siblingPages.addClass('xf-has-header');
             }
@@ -40,6 +42,7 @@
                 'data-skip-enhance' : 'true'
             });
 
+            // Underscore template for header
             var _template = _.template(
                 '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">'
                 + '<%= html %>'

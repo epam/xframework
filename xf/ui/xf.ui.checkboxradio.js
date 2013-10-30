@@ -1,11 +1,10 @@
 
     /**
      Enhances checkbox or radio button input view
-     @param textInput DOM Object
-     @private
      */
     XF.ui.checkboxRadio = {
 
+        // Selectors will be used to detect checkboxes' and radios' on the page
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
         render : function(chbRbInput, options) {
@@ -50,6 +49,7 @@
                 wrapper.append(chbRbInputLabel);
                 options.labelFor = chbRbInputLabel.wrap("<span></span>").parent().html();
 
+                // Underscore template for label and element
                 var _template = _.template(
                     '<div class="<%= options.wrapperClass %>"><label for="<%= options.id %>" class="<%= options.labelClass %>">'
                     + '<%= options.input %><% if(options.isSwitch) { %>'

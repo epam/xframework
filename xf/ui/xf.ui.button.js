@@ -1,10 +1,10 @@
 
     /**
      Make the DOM object look like a button
-     @param button DOM Object
-     @private
      */
     XF.ui.button = {
+        
+        // Selectors will be used to detect button's elements on the page
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
         render : function (button, options) {

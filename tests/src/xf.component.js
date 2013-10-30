@@ -2,13 +2,13 @@ $(function () {
 
     $('body').append('<div data-component="test" id="test" data-name="test" data-id="test"></div>');
 
-    module("XF.Component", {
-        setup: function () {
-
-        }
-    });
 
     XF.on('component:test:constructed', function () {
+        module("XF.Component", {
+            setup: function () {
+
+            }
+        });
         test('load', 1, function () {
             equal($('#testcomponent').length, 1, 'Component add: ' + ($('#testcomponent').length === 1 ? true : false));
         });
