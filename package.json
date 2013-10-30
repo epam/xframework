@@ -9,10 +9,11 @@
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-less" : "~0.7.0",
     "grunt-concat": "~0.1.6",
+    "grunt-contrib-qunit": "latest",
     "vows" : "latest"
   },
   "scripts": {
-      "test" : "http://localhost:9292/tests/index.html"
+      "test" : "phantomjs tests/ui/xf.ui.button.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.fieldset.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.dialog.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.list.js http://localhost:9292/tests/test.html && phantomjs tests/run-qunit.js http://localhost:9292/tests/index.html"
   },
   "description": "ERROR: No README data found!",
   "main": "Gruntfile.js",
