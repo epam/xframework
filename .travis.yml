@@ -5,6 +5,9 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - npm install nws -g
+  - npm install yo -g
+  - npm install generator-xf -g
+  - yo xf:build
   - nws -p 9292 &
   - sleep 5
-script: phantomjs tests/run-qunit.js http://localhost:9292/tests/index.html && phantomjs tests/ui/xf.ui.button.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.fieldset.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.dialog.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.list.js http://localhost:9292/tests/test.html
+script: phantomjs tests/ui/xf.ui.button.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.fieldset.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.dialog.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.list.js http://localhost:9292/tests/test.html
