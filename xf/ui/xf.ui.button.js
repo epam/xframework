@@ -35,7 +35,7 @@
                 return;
             }
 
-            var isSmall = options.small === true || options.appearance == 'backbtn',
+            var isSmall = (options.small && options.small === true ? true : options.appearance == 'backbtn' ? true : false),
                 position = options.position || '',
                 id = jQButton.attr('id') || XF.utils.uniqueID();
 
