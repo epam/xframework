@@ -35,7 +35,7 @@
                 return;
             }
 
-            var isSmall = ((options && options.small === true) ? true : (options && options.appearance == 'backbtn') ? true : false),
+            var isSmall = ((typeof options == 'object' && options.small === true) ? true : (typeof options == 'object' && options.appearance == 'backbtn') ? true : false),
                 position = options.position || '',
                 id = jQButton.attr('id') || XF.utils.uniqueID();
 
