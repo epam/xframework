@@ -1,4 +1,4 @@
-/*! X-Framework 30-10-2013 */
+/*! X-Framework 08-11-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -2276,7 +2276,7 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            var isSmall = options.small === true || options.appearance == 'backbtn',
+            var isSmall = (options.small && options.small === true ? true : options.appearance == 'backbtn' ? true : false),
                 position = options.position || '',
                 id = jQButton.attr('id') || XF.utils.uniqueID();
 
