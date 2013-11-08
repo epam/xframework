@@ -12,13 +12,22 @@
     "grunt-contrib-qunit": "latest",
     "vows" : "latest"
   },
+  "repository": {
+      "type": "git",
+      "url": "git://github.com/epam/x-framework.git"
+  },
   "scripts": {
-      "test" : "phantomjs tests/ui/xf.ui.button.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.fieldset.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.dialog.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.list.js http://localhost:9292/tests/test.html && phantomjs tests/run-qunit.js http://localhost:9292/tests/index.html"
+      "test": "mocha"
   },
   "description": "ERROR: No README data found!",
   "main": "Gruntfile.js",
   "dependencies": {
-    "grunt-cli": "~0.1.9"
+    "grunt-cli": "~0.1.9",
+    "mocha": "~1.13.0",
+    "yeoman-generator": "~0.13.0"
+  },
+  "peerDependencies": {
+    "yo": ">=1.0.0-rc.1.1"
   },
   "author": "EPAM",
   "license": "BSD"
