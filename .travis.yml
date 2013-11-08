@@ -6,7 +6,7 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - npm install nws -g
   - npm install yo -g
-  - npm install genertor-xf -g
+  - npm install generator-xf -g
   - yo xf:update js --force
   - yo xf:build --force
   - nws -p 9292 &
