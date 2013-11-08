@@ -29,7 +29,7 @@ describe('XF generator', function () {
   });
   
   it('created xf styles', function (done) {
-    var expected = ['styles/xf.css',];
+    var expected = ['styles/xf.css','styles/xf.min.css'];
     helpers.assertFiles(expected);
     done();
   });
