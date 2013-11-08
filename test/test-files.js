@@ -11,41 +11,26 @@ var _ = require('underscore.string');
 describe('XF generator', function () {
   var xf;
 
-  beforeEach(function (done) {
-    var deps = [
-      '../../app',
-      '../../common',
-      '../../controller',
-      '../../main'
-    ];
-    helpers.testDirectory(path.join(__dirname, 'temp'), function (err) {
-      if (err) {
-        done(err);
-      }
-      xf = helpers.createGenerator('xf:update js');
-      done();
-    });
-  });
-
-  it('should generate lib files', function (done) {
-    xf.run({}, function () {
-      done();
-    });
-  });
-
-  it('creates expected files', function (done) {
+  it('created libraries', function (done) {
     var expected = ['js/lib/backbone.js',
                     'js/lib/jquery.js',
-                    'js/lib/underscore.js',
-                    'Gruntfile.js',
-                    'package.json',
-                    'js/xf.js',
+                    'js/lib/underscore.js'
+                    ];
+    helpers.assertFiles(expected);
+    done();
+  });
+  
+  it('created xf scripts', function (done) {
+    var expected = ['js/xf.js',
                     'js/xf.min.js'
                     ];
-
-    xf.run({}, function() {
-      helpers.assertFiles(expected);
-      done();
-    });
+    helpers.assertFiles(expected);
+    done();
+  });
+  
+  it('created xf styles', function (done) {
+    var expected = ['styles/xf.css',];
+    helpers.assertFiles(expected);
+    done();
   });
 });

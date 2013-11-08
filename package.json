@@ -10,7 +10,9 @@
     "grunt-contrib-less" : "~0.7.0",
     "grunt-concat": "~0.1.6",
     "grunt-contrib-qunit": "latest",
-    "vows" : "latest"
+    "vows" : "latest",
+    "underscore.string": "latest",
+    "generator-xf": "latest"
   },
   "repository": {
       "type": "git",
