@@ -10,7 +10,8 @@
         render : function (button, options) {
             var jQButton = $(button),
                 enhancedButton,
-                innerStuff;
+                innerStuff,
+                options = options || {};
 
             if (!button || !(jQButton instanceof $) || jQButton.attr('data-skip-enhance') == 'true') {
                 return;
@@ -54,13 +55,13 @@
             enhancedButton.addClass(isSmall ? 'xf-button-small' : 'xf-button');
 
             // If data-appearance="backbtn" attribute is present, xf-button-back class is also added.
-            if (options.appearance === 'backbtn') {
+            if (typeof options == 'object' && options.appearance === 'backbtn') {
                 enhancedButton.addClass('xf-button-back');
             }
 
-            var iconName = options.icon;
+            var iconName = (typeof options == 'object' && options.icon) ? options.icon : false;
 
-            if (options.appearance === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
+            if (typeof options == 'object' && options.appearance === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
                 iconName = 'left';
             }
 
@@ -83,7 +84,7 @@
                 // A class denoting icon position is also added to the button. Default: xf-iconpos-left.
                 // The value is taken from data-iconpos attr.
                 // Possible values: left, right, top, bottom.
-                var iconPos = options.iconpos || 'left';
+                var iconPos = (typeof options == 'object' && options.iconpos) ? options.iconpos : 'left';
 
                 if (iconPos != 'left' && iconPos != 'right' && iconPos != 'top' && iconPos != 'bottom') {
                     iconPos = 'left';
