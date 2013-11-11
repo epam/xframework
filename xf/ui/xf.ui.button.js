@@ -28,7 +28,7 @@
 
                 if (jQButton.hasOwnProperty('outerHtml')) {
                     jQButton.outerHtml(enhancedButton);
-                }));
+                }
                 innerStuff = jQButton.attr('value');
             } else {
                 // how did U get there? o_O
