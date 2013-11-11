@@ -28,7 +28,7 @@
 
                 if (jQButton.hasOwnProperty('outerHtml')) {
                     jQButton.outerHtml(enhancedButton);
-                }
+                }));
                 innerStuff = jQButton.attr('value');
             } else {
                 // how did U get there? o_O
@@ -36,7 +36,7 @@
             }
 
             var isSmall = ((typeof options == 'object' && options.small === true) ? true : (typeof options == 'object' && options.appearance == 'backbtn') ? true : false),
-                position = options.position || '',
+                position = (typeof options == 'object' && 'position' in options) ? options.position : '',
                 id = jQButton.attr('id') || XF.utils.uniqueID();
 
             if (position !== '') {

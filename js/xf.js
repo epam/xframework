@@ -1,4 +1,4 @@
-/*! X-Framework 08-11-2013 */
+/*! X-Framework 11-11-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -2269,7 +2269,7 @@ XF.Model = BB.Model.extend({
 
                 if (jQButton.hasOwnProperty('outerHtml')) {
                     jQButton.outerHtml(enhancedButton);
-                }
+                }));
                 innerStuff = jQButton.attr('value');
             } else {
                 // how did U get there? o_O
@@ -2277,7 +2277,7 @@ XF.Model = BB.Model.extend({
             }
 
             var isSmall = ((typeof options == 'object' && options.small === true) ? true : (typeof options == 'object' && options.appearance == 'backbtn') ? true : false),
-                position = options.position || '',
+                position = (typeof options == 'object' && 'position' in options) ? options.position : '',
                 id = jQButton.attr('id') || XF.utils.uniqueID();
 
             if (position !== '') {
