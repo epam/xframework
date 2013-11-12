@@ -1,5 +1,5 @@
-
-    XF.touch = {
+    // Method announces touchevents for elements
+    ;XF.touch = {
 
         init : function () {
             // Default values and device events detection
@@ -50,31 +50,32 @@
                 return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
             }
 
+            // Cancelling all hadlers
             var cancelAll = function () {
                 touchHandler = {};
             }
 
+            // Events binding
             $(document).ready(function () {
                 var now,
                     delta;
 
-                $(document.body).bind(eventsHandler[eventType].start, function(e){
+                $(document.body).bind(eventsHandler[eventType].start, function (e) { // Pointer / Touch start event
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
                     touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
                     touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
                     touchHandler.last = now;
-                }).bind(eventsHandler[eventType].move, function (e) {
+                    
+                }).bind(eventsHandler[eventType].move, function (e) { // Pointer / Touch move event
                     touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
                     touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
 
                     if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
                         e.preventDefault();
                     }
-                }).bind(eventsHandler[eventType].end, function(e){
-
-//                    alert(Math.abs(touchHandler.x1 - touchHandler.x2))
+                }).bind(eventsHandler[eventType].end, function (e) { // Pointer / Touch end event
 
                     if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
                         || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
@@ -86,15 +87,20 @@
                         // Trigger swipe event by it's direction
                         touchHandler.el.trigger('swipe' + touchHandler.direction);
                         touchHandler = {};
+                        
                     } else if ('last' in touchHandler) {
+                        
+                        // Trigger tap event
                         touchHandler.el.trigger('tap');
 
                         // Unbind click event if tap
                         $(document.body).unbind('click');
                         touchHandler.el.unbind('click');
+                        
                     }
                 });
 
+                // Cancel all handlers if window scroll
                 $(window).bind('scroll', cancelAll);
             });
 
