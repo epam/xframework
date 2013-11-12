@@ -1,11 +1,10 @@
 
     /**
      Enhances fieldset view
-     @param textInput DOM Object
-     @private
      */
     XF.ui.fieldset =  {
 
+        // Selectors will be used to detect filedsets on the page
         selector : 'fieldset[data-role=controlgroup]',
 
         render : function(fieldset, options) {

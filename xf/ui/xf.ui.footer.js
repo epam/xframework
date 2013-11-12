@@ -1,11 +1,10 @@
 
     /**
      Enhances footers view
-     @param footer DOM Object
-     @private
      */
     XF.ui.footer = {
 
+        // Selectors will be used to detect footer's element on the page
         selector : 'footer, [data-role=footer]',
 
         render : function (footer, options) {
@@ -25,19 +24,22 @@
                 'data-skip-enhance' : 'true'
             });
 
+            // detect if data-fixed is true
             options.fixed = options.fixed === true ? true : false;
             options.buttons = options.buttons || [];
 
-
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
+                
             if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-footer');
             }
+            
             if (!_.isEmpty(siblingPages)) {
                 siblingPages.addClass('xf-has-footer');
             }
 
+            // selects buttons inside of footer
             var buttons = jQFooter.find(XF.ui.button.selector);
             options.buttonsClass = 'xf-grid-unit-1of' + buttons.length;
 
@@ -57,6 +59,7 @@
                 XF.ui.footer.selectButton(jQFooter);
             });
 
+            // Underscore template for footer
             var _template = _.template(
                 '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">'
                 + '<ul class="xf-nav">'
@@ -77,6 +80,7 @@
             XF.ui.footer.selectButton(jQFooter);
         },
 
+        // detect if button is active
         selectButton : function (el) {
             var page = XF.history.fragment;
             el.find('.xf-nav a').removeClass('xf-nav-item-active');

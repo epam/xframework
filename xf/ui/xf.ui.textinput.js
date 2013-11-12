@@ -17,7 +17,7 @@
                 eventsHandler = {
                     start : 'mousedown touchstart MSPointerDown',
                     move : 'mousemove touchmove MSPointerMove',
-                    end : 'mouseup touchend MSPointerUp',
+                    end : 'mouseup touchend MSPointerUp'
                 };
 
             if (!textInput || !(jQTextInput instanceof $) || jQTextInput.attr('data-skip-enhance') == 'true') {
