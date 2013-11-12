@@ -1,6 +1,8 @@
 XFramework
 ===========
 
+![Travis build](https://travis-ci.org/epam/x-framework.png)
+
 # Getting started
 
 ## What is XFramework?
