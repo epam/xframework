@@ -69,24 +69,33 @@ module.exports = function (grunt) {
                     files: {
                         "styles/xf.css": "styles/xf.less"
                     }
-                },
-                production: {
+                }
+            },
+            recess: {
+                pretify: {
                     options: {
-                        paths: ["styles"],
-                        compress: true,
-                        yuicompress: true,
-                        report: 'min'
+                        compile: true,
                     },
                     files: {
-                        "styles/xf.min.css": "styles/xf.less"
+                        "styles/xf.css" : ["styles/xf.css"]
                     }
-                }
+                },
+                minify: {
+                    options: {
+                        compile: true,
+                        compress: true
+                    },
+                    files: {
+                        "styles/xf.min.css" : ["styles/xf.css"]
+                    }
+                }               
             }
         });
         grunt.loadNpmTasks('grunt-contrib-uglify');
         grunt.loadNpmTasks('grunt-contrib-concat');
         grunt.loadNpmTasks('grunt-contrib-less');
-        grunt.task.run(['concat', 'uglify', 'less']);
+        grunt.loadNpmTasks('grunt-recess');
+        grunt.task.run(['concat', 'uglify', 'less', 'recess']);
             
     });
     
@@ -113,7 +122,6 @@ module.exports = function (grunt) {
                 options: {
                     compile: false,
                     noUniversalSelectors: false,
-                    strictPropertyOrder: false,
                     noOverqualifying: false,
                     zeroUnits: false
                 },
