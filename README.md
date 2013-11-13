@@ -1,6 +1,8 @@
 XFramework
 ===========
 
+![Travis build](https://travis-ci.org/epam/x-framework.png)
+
 # Getting started
 
 ## What is XFramework?
@@ -1090,5 +1092,5 @@ Such code will be transformed into:
 
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/epam/x-framework/trend.png)](https://bitdeli.com/free "Bitdeli Badge") ![Travis build](https://travis-ci.org/epam/x-framework.png)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/epam/x-framework/trend.png)](https://bitdeli.com/free "Bitdeli Badge") 
 
