@@ -1,10 +1,11 @@
 language: node_js
 node_js:
-  - 0.8
   - 0.10
+  - 0.8
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - npm install nws -g
+  - nws -p 9292 &
   - sleep 5
-script: nws -p 9292 && phantomjs tests/ui/xf.ui.button.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.fieldset.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.dialog.js http://localhost:9292/tests/test.html && phantomjs tests/ui/xf.ui.list.js http://localhost:9292/tests/test.html
+script: grunt test --verbose --force && mocha && phantomjs test/ui/xf.ui.button.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.fieldset.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.dialog.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.list.js http://localhost:9292/test/test.html

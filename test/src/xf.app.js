@@ -12,7 +12,7 @@ $(function () {
 		settings: {
 			applicationVersion: '1.1',
 			noCache: true,
-			componentUrlPrefix: 'components/',
+			componentUrlPrefix: './components/',
 			templateUrlPrefix: './'
 
 		},
