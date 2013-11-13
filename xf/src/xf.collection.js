@@ -78,6 +78,12 @@ XF.Collection = BB.Collection.extend({
         this.fetch(this.ajaxSettings);
     },
 
+    fetch: function (options) {
+        option = _.defaults(options || {}, this.ajaxSettings);
+
+        return Backbone.Collection.prototype.fetch.call(this, options);
+    },
+
     _onDataLoaded: function () {
         console.log('data loaded', this);
         this.status.loaded = true;
