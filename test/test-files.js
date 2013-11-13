@@ -10,15 +10,6 @@ var _ = require('underscore.string');
 
 describe('XF generator', function () {
   var xf;
-
-  it('created libraries', function (done) {
-    var expected = ['js/lib/backbone.js',
-                    'js/lib/jquery.js',
-                    'js/lib/underscore.js'
-                    ];
-    helpers.assertFiles(expected);
-    done();
-  });
   
   it('created xf scripts', function (done) {
     var expected = ['js/xf.js',
