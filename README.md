@@ -1,7 +1,7 @@
 XFramework
 ===========
 
-![Travis build](https://travis-ci.org/epam/x-framework.png)
+![Travis build](https://travis-ci.org/epam/xframework.png)
 
 # Getting started
 
