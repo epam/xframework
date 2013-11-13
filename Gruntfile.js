@@ -1,29 +1,27 @@
-var fs = require('fs');
-
-module.exports = (function (grunt) {
+module.exports = function (grunt) {
 
     grunt.registerTask('build', "X-Framework build", function () {
         console.log('Adding core elements');
         var jsSources = [
-            'xf/src/xf.jquery.hooks.js',
-            'xf/src/xf.core.js',
-            'xf/src/xf.app.js',
-            'xf/src/xf.touch.js',
-            'xf/src/xf.router.js',
-            'xf/src/xf.utils.js',
-            'xf/src/xf.pages.js',
-            'xf/src/xf.ui.js',
-            'xf/src/xf.settings.js',
-            'xf/src/xf.storage.js',
-            'xf/src/xf.device.js',
-            'xf/src/xf.collection.js',
-            'xf/src/xf.model.js',
-            'xf/src/xf.view.js',
-            'xf/src/xf.component.js'
+        'xf/src/xf.jquery.hooks.js',
+        'xf/src/xf.core.js',
+        'xf/src/xf.app.js',
+        'xf/src/xf.touch.js',
+        'xf/src/xf.router.js',
+        'xf/src/xf.utils.js',
+        'xf/src/xf.pages.js',
+        'xf/src/xf.ui.js',
+        'xf/src/xf.settings.js',
+        'xf/src/xf.storage.js',
+        'xf/src/xf.device.js',
+        'xf/src/xf.collection.js',
+        'xf/src/xf.model.js',
+        'xf/src/xf.view.js',
+        'xf/src/xf.component.js'
         ];
 
         // Run through files and detect icons to use
-        var lessSources = [];
+        //var lessSources = [];
 
         // License text
 
@@ -71,38 +69,76 @@ module.exports = (function (grunt) {
                     files: {
                         "styles/xf.css": "styles/xf.less"
                     }
-                },
-                production: {
+                }
+            },
+            recess: {
+                pretify: {
                     options: {
-                        paths: ["styles"],
-                        compress: true,
-                        yuicompress: true,
-                        report: 'min'
+                        compile: true,
                     },
                     files: {
-                        "styles/xf.min.css": "styles/xf.less"
+                        "styles/xf.css" : ["styles/xf.css"]
                     }
-                }
+                },
+                minify: {
+                    options: {
+                        compile: true,
+                        compress: true
+                    },
+                    files: {
+                        "styles/xf.min.css" : ["styles/xf.css"]
+                    }
+                }               
             }
         });
         grunt.loadNpmTasks('grunt-contrib-uglify');
         grunt.loadNpmTasks('grunt-contrib-concat');
         grunt.loadNpmTasks('grunt-contrib-less');
-        grunt.task.run(['concat', 'uglify', 'less']);
+        grunt.loadNpmTasks('grunt-recess');
+        grunt.task.run(['concat', 'uglify', 'less', 'recess']);
             
     });
     
     grunt.registerTask('test', "X-Framework qunit test", function () {
-        console.log('Starting qunit tests');
         grunt.initConfig({
+            jshint: {
+                options: {
+                    jshintrc: '.jshintrc'
+                },
+                files: [
+                'Gruntfile.js',
+                'package.json',
+                'xf/src/*.js',
+                'xf/ui/*.js',
+                'js/xf.js',
+                'test/components/test.js',
+                'test/src/*.js',
+                'test/ui/*.js',
+                'test/lib/run-qunit.js',
+                'test/*.js'
+                ]
+            },
+            recess: {
+                options: {
+                    compile: false,
+                    noUniversalSelectors: false,
+                    noOverqualifying: false,
+                    zeroUnits: false
+                },
+                files:[
+                'styles/*.css'
+                ]
+            },
             qunit: {
                 files: ['test/index.html']
             }
         });
         grunt.loadNpmTasks('grunt-contrib-qunit');
-        grunt.task.run(['qunit']);
+        grunt.loadNpmTasks('grunt-contrib-jshint');
+        grunt.loadNpmTasks('grunt-recess');
+        grunt.task.run(['jshint', 'qunit', 'recess']);
     });
 
     grunt.registerTask('default', ['build']);
 
-});
+};

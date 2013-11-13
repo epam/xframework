@@ -61,11 +61,13 @@
                 );
             });
             
-            // detect headers inside of list
+            // Detect headers inside of list and add class
             listItems.find('h1, h2, h3, h4, h5, h6').addClass('xf-li-header');
 
+            // Detect paragraphs inside of list and add class
             listItems.find('p').addClass('xf-li-desc');
 
+            // Detect if list item is static
             listItems.filter('.xf-li-static').each(function (){
                 $(this).wrapInner('<div class=xf-li-wrap />');
             });
@@ -80,15 +82,15 @@
                     class_ += ' xf-li-' + role;
                 }
                 
-                // use `class_` instead of `class` beacuse of IE <=8 has problems
+                // Use `class_` instead of `class` beacuse of IE <=8 has problems
                 listItemsScope.push({'html': html, 'class_': class_, 'id': id});
             });
 
             // Underscore template for list
             var _template = _.template(
-                '<% _.each(listItemsScope, function(item) { %> '
-                    + '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>'
-                + '<% }); %>'
+                '<% _.each(listItemsScope, function(item) { %> ' +
+                '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>' +
+                '<% }); %>'
             );
 
             jQList.html(_template({listItemsScope : listItemsScope}));

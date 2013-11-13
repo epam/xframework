@@ -3,7 +3,7 @@
     if (!_.isFunction($.fn.detach)) {
         $.fn.detach = function(a) {
             return this.remove(a,!0);
-        }
+        };
     }
 
     if (!_.isFunction($.fn.wrapInner)) {
@@ -25,7 +25,7 @@
                     self.append( html );
                 }
             });
-        }
+        };
     }
 
     var _olddetach = $.fn.detach;
