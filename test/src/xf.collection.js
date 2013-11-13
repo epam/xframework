@@ -1,17 +1,46 @@
 $(function () {
+    
+    module("XF.Collection", {
+        setup: function () {
+            emptyCollection = new XF.Collection();
+        }
+    });
+    test("empty and parse", 4, function() {
 
-    XF.on('component:test:constructed', function () {
+        equal(emptyCollection.url, '/');
+        equal(emptyCollection.status.loading, false);
+        equal(emptyCollection.status.loaded, false);
+        equal(emptyCollection.status.loadingFailed, false);
+    });
+    
+    asyncTest("predefined and parse", 2, function() {
+        
+        predefCollection = new XF.Collection();
+        predefCollectionURL = '/test/test.json';
+        ajaxSettingsWorks = false;
 
-        module("XF.Collection", {
-            setup: function () {
-           
-            }
+        predefCollection.url = predefCollectionURL;
+        
+        predefCollection.on('fetched', function () {
+            ok(true);
+            equal(ajaxSettingsWorks, false);
         });
         
-        test("new and parse", 2, function() {
-            equal(XF.getComponentByID('test').hasOwnProperty('collection'), true);
-            
-            equal(XF.getComponentByID('test').collection.status.loaded, true);
-        });
+        predefCollection.fetch();
+        //predefCollection.parse();
+        
     });
+    
+    // test("predefined and custom callback", 0, function() {
+    // 
+    //     predefCollection.url = predefCollectionURL;
+    //     predefCollection.ajaxSettings.success = function () {
+    //         ajaxSettingsWorks = true;
+    //     }
+    //     predefCollection.fetch();
+    //     
+    //     predefCollection.on('fetched', function () {
+    //         equal(ajaxSettingsWorks, true);
+    //     });
+    // });
 });

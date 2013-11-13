@@ -11,7 +11,6 @@
     "grunt-concat": "~0.1.6",
     "grunt-contrib-qunit": "latest",
     "grunt-recess": "latest",
-    "grunt-csscomb": "latest",
     "vows" : "latest",
     "underscore.string": "latest",
     "generator-xf": "latest"
