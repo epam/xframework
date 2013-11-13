@@ -1,51 +1,40 @@
 $(function () {
-
-    var tap = false,
-        swipeLeft = false,
-        swipeRight = false,
-        swipeUp = false,
-        swipeDown = false,
-        swipe = false;
-
     App = new XF.App({
+        settings: {
+            applicationVersion: '1.1',
+            noCache: true,
+            componentUrlPrefix: './components/',
+            templateUrlPrefix: './'
 
-		settings: {
-			applicationVersion: '1.1',
-			noCache: true,
-			componentUrlPrefix: './components/',
-			templateUrlPrefix: './'
-
-		},
-
+        },
         animations: {
             standardAnimation: 'slideleft',
             types: {
 
             }
         },
-
-		device: {
-			types : [{
-					name : 'tablet',
-					range : {
-						max : null,
-						min : 569
-					},
-					templatePath : '',
-					fallBackTo : 'default',
-                    defaultAnimation: 'fade'
-				}, {
-					name : 'mobile',
-					range : {
-						max : 568,
-						min : null
-					},
-					templatePath : '',
-					fallBackTo : 'default'
-			}]
-		}
-
-	});
+        device: {
+            types : [{
+                name : 'tablet',
+                range : {
+                    max : null,
+                    min : 569
+                },
+                templatePath : '',
+                fallBackTo : 'default',
+                defaultAnimation: 'fade'
+            }, 
+            {
+                name : 'mobile',
+                range : {
+                    max : 568,
+                    min : null
+                },
+                templatePath : '',
+                fallBackTo : 'default'
+            }]
+        }
+    });
 
     module("XF.App", {
         setup: function () {
@@ -55,6 +44,12 @@ $(function () {
                     this.testing = options.testing;
                 }
             });
+            tap = false;
+            swipeLeft = false;
+            swipeRight = false;
+            swipeUp = false;
+            swipeDown = false;
+            swipe = false;
         }
     });
 

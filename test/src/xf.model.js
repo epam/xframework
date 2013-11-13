@@ -1,0 +1,52 @@
+$(function () {
+    
+    module("XF.Model", {
+        setup: function () {
+            ajaxSettingsModelWorks = false;
+            
+            emptyModel = new XF.Collection();
+            predefModel = new XF.Collection();
+            predefModel.url = './test.json';
+            
+            predefModelCallback = _.extend(predefModel, {});
+        }
+    });
+    
+    test("empty and parse", 4, function() {
+
+        equal(emptyModel.url, '/');
+        equal(emptyModel.status.loading, false);
+        equal(emptyModel.status.loaded, false);
+        equal(emptyModel.status.loadingFailed, false);
+    });
+    
+    asyncTest("predefined and parse", 2, function() {
+        predefModel.on('fetched', function () {
+            console.log('PREFERED TEST');
+            ok(true);
+            equal(ajaxSettingsModelWorks, false);
+            start();
+        });
+        
+        predefModel.fetch();
+        
+    });
+    
+    asyncTest("predefined and custom callback", 2, function() {
+        ajaxSettingsModelWorks = true;
+        
+        predefModelCallback.on('fetched', function () {
+            console.log('CALLBACK TEST');
+            
+            predefModelCallback.off('fetched').on('fetched', function () {
+                ok(true);
+                equal(ajaxSettingsModelWorks, true);
+                start();
+            });
+            
+            predefModelCallback.refresh();
+        });
+        
+        predefCollectionCallback.fetch();
+    });
+});
