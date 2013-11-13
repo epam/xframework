@@ -28,12 +28,7 @@ $(function () {
 
             Model : null,
             Collection: XF.Collection.extend({
-                url : 'test.json',
-                ajaxSettings: {
-                    success: function () {
-                        alert(1)
-                    }
-                }
+                url : 'test.json'
             })
 
         })
