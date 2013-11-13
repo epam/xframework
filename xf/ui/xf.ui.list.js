@@ -88,9 +88,9 @@
 
             // Underscore template for list
             var _template = _.template(
-                '<% _.each(listItemsScope, function(item) { %> '
-                    + '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>'
-                + '<% }); %>'
+                '<% _.each(listItemsScope, function(item) { %> ' +
+                '<li class="<%= item.class_ %>" id="<%= item.id %>"><%= item.html %></li>' +
+                '<% }); %>'
             );
 
             jQList.html(_template({listItemsScope : listItemsScope}));
