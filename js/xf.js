@@ -1,4 +1,4 @@
-/*! X-Framework 11-11-2013 */
+/*! X-Framework 13-11-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
@@ -449,8 +449,8 @@ _.extend(XF.App.prototype, /** @lends XF.App.prototype */{
  */
 XF.App.extend = BB.Model.extend;
 
-
-    XF.touch = {
+    // Method announces touchevents for elements
+    ;XF.touch = {
 
         init : function () {
             // Default values and device events detection
@@ -501,31 +501,32 @@ XF.App.extend = BB.Model.extend;
                 return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
             }
 
+            // Cancelling all hadlers
             var cancelAll = function () {
                 touchHandler = {};
             }
 
+            // Events binding
             $(document).ready(function () {
                 var now,
                     delta;
 
-                $(document.body).bind(eventsHandler[eventType].start, function(e){
+                $(document.body).bind(eventsHandler[eventType].start, function (e) { // Pointer / Touch start event
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
                     touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
                     touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
                     touchHandler.last = now;
-                }).bind(eventsHandler[eventType].move, function (e) {
+                    
+                }).bind(eventsHandler[eventType].move, function (e) { // Pointer / Touch move event
                     touchHandler.x2 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
                     touchHandler.y2 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
 
                     if (Math.abs(touchHandler.x1 - touchHandler.x2) > 10) {
                         e.preventDefault();
                     }
-                }).bind(eventsHandler[eventType].end, function(e){
-
-//                    alert(Math.abs(touchHandler.x1 - touchHandler.x2))
+                }).bind(eventsHandler[eventType].end, function (e) { // Pointer / Touch end event
 
                     if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
                         || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
@@ -537,15 +538,20 @@ XF.App.extend = BB.Model.extend;
                         // Trigger swipe event by it's direction
                         touchHandler.el.trigger('swipe' + touchHandler.direction);
                         touchHandler = {};
+                        
                     } else if ('last' in touchHandler) {
+                        
+                        // Trigger tap event
                         touchHandler.el.trigger('tap');
 
                         // Unbind click event if tap
                         $(document.body).unbind('click');
                         touchHandler.el.unbind('click');
+                        
                     }
                 });
 
+                // Cancel all handlers if window scroll
                 $(window).bind('scroll', cancelAll);
             });
 
@@ -2585,12 +2591,13 @@ XF.Model = BB.Model.extend({
                 return;
             }
 
-            // detect if we have title
+            // Detect if we have title
             var headerTitle = jQHeader.find('h1');
             if (headerTitle.length > 0) {
                 headerTitle.addClass('xf-header-title');
             }
 
+            // Set up options
             options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.html = jQHeader.html();
@@ -2599,10 +2606,12 @@ XF.Model = BB.Model.extend({
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
                 
+            // Add additional class for parent node
             if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-header');
             }
             
+            // Add additional class for siblings
             if (!_.isEmpty(siblingPages)) {
                 siblingPages.addClass('xf-has-header');
             }
@@ -2686,11 +2695,13 @@ XF.Model = BB.Model.extend({
                 );
             });
             
-            // detect headers inside of list
+            // Detect headers inside of list and add class
             listItems.find('h1, h2, h3, h4, h5, h6').addClass('xf-li-header');
 
+            // Detect paragraphs inside of list and add class
             listItems.find('p').addClass('xf-li-desc');
 
+            // Detect if list item is static
             listItems.filter('.xf-li-static').each(function (){
                 $(this).wrapInner('<div class=xf-li-wrap />');
             });
@@ -2705,7 +2716,7 @@ XF.Model = BB.Model.extend({
                     class_ += ' xf-li-' + role;
                 }
                 
-                // use `class_` instead of `class` beacuse of IE <=8 has problems
+                // Use `class_` instead of `class` beacuse of IE <=8 has problems
                 listItemsScope.push({'html': html, 'class_': class_, 'id': id});
             });
 
@@ -2744,6 +2755,7 @@ XF.Model = BB.Model.extend({
                 idStack = XF.ui.checkInIsset('loader'),
                 newId = false;
 
+            // Check if locader with the same ID was created before
             for (var i in idStack) {
 
                 if (newId) {
@@ -2755,6 +2767,7 @@ XF.Model = BB.Model.extend({
                 }
             }
 
+            // If 'no', add new ID to the stack
             if (!newId) {
                 XF.ui.issetElements.push({type : 'loader', id : id});
             }
@@ -2768,13 +2781,13 @@ XF.Model = BB.Model.extend({
             return jqLoader;
         },
 
-        // show loader or create newone and show it
+        // Show loader or create newone and show it
         show : function (jqLoader) {
             jqLoader = jqLoader || this.create();
             jqLoader.show();
         },
 
-        // hide loader or hide all
+        // Hide loader or hide all
         hide : function (jqLoader) {
             jqLoader = jqLoader || null;
             if (jqLoader === null) {
@@ -2784,13 +2797,13 @@ XF.Model = BB.Model.extend({
             }
         },
 
-        // remove loader's dom-element
+        // Remove loader's dom-element
         remove : function (jqLoader) {
             jqLoader.detach();
             XF.ui.removeFromIsset('popup', jqLoader.attr('id'));
         },
 
-        //add new loader to the page
+        // Add new loader to the page
         create : function () {
             var jqLoader = $('<div class="xf-loader" data-role="loader"><div class="xf-loader-content"><div class="loading"></div></div></div>');
             XF.device.getViewport().append(jqLoader);
@@ -2893,8 +2906,7 @@ XF.Model = BB.Model.extend({
                 });
             }
             if (buttons.length > 0) {
-                var jqBtn,
-                    btnCount = buttons.length;
+                var jqBtn;
 
                 _.each(buttons, function (btn, index, buttons){
 
@@ -2990,36 +3002,40 @@ XF.Model = BB.Model.extend({
 
             jQButton.html(buttonDescr.text);
 
+            //Set button's attributes
+            // Icon
             if (buttonDescr.icon && buttonDescr.icon != '') {
                 attrs['data-icon'] = buttonDescr.icon;
             };
 
+            // Icon position
             if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
                 attrs['data-iconpos'] = buttonDescr.iconpos;
             };
 
+            // Button size
             if (buttonDescr.small && buttonDescr.small != '') {
                 attrs['data-small'] = buttonDescr.small;
             };
 
+            // Button appearance 
             if (buttonDescr.appearance && buttonDescr.appearance != '') {
                 attrs['data-appearance'] = buttonDescr.appearance;
             };
 
+            // Button is special or not
             if (buttonDescr.special && buttonDescr.special != '') {
                 attrs['data-special'] = buttonDescr.special;
             };
 
+            // Button is 'alert' or not
             if (buttonDescr.alert && buttonDescr.alert != '') {
                 attrs['data-alert'] = buttonDescr.alert;
             };
 
-            if (_.isFunction(buttonDescr.handler)) {
-                jQButton.click(buttonDescr.handler)
-            };
-
             jQButton.attr(attrs);
 
+            // Set function for button pressed
             if (_.isFunction(buttonDescr.handler)) {
                 jQButton.on('tap', buttonDescr.handler);
             };
@@ -3032,9 +3048,7 @@ XF.Model = BB.Model.extend({
 
 
     /**
-     Adds scrolling functionality
-     @param scrollable DOM Object
-     @private
+     Add scrolling functionality
      */
     XF.ui.scrollable = {
 
@@ -3053,7 +3067,7 @@ XF.Model = BB.Model.extend({
 
             var children = jQScrollable.children();
 
-            // always create wrapper
+            // Always create wrapper
             if (children.length == 1 && false) {
                 children.addClass('xf-scrollable-content');
             } else {
@@ -3071,6 +3085,7 @@ XF.Model = BB.Model.extend({
                 jQScrollable.attr({'id':wrapperId});
             }
 
+            // Use iScroll
             var ISItem = jQScrollable.data('iscroll', new iScroll(wrapperId));
             var wrapperChanged = false;
 
@@ -3091,6 +3106,7 @@ XF.Model = BB.Model.extend({
                 }
             };
 
+            // Bind hadlers to the scrollable element
             var bindHanlders = function () {
                 $('#' + wrapperId + ' *')
                     .bind('detach', needRefreshIScroll)
@@ -3200,11 +3216,10 @@ XF.Model = BB.Model.extend({
 
     /**
      Enhances footers view
-     @param footer DOM Object
-     @private
      */
     XF.ui.tabs = {
 
+        // Selectors will be used to detect tabs' element on the page
         selector : '[data-role=tabs]',
 
         render : function (tabs, options) {
@@ -3225,7 +3240,8 @@ XF.Model = BB.Model.extend({
             });
 
             options.tabs = options.tabs || [];
-
+            
+            // Detect buttons and count rows
             var buttons = jQTabs.find(XF.ui.button.selector);
             options.rowCount = Math.ceil(buttons.length / options.tabsperrow);
             options.tabsClass = options.tabsclass || '';
@@ -3235,6 +3251,7 @@ XF.Model = BB.Model.extend({
                 lastRowSize = options.tabsperrow;
             }
 
+            // Position buttons in rows
             for (var i = 0; i < buttons.length; ++i){
                 var tab = buttons.eq(i),
                     x = i + 1,
@@ -3275,6 +3292,7 @@ XF.Model = BB.Model.extend({
                 options.tabs.push(tabOpts);
             }
 
+            // Underscore template for tabs
             var _template = _.template(
                 '<ul class="xf-tabs">'
                 + '<% _.each(tabs, function(tab) { %>'
@@ -3289,11 +3307,13 @@ XF.Model = BB.Model.extend({
 
             jQTabs.html(_template(options));
 
+            // Add tab selection' handler to buttons
             jQTabs.find('a').on('tap', function () {
                XF.ui.tabs.selectTab(jQTabs, $(this));
             });
         },
 
+        // Method to show appropriate tab
         selectTab : function (parent, el) {
             parent.find('a').removeClass('xf-tabs-button-active');
             el.addClass('xf-tabs-button-active');
@@ -3302,10 +3322,10 @@ XF.Model = BB.Model.extend({
 
     /**
      Enhances text input view
-     @param textInput DOM Object
-     @private
      */
     XF.ui.input = {
+        
+        // Selectors will be used to detect text inputs on the page
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
                     'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
                     'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
@@ -3315,6 +3335,8 @@ XF.Model = BB.Model.extend({
 
         render : function (textInput, options) {
             var jQTextInput = $(textInput),
+            
+                // Events for pointer/touchs
                 eventsHandler = {
                     start : 'mousedown touchstart MSPointerDown',
                     move : 'mousemove touchmove MSPointerMove',
@@ -3355,20 +3377,7 @@ XF.Model = BB.Model.extend({
                 }
                 jQTextInput = newTextInput;
                 textInput = newTextInput[0];
-
-                /*
-                 <div class="xf-input-number">
-                 <button class="xf-input-number-control xf-input-number-control-decrease "
-                 type="button">
-                 <span class="xf-icon xf-icon-big xf-icon-minus-circled"></span>
-                 </button>
-                 <input type="text" class="xf-input-text" min="0" max="1200" value="400">
-                 <button class="xf-input-number-control xf-input-number-control-increase"
-                 type="button">
-                 <span class="xf-icon xf-icon-big xf-icon-plus-circled"></span>
-                 </button>
-                 </div>
-                 */
+                
             } else if (textInputType == 'number' || textInputType == 'range') {
 
                 var minValue = jQTextInput.attr('min'),
@@ -3389,6 +3398,8 @@ XF.Model = BB.Model.extend({
                 newTextInput.attr({'data-skip-enhance':true})
 
                 var numberWrapper = $('<div></div>').addClass('xf-input-number');
+                
+                // Add buttons to decrease number
                 numberWrapper.append(
                     $('<button type="button"></button>')
                         .addClass('xf-input-number-control xf-input-number-control-decrease')
@@ -3398,6 +3409,8 @@ XF.Model = BB.Model.extend({
                         )
                 );
                 numberWrapper.append(newTextInput);
+                
+                // Add buttons to increase number
                 numberWrapper.append(
                     $('<button type="button"></button>')
                         .addClass('xf-input-number-control xf-input-number-control-increase')
@@ -3427,6 +3440,8 @@ XF.Model = BB.Model.extend({
                         maxValue = parseFloat(maxValue);
 
                         var percValue = (selValue - minValue) * 100 / (maxValue - minValue),
+                        
+                            // Underscore template for slider
                             _template = _.template(
                                  '<div class="xf-input-range">'
                                  + '<div class="xf-range-wrap">'
@@ -3453,7 +3468,8 @@ XF.Model = BB.Model.extend({
 
                 }
 
-                var setNewValue = function(newValue) {
+                // Function to set new value for input
+                var setNewValue = function (newValue) {
 
                     var modulo = newValue % step;
                     var steppedVal = newValue - modulo;
@@ -3474,7 +3490,7 @@ XF.Model = BB.Model.extend({
 
                     newTextInput.attr({'value':newValue});
 
-                    if(rangeWrapper) {
+                    if (rangeWrapper) {
                         rangeWrapper.find('div.xf-input-range-thumb').attr({'title':newValue});
 
                         var percValue = (newValue - minValue) * 100 / (maxValue - minValue);
@@ -3483,33 +3499,37 @@ XF.Model = BB.Model.extend({
 
                 };
 
-                var stepUp = function() {
+                // Function to increase value for input
+                var stepUp = function () {
                     var newValue = parseFloat(newTextInput.attr('value'));
                     newValue += step;
                     setNewValue(newValue);
                 };
 
-                var stepDown = function() {
+                // Function to decrease value for input
+                var stepDown = function () {
                     var newValue = parseFloat(newTextInput.attr('value'));
                     newValue -= step;
                     setNewValue(newValue);
                 };
 
-                // initialing number stepper buttons (-) & (+) click handlers
+                // Initialing number stepper buttons (-) & (+) click handlers
                 numberWrapper.find('button.xf-input-number-control-decrease').on('tap', stepDown);
                 numberWrapper.find('button.xf-input-number-control-increase').on('tap', stepUp);
 
                 var savedInputText = newTextInput.attr('value');
                 var newInputText;
-                var inputTextChange = function(event) {
+                var inputTextChange = function (event) {
                     newInputText = newTextInput.attr('value');
-                    // prevent multiple recalculations in case when several events where triggered
-                    if(savedInputText == newInputText) {
+                    
+                    // Prevent multiple recalculations in case when several events where triggered
+                    if (savedInputText == newInputText) {
                         return;
                     }
 
                     newInputText = parseFloat(newInputText);
-                    if(isNaN(newInputText)) {
+                    
+                    if (isNaN(newInputText)) {
                         newInputText = minValue;
                     }
                     savedInputText = newInputText;
@@ -3523,7 +3543,7 @@ XF.Model = BB.Model.extend({
                     .focus(inputTextChange)
                     .focusout(inputTextChange);
 
-                if(rangeWrapper) {
+                if (rangeWrapper) {
 
                     var trackW = undefined;
                     var savedVal;
@@ -3532,25 +3552,26 @@ XF.Model = BB.Model.extend({
                     var mouseNewX;
                     var mouseDiff;
 
-                    var trackDiffToValueDiff = function(trackDiff) {
-                        if(!trackW) {
+                    var trackDiffToValueDiff = function (trackDiff) {
+                        
+                        if (!trackW) {
                             trackW = rangeWrapper.find('div.xf-input-range-track')[0].clientWidth;
                         }
                         return (trackDiff / trackW * (maxValue - minValue));
                     };
 
-                    var trackPointToValuePoint = function(trackPoint) {
+                    var trackPointToValuePoint = function (trackPoint) {
                         return (trackDiffToValueDiff(trackPoint) + minValue);
                     };
 
-                    var startThumbDrag = function(event) {
+                    var startThumbDrag = function (event) {
                         mousePrevX = XF.device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         savedVal = selValue;
                         $(document).bind(eventsHandler.end, stopThumbDrag);
                         $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
-                    var doThumbDrag = function(event) {
+                    var doThumbDrag = function (event) {
                         mouseNewX = XF.device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         mouseDiff = mouseNewX - mousePrevX;
                         valueDiff = trackDiffToValueDiff(mouseDiff);
@@ -3559,16 +3580,17 @@ XF.Model = BB.Model.extend({
                         setNewValue(savedVal);
                     };
 
-                    var stopThumbDrag = function() {
+                    var stopThumbDrag = function () {
                         $(document).bind(eventsHandler.end, stopThumbDrag);
                         $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
-                    var startThumbPress = function() {
+                    var startThumbPress = function () {
                         $(document).bind('keydown', doThumbPress);
                     };
 
-                    var doThumbPress = function(event) {
+                    var doThumbPress = function (event) {
+                        
                         switch(event.keyCode) {
                             // PG Up
                             case 33:
@@ -3601,7 +3623,7 @@ XF.Model = BB.Model.extend({
                         }
                     };
 
-                    var stopThumbPress = function() {
+                    var stopThumbPress = function () {
                         $(document).unbind('keydown', doThumbPress);
                     };
 
@@ -3613,9 +3635,10 @@ XF.Model = BB.Model.extend({
                         .bind('focus', startThumbPress)
                         .bind('focusout', stopThumbPress);
 
-                    var trackClick = function(event) {
+                    var trackClick = function( event) {
+                        
                         // skipping events fired by thumb dragging
-                        if(event.target == rangeWrapper.find('div.xf-input-range-thumb')[0]) {
+                        if (event.target == rangeWrapper.find('div.xf-input-range-thumb')[0]) {
                             return;
                         }
                         setNewValue(trackPointToValuePoint(event.offsetX));
@@ -3630,13 +3653,14 @@ XF.Model = BB.Model.extend({
             // week, time, datetime-local, color) with data-appearance="split" attribute
             // are parsed specifically:
             var splitAppearance = false;
-            if(options.appearance == 'split' && isInputElement) {
+            if (options.appearance == 'split' && isInputElement) {
 
                 var applicableTypes = ['text', 'search', 'tel', 'url', 'email',
                     'password', 'datetime', 'date', 'month', 'week', 'time', 'datetime-local', 'color'];
 
-                _.each(applicableTypes, function(applicableType) {
-                    if(textInputType == applicableType) {
+                _.each(applicableTypes, function (applicableType) {
+                    
+                    if (textInputType == applicableType) {
                         splitAppearance = true;
                     }
                 });
@@ -3646,9 +3670,9 @@ XF.Model = BB.Model.extend({
             var textInputLabel = (textInputID && textInputID.length) ? $('label[for=' + textInputID + ']') : [];
 
             // If the input doesn't have an associated label, quit
-            if(textInputLabel.length) {
+            if (textInputLabel.length) {
 
-                if(splitAppearance) {
+                if (splitAppearance) {
 
                     // Add class xf-input-split-input to the input
                     jQTextInput.removeClass('xf-input-text').addClass('xf-input-split-input');

@@ -1,10 +1,10 @@
 
     /**
      Enhances text input view
-     @param textInput DOM Object
-     @private
      */
     XF.ui.input = {
+        
+        // Selectors will be used to detect text inputs on the page
         selector : 'INPUT[type=text], INPUT[type=search], INPUT[type=tel], ' +
                     'INPUT[type=url], INPUT[type=email], INPUT[type=password], INPUT[type=datetime], ' +
                     'INPUT[type=date], INPUT[type=month], INPUT[type=week], INPUT[type=time], ' +
@@ -14,6 +14,8 @@
 
         render : function (textInput, options) {
             var jQTextInput = $(textInput),
+            
+                // Events for pointer/touchs
                 eventsHandler = {
                     start : 'mousedown touchstart MSPointerDown',
                     move : 'mousemove touchmove MSPointerMove',
@@ -54,20 +56,7 @@
                 }
                 jQTextInput = newTextInput;
                 textInput = newTextInput[0];
-
-                /*
-                 <div class="xf-input-number">
-                 <button class="xf-input-number-control xf-input-number-control-decrease "
-                 type="button">
-                 <span class="xf-icon xf-icon-big xf-icon-minus-circled"></span>
-                 </button>
-                 <input type="text" class="xf-input-text" min="0" max="1200" value="400">
-                 <button class="xf-input-number-control xf-input-number-control-increase"
-                 type="button">
-                 <span class="xf-icon xf-icon-big xf-icon-plus-circled"></span>
-                 </button>
-                 </div>
-                 */
+                
             } else if (textInputType == 'number' || textInputType == 'range') {
 
                 var minValue = jQTextInput.attr('min'),
@@ -88,6 +77,8 @@
                 newTextInput.attr({'data-skip-enhance':true})
 
                 var numberWrapper = $('<div></div>').addClass('xf-input-number');
+                
+                // Add buttons to decrease number
                 numberWrapper.append(
                     $('<button type="button"></button>')
                         .addClass('xf-input-number-control xf-input-number-control-decrease')
@@ -97,6 +88,8 @@
                         )
                 );
                 numberWrapper.append(newTextInput);
+                
+                // Add buttons to increase number
                 numberWrapper.append(
                     $('<button type="button"></button>')
                         .addClass('xf-input-number-control xf-input-number-control-increase')
@@ -126,6 +119,8 @@
                         maxValue = parseFloat(maxValue);
 
                         var percValue = (selValue - minValue) * 100 / (maxValue - minValue),
+                        
+                            // Underscore template for slider
                             _template = _.template(
                                  '<div class="xf-input-range">'
                                  + '<div class="xf-range-wrap">'
@@ -152,7 +147,8 @@
 
                 }
 
-                var setNewValue = function(newValue) {
+                // Function to set new value for input
+                var setNewValue = function (newValue) {
 
                     var modulo = newValue % step;
                     var steppedVal = newValue - modulo;
@@ -173,7 +169,7 @@
 
                     newTextInput.attr({'value':newValue});
 
-                    if(rangeWrapper) {
+                    if (rangeWrapper) {
                         rangeWrapper.find('div.xf-input-range-thumb').attr({'title':newValue});
 
                         var percValue = (newValue - minValue) * 100 / (maxValue - minValue);
@@ -182,33 +178,37 @@
 
                 };
 
-                var stepUp = function() {
+                // Function to increase value for input
+                var stepUp = function () {
                     var newValue = parseFloat(newTextInput.attr('value'));
                     newValue += step;
                     setNewValue(newValue);
                 };
 
-                var stepDown = function() {
+                // Function to decrease value for input
+                var stepDown = function () {
                     var newValue = parseFloat(newTextInput.attr('value'));
                     newValue -= step;
                     setNewValue(newValue);
                 };
 
-                // initialing number stepper buttons (-) & (+) click handlers
+                // Initialing number stepper buttons (-) & (+) click handlers
                 numberWrapper.find('button.xf-input-number-control-decrease').on('tap', stepDown);
                 numberWrapper.find('button.xf-input-number-control-increase').on('tap', stepUp);
 
                 var savedInputText = newTextInput.attr('value');
                 var newInputText;
-                var inputTextChange = function(event) {
+                var inputTextChange = function (event) {
                     newInputText = newTextInput.attr('value');
-                    // prevent multiple recalculations in case when several events where triggered
-                    if(savedInputText == newInputText) {
+                    
+                    // Prevent multiple recalculations in case when several events where triggered
+                    if (savedInputText == newInputText) {
                         return;
                     }
 
                     newInputText = parseFloat(newInputText);
-                    if(isNaN(newInputText)) {
+                    
+                    if (isNaN(newInputText)) {
                         newInputText = minValue;
                     }
                     savedInputText = newInputText;
@@ -222,7 +222,7 @@
                     .focus(inputTextChange)
                     .focusout(inputTextChange);
 
-                if(rangeWrapper) {
+                if (rangeWrapper) {
 
                     var trackW = undefined;
                     var savedVal;
@@ -231,25 +231,26 @@
                     var mouseNewX;
                     var mouseDiff;
 
-                    var trackDiffToValueDiff = function(trackDiff) {
-                        if(!trackW) {
+                    var trackDiffToValueDiff = function (trackDiff) {
+                        
+                        if (!trackW) {
                             trackW = rangeWrapper.find('div.xf-input-range-track')[0].clientWidth;
                         }
                         return (trackDiff / trackW * (maxValue - minValue));
                     };
 
-                    var trackPointToValuePoint = function(trackPoint) {
+                    var trackPointToValuePoint = function (trackPoint) {
                         return (trackDiffToValueDiff(trackPoint) + minValue);
                     };
 
-                    var startThumbDrag = function(event) {
+                    var startThumbDrag = function (event) {
                         mousePrevX = XF.device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         savedVal = selValue;
                         $(document).bind(eventsHandler.end, stopThumbDrag);
                         $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
-                    var doThumbDrag = function(event) {
+                    var doThumbDrag = function (event) {
                         mouseNewX = XF.device.supports.touchEvents ? event.originalEvent.targetTouches[0].pageX : event.pageX || event.clientX || layerX || event.screenX;
                         mouseDiff = mouseNewX - mousePrevX;
                         valueDiff = trackDiffToValueDiff(mouseDiff);
@@ -258,16 +259,17 @@
                         setNewValue(savedVal);
                     };
 
-                    var stopThumbDrag = function() {
+                    var stopThumbDrag = function () {
                         $(document).bind(eventsHandler.end, stopThumbDrag);
                         $(document).bind(eventsHandler.move, doThumbDrag);
                     };
 
-                    var startThumbPress = function() {
+                    var startThumbPress = function () {
                         $(document).bind('keydown', doThumbPress);
                     };
 
-                    var doThumbPress = function(event) {
+                    var doThumbPress = function (event) {
+                        
                         switch(event.keyCode) {
                             // PG Up
                             case 33:
@@ -300,7 +302,7 @@
                         }
                     };
 
-                    var stopThumbPress = function() {
+                    var stopThumbPress = function () {
                         $(document).unbind('keydown', doThumbPress);
                     };
 
@@ -312,9 +314,10 @@
                         .bind('focus', startThumbPress)
                         .bind('focusout', stopThumbPress);
 
-                    var trackClick = function(event) {
+                    var trackClick = function( event) {
+                        
                         // skipping events fired by thumb dragging
-                        if(event.target == rangeWrapper.find('div.xf-input-range-thumb')[0]) {
+                        if (event.target == rangeWrapper.find('div.xf-input-range-thumb')[0]) {
                             return;
                         }
                         setNewValue(trackPointToValuePoint(event.offsetX));
@@ -329,13 +332,14 @@
             // week, time, datetime-local, color) with data-appearance="split" attribute
             // are parsed specifically:
             var splitAppearance = false;
-            if(options.appearance == 'split' && isInputElement) {
+            if (options.appearance == 'split' && isInputElement) {
 
                 var applicableTypes = ['text', 'search', 'tel', 'url', 'email',
                     'password', 'datetime', 'date', 'month', 'week', 'time', 'datetime-local', 'color'];
 
-                _.each(applicableTypes, function(applicableType) {
-                    if(textInputType == applicableType) {
+                _.each(applicableTypes, function (applicableType) {
+                    
+                    if (textInputType == applicableType) {
                         splitAppearance = true;
                     }
                 });
@@ -345,9 +349,9 @@
             var textInputLabel = (textInputID && textInputID.length) ? $('label[for=' + textInputID + ']') : [];
 
             // If the input doesn't have an associated label, quit
-            if(textInputLabel.length) {
+            if (textInputLabel.length) {
 
-                if(splitAppearance) {
+                if (splitAppearance) {
 
                     // Add class xf-input-split-input to the input
                     jQTextInput.removeClass('xf-input-text').addClass('xf-input-split-input');
