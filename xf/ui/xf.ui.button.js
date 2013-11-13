@@ -1,16 +1,17 @@
 
     /**
      Make the DOM object look like a button
-     @param button DOM Object
-     @private
      */
     XF.ui.button = {
+        
+        // Selectors will be used to detect button's elements on the page
         selector : 'A[data-role=button], BUTTON, INPUT[type=submit], INPUT[type=reset], INPUT[type=button], [data-appearance=backbtn]',
 
         render : function (button, options) {
             var jQButton = $(button),
                 enhancedButton,
-                innerStuff;
+                innerStuff,
+                options = options || {};
 
             if (!button || !(jQButton instanceof $) || jQButton.attr('data-skip-enhance') == 'true') {
                 return;
@@ -25,15 +26,18 @@
             } else if (button.nodeName == 'INPUT') {
                 // The input is assigned a class xf-input-hidden
                 enhancedButton = $('<div></div>').append(jQButton.clone().addClass('xf-input-hidden').attr({'data-skip-enhance':true}));
-                jQButton.outerHtml(enhancedButton);
+
+                if (jQButton.hasOwnProperty('outerHtml')) {
+                    jQButton.outerHtml(enhancedButton);
+                }
                 innerStuff = jQButton.attr('value');
             } else {
                 // how did U get there? o_O
                 return;
             }
 
-            var isSmall = options.small === true || options.appearance == 'backbtn',
-                position = options.position || '',
+            var isSmall = ((typeof options == 'object' && options.small === true) ? true : (typeof options == 'object' && options.appearance == 'backbtn') ? true : false),
+                position = (typeof options == 'object' && 'position' in options) ? options.position : '',
                 id = jQButton.attr('id') || XF.utils.uniqueID();
 
             if (position !== '') {
@@ -51,13 +55,13 @@
             enhancedButton.addClass(isSmall ? 'xf-button-small' : 'xf-button');
 
             // If data-appearance="backbtn" attribute is present, xf-button-back class is also added.
-            if (options.appearance === 'backbtn') {
+            if (typeof options == 'object' && options.appearance === 'backbtn') {
                 enhancedButton.addClass('xf-button-back');
             }
 
-            var iconName = options.icon;
+            var iconName = (typeof options == 'object' && options.icon) ? options.icon : false;
 
-            if (options.appearance === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
+            if (typeof options == 'object' && options.appearance === 'backbtn' /*&& !jQButton.attr('data-icon')*/) {
                 iconName = 'left';
             }
 
@@ -80,7 +84,7 @@
                 // A class denoting icon position is also added to the button. Default: xf-iconpos-left.
                 // The value is taken from data-iconpos attr.
                 // Possible values: left, right, top, bottom.
-                var iconPos = options.iconpos || 'left';
+                var iconPos = (typeof options == 'object' && options.iconpos) ? options.iconpos : 'left';
 
                 if (iconPos != 'left' && iconPos != 'right' && iconPos != 'top' && iconPos != 'bottom') {
                     iconPos = 'left';

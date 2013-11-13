@@ -89,6 +89,18 @@ module.exports = (function (grunt) {
         grunt.loadNpmTasks('grunt-contrib-concat');
         grunt.loadNpmTasks('grunt-contrib-less');
         grunt.task.run(['concat', 'uglify', 'less']);
+            
+    });
+    
+    grunt.registerTask('test', "X-Framework qunit test", function () {
+        console.log('Starting qunit tests');
+        grunt.initConfig({
+            qunit: {
+                files: ['test/index.html']
+            }
+        });
+        grunt.loadNpmTasks('grunt-contrib-qunit');
+        grunt.task.run(['qunit']);
     });
 
     grunt.registerTask('default', ['build']);
