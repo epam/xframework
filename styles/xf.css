@@ -3031,7 +3031,7 @@ ol.xf-listview .xf-li-wrap:before {
 }
 .xf-li-btn:active,
 .xf-li-btn.active {
-  background-color: rgba(0, 0, 0, 0.1) \9;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .xf-li-btn-active {
   background: #1abc9c;

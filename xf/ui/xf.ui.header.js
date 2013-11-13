@@ -47,9 +47,9 @@
 
             // Underscore template for header
             var _template = _.template(
-                '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">'
-                + '<%= html %>'
-                + '</header>'
+                '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">' +
+                '<%= html %>' +
+                '</header>'
             );
 
             jQHeader.html(_template(options));

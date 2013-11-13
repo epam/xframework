@@ -1,5 +1,5 @@
     // Method announces touchevents for elements
-    ;XF.touch = {
+    XF.touch = {
 
         init : function () {
             // Default values and device events detection
@@ -41,19 +41,19 @@
             // If target is text
             var parentIfText = function (node) {
                 return 'tagName' in node ? node : node.parentNode;
-            }
+            };
 
             // Detecting swipe direction
             var swipeDirection = function (x1, x2, y1, y2) {
                 var xDelta = Math.abs(x1 - x2),
                     yDelta = Math.abs(y1 - y2);
                 return xDelta >= yDelta ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
-            }
+            };
 
             // Cancelling all hadlers
             var cancelAll = function () {
                 touchHandler = {};
-            }
+            };
 
             // Events binding
             $(document).ready(function () {
@@ -77,8 +77,8 @@
                     }
                 }).bind(eventsHandler[eventType].end, function (e) { // Pointer / Touch end event
 
-                    if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta)
-                        || (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
+                    if ((touchHandler.x2 && Math.abs(touchHandler.x1 - touchHandler.x2) > swipeDelta) ||
+                        (touchHandler.y2 && Math.abs(touchHandler.y1 - touchHandler.y2) > swipeDelta)) {
                         touchHandler.direction = swipeDirection(touchHandler.x1, touchHandler.x2, touchHandler.y1, touchHandler.y2);
 
                         // Trigger swipe event
@@ -107,7 +107,7 @@
             // List of new events
             $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i, key){
                 $.fn[key] = function (callback) {
-                    return this.bind(key, callback)
+                    return this.bind(key, callback);
                 };
             });
         }

@@ -7,7 +7,7 @@ $(function () {
     var onRoute = function (router, route, args) {
         lastRoute = route;
         lastArgs = args;
-        alert(router)
+        alert(router);
     };
 
     var Location = function(href) {
@@ -28,9 +28,9 @@ $(function () {
 
     test('bindAnyRoute', 1, function () {
         bar = XF.router.bindAnyRoute;
-        XF.router.bindAnyRoute = function () {
+        XF.router.bindAnyRoute = (function () {
             location.replace('#bind');
-        }();
+        })();
         XF.history.checkUrl();
         equal(XF.router.getPageNameFromFragment(XF.history.fragment), 'bind');
         XF.router.bindAnyRoute = bar;

@@ -7,7 +7,7 @@
         // Selectors will be used to detect checkboxes' and radios' on the page
         selector : 'INPUT[type=checkbox], INPUT[type=radio]',
 
-        render : function(chbRbInput, options) {
+        render : function(chbRbInput) {
 
             var jQChbRbInput = $(chbRbInput),
                 options = {
@@ -51,13 +51,13 @@
 
                 // Underscore template for label and element
                 var _template = _.template(
-                    '<div class="<%= options.wrapperClass %>"><label for="<%= options.id %>" class="<%= options.labelClass %>">'
-                    + '<%= options.input %><% if(options.isSwitch) { %>'
-                    + '<span class=xf-switch-track><span class=xf-switch-track-wrap>'
-                    + '<span class=xf-switch-thumb></span>'
-                    + '</span></span>'
-                    + '<% } %>'
-                    + '</label><%= options.labelFor %></div>'
+                    '<div class="<%= options.wrapperClass %>"><label for="<%= options.id %>" class="<%= options.labelClass %>">' +
+                    '<%= options.input %><% if(options.isSwitch) { %>' +
+                    '<span class=xf-switch-track><span class=xf-switch-track-wrap>' +
+                    '<span class=xf-switch-thumb></span>' +
+                    '</span></span>' +
+                    '<% } %>' +
+                    '</label><%= options.labelFor %></div>'
                 );
                 jQChbRbInput.parent().html(_template({options : options}));
             }

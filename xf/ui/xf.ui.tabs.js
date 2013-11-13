@@ -61,7 +61,7 @@
                 }
 
                 if (tab.attr('data-active')) {
-                    tabOpts.className += ' xf-tabs-button-active '
+                    tabOpts.className += ' xf-tabs-button-active ';
                 }
 
                 if (x > buttons.length - lastRowSize) {
@@ -79,15 +79,15 @@
 
             // Underscore template for tabs
             var _template = _.template(
-                '<ul class="xf-tabs">'
-                + '<% _.each(tabs, function(tab) { %>'
-                + '<li class="xf-grid-unit <%= tabsClass %> <%= tab.gridClass %>  ">'
-                + '<a data-params="<%= tab.params %>" class="xf-tabs-button <%= tab.className %>" id="<%= tab.id %>">'
-                + '<span class="xf-tabs-button-text"><%= tab.text %></span>'
-                + '</a>'
-                + '</li>'
-                + '<% }); %>'
-                + '</ul>'
+                '<ul class="xf-tabs">' +
+                '<% _.each(tabs, function(tab) { %>' +
+                '<li class="xf-grid-unit <%= tabsClass %> <%= tab.gridClass %>  ">' +
+                '<a data-params="<%= tab.params %>" class="xf-tabs-button <%= tab.className %>" id="<%= tab.id %>">' +
+                '<span class="xf-tabs-button-text"><%= tab.text %></span>' +
+                '</a>' +
+                '</li>' +
+                '<% }); %>' +
+                '</ul>'
             );
 
             jQTabs.html(_template(options));

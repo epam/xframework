@@ -32,7 +32,7 @@
 
             var wrapperId = jQScrollable.attr('id');
 
-            if (!wrapperId || wrapperId == '') {
+            if (!wrapperId || wrapperId === '') {
                 wrapperId = 'xf_scrollable_' + new Date().getTime();
                 jQScrollable.attr({'id':wrapperId});
             }
