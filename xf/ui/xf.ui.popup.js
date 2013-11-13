@@ -94,7 +94,8 @@
                 });
             }
             if (buttons.length > 0) {
-                var jqBtn;
+                var jqBtn,
+                    btnCount = buttons.length;
 
                 _.each(buttons, function (btn, index, buttons){
 
