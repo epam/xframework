@@ -43,7 +43,7 @@ var page = require('webpage').create(),
                         }
                     }, 'result');
 
-                    if (result == '' || result === null) {
+                    if (result === '' || result === null) {
                         console.log('\n\t\x1b[0m\033[31mError during dialog creation.\n');
                     } else {
                         console.log('\n\t\x1b[0m\033[32mDialog \t\t\033[39m\x1b[1m[ ', result, ' ] \t\t\x1b[0m\033[32mcreated\n');

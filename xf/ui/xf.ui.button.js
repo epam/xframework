@@ -10,9 +10,12 @@
         render : function (button, options) {
             var jQButton = $(button),
                 enhancedButton,
-                innerStuff,
-                options = options || {};
+                innerStuff;
 
+            if (!options) {
+                options = {};
+            }
+            
             if (!button || !(jQButton instanceof $) || jQButton.attr('data-skip-enhance') == 'true') {
                 return;
             }
@@ -113,12 +116,12 @@
             }
 
             // If data-special="true" attribute is present add xf-button-special class.
-            if (options.special == true) {
+            if (options.special === true) {
                 enhancedButton.addClass('xf-button-special');
             }
 
             // If data-alert="true" attribute is present add xf-button-alert class.
-            if (options.alert == true) {
+            if (options.alert === true) {
                 enhancedButton.addClass('xf-button-alert');
             }
 

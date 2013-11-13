@@ -37,7 +37,9 @@
 
         var compID = parts[1];
 
-        XF._defferedCompEvents || (XF._defferedCompEvents = {});
+        if (!XF._defferedCompEvents) {
+            XF._defferedCompEvents = {};
+        }
 
         if (parts[0] === 'component' && parts[2] === 'rendered') {
             onComponentRender(compID);

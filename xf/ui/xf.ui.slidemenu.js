@@ -17,7 +17,7 @@
 
             options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
-            options.hasTitle = options.title != '' ? true : false;
+            options.hasTitle = options.title !== '' ? true : false;
             options.isFixed = (options.fixed && options.fixed === true) ? true : false;
             options.buttons = options.buttons || [];
             options.html = jQMenu.html();
@@ -59,8 +59,8 @@
             });
 
             var _template = _.template(
-                '<div class="xf-slidemenu-scrollable"><div class="xf-slidemenu-header"><%= title %><%= menuButton %></div>'
-                + '<%= html %></div>'
+                '<div class="xf-slidemenu-scrollable"><div class="xf-slidemenu-header"><%= title %><%= menuButton %></div>' +
+                '<%= html %></div>'
             );
 
             jQMenu.html(_template(options));

@@ -77,9 +77,9 @@
 
             var jqDialog = this.render(),
                 _template = _.template(
-                '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>'
-                + '<div class="xf-dialog-box-content"><%= messageText %></div>'
-                + '<div class="xf-dialog-box-footer clearfix"></div></div>'
+                '<div class="xf-dialog-box"><div class="xf-dialog-box-header"><h3><%= headerText %></h3></div>' +
+                '<div class="xf-dialog-box-content"><%= messageText %></div>' +
+                '<div class="xf-dialog-box-footer clearfix"></div></div>'
             );
 
             jqDialog.find('.xf-dialog-content').html(_template({headerText : headerText, messageText : messageText}));
@@ -94,7 +94,8 @@
                 });
             }
             if (buttons.length > 0) {
-                var jqBtn;
+                var jqBtn,
+                    btnCount = buttons.length;
 
                 _.each(buttons, function (btn, index, buttons){
 
@@ -136,13 +137,13 @@
 
             var jqNotification = this.render().addClass('xf-dialog-notification'),
                 _template = _.template(
-                    '<div class="xf-notification"><div class="xf-notification-wrap">'
-                    + '<div class="xf-notification-text"><%= messageText %></div></div></div>'
+                    '<div class="xf-notification"><div class="xf-notification-wrap">' +
+                    '<div class="xf-notification-text"><%= messageText %></div></div></div>'
             );
 
             jqNotification.find('.xf-dialog-content').html(_template({messageText : messageText}));
 
-            if (iconName && iconName != '') {
+            if (iconName && iconName !== '') {
                 jqNotification.find('.xf-notification-wrap')
                     .prepend(
                         $('<div></div>')
@@ -190,39 +191,43 @@
 
             jQButton.html(buttonDescr.text);
 
-            if (buttonDescr.icon && buttonDescr.icon != '') {
+            //Set button's attributes
+            // Icon
+            if (buttonDescr.icon && buttonDescr.icon !== '') {
                 attrs['data-icon'] = buttonDescr.icon;
-            };
+            }
 
-            if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
+            // Icon position
+            if (buttonDescr.iconpos && buttonDescr.iconpos !== '') {
                 attrs['data-iconpos'] = buttonDescr.iconpos;
-            };
+            }
 
-            if (buttonDescr.small && buttonDescr.small != '') {
+            // Button size
+            if (buttonDescr.small && buttonDescr.small !== '') {
                 attrs['data-small'] = buttonDescr.small;
-            };
+            }
 
-            if (buttonDescr.appearance && buttonDescr.appearance != '') {
+            // Button appearance 
+            if (buttonDescr.appearance && buttonDescr.appearance !== '') {
                 attrs['data-appearance'] = buttonDescr.appearance;
-            };
+            }
 
-            if (buttonDescr.special && buttonDescr.special != '') {
+            // Button is special or not
+            if (buttonDescr.special && buttonDescr.special !== '') {
                 attrs['data-special'] = buttonDescr.special;
-            };
+            }
 
-            if (buttonDescr.alert && buttonDescr.alert != '') {
+            // Button is 'alert' or not
+            if (buttonDescr.alert && buttonDescr.alert !== '') {
                 attrs['data-alert'] = buttonDescr.alert;
-            };
-
-            if (_.isFunction(buttonDescr.handler)) {
-                jQButton.click(buttonDescr.handler)
-            };
+            }
 
             jQButton.attr(attrs);
 
+            // Set function for button pressed
             if (_.isFunction(buttonDescr.handler)) {
                 jQButton.on('tap', buttonDescr.handler);
-            };
+            }
 
             XF.ui.button.render(jQButton[0]);
 
