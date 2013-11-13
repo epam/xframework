@@ -22,6 +22,7 @@
                 idStack = XF.ui.checkInIsset('loader'),
                 newId = false;
 
+            // Check if locader with the same ID was created before
             for (var i in idStack) {
 
                 if (newId) {
@@ -33,6 +34,7 @@
                 }
             }
 
+            // If 'no', add new ID to the stack
             if (!newId) {
                 XF.ui.issetElements.push({type : 'loader', id : id});
             }
@@ -46,13 +48,13 @@
             return jqLoader;
         },
 
-        // show loader or create newone and show it
+        // Show loader or create newone and show it
         show : function (jqLoader) {
             jqLoader = jqLoader || this.create();
             jqLoader.show();
         },
 
-        // hide loader or hide all
+        // Hide loader or hide all
         hide : function (jqLoader) {
             jqLoader = jqLoader || null;
             if (jqLoader === null) {
@@ -62,13 +64,13 @@
             }
         },
 
-        // remove loader's dom-element
+        // Remove loader's dom-element
         remove : function (jqLoader) {
             jqLoader.detach();
             XF.ui.removeFromIsset('popup', jqLoader.attr('id'));
         },
 
-        //add new loader to the page
+        // Add new loader to the page
         create : function () {
             var jqLoader = $('<div class="xf-loader" data-role="loader"><div class="xf-loader-content"><div class="loading"></div></div></div>');
             XF.device.getViewport().append(jqLoader);

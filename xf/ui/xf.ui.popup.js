@@ -190,36 +190,40 @@
 
             jQButton.html(buttonDescr.text);
 
+            //Set button's attributes
+            // Icon
             if (buttonDescr.icon && buttonDescr.icon != '') {
                 attrs['data-icon'] = buttonDescr.icon;
             };
 
+            // Icon position
             if (buttonDescr.iconpos && buttonDescr.iconpos != '') {
                 attrs['data-iconpos'] = buttonDescr.iconpos;
             };
 
+            // Button size
             if (buttonDescr.small && buttonDescr.small != '') {
                 attrs['data-small'] = buttonDescr.small;
             };
 
+            // Button appearance 
             if (buttonDescr.appearance && buttonDescr.appearance != '') {
                 attrs['data-appearance'] = buttonDescr.appearance;
             };
 
+            // Button is special or not
             if (buttonDescr.special && buttonDescr.special != '') {
                 attrs['data-special'] = buttonDescr.special;
             };
 
+            // Button is 'alert' or not
             if (buttonDescr.alert && buttonDescr.alert != '') {
                 attrs['data-alert'] = buttonDescr.alert;
             };
 
-            if (_.isFunction(buttonDescr.handler)) {
-                jQButton.click(buttonDescr.handler)
-            };
-
             jQButton.attr(attrs);
 
+            // Set function for button pressed
             if (_.isFunction(buttonDescr.handler)) {
                 jQButton.on('tap', buttonDescr.handler);
             };
