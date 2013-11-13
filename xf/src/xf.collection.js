@@ -79,7 +79,7 @@ XF.Collection = BB.Collection.extend({
     },
 
     fetch: function (options) {
-        option = _.defaults(options || {}, this.ajaxSettings);
+        options = _.defaults(options || {}, this.ajaxSettings);
 
         return Backbone.Collection.prototype.fetch.call(this, options);
     },
