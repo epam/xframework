@@ -1,4 +1,7 @@
 node_modules
+
+.git
+
 .idea/.name
 
 .idea/codeStyleSettings.xml
@@ -28,6 +31,18 @@ js/index.js
 js/models/customModel.js
 
 styles/sec.css
+
+styles/app.css
+
+js/components/
+
+js/lib
+
+images
+
+mocks
+
+tmpl
 
 tmpl/desktop/comments.tmpl
 
