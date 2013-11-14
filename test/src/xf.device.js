@@ -2,12 +2,12 @@ $(function() {
 
     module("XF.device", {});
 
-    test('window size', 1, function () {
+    test('window size', 2, function () {
         var size = {
-            width: window.outerWidth,
+            width: $(window).width(),
             height: $(window).height()
         };
-        //equal(XF.device.size.width, size.width, 'Width passed');
+        equal(XF.device.size.width, size.width, 'Width passed');
         equal(XF.device.size.height, size.height, 'Height passed');
     });
 

@@ -1611,15 +1611,19 @@ XF.Collection = BB.Collection.extend({
     constructor: function (models, options) {
         this._initProperties();
         this._bindListeners();
+        
+        if (!options) {
+            options = {};
+        }
 
         if (options.component) {
             this.component = options.component;
         }
         _.omit(options, 'component');
+        
+        this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
 
-        this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
-
-        if (this.component.options.updateOnShow) {
+        if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
@@ -1633,7 +1637,7 @@ XF.Collection = BB.Collection.extend({
                 onDataLoaded();
                 onSuccess();
             };
-        }else{
+        } else {
             this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
         }
 
@@ -1663,6 +1667,12 @@ XF.Collection = BB.Collection.extend({
         this.reset();
         this.ajaxSettings.silent = false;
         this.fetch(this.ajaxSettings);
+    },
+
+    fetch: function (options) {
+        options = _.defaults(options || {}, this.ajaxSettings);
+
+        return Backbone.Collection.prototype.fetch.call(this, options);
     },
 
     _onDataLoaded: function () {
@@ -1699,15 +1709,19 @@ XF.Model = BB.Model.extend({
     constructor: function (attributes, options) {
         this._initProperties();
         this._bindListeners();
+        
+        if (!options) {
+            options = {};
+        }
 
         if (options.component) {
             this.component = options.component;
         }
         _.omit(options, 'component');
 
-        this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
+        this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
 
-        if (this.component.options.updateOnShow) {
+        if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
@@ -1748,6 +1762,12 @@ XF.Model = BB.Model.extend({
         this.status.loading = true;
 
         this.fetch(this.ajaxSettings);
+    },
+
+    fetch: function (options) {
+        options = _.defaults(options || {}, this.ajaxSettings);
+
+        return Backbone.Collection.prototype.fetch.call(this, options);
     },
 
     _onDataLoaded: function () {
