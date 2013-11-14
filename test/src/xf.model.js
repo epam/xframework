@@ -12,9 +12,11 @@ $(function () {
         }
     });
     
-    test("empty and parse", 4, function() {
+    test("empty and parse", 6, function() {
 
         equal(emptyModel.url, '/');
+        equal(emptyModel.options, undefined);
+        equal(emptyModel.component, null);
         equal(emptyModel.status.loading, false);
         equal(emptyModel.status.loaded, false);
         equal(emptyModel.status.loadingFailed, false);
@@ -36,7 +38,6 @@ $(function () {
         ajaxSettingsModelWorks = true;
         
         predefModelCallback.on('fetched', function () {
-            console.log('CALLBACK TEST');
             
             predefModelCallback.off('fetched').on('fetched', function () {
                 ok(true);

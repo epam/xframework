@@ -11,18 +11,22 @@ $(function () {
         }
     });
     
-    test("empty and parse", 4, function() {
+    test("empty and parse", 6, function() {
 
         equal(emptyCollection.url, '/');
+        equal(emptyCollection.options, undefined);
+        equal(emptyCollection.component, null);
         equal(emptyCollection.status.loading, false);
         equal(emptyCollection.status.loaded, false);
         equal(emptyCollection.status.loadingFailed, false);
     });
     
-    asyncTest("predefined and parse", 2, function() {
+    asyncTest("predefined and parse", 4, function() {
         predefCollection.on('fetched', function () {
             ok(true);
             equal(ajaxSettingsWorks, false);
+            equal(predefCollection.status.loading, false);
+            equal(predefCollection.status.loaded, true);
             start();
         });
         
@@ -30,7 +34,7 @@ $(function () {
         
     });
     
-    asyncTest("predefined and custom callback", 2, function() {
+    asyncTest("predefined and custom callback", 4, function() {
         ajaxSettingsWorks = true;
         
         predefCollectionCallback.on('fetched', function () {
@@ -42,6 +46,8 @@ $(function () {
             });
             
             predefCollectionCallback.refresh();
+            equal(predefCollectionCallback.status.loading, true);
+            equal(predefCollectionCallback.status.loaded, false);
         });
         
         predefCollectionCallback.fetch();
