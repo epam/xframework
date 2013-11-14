@@ -56,5 +56,13 @@ $(function () {
     test("initialize", 1, function () {
         equal(App.testing, 101);
     });
+    
+    asyncTest("start", 1, function () {
+        XF.on('app:started', function () {
+            ok(true);
+            start();
+        });
+        XF.trigger('app:started');
+    });
 
 });
