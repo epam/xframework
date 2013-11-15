@@ -1,9 +1,6 @@
 {
-    "name": "Bower pkg for XFramework",
+    "name": "xframework",
     "version": "0.1.2",
-    "dependencies": {
-        "xframework" : "https://github.com/epam/xframework.git"
-    },
     "devDependencies": {
         "jquery" : "http://code.jquery.com/jquery-latest.js",
         "backbone" : "http://backbonejs.org/backbone.js",
