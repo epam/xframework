@@ -2,7 +2,7 @@
     "name": "Bower pkg for X-Framework",
     "version": "0.1.1",
     "dependencies": {
-        "x-framework" : "https://github.com/epam/x-framework.git"
+        "xframework" : "git://github.com/epam/xframework.git"
     },
     "devDependencies": {
         "jquery" : "http://code.jquery.com/jquery-latest.js",
