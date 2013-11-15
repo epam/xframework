@@ -1,6 +1,6 @@
 {
     "name": "xframework",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "devDependencies": {
         "jquery" : "http://code.jquery.com/jquery-latest.js",
         "backbone" : "http://backbonejs.org/backbone.js",
