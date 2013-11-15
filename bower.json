@@ -1,5 +1,5 @@
 {
-    "name": "Bower pkg for X-Framework",
+    "name": "xframework",
     "version": "0.1.1",
     "devDependencies": {
         "jquery" : "http://code.jquery.com/jquery-latest.js",
