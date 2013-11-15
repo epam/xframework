@@ -3,7 +3,6 @@
     "version": "0.1.1",
     "dependencies": {
         "xframework" : "git://github.com/epam/xframework.git"
-    },
     "devDependencies": {
         "jquery" : "http://code.jquery.com/jquery-latest.js",
         "backbone" : "http://backbonejs.org/backbone.js",
