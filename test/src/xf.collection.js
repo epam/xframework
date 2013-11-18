@@ -34,7 +34,7 @@ $(function () {
         
     });
     
-    asyncTest("predefined and custom callback", 4, function() {
+    asyncTest("predefined and custom callback", 7, function() {
         ajaxSettingsWorks = true;
         
         predefCollectionCallback.on('fetched', function () {
@@ -42,12 +42,15 @@ $(function () {
             predefCollectionCallback.off('fetched').on('fetched', function () {
                 ok(true);
                 equal(ajaxSettingsWorks, true);
+                equal(predefCollectionCallback.status.loading, false);
+                equal(predefCollectionCallback.status.loaded, true);
                 start();
             });
             
             predefCollectionCallback.refresh();
             equal(predefCollectionCallback.status.loading, true);
             equal(predefCollectionCallback.status.loaded, false);
+            equal(predefCollectionCallback.ajaxSettings.silent, false);
         });
         
         predefCollectionCallback.fetch();

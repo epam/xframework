@@ -1,4 +1,4 @@
-/*! X-Framework 14-11-2013 */
+/*! XFramework 18-11-2013 */
 ;(function (window, $, BB) {
 
     /* $ hooks */
