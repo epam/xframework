@@ -11,8 +11,9 @@ $(function () {
             }
         });
         
-        test('defaults', 4, function () {
+        test('defaults', 5, function () {
             equal(XF.getComponentByID('test').id, 'test');
+            equal('test' in XF.getRegisteredComponents(), true);
             equal(XF.getComponentByID('test').defaults.autoload, true);
             equal(XF.getComponentByID('test').defaults.autorender, true);
             equal(XF.getComponentByID('test').defaults.updateOnShow, false);
