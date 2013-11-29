@@ -1,0 +1,135 @@
+<h2>XF.pages</h2>
+
+<p><code>XF.pages</code> drives the appearance of the pages sticking together with the router. It has some basic animations for switching pages such like <code>slideleft</code>, <code>slideright</code>, <code>fade</code> and <code>none</code>. Not so much for now but keep in mind that it is possible to define your own animation to use it together with <code>XF.pages</code>.</p>
+
+<p>To create a page you just need to make a <code>&lt;div&gt;</code> with necessary classes):</p>
+
+<div class="highlight"><pre lang="html">&lt;div class=&quot;xf-page&quot; id=&quot;books&quot;&gt;&lt;/div&gt;
+</pre></div>
+
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD<br /><code>id</code> is used to make page switching work together with the router. It should be equal to first url fragment of the route (e.g. <code>books/:cat(/:subcat)</code>) or the name of the handler (e.g. <code>showBooksCategory</code>). In this case the page with such id attribute will be shown automatically when the route (e.g. <code>books/fiction</code>) will be triggered.</p>
+
+<p>To show the page without changing the url or using route binding:</p>
+
+<div class="highlight"><pre lang="javascript">XF.trigger('pages:show', 'books', 'fade');
+
+// …directly 
+XF.pages.show('books', 'fade');
+
+
+<h1>```</h1>
+
+`XF.App` is a 'class' that you able to extend with your own methods and properties needed in the application. In this case an instance of this class is something like a main controller of the whole app.
+
+</pre></div>javascript
+// if the app boilerplate was created via XF Generator
+// these lines can be found in `app.js` file
+var MyApp = XF.App.extend({
+    initialize: function () {
+        // this code will be executed before XF will be started
+            // but you can put the preparation code here
+            // …
+            this.myAwesomeMethod();
+    },
+        myAwesomeMethod: function () {
+
+
+<blockquote>
+  <blockquote>
+    <blockquote>
+      <blockquote>
+        <blockquote>
+          <blockquote>
+            <blockquote>
+              <p>4da00e27f941b8e09cee59a7e8cd8d6fd27b4d8a</p>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+To define the default animation type for all device types it's needed to set up the necessary properties on the start of app:
+
+<div class="highlight"><pre lang="javascript">var app = new MyApp({
+        // …
+        // other settings for the application
+        animations: {
+            standardAnimation: 'slideleft' // 'slideleft' is default
+        }
+});
+</pre></div>
+
+<p>If you want to create your own animation type and use it for page switching you (please care about necessary CSS animations in <code>xf.animations.less</code> file):</p>
+
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+
+<div class="highlight"><pre lang="javascript">var app = new MyApp({
+        // …
+        // other settings for the application
+        animations: {
+            types: {
+                'myOwnAnimation': {
+                    fallback: function (fromPage, toPage) {
+                        // fallback to JS animation for old legacy browsers
+                        /// …
+                    }
+                }
+            }
+        }
+});
+</pre></div>
+
+<h1>To define the default animation for each of device types it's needed to pass such parameters together with device options on the start of application or set it in the runtime:</h1>
+
+<p><code>XF.device</code> contains the information about current user device app was launched:</p>
+
+<ul>
+<li><code>XF.device.supports.touchEvents</code></li>
+<li><code>XF.device.supports.pointerEvents</code></li>
+<li><code>XF.device.supports.cssAnimations</code></li>
+<li><code>XF.device.isMobile</code>. It was a necessary trick to detect mobile OS's using <code>navigator.userAgent</code>.</li>
+<li><code>XF.device.type</code> is a selected type of devices from specified in options passed on the start of application. Based on this selected device type the necessary template for the component will be loaded.
+
+
+<blockquote>
+  <blockquote>
+    <blockquote>
+      <blockquote>
+        <blockquote>
+          <blockquote>
+            <blockquote>
+              <p>4da00e27f941b8e09cee59a7e8cd8d6fd27b4d8a</li><br /></ul><br /><div class="highlight"><pre lang="javascript">var app = new MyApp({<br />        // …<br />        // other settings for the application<br />    device: {<br />                types : [{<br />            name : 'tablet',<br />            range : {<br />                max : 1024,<br />                min : 569<br />            },<br />            templatePath : 'tablet/',<br />                        defaultAnimation: 'fade' // 'fade' for tablet devices<br />        }, {<br />            name : 'phone',<br />            range : {<br />                max : 568,<br />                min : null<br />            },<br />            templatePath : 'phone/' <br />                        // 'slide left' will be used for device type 'phone'<br />        }]<br />    }<br />});</p>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+XF.trigger('pages:animation:default', 'fade');
+
+// …or not so elegant way
+XF.setDefaultAnimationType('fade');
+</pre></div>
+
+The situations if changing of the next animation type for the page is needed are not so uncommon, e.g. back button tap should force `slide right` animation instead of `slideleft`. In such cases there are some ways to do it:
+
+<ul>
+<li>Define <code>data-animation</code> attribute on the element with <code>data-href</code>:</li>
+</ul>
+
+<div class="highlight"><pre lang="html">&lt;a data-href=&quot;books/&quot; data-animations=&quot;slideright&quot;&gt;Back&lt;/a&gt;
+</pre></div>
+
+<ul>
+<li>Set the next animation type programmatically:</li>
+</ul>
+
+<div class="highlight"><pre lang="javascript">XF.trigger('pages:animation:next', 'slideright');
+
+// …or not so elegant way
+XF.setNextAnimationType('slideright');
+</pre></div>

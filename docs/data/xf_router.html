@@ -1,0 +1,67 @@
+<h2>XF.Router</h2>
+
+<p><code>XF.Router</code> is an extended [Backbone.Router]. XF cares about creation of router instance, its starting, binding handlers and so on. Everything you just need to do is to pass your routes and handlers with starting options for the application:</p>
+
+<div class="highlight"><pre lang="javascript">    // if the app boilerplate was created via XF Generator
+    // these lines cab be found in `index.js` file
+    var app = new MyApp({
+        // …
+        // other settings for the application
+    router: {
+        routes: {
+            '':                                         'home',
+            'search/:q':                            'searchByQuery',
+            'item:id':                              'showItemById',
+                        'books/:cat(/:subcat)': 'showBooksCategory',
+                        'news/*any':                            'showNews'
+        },
+
+<pre><code>    home: function () {
+
+    },
+
+    searchByQuery: function (query) {
+
+    },
+
+    showItemById: function (id) {
+
+    },
+
+            showBooksCategory: function (cat, subcat) {
+
+            },
+
+            showNews: function (param) {
+
+            }
+}
+</code></pre>
+
+});
+</pre></div>
+
+<p>In the example above the handler <code>home</code> for empty route was created. In case you want to define the starting route for the application or turn off HTML5 pushState (using <code>pushState</code> support is turned on by default) you should pass the necessary starting parameters to <code>XF.history</code> which actually is a link to <a href="http://backbonejs.org/#History">Backbone.history</a>.</p>
+
+<div class="highlight"><pre lang="javascript">var app = new MyApp({
+        // …
+        // other settings for the application
+    history: {
+                pushState: false,
+                root: 'books/fiction'
+    }
+});
+</pre></div>
+
+<p>To force navigation to another url fragment a number of ways is available:</p>
+
+<ul>
+<li><code>XF.router.navigate('books/fiction', {trigger: true})</code></li>
+<li><code>XF.navigate('books/fiction')</code> is the syntax sugar for the first  approach. <code>{trigger: true}</code> set by default</li>
+<li><code>XF.trigger('navigate', 'books/fiction')</code> is much more preferable for consistency and integrity of the application</li>
+</ul>
+
+<p>All elements with the attribute <code>data-href</code> or <code>href</code> will work on changing url fragment.</p>
+
+<div class="highlight"><pre lang="html">&lt;a data-href=&quot;books/fiction&quot;&gt;Books&lt;/a&gt;
+</pre></div>
