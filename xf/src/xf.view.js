@@ -1,3 +1,13 @@
+define([
+    './xf.core',
+    'jquery',
+    'underscore',
+    'backbone',
+    './xf.settings',
+    './xf.storage',
+    './xf.device'
+], function(XF, $, _, BB) {
+
     /**
      Implements view workaround flow.
      @class
@@ -239,3 +249,6 @@
         afterRender : function() {}
 
     });
+
+    return XF;
+});

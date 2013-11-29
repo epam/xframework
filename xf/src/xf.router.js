@@ -1,3 +1,11 @@
+define([
+    './xf.core',
+    'jquery',
+    'underscore',
+    'backbone',
+    './xf.pages'
+], function(XF, $, _, BB) {
+
     /**
      Instance of {@link XF.RouterClass}
      @static
@@ -52,3 +60,6 @@
             return parts[0];
         }
     });
+
+    return XF;
+});

@@ -1,3 +1,10 @@
+define([
+    './xf.core',
+    'underscore',
+    'backbone',
+    './xf.settings'
+], function(XF, _, BB) {
+
 XF.App = function(options) {
     options = options || {};
     options.device = options.device || {};
@@ -26,3 +33,6 @@ _.extend(XF.App.prototype, /** @lends XF.App.prototype */{
  @static
  */
 XF.App.extend = BB.Model.extend;
+
+    return XF;
+});

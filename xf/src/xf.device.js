@@ -1,3 +1,9 @@
+define([
+    './xf.core',
+    'jquery',
+    'underscore'
+], function(XF, $, _) {
+
 /**
 Instance of {@link XF.DeviceClass}
 @static
@@ -349,3 +355,6 @@ getViewport : function() {
     return vp.eq(0);
 }
 };
+
+    return XF;
+});

@@ -1,3 +1,9 @@
+define([
+    './xf.core',
+    'underscore',
+    './xf.device'
+], function(XF, _) {
+
     /**
      @namespace Holds all the reusable util functions
      */
@@ -98,3 +104,6 @@
             }
         }
     });
+
+    return XF;
+});

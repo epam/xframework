@@ -1,3 +1,10 @@
+define([
+    'jquery',
+    'underscore',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, _, XF) {
 
 /**
 Enhances text input view
@@ -385,3 +392,6 @@ XF.ui.input = {
             }
         }
     };
+
+});
+
