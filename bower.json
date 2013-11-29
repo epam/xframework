@@ -9,14 +9,14 @@
   },
   "homepage": "http://xframeworkjs.org",
   "authors": [
-    ""
+    "EPAM"
   ],
   "main": "js/xf.js",
   "license": "BSD",
   "ignore": [
     "**/.*",
     "node_modules",
-    "dependencies",
+    "bower_modules",
     ".",
     "test",
     "tests"

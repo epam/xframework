@@ -43,5 +43,5 @@ define([
     'underscore'
 ], function(XF) {
 
-    return (window.XF = XF);
+    return XF;
 });

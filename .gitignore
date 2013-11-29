@@ -62,3 +62,4 @@ tmpl/mobile/speakers.tmpl
 tmpl/phone/root.tmpl
 
 tmpl/tablet/root.tmpl
+.DS_Store
