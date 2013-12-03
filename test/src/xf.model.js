@@ -34,7 +34,7 @@ $(function () {
         
     });
     
-    asyncTest("predefined and custom callback", 2, function() {
+    asyncTest("predefined and custom callback", 4, function() {
         ajaxSettingsModelWorks = true;
         
         predefModelCallback.on('fetched', function () {
@@ -42,6 +42,8 @@ $(function () {
             predefModelCallback.off('fetched').on('fetched', function () {
                 ok(true);
                 equal(ajaxSettingsModelWorks, true);
+                equal(predefModelCallback.status.loading, false);
+                equal(predefModelCallback.status.loaded, true);
                 start();
             });
             
