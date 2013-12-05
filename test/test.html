@@ -1,98 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8">
-        <title>X-Framework Test page</title>
-        <link rel="stylesheet" href="../styles/xf.css">
-    </head>
+<head>
+    <meta charset="utf-8">
+    <title>X-Framework Test page</title>
+    <link rel="stylesheet" href="../styles/xf.css">
+</head>
 
-    <style type="text/css">
-        body {
-            font-family: 'ArialMT';
+<style type="text/css">
+body {
+    font-family: 'ArialMT';
+}
+</style>
+
+<body class="xf-page-content">
+
+</body>
+
+<script src="http://docs.xframeworkjs.org/js/lib/jquery.js"></script>
+<script src="http://docs.xframeworkjs.org/js/lib/underscore.js"></script>
+<script src="http://docs.xframeworkjs.org/js/lib/backbone.js"></script>
+<script src="../js/xf.js"></script>
+<script type="text/javascript">
+if (!window.console) {
+    window.console = {
+        log: function() {}
+    }
+}
+</script>
+<script type="text/javascript">
+$(function(){
+    XF.start({
+
+        settings: {
+            applicationVersion: '1.1'+ Math.random(),
+            noCache: true,
+            componentUrlPrefix: 'js/components/',
+            templateUrlPrefix: 'tmpl/',
+            dataUrlPrefix: 'mocks/'
+
+        },
+
+        animations: {
+        default: 'slideleft',
+        types: {
+
         }
-    </style>
+    },
 
-    <body class="xf-page-content">
+    device: {
+        types : [{
+            name : 'tablet',
+            range : {
+                max : null,
+                min : 569
+            },
+            templatePath : 'tablet/',
+            fallBackTo : 'default'
+        }, {
+            name : 'mobile',
+            range : {
+                max : 568,
+                min : null
+            },
+            templatePath : 'mobile/',
+            fallBackTo : 'default'
+        }]
+    },
 
-    </body>
+    router: {
+        routes: {
+            '': 			'home',
+            '/': 			'home',
+            'page2':	    'home',
+            'page1':        'home'
+        },
 
-    <script src="../js/lib/jquery.js"></script>
-    <script src="../js/lib/underscore.js"></script>
-    <script src="../js/lib/backbone.js"></script>
-    <script src="../js/xf.js"></script>
-    <script type="text/javascript">
-        if (!window.console) {
-            window.console = {
-                log: function() {}
-            }
+        home: function () {
+        },
+
+        page2: function () {
+            "use strict";
+        },
+
+        page1: function () {
+            "use strict";
         }
-    </script>
-    <script type="text/javascript">
-        $(function(){
-            XF.start({
+    }
 
-                settings: {
-                    applicationVersion: '1.1'+ Math.random(),
-                    noCache: true,
-                    componentUrlPrefix: 'js/components/',
-                    templateUrlPrefix: 'tmpl/',
-                    dataUrlPrefix: 'mocks/'
+});
 
-                },
-
-                animations: {
-                    default: 'slideleft',
-                    types: {
-
-                    }
-                },
-
-                device: {
-                    types : [{
-                            name : 'tablet',
-                            range : {
-                                max : null,
-                                min : 569
-                            },
-                            templatePath : 'tablet/',
-                            fallBackTo : 'default'
-                        }, {
-                            name : 'mobile',
-                            range : {
-                                max : 568,
-                                min : null
-                            },
-                            templatePath : 'mobile/',
-                            fallBackTo : 'default'
-                    }]
-                },
-
-                router: {
-                    routes: {
-                        '': 			'home',
-                        '/': 			'home',
-                        'page2':	    'home',
-                        'page1':        'home'
-                    },
-
-                    home: function () {
-        //                console.log(123);
-                    },
-
-                    page2: function () {
-                        "use strict";
-        //                console.log(2);
-                    },
-
-                    page1: function () {
-                        "use strict";
-        //                console.log(1);
-                    }
-                }
-
-            });
-
-        });
-    </script>
+});
+</script>
 </html>

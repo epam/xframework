@@ -20,7 +20,9 @@ $(function () {
                         swipeDown = true;
                     });
 
-                    $('button').on('tap', function() {alert(49)})
+                    $('button').on('tap', function() {
+                        alert(49);
+                    });
                 }
             }),
 

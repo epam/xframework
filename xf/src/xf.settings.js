@@ -1,3 +1,7 @@
+define([
+    './xf.core'
+], function(XF) {
+
     /**
      {@link XF.settings}
      @static
@@ -85,3 +89,6 @@
             }
         }
     };
+
+    return XF;
+});

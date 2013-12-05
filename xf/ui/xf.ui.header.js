@@ -1,3 +1,10 @@
+define([
+    'jquery',
+    'underscore',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, _, XF) {
 
     /**
      Enhances headers view
@@ -14,12 +21,13 @@
                 return;
             }
 
-            // detect if we have title
+            // Detect if we have title
             var headerTitle = jQHeader.find('h1');
             if (headerTitle.length > 0) {
                 headerTitle.addClass('xf-header-title');
             }
 
+            // Set up options
             options.id = options.id || XF.utils.uniqueID();
             options.title = options.title || '';
             options.html = jQHeader.html();
@@ -28,10 +36,12 @@
             var parentPages = $(this.selector).parents('.xf-page'),
                 siblingPages = $(this.selector).siblings('.xf-page');
                 
+            // Add additional class for parent node
             if (!_.isEmpty(parentPages) && options.isFixed) {
                 parentPages.addClass('xf-has-header');
             }
             
+            // Add additional class for siblings
             if (!_.isEmpty(siblingPages)) {
                 siblingPages.addClass('xf-has-header');
             }
@@ -44,11 +54,13 @@
 
             // Underscore template for header
             var _template = _.template(
-                '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">'
-                + '<%= html %>'
-                + '</header>'
+                '<header class="xf-header <% if(isFixed) { %> xf-header-fixed <% } %>">' +
+                '<%= html %>' +
+                '</header>'
             );
 
             jQHeader.html(_template(options));
         }
     };
+
+});

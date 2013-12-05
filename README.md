@@ -3,6 +3,8 @@ XFramework
 
 ![Travis build](https://travis-ci.org/epam/xframework.png)
 
+[![Dependency Status](https://gemnasium.com/epam/xframework.png)](https://gemnasium.com/epam/xframework)
+
 # Getting started
 
 ## What is XFramework?

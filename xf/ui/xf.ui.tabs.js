@@ -1,11 +1,17 @@
+define([
+    'jquery',
+    'underscore',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, _, XF) {
 
     /**
      Enhances footers view
-     @param footer DOM Object
-     @private
      */
     XF.ui.tabs = {
 
+        // Selectors will be used to detect tabs' element on the page
         selector : '[data-role=tabs]',
 
         render : function (tabs, options) {
@@ -26,7 +32,8 @@
             });
 
             options.tabs = options.tabs || [];
-
+            
+            // Detect buttons and count rows
             var buttons = jQTabs.find(XF.ui.button.selector);
             options.rowCount = Math.ceil(buttons.length / options.tabsperrow);
             options.tabsClass = options.tabsclass || '';
@@ -36,6 +43,7 @@
                 lastRowSize = options.tabsperrow;
             }
 
+            // Position buttons in rows
             for (var i = 0; i < buttons.length; ++i){
                 var tab = buttons.eq(i),
                     x = i + 1,
@@ -60,7 +68,7 @@
                 }
 
                 if (tab.attr('data-active')) {
-                    tabOpts.className += ' xf-tabs-button-active '
+                    tabOpts.className += ' xf-tabs-button-active ';
                 }
 
                 if (x > buttons.length - lastRowSize) {
@@ -76,27 +84,32 @@
                 options.tabs.push(tabOpts);
             }
 
+            // Underscore template for tabs
             var _template = _.template(
-                '<ul class="xf-tabs">'
-                + '<% _.each(tabs, function(tab) { %>'
-                + '<li class="xf-grid-unit <%= tabsClass %> <%= tab.gridClass %>  ">'
-                + '<a data-params="<%= tab.params %>" class="xf-tabs-button <%= tab.className %>" id="<%= tab.id %>">'
-                + '<span class="xf-tabs-button-text"><%= tab.text %></span>'
-                + '</a>'
-                + '</li>'
-                + '<% }); %>'
-                + '</ul>'
+                '<ul class="xf-tabs">' +
+                '<% _.each(tabs, function(tab) { %>' +
+                '<li class="xf-grid-unit <%= tabsClass %> <%= tab.gridClass %>  ">' +
+                '<a data-params="<%= tab.params %>" class="xf-tabs-button <%= tab.className %>" id="<%= tab.id %>">' +
+                '<span class="xf-tabs-button-text"><%= tab.text %></span>' +
+                '</a>' +
+                '</li>' +
+                '<% }); %>' +
+                '</ul>'
             );
 
             jQTabs.html(_template(options));
 
+            // Add tab selection' handler to buttons
             jQTabs.find('a').on('tap', function () {
                XF.ui.tabs.selectTab(jQTabs, $(this));
             });
         },
 
+        // Method to show appropriate tab
         selectTab : function (parent, el) {
             parent.find('a').removeClass('xf-tabs-button-active');
             el.addClass('xf-tabs-button-active');
         }
     };
+
+});

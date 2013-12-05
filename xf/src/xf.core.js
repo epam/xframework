@@ -1,5 +1,12 @@
+define([
+    'jquery',
+    'underscore',
+    'backbone'
+], function ($, _, BB) {
+
     // Root DOM Object for starting the application
     // TODO: should be moved to app settings
+    // TODO(jauhen): See xf.pages for same variable.
     var rootDOMObject = $('body');
 
     // Namespaceolds visible functionality of the framework
@@ -37,7 +44,9 @@
 
         var compID = parts[1];
 
-        XF._defferedCompEvents || (XF._defferedCompEvents = {});
+        if (!XF._defferedCompEvents) {
+            XF._defferedCompEvents = {};
+        }
 
         if (parts[0] === 'component' && parts[2] === 'rendered') {
             onComponentRender(compID);
@@ -224,6 +233,48 @@
         document.getElementsByTagName('head')[0].appendChild(script);
     };
 
+
+    /**
+     Describes current component definition status
+     @class
+     @private
+     @memberOf XF
+     @param {String} compSrc Component definition source
+     */
+    var ComponentStatus = function(compSrc) {
+        /**
+         Component definition source
+         @private
+         @type String
+         */
+        this.compSrc = compSrc;
+        /**
+         Component definition
+         @private
+         @type XF.Component
+         */
+        this.compDef = null;
+        /**
+         Flag that determines whether the component definition is currently being loaded
+         @private
+         @type Boolean
+         */
+        this.loading = false;
+        /**
+         Flag that determines whether the component definition has already been loaded
+         @private
+         @type Boolean
+         */
+        this.loaded = false;
+        /**
+         A list of callbacks to call on component definition loading complete
+         @private
+         @type String[]
+         */
+        this.callbacks = [];
+    };
+
+
     // Stores instances of XF.Component and its subclasses
     var components = {};
 
@@ -361,7 +412,5 @@
     // Linking Backbone.history to XF.history
     XF.history = BB.history;
 
-
-
-
-
+    return XF;
+});

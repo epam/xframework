@@ -1,3 +1,10 @@
+define([
+    'jquery',
+    'underscore',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, _, XF) {
 
     /**
      Enhances footers view
@@ -61,18 +68,18 @@
 
             // Underscore template for footer
             var _template = _.template(
-                '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">'
-                + '<ul class="xf-nav">'
-                + '<% _.each(buttons, function(button) { %>'
-                + '<li class="xf-grid-unit <%= buttonsClass %>">'
-                + '<a data-href="<%= button.dataHrefString %>" class="xf-nav-item xf-iconpos-top" id="<%= button.id %>">'
-                + '<div class="xf-icon xf-icon-big <%= button.iconClass %>"></div>'
-                + '<div class="xf-nav-item-text <%= button.textClass %>"><%= button.text %></div>'
-                + '</a>'
-                + '</li>'
-                + '<% }); %>'
-                + '</ul>'
-                + '</div>'
+                '<div class="xf-footer <% if(fixed) { %> xf-footer-fixed <% } %>">' +
+                '<ul class="xf-nav">' +
+                '<% _.each(buttons, function(button) { %>' +
+                '<li class="xf-grid-unit <%= buttonsClass %>">' +
+                '<a data-href="<%= button.dataHrefString %>" class="xf-nav-item xf-iconpos-top" id="<%= button.id %>">' +
+                '<div class="xf-icon xf-icon-big <%= button.iconClass %>"></div>' +
+                '<div class="xf-nav-item-text <%= button.textClass %>"><%= button.text %></div>' +
+                '</a>' +
+                '</li>' +
+                '<% }); %>' +
+                '</ul>' +
+                '</div>'
             );
 
             jQFooter.html(_template(options));
@@ -87,3 +94,5 @@
             el.find('.xf-nav a[data-href="#' + page + '"]').addClass('xf-nav-item-active');
         }
     };
+
+});

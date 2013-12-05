@@ -1,8 +1,12 @@
+define([
+    'jquery',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, XF) {
 
     /**
-     Adds scrolling functionality
-     @param scrollable DOM Object
-     @private
+     Add scrolling functionality
      */
     XF.ui.scrollable = {
 
@@ -21,7 +25,7 @@
 
             var children = jQScrollable.children();
 
-            // always create wrapper
+            // Always create wrapper
             if (children.length == 1 && false) {
                 children.addClass('xf-scrollable-content');
             } else {
@@ -34,11 +38,12 @@
 
             var wrapperId = jQScrollable.attr('id');
 
-            if (!wrapperId || wrapperId == '') {
+            if (!wrapperId || wrapperId === '') {
                 wrapperId = 'xf_scrollable_' + new Date().getTime();
                 jQScrollable.attr({'id':wrapperId});
             }
 
+            // Use iScroll
             var ISItem = jQScrollable.data('iscroll', new iScroll(wrapperId));
             var wrapperChanged = false;
 
@@ -59,6 +64,7 @@
                 }
             };
 
+            // Bind hadlers to the scrollable element
             var bindHanlders = function () {
                 $('#' + wrapperId + ' *')
                     .bind('detach', needRefreshIScroll)
@@ -72,3 +78,5 @@
             bindHanlders();
         }
     };
+
+});

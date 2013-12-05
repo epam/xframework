@@ -1,3 +1,11 @@
+define([
+    './xf.core',
+    'jquery',
+    'underscore',
+    'backbone',
+    './xf.settings'
+], function(XF, $, _, BB) {
+
 XF.Model = BB.Model.extend({
 
     _initProperties: function () {
@@ -23,15 +31,19 @@ XF.Model = BB.Model.extend({
     constructor: function (attributes, options) {
         this._initProperties();
         this._bindListeners();
+        
+        if (!options) {
+            options = {};
+        }
 
         if (options.component) {
             this.component = options.component;
         }
         _.omit(options, 'component');
 
-        this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + this.component.name + '/';
+        this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
 
-        if (this.component.options.updateOnShow) {
+        if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
             $(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
@@ -74,6 +86,12 @@ XF.Model = BB.Model.extend({
         this.fetch(this.ajaxSettings);
     },
 
+    fetch: function (options) {
+        options = _.defaults(options || {}, this.ajaxSettings);
+
+        return Backbone.Collection.prototype.fetch.call(this, options);
+    },
+
     _onDataLoaded: function () {
         this.status.loaded = true;
         this.status.loading = false;
@@ -81,4 +99,7 @@ XF.Model = BB.Model.extend({
         this.trigger('fetched');
     }
 
+});
+
+    return XF;
 });
