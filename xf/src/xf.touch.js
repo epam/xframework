@@ -1,3 +1,9 @@
+define([
+    './xf.core',
+    'jquery',
+    './xf.device'
+], function(XF, $) {
+
     // Method announces touchevents for elements
     XF.touch = {
 
@@ -113,3 +119,6 @@
         }
 
     };
+
+    return XF;
+});

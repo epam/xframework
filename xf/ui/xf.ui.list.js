@@ -1,3 +1,10 @@
+define([
+    'jquery',
+    'underscore',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, _, XF) {
 
     /**
      Enhances ul/ol lists view
@@ -96,3 +103,5 @@
             jQList.html(_template({listItemsScope : listItemsScope}));
         }
     };
+
+});

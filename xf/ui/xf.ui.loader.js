@@ -1,3 +1,9 @@
+define([
+    'jquery',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, XF) {
 
 /**
 Enhances loaders view
@@ -80,3 +86,5 @@ XF.ui.loader = {
         return this.render(jqLoader[0]);
     }
 };
+
+});

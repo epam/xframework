@@ -1,3 +1,11 @@
+define([
+    './xf.core',
+    'jquery',
+    'underscore',
+    'backbone',
+    './xf.settings'
+], function (XF, $, _, BB) {
+
 XF.Collection = BB.Collection.extend({
 
     _initProperties: function () {
@@ -96,4 +104,7 @@ XF.Collection = BB.Collection.extend({
         this.trigger('fetched');
     }
 
+});
+
+    return XF;
 });

@@ -1,3 +1,10 @@
+define([
+    'jquery',
+    'underscore',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, _, XF) {
 
     /**
      Enhances headers view
@@ -31,7 +38,7 @@
             var menuButton = '<button class="xf-slidemenu-button xf-button-float-' +jQMenu.data('button-position')  + ' xf-button-header-' +jQMenu.data('button-position')  + ' xf-button-small-icon-only xf-button-small xf-button" data-position="' +jQMenu.data('button-position')  + '" data-skip-enhance="true"><span class="xf-icon xf-icon-list xf-icon-small"></span></button>',
             menuButtonContainer = $('#' + jQMenu.data('button-container'));
             menuButtonContainer.find('header').append(menuButton);
-            options.menuButton = '<button class="xf-slidemenu-close-button xf-button-float-' +jQMenu.data('button-position')  + ' xf-button-header-' +jQMenu.data('button-position')  + ' xf-button-small-icon-only xf-button-small xf-button" data-position="' +jQMenu.data('button-position')  + '" data-skip-enhance="true"><span class="xf-icon xf-icon-cross xf-icon-small"></span</button>';
+            options.menuButton = '<button class="xf-slidemenu-close-button xf-button-float-' +jQMenu.data('button-position')  + ' xf-button-header-' +jQMenu.data('button-position')  + ' xf-button-small-icon-only xf-button-small xf-button" data-position="' +jQMenu.data('button-position')  + '" data-skip-enhance="true"><span class="xf-icon xf-icon-cross xf-icon-small"></span></button>';
 
             var buttons = jQMenu.find(XF.ui.button.selector);
             options.buttonsClass = '';
@@ -90,3 +97,5 @@
             el.find('a[data-href="#' + page + '"], a[href="#' + page + '"]').addClass('xf-slidemenu-item-active');
         }
     };
+
+});

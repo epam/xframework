@@ -1,3 +1,10 @@
+define([
+    'jquery',
+    'underscore',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, _, XF) {
 
     /**
      Enhances footers view
@@ -104,3 +111,5 @@
             el.addClass('xf-tabs-button-active');
         }
     };
+
+});

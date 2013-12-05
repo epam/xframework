@@ -1,9 +1,35 @@
 {
-    "name": "xframework",
-    "version": "0.1.2",
-    "devDependencies": {
-        "jquery" : "http://code.jquery.com/jquery-latest.js",
-        "backbone" : "http://backbonejs.org/backbone.js",
-        "underscore" : "http://underscorejs.org/underscore.js"
+  "name": "xframework",
+  "version": "0.9.1",
+  "devDependencies": {
+    "jquery": "latest",
+    "backbone": "latest",
+    "underscore": "latest",
+    "requirejs": "latest"
+  },
+  "homepage": "http://xframeworkjs.org",
+  "authors": [
+    "EPAM"
+  ],
+  "main": "js/xf.js",
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_modules",
+    ".",
+    "test",
+    "tests"
+  ],
+  "exportsOverride": {
+    "backbone": {
+      ".": "backbone.js"
+    },
+    "underscore": {
+      ".": "underscore.js"
+    },
+    "requirejs": {
+      ".": "require.js"
     }
+  }
 }

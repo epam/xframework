@@ -1,3 +1,17 @@
+define([
+    './xf.core',
+    'jquery',
+    'underscore',
+    './xf.device'
+], function(XF, $, _) {
+
+    /* jshint -W004 */
+    // Root DOM Object for starting the application
+    // TODO: should be moved to app settings
+    // TODO(jauhen): See xf.core for same variable.
+    var rootDOMObject = $('body');
+    /* jshint +W004 */
+
     /**
      XF.pages
      @static
@@ -197,6 +211,9 @@
             XF.trigger('ui:enhance', $(this.activePage));
 
             // looking for components inside the page
-            loadChildComponents(this.activePage[0]);
+            XF.loadChildComponents(this.activePage[0]);
         }
     };
+
+    return XF;
+});

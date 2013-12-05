@@ -1,3 +1,10 @@
+define([
+    'jquery',
+    'underscore',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, _, XF) {
 
     /**
      Enhances footers view
@@ -87,3 +94,5 @@
             el.find('.xf-nav a[data-href="#' + page + '"]').addClass('xf-nav-item-active');
         }
     };
+
+});

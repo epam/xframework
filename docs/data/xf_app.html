@@ -1,0 +1,20 @@
+<h2>XF.App</h2>
+
+<p><code>XF.App</code> is a 'class' that you able to extend with your own methods and properties needed in the application. In this case an instance of this class is something like a main controller of the whole app. </p>
+
+<div class="highlight"><pre lang="javascript">// if the app boilerplate was created via XF Generator
+// these lines can be found in `app.js` file
+var MyApp = XF.App.extend({
+    initialize: function () {
+        // this code will be executed before XF will be started 
+            // but you can put the preparation code here
+            // …            
+            this.myAwesomeMethod();
+    },
+        myAwesomeMethod: function () {
+
+<pre><code>    }
+</code></pre>
+
+});
+</pre></div>
