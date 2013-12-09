@@ -64,7 +64,7 @@ define([
             // Sorry, BB extend makes all properties static
             this._initProperties();
 
-            this.setElement('[data-id=' + options.attributes['data-id'] + ']');
+            this.setElement('[data-id=' + options.attributes['data-id'] + ']', false);
 
 
             if (options.component) {
