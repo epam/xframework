@@ -174,7 +174,7 @@ define([
                 data = this.component.model.toJSON();
             }
 
-            return this.template.compiled({data: data});
+            return this.template.compiled({data: data, options: this.component.options});
         },
 
         /**
