@@ -7,20 +7,21 @@
     "grunt-contrib-nodeunit": "~0.2.0",
     "grunt-contrib-uglify": "~0.1.1",
     "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-less" : "~0.7.0",
-    "grunt-concat": "~0.1.6",
+    "grunt-contrib-less": "~0.7.0",
     "grunt-contrib-qunit": "latest",
     "grunt-recess": "latest",
-    "vows" : "latest",
     "underscore.string": "latest",
-    "generator-xf": "latest"
+    "generator-xf": "latest",
+    "requirejs": "~2.1.9",
+    "grunt-bower-task": "~0.3.4",
+    "load-grunt-tasks": "~0.2.0"
   },
   "repository": {
-      "type": "git",
-      "url": "git://github.com/epam/xframework.git"
+    "type": "git",
+    "url": "git://github.com/epam/xframework.git"
   },
   "scripts": {
-      "test": "mocha"
+    "test": "mocha"
   },
   "description": "ERROR: No README data found!",
   "main": "Gruntfile.js",

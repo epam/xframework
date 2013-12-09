@@ -1,0 +1,9 @@
+<ul data-role="listview">
+<% _.each(data, function(item, key) { %>
+	<% if (item.isHeader) { %>
+		<li data-role="divider"><strong><%= item.title %></strong></li>
+	<% }else{ %>
+    <li><a data-href="#/<%= item.url %>/" class="mitem-<%= encodeURIComponent(item.url) %>"><%= item.title %></a></li>
+	<% } %>
+<% }); %>
+</ul>

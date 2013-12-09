@@ -1,3 +1,11 @@
+define([
+    './xf.core',
+    'jquery',
+    'underscore',
+    'backbone',
+    './xf.settings'
+], function(XF, $, _, BB) {
+
 XF.Model = BB.Model.extend({
 
     _initProperties: function () {
@@ -91,4 +99,7 @@ XF.Model = BB.Model.extend({
         this.trigger('fetched');
     }
 
+});
+
+    return XF;
 });

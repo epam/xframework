@@ -1,0 +1,50 @@
+<h2>Basics</h2>
+
+<p>XFramework UI element is 'an extended version of Document Object' or the another parallel could be done with jQuery Plugin. It fills the gap with Rich UI Elements for all the browsers. It means that XFramework will parse your HTML and add some markup to make UI controls user- and developer-friendly.</p>
+
+<p>Each UI element has a simple markup that will be enhanced into the rich element.</p>
+
+<div class="highlight"><pre lang="html">&lt;ul data-role=&quot;listview&quot;&gt;
+    &lt;li data-role=&quot;divider&quot;&gt;A&lt;/li&gt;
+    &lt;li&gt;
+        &lt;h2&gt;Header&lt;/h2&gt;
+        &lt;p&gt;No link&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Simple link&lt;/a&gt;&lt;/li&gt;
+    &lt;li data-role=&quot;divider&quot;&gt;Divider&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;
+        &lt;h2&gt;Header&lt;/h2&gt;
+        &lt;p&gt;Header and description&lt;/p&gt;
+    &lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre></div>
+
+<p>Will be converted to:</p>
+
+<div class="highlight"><pre lang="html">&lt;ul data-role=&quot;listview&quot; data-skip-enhance=&quot;true&quot; id=&quot;xf-8293&quot; class=&quot;xf-listview&quot;&gt;
+    &lt;li class=&quot; xf-li xf-li-divider&quot;&gt;A&lt;/li&gt;
+    &lt;li class=&quot;xf-li-static xf-li&quot;&gt;
+        &lt;div class=&quot;xf-li-wrap&quot;&gt;
+            &lt;h2 class=&quot;xf-li-header&quot;&gt;Header&lt;/h2&gt;
+            &lt;p class=&quot;xf-li-desc&quot;&gt;No link&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class=&quot; xf-li&quot;&gt;
+        &lt;a href=&quot;#&quot; class=&quot;xf-li-btn&quot;&gt;
+            Simple link
+            &lt;div class=&quot;xf-btn-text&quot;&gt;&lt;/div&gt;
+        &lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li class=&quot; xf-li xf-li-divider&quot;&gt;Divider&lt;/li&gt;
+    &lt;li class=&quot; xf-li&quot;&gt;
+        &lt;a href=&quot;#&quot; class=&quot;xf-li-btn&quot;&gt;
+            &lt;div class=&quot;xf-btn-text&quot;&gt;
+                &lt;h2 class=&quot;xf-li-header&quot;&gt;Header&lt;/h2&gt;
+                &lt;p class=&quot;xf-li-desc&quot;&gt;Header and description&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/a&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+</pre></div>
+
+<p>The look of form inputs, buttons will be enhanced automatically, but you can use certain attributes to customize some of them. See full list of the data- attributes below.</p>

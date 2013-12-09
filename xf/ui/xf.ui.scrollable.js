@@ -1,3 +1,9 @@
+define([
+    'jquery',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, XF) {
 
     /**
      Add scrolling functionality
@@ -72,3 +78,5 @@
             bindHanlders();
         }
     };
+
+});

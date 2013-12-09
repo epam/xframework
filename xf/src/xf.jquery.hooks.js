@@ -1,4 +1,7 @@
-
+define([
+    './xf.core',
+    'jquery'
+], function(XF, $) {
 
     /* $ hooks */
 
@@ -50,3 +53,4 @@
         return this;
     };
 
+});

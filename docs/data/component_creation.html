@@ -1,0 +1,81 @@
+<h2>Component creation</h2>
+
+<p>There are two ways to create a component:</p>
+
+<ul>
+<li>Using XF Generator <code>yo xf:component [name]</code> that will scaffold a javascript file together with templates for all device types</li>
+<li>Manually </li>
+</ul>
+
+<p>Every component should extend <code>XF.Component</code> that allows general functionality, loading and rendering processes work without your input.</p>
+
+<p>First of all, you will need a JavaScript file which defines component's logic and may override some XF.Component properties to achieve specific behavior.</p>
+
+<div class="highlight"><pre lang="javascript">XF.define(
+    'MyApp.components.categoryList', // just 'categoryList' is fine as well
+    XF.Component.extend({
+        construct: function () {
+            // will be called on the start of construction 
+        },
+
+<pre><code>    initialize: function () {
+        // this method will be called after component construction
+    },
+
+    // for more flexibility you can define Views in separate files
+    View: XF.View.extend({
+        initialize: function () {
+
+        }
+    }),
+
+    // for more flexibility you can define Collections in separate files
+    Collection: XF.Collection.extend({
+        url: 'books.json',
+        initialize: function () {
+
+        }
+    })
+})
+</code></pre>
+
+);
+</pre></div>
+
+<p>This call defines a new component via two arguments: component name and component class.</p>
+
+<p><strong>Component name</strong>: used to setup a placeholder (-s) for instance (-s) of the component and should be unique within the application.</p>
+
+<p><strong>Component class</strong>: definition is created via XF.[some_base_component].extend() call. Here you should pass properties and methods you want to add to the base class functionality as non-static and static part of a class respectively.</p>
+
+<p>You may add/override properties of the component model, collection and view. Basically you are able to modify everything you see.</p>
+
+<p>Be aware of proper usage Collections and Models. By default <code>XF.Component</code> has <code>XF.View</code> and <code>XF.Collection</code> classes (<code>XF.Component.Model</code> is not defined). If the component has linkage to Collection and Model classes the collection will be created.</p>
+
+<p><code>XF.Component</code> properties:</p>
+
+<ul>
+<li><code>id</code>: component id</li>
+<li><code>name</code>: component name</li>
+<li><code>options</code>: component options (defaults merged with passed options for component). Default: <code>{autoload: true, autorender: true, updateOnShow: false}</code>. <code>autoload</code> and <code>autorender</code> will load the data for collection or model with creation of component and then render the template with fetched data.</li>
+<li><code>selector</code>: component selector, e.g. <code>[data-id="componentId"]</code></li>
+<li><code>Model</code>: model class for this component. Default: <code>null</code>.</li>
+<li><code>model</code>: instance of <code>Model</code> that will be created on the constructing of the component.</li>
+<li><code>Collection</code>: collection class for this component. Default: <code>XF.Collection</code>.</li>
+<li><code>collection</code>: instance of <code>Model</code> that will be created on the constructing of the component.</li>
+<li><code>View</code>: view class for this component. Default: <code>XF.View</code>.</li>
+<li><code>view</code>: instance of <code>View</code> that will be created on the constructing of the component.</li>
+</ul>
+
+<p><code>XF.Component</code> methods:</p>
+
+<ul>
+<li><code>refresh</code>: refreshes the data (model or collection) and then refreshes the view. Triggers <code>refresh</code> method for view and collection/model. </li>
+</ul>
+
+<p><code>XF.Component</code> hooks:</p>
+
+<ul>
+<li><code>construct</code>: overwrite it for your own needs. Called on the construction of component.</li>
+<li><code>initialize</code>: overwrite it for your own needs. Called on the initialization of component.</li>
+</ul>

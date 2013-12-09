@@ -1,0 +1,39 @@
+<h2>View</h2>
+
+<p><code>XF.View</code> is an extended version of <a href="http://backbonejs.org/#View">Backbone.View</a> to make it perfectly fit XF Component based architecture.</p>
+
+<p>To create a standalone view XF Generator can be used with <code>yo xf:view [name]</code>.</p>
+
+<p><code>XF.View</code> properties:</p>
+
+<ul>
+<li><code>template</code>: contains source of the loaded template and the compiled version of it. Default: <code>{src: null, compiled: null, cache: true }</code>.</li>
+<li><code>status</code>: status of the data in the view. Default: <code>{ loaded: false, loading: false, loadingFailed: false }</code>.</li>
+<li><code>component</code>: a link to the component for this view.</li>
+</ul>
+
+<p><code>XF.View</code> methods:</p>
+
+<ul>
+<li><code>load</code>: loads the template from the cache or remotely.</li>
+<li><code>render</code>: renders the view. Please use <code>refresh</code> instead to use it together with hooks available.</li>
+<li><code>refresh</code>: refreshes the view.</li>
+<li><code>getMarkup</code>: returns the markup using the current data.</li>
+</ul>
+
+<p><code>XF.View</code> hooks:</p>
+
+<ul>
+<li><code>url</code>: the url to the template file. Could be a function or a property.</li>
+<li><code>construct</code>: overwrite it for your own needs. Called on the construction of view.</li>
+<li><code>initialize</code>: overwrite it for your own needs. Called on the initialization of view.</li>
+<li><code>beforeLoadTemplate</code>: called before loading of the template started.</li>
+<li><code>afterLoadTemplate</code>: called after loading of the template completed.</li>
+<li><code>afterLoadTemplateFailed</code>: called after loading of the template completed and failed.</li>
+<li><code>beforeRender</code>: called before rendering of the template.</li>
+<li><code>afterRender</code>: called after rendering of the template.</li>
+</ul>
+
+<p><em>Note that data from <code>collection</code> or <code>model</code> of the component is available in the template via localized variable <code>data</code></em>.</p>
+
+<p>For other methods, properties and hooks available see <a href="http://backbonejs.org/#View">Backbone.View</a>.</p>

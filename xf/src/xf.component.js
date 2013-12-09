@@ -1,3 +1,9 @@
+define([
+    './xf.core',
+    'underscore',
+    'backbone'
+], function(XF, _, BB) {
+
     /**
      Base Component.
      @class
@@ -209,46 +215,5 @@
      */
     XF.Component.extend = BB.Model.extend;
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    /**
-     Describes current component definition status
-     @class
-     @private
-     @memberOf XF
-     @param {String} compSrc Component definition source
-     */
-    var ComponentStatus = function(compSrc) {
-        /**
-         Component definition source
-         @private
-         @type String
-         */
-        this.compSrc = compSrc;
-        /**
-         Component definition
-         @private
-         @type XF.Component
-         */
-        this.compDef = null;
-        /**
-         Flag that determines whether the component definition is currently being loaded
-         @private
-         @type Boolean
-         */
-        this.loading = false;
-        /**
-         Flag that determines whether the component definition has already been loaded
-         @private
-         @type Boolean
-         */
-        this.loaded = false;
-        /**
-         A list of callbacks to call on component definition loading complete
-         @private
-         @type String[]
-         */
-        this.callbacks = [];
-    };
+    return XF;
+});

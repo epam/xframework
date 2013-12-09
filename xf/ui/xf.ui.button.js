@@ -1,3 +1,9 @@
+define([
+    'jquery',
+    '../src/xf.core',
+    '../src/xf.utils',
+    '../ui/xf.ui.core'
+], function($, XF) {
 
     /**
      Make the DOM object look like a button
@@ -128,3 +134,5 @@
             enhancedButton.attr('id', id);
         }
     };
+
+});

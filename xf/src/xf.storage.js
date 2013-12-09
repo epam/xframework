@@ -1,3 +1,8 @@
+define([
+    './xf.core',
+    './xf.settings'
+], function(XF) {
+
     /**
      Instance of {@link XF.CacheClass}
      @static
@@ -114,3 +119,6 @@
         }
 
     };
+
+    return XF;
+});
