@@ -1,0 +1,43 @@
+<h2>Buttons</h2>
+
+<p>Inputs of types submit, reset, button, <code>&lt;button&gt;</code>s, and links with attribute <code>[data-role=button]</code> will be styled as buttons. For example a usual <code>input[type=submit]</code> will look like this:</p>
+
+<div class="highlight"><pre lang="html">&lt;a data-role=&quot;button&quot;&gt;A button&lt;/a&gt;
+</pre></div>
+
+<p><a data-role="button">A button</a></p>
+
+<p>Buttons can be of several types: normal, special and alert. They differ only in appearance.</p>
+
+<p>A special button is displayed in an accented color, blue by default, generally needed to highlight the most important button among several. To make a button special add data-special=true attribute to it.</p>
+
+<p>The following code:</p>
+
+<div class="highlight"><pre lang="html">&lt;a data-special=&quot;true&quot;
+   data-appearance=&quot;button&quot; href=&quot;#&quot;&gt;
+   A special button
+&lt;/a&gt;
+</pre></div>
+
+<p>Will produce the following button:</p>
+
+<p><a data-special="true"<br />   data-appearance="button" href="#"><br />   A special button<br /></a></p>
+
+<p>An alert button is red by default and is recommended to be used for actions that may cause data loss, e.g. for a delete button. Add data-alert=true attribute to get such a button:</p>
+
+<div class="highlight"><pre lang="html">&lt;button data-alert=&quot;true&quot;&gt;An alert button&lt;/button&gt;
+</pre></div>
+
+<p>Will produce the following button:</p>
+
+<p><button data-alert="true">An alert button</button></p>
+
+<p>You may need to use smaller buttons in your app. To make them, add a [data-small=true] attribute to the necessary controls.</p>
+
+<p>To make a common back button use a [data-back=true] attribute. It will go back in browser history by default.</p>
+
+<div class="highlight"><pre lang="html">&lt;a data-appearance=&quot;button&quot; data-small=&quot;true&quot; href=&quot;#&quot;&gt;A small button&lt;/a&gt;
+&lt;a data-appearance=&quot;backbtn&quot; href=&quot;#&quot;&gt; Back button&lt;/a&gt;
+</pre></div>
+
+<p><a data-appearance="button" data-small="true" href="#">A small button</a><br /><a data-appearance="backbtn" href="#"> Back button</a></p>

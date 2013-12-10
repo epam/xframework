@@ -1,0 +1,32 @@
+<h2>Component</h2>
+
+<p>Components are the building blocks of XFramework. A component is a part of an application that can be abstracted as an independent unit and can be reused throughout the application. Components can be nested in one another, can have customized presentations depending on the device it is used on. You can create as many device profiles as you need and customize whole application in any way for each of them.</p>
+
+<p>A component separates logic from presentation, which are stored as separate files and are loaded only when the component needs to be rendered, which helps to save on load times and device resources. Though component caching mechanism allows to prefetch component parts when developer deems it necessary.</p>
+
+<p>To use a component a developer places a marker where the component will be rendered. The marker is a <div> with special attributes which denote the component's name and instance id.</p>
+
+<p>See an example of two nested components declared in the page markup:</p>
+
+<div class="highlight"><pre lang="html">&lt;div data-component=&quot;categoryList&quot; data-id=&quot;categoryListBooks&quot;&gt;
+    This content will be shown while component is loading...
+&lt;/div&gt;
+</pre></div>
+
+<p>Such an approach lets a developer build asynchronuous UIs and avoid loading extraneous resources.</p>
+
+<p>There's a way to customize the component with the starting options from outside:</p>
+
+<div class="highlight"><pre lang="html">    &lt;div data-component=&quot;categoryList&quot; data-id=&quot;categoryListBooks&quot;&gt;
+            This content will be shown while component is loading...
+            &lt;script&gt;
+                XF.setOptionsByID(&apos;categoryListBooks&apos;,
+                    {
+                        currentPage: 2
+                    }
+                );
+            &lt;/script&gt;
+        &lt;/div&gt;
+</pre></div>
+
+<p>You can use <code>XF.setOptionsByID</code> method in the place you decided but before component instance was created.</p>

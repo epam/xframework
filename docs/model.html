@@ -1,0 +1,29 @@
+<h2>Model</h2>
+
+<p><code>XF.Model</code> is an extended version of <a href="http://backbonejs.org/#Model">Backbone.Model</a> to make it perfectly fit XF Component based architecture.</p>
+
+<p>To create a standalone view XF Generator can be used with <code>yo xf:model [name]</code>.</p>
+
+<p><code>XF.Model</code> properties:</p>
+
+<ul>
+<li><code>status</code>: status of the data in the model. Default: <code>{ loaded: false, loading: false, loadingFailed: false }</code>.</li>
+<li><code>component</code>: a link to the component for this model.</li>
+<li><code>ajaxSettings</code>: settings for ajax requests to the server for this model. If not set global <code>ajaxSettings</code> will be used. The format is the same as for <code>$.ajax</code> method.</li>
+</ul>
+
+<p><code>XF.Model</code> methods:</p>
+
+<ul>
+<li><code>url</code>: the url to the data. Could be a function or a property.</li>
+<li><code>refresh</code>: refreshes the data and triggers the view refreshing.</li>
+</ul>
+
+<p><code>XF.Model</code> hooks:</p>
+
+<ul>
+<li><code>construct</code>: overwrite it for your own needs. Called on the construction of model.</li>
+<li><code>initialize</code>: overwrite it for your own needs. Called on the initialization of model.</li>
+</ul>
+
+<p>For other methods, properties and hooks available see <a href="http://backbonejs.org/#Model">Backbone.Model</a>.</p>
