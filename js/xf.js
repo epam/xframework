@@ -76,6 +76,9 @@
 
     //
     XF.start = function(options) {
+        // initializing XF.device
+        options.device = options.device || {};
+        XF.device.init(options.device.types);
 
         options = options || {};
         options.history = options.history || { pushState: false };
@@ -83,9 +86,6 @@
         // initializing XF.storage
         XF.storage.init();
 
-        // initializing XF.device
-        options.device = options.device || {};
-        XF.device.init(options.device.types);
 
         // initializing XF.touch
         if ('touch' in XF) {
@@ -117,6 +117,7 @@
         //XF.pages.start();
         loadChildComponents(rootDOMObject);
 
+        XF.on('xf:loadChildComponents', XF.loadChildComponents);
         XF.trigger('app:started');
     };
 
@@ -150,24 +151,25 @@
     // Loads component definitions for each visible component placeholder found
     // Searches inside DOMObject passed
     var loadChildComponents = XF.loadChildComponents = function(DOMObject) {
-        if ($(DOMObject).attr('[data-component]')) {
-            if ($(DOMObject).is(':visible')) {
-                var compID = $(value).attr('data-id');
-                var compName = $(value).attr('data-component');
+        if ($(DOMObject).attr('data-component')) {
+            if ($(DOMObject).is(':visible') && ( !$(DOMObject).attr('data-device-type') || $(DOMObject).attr('data-device-type') == XF.device.type.name )) {
+                var compID = $(DOMObject).attr('data-id');
+                var compName = $(DOMObject).attr('data-component');
                 loadChildComponent(compID, compName);
             }
         }
 
-        $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, value) {
-            var compID = $(value).attr('data-id');
-            var compName = $(value).attr('data-component');
-            if (compID && compName) {
-                loadChildComponent(compID, compName);
+        $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
+            if (!$(obj).attr('data-device-type') || $(obj).attr('data-device-type') == XF.device.type.name) {
+                var compID = $(obj).attr('data-id');
+                var compName = $(obj).attr('data-component');
+                if (compID && compName) {
+                    loadChildComponent(compID, compName);
+                }
             }
         });
     };
 
-    XF.on('xf:loadChildComponents', XF.loadChildComponents);
 
     // Loads component definition and creates its instance
     var loadChildComponent = function(compID, compName) {
