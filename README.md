@@ -474,34 +474,62 @@ First of all, you will need a JavaScript file which defines component's logic an
 ```javascript
 XF.define(
 	'MyApp.components.categoryList', // just 'categoryList' is fine as well
-	XF.Component.extend({
-		construct: function () {
-			// will be called on the start of construction
-		},
+	function () {
+		return XF.Component.extend({
+			construct: function () {
+				// will be called on the start of construction
+			},
 
-		initialize: function () {
-			// this method will be called after component construction
-		},
-
-		// for more flexibility you can define Views in separate files
-		View: XF.View.extend({
 			initialize: function () {
+				// this method will be called after component construction
+			},
 
-			}
-		}),
+			// for more flexibility you can define Views in separate files
+			View: XF.View.extend({
+				initialize: function () {
 
-		// for more flexibility you can define Collections in separate files
-		Collection: XF.Collection.extend({
-			url: 'books.json',
-			initialize: function () {
+				}
+			}),
 
-			}
-		})
-	})
+			// for more flexibility you can define Collections in separate files
+			Collection: XF.Collection.extend({
+				url: 'books.json',
+				initialize: function () {
+
+				}
+			})
+		});
+	}
 );
 ```
 
-This call defines a new component via two arguments: component name and component class.
+This call defines a new component using component name and component class.
+
+`XF.define` uses AMD API, so it is possible to define dependencies as well.
+
+```javascript
+XF.define(
+	'categoryList', 
+	['js/views/categoryView.js', 'js/collections/categoryCollection.js'],
+	function (categoryView, categoryCollection) {
+		return XF.Component.extend({
+			construct: function () {
+				// will be called on the start of construction
+			},
+
+			initialize: function () {
+				// this method will be called after component construction
+			},
+
+			// for more flexibility you can define Views in separate files
+			View: categoryView,
+
+			// for more flexibility you can define Collections in separate files
+			Collection: categoryCollection
+		});
+	}
+);
+```
 
 **Component name**: used to setup a placeholder (-s) for instance (-s) of the component and should be unique within the application.
 
