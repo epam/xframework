@@ -14,7 +14,7 @@ $(function () {
         equal(XF.pages.animations.next, null);
         equal(XF.pages.animations.activePage, null);
         equal(XF.pages.animations.activePageName, null);
-        equal(XF.pages.animations.standardAnimation, 'fade');
+        equal(XF.pages.animations.standardAnimation, 'slideleft');
         equal('slideleft' in XF.pages.animations.types, true);
         equal('slideright' in XF.pages.animations.types, true);
         equal('fade' in XF.pages.animations.types, true);
