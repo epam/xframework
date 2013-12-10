@@ -1,0 +1,132 @@
+<h2>Form elements</h2>
+
+<p>Most form elements will be enhanced automatically, namely all kinds of text inputs, checkboxes and radiobuttons, and select menus. But    there are some things to keep in mind while developing. All inputs must have an associated <code>label</code> element, i.e. the label must have a <code>for</code> attribute with a value equal to input <code>id</code>.</p>
+
+<h3>Text Inputs</h3>
+
+<div class="xf-form-unit">
+    <label for="input-1">This is a <code>label</code> for the 'input' below:</label>
+    <input type="text" placeholder="Input[type=text]" id="input-1" />
+</div>
+
+<p>X-Framework provides iOS-style split inputs. Add <code>[data-appearance=split]</code> attribute to the necessary <code>input</code> to get the following control:</p>
+
+<pre><code>        &lt;div class="xf-form-unit"&gt;
+            &lt;label for="input-split-1"&gt;Here's an input `[data-appearance=split]`:&lt;/label&gt;
+            &lt;input type="text" placeholder="placeholder value" id="input-split-1" data-appearance="split"/&gt;
+        &lt;/div&gt;
+
+
+        &lt;div class="xf-form-unit"&gt;
+            &lt;label&gt;This is a `textarea`, nothing special:&lt;/label&gt;
+            &lt;textarea placeholder="Textarea"&gt;&lt;/textarea&gt;
+        &lt;/div&gt;
+</code></pre>
+
+<h3>Radiobuttons</h3>
+
+<p>To create a set of options wrap the <code>input</code>-<code>label</code> pairs in a <code>fieldset[data-role=controlgroup]</code>. Note that the <code>for</code> attribute is mandatory for <code>label</code>.</p>
+
+<div class="highlight"><pre lang="html">&lt;fieldset data-role=&quot;controlgroup&quot;&gt;
+    &lt;legend&gt;Legend for radio buttons&lt;/legend&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;radiogroup1&quot; id=&quot;radio7&quot; value=&quot;1&quot;&gt;
+    &lt;label for=&quot;radio7&quot;&gt;Milk&lt;/label&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;radiogroup1&quot; id=&quot;radio8&quot; value=&quot;2&quot;&gt;
+    &lt;label for=&quot;radio8&quot;&gt;Toast&lt;/label&gt;
+&lt;/fieldset&gt;
+</pre></div>
+
+<p>The code above produces the following output:</p>
+
+<fieldset data-role="controlgroup">
+                    <legend>Legend for radio buttons</legend>
+
+                    <input type="radio" name="radiogroup1" id="radio7" value="1">
+                    <label for="radio7">Milk</label>
+
+                    <input type="radio" name="radiogroup1" id="radio8" value="2">
+                    <label for="radio8">Toast</label>
+</fieldset>
+
+<h3>Checkboxes</h3>
+
+<p>Follow tha same rules as for radiobuttons to make checkboxes.</p>
+
+<pre><code>        &lt;div class="xf-form-unit"&gt;
+
+            &lt;fieldset data-role="controlgroup"&gt;
+                &lt;legend&gt;Fieldset with checkboxes:&lt;/legend&gt;
+                &lt;label for="check1"&gt;Milk&lt;/label&gt;
+                &lt;input type="checkbox" name="check1" id="check1" value="1"&gt;
+                &lt;label for="check2"&gt;Toast&lt;/label&gt;
+                &lt;input type="checkbox" name="check2" id="check2" value="2"&gt;
+                &lt;label for="check3"&gt;Honey&lt;/label&gt;
+                &lt;input type="checkbox" name="check3" id="check3" value="3"&gt;
+            &lt;/fieldset&gt;
+
+        &lt;/div&gt;
+</code></pre>
+
+<h3>Single checkbox</h3>
+
+<pre><code>        &lt;div class="xf-form-unit"&gt;
+
+            &lt;label for="check4"&gt;Single checkbox&lt;/label&gt;
+            &lt;input type="checkbox" name="check4" id="check4" value="4"&gt;
+
+        &lt;/div&gt;
+</code></pre>
+
+<h3>Switch</h3>
+
+<p><code>Input[type=checkbox][data-role=switch]</code> is converted into a switch. An associated <code>label</code> element is mandatory, the same as for split text input.</p>
+
+<pre><code>        &lt;div class="example"&gt;
+            &lt;label for="wifi-switch"&gt;Wi-Fi Switch&lt;/label&gt;
+            &lt;input type="checkbox" id="wifi-switch" data-role="switch" checked&gt;
+        &lt;/div&gt;
+</code></pre>
+
+<h3>Slider/Spinner</h3>
+
+<p>Inputs of type <code>number</code>, <code>range</code> will automatically be converted to rich widgets:</p>
+
+<pre><code>        &lt;div class="example"&gt;
+
+            &lt;label class="xf-label"&gt;&lt;code&gt;input[type=number]&lt;/code&gt;&lt;/label&gt;
+            &lt;input type="number" min="0" max="1200" value="400"&gt;
+
+        &lt;/div&gt;
+
+
+        &lt;div class="example"&gt;
+            &lt;label class="xf-label"&gt;&lt;code&gt;input[type=range]&lt;/code&gt;&lt;/label&gt;
+            &lt;input type="range" min="0" max="1200" value="400"&gt;
+        &lt;/div&gt;
+</code></pre>
+
+<h3>Switch</h3>
+
+<pre><code>        &lt;div class="xf-form-unit"&gt;
+            &lt;p class="xf-label"&gt;Simple on/off switch. Checkbox with &lt;code&gt;data-role="switch"&lt;/code&gt;:&lt;/p&gt;
+
+            &lt;label for="check5"&gt;On/Off Switch (checkbox)&lt;/label&gt;
+            &lt;input type="checkbox" id="check5" data-role="switch"&gt;
+
+        &lt;/div&gt;
+</code></pre>
+
+<h3>Select</h3>
+
+<pre><code>        &lt;div class="xf-form-unit"&gt;
+            &lt;label class="xf-label"&gt;Simple select:&lt;/label&gt;
+            &lt;div class="xf-input-select"&gt;
+
+                &lt;select id="select-1"&gt;
+                    &lt;option value=""&gt;Option 1&lt;/option&gt;
+                    &lt;option value=""&gt;Option 2&lt;/option&gt;
+                    &lt;option value=""&gt;Option 3&lt;/option&gt;
+                &lt;/select&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+</code></pre>

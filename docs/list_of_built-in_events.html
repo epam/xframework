@@ -1,0 +1,51 @@
+<h2>List of built-in events</h2>
+
+<h3>XF level (<code>XF.on</code>, <code>XF.off</code>, <code>XF.trigger</code>, etc.)</h3>
+
+<ul>
+<li><code>app:started</code>: when the app has started</li>
+<li><code>component:componentID:constructed</code>: when the component with id <code>componentID</code> has been constructed</li>
+<li><p><code>component:componentID:rendered</code>: when the component with id <code>componentID</code> has been rendered</p></li>
+<li><p><code>pages:show</code>: command to switch the page to another one. <code>XF.trigger('pages:show', 'books')</code></p></li>
+<li><code>pages:animation:next</code>: command to set the type of the next animation. <code>XF.trigger('pages:animation:next', 'fade')</code></li>
+<li><code>pages:animation:default</code>: command to set the default type of the animations. <code>XF.trigger('pages:animation:default', 'fade')</code></li>
+<li><code>ui:enhance</code>: command to enhance all inside the DOM element. Selector or jQuery object can be passed. <code>XF.trigger('ui:enhance', '.cart')</code></li>
+<li><code>navigate</code>: command to change the url, triggers the router that could trigger page switching. <code>XF.trigger('navigate', 'books/fiction')</code></li>
+<li><code>component:componentID:refresh</code>: command to refresh the component with id <code>componentID</code></li>
+</ul>
+
+<p>You can fire any event to the desired component in format <code>component:componentID:eventName</code>. Even if there is no component with such id these events will be delayed until it will be rendered.</p>
+
+<h3>Component level</h3>
+
+<ul>
+<li><code>refresh</code>: command to refresh the component</li>
+</ul>
+
+<h3>Model level</h3>
+
+<ul>
+<li><code>fetched</code>: when the data has been loaded from the backend</li>
+<li><code>refresh</code>: command to refresh the data of model</li>
+</ul>
+
+<p>Keep in mind that all <a href="http://backbonejs.org/#Events-catalog">Backbone.js built-in events</a> are available.</p>
+
+<h3>Collection level</h3>
+
+<ul>
+<li><code>fetched</code>: when the data has been loaded from the backend</li>
+<li><code>refresh</code>: command to refresh the data of collection</li>
+</ul>
+
+<p>Keep in mind that all <a href="http://backbonejs.org/#Events-catalog">Backbone.js built-in events</a> are available.</p>
+
+<h3>View level</h3>
+
+<ul>
+<li><code>rendered</code>: when the view has been rendered</li>
+<li><code>loaded</code>: when the template has been loaded</li>
+<li><code>refresh</code>: command to rerender the view</li>
+</ul>
+
+<p>Keep in mind that all <a href="http://backbonejs.org/#Events-catalog">Backbone.js built-in events</a> are available.</p>

@@ -5,7 +5,8 @@
     "jquery": "latest",
     "backbone": "latest",
     "underscore": "latest",
-    "requirejs": "latest"
+    "requirejs": "latest",
+    "xframework": "https://github.com/epam/xframework.git"
   },
   "homepage": "http://xframeworkjs.org",
   "authors": [

@@ -1,0 +1,34 @@
+<h2>XF.settings</h2>
+
+<p>This simple object contains the settings for the application, that could be overridden on the start:</p>
+
+<ul>
+<li>appVersion (default: <code>1.0.0</code>)</li>
+<li>noCache (default: <code>true</code>)</li>
+<li>componentUrlPrefix (default: <code>js/components/</code>)</li>
+<li>componentUrlPostfix (default: <code>.js</code>)</li>
+<li>componentUrl (default: <code>componentUrlPrefix + compName + componentUrlPostfix</code>)</li>
+<li>templateUrlPrefix (default: <code>tmpl/</code>)</li>
+<li>templateUrlPostfix (default: <code>.tmpl</code>)</li>
+<li>dataUrlPrefix (default: <code>''</code>)</li>
+<li>ajaxSettings (default: <code>{}</code>)</li>
+</ul>
+
+<div class="highlight"><pre lang="javascript">var app = new MyApp({
+        // …
+        // other settings for the application
+        settings: {
+                appVersion: '2.0.1',
+
+<pre><code>    dataUrlPrefix: '<a href='http://api.example.com/'>http://api.example.com/</a>',
+
+    ajaxSettings: {
+        // settings that are provided to collections and models to fetch and sync the data
+                // see $.ajax options
+                crossDomain: true
+    }
+}
+</code></pre>
+
+});
+</pre></div>
