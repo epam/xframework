@@ -1,4 +1,4 @@
-/*! X-Framework 09-12-2013 */
+/*! X-Framework 10-12-2013 */
 ;(function (window, $, BB) {
 
 
@@ -64,7 +64,7 @@
 
     // Searching for pages inside every component
     // Pages should be on the one level and can be started only once
-    onComponentRender = function (compID) {
+    var onComponentRender = function (compID) {
         var compObj = $(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
@@ -78,9 +78,7 @@
     XF.start = function(options) {
 
         options = options || {};
-        options.history = options.history || {
-            'pushState': false
-        };
+        options.history = options.history || { pushState: false };
 
         // initializing XF.storage
         XF.storage.init();
@@ -115,8 +113,6 @@
         }
 
         XF.pages.init(options.animations);
-
-
 
         //XF.pages.start();
         loadChildComponents(rootDOMObject);
@@ -175,7 +171,7 @@
 
     // Loads component definition and creates its instance
     var loadChildComponent = function(compID, compName) {
-        getComponent(compName, function(compDef) {
+        XF.define([XF.settings.property('componentUrl')(compName)], function(compDef) {
             if(!components[compID] && _.isFunction(compDef)) {
                 var compInst = new compDef(compName, compID);
                 components[compID] = compInst;
@@ -184,118 +180,16 @@
         });
     };
 
-    /**
-     Binds hide/show listners to each component placeholder. This listener should load component definition and create an instance of a component as soon as the placeholder would become visible
-     @memberOf XF
-     @private
-     */
-    /*var bindHideShowListeners = function() {
-        $('body').on('show html append prepend', function(evt) {
-            if (evt.currentTarget === evt.target) {
-                var compID = $(this).attr('data-id');
-                if(!components[compID]) {
-                    var compName = $(this).attr('data-component');
-                    loadChildComponent(compID, compName);
-                }
-                XF.trigger('ui:enhance', $(this));
-            }
-        });
-    };   */
-
-    // Loads script from passed url and after it calls the function in callback
-    var loadScript = function(url, callback){
-
-        var script = document.createElement('script');
-
-        if(script.readyState) {  //IE
-            /** @ignore */
-            script.onreadystatechange = function() {
-                if (script.readyState == 'loaded' || script.readyState == 'complete') {
-                    script.onreadystatechange = null;
-                    if(callback) {
-                        callback();
-                    }
-                }
-            };
-        } else {  //Others
-            /** @ignore */
-            script.onload = function() {
-                console.log('script loaded');
-                if(callback) {
-                    callback();
-                }
-            };
-        }
-
-        script.src = url;
-        document.getElementsByTagName('head')[0].appendChild(script);
-    };
-
-
-    /**
-     Describes current component definition status
-     @class
-     @private
-     @memberOf XF
-     @param {String} compSrc Component definition source
-     */
-    var ComponentStatus = function(compSrc) {
-        /**
-         Component definition source
-         @private
-         @type String
-         */
-        this.compSrc = compSrc;
-        /**
-         Component definition
-         @private
-         @type XF.Component
-         */
-        this.compDef = null;
-        /**
-         Flag that determines whether the component definition is currently being loaded
-         @private
-         @type Boolean
-         */
-        this.loading = false;
-        /**
-         Flag that determines whether the component definition has already been loaded
-         @private
-         @type Boolean
-         */
-        this.loaded = false;
-        /**
-         A list of callbacks to call on component definition loading complete
-         @private
-         @type String[]
-         */
-        this.callbacks = [];
-    };
 
 
     // Stores instances of XF.Component and its subclasses
     var components = {};
 
-    // Stores instances of XF.ComponentStatus — registered Components
-    var registeredComponents = {};
+    
 
     // Loads component definition if necessary and passes it to callback function
     var getComponent = function(compName, callback) {
-        var compStatus = registeredComponents[compName];
-        if(!compStatus) {
-            compStatus = XF.registerComponent(compName, XF.settings.property('componentUrl')(compName));
-        }
-        if(compStatus.loaded) {
-            callback(compStatus.compDef);
-            return;
-        }
 
-        compStatus.callbacks.push(callback);
-
-        if(!compStatus.loading) {
-            compStatus.loading = true;
-            loadScript(compStatus.compSrc);
-        }
     };
 
     // Returns component instance by its id
@@ -312,86 +206,172 @@
         }
     };
 
-    // Registers component source
-    XF.registerComponent = function(compName, compSrc) {
-        var compStatus = registeredComponents[compName];
-        if(compStatus) {
-            return compStatus;
-        }
-        registeredComponents[compName] = new ComponentStatus(compSrc);
-        return registeredComponents[compName];
-    };
 
-    // Creates namespace from passing string and sets the data if it's passed
-    var createNamespace = function ( namespace, data ) {
-        if (typeof namespace !== 'string') {
-            throw ('Namespace should be a string');
-        }
+    /* DEFINE */
 
-        if (!/^[a-z0-9_\.]+$/i.test(namespace)) {
-            throw ('Namespace string "'+ namespace + '" is wrong. It can contain only numbers, letters and dot char');
-        }
+    
+    var registeredModules = {};
+    var waitingModules = {};
+    var baseElement = document.getElementsByTagName('base')[0];
+    var head = document.getElementsByTagName('head')[0];
 
-        var parts = namespace.split('.'),
-            parent = window,
-            plen, i;
+    var checkModuleLoaded = function () {
+        console.log(waitingModules);
+        
+        _.each(waitingModules, function (module, ns) {
+            console.log(module, ns);
+            
+            var name         = module[0],
+                dependencies = module[1],
+                exec         = module[2],
+                args         = [];
 
-        plen = parts.length;
-        for (i = 0; i < plen; i++) {
-            if (typeof parent[parts[i]] === 'undefined') {
-                parent[parts[i]] = {};
-                if (data && plen === (i + 1)) {
-                    parent[parts[i]] = data;
+            _.each(dependencies, function (dependency, n) {
+                var depName = getModuleNameFromFile(dependency);
+                if (registeredModules[depName] !== undefined) {
+                    console.log(depName, registeredModules[depName]);
+                    args.push(registeredModules[depName]);
                 }
+            });
+
+            if (dependencies.length === args.length || dependencies.length === 0) {
+                
+                console.log('NAME', name);
+                if (name !== null) {
+                    console.log('EXEC', name);
+                    delete waitingModules[name];
+                    registeredModules[name] = exec.apply(this, args);
+                }
+                
             }
-            parent = parent[parts[i]];
+        });
+    }
+
+    var getModuleNameFromFile = function (file) {
+        var moduleName = file.split(/\//);
+        return moduleName[moduleName.length - 1].replace('.js', '');
+    };
+
+    var parseFiles = function (file) {
+        
+        var moduleName = getModuleNameFromFile(file);
+        var moduleFile = file.push ? file[1] : file;
+        console.log('parse files', file, moduleFile, moduleName);
+
+        //Don't load module already loaded
+        if (registeredModules[moduleName]) {
+            checkModuleLoaded();
+            return;
         }
 
-        return parent;
-    };
+        if (!/\.js/.test(moduleFile) && !/^http/.test(moduleFile)) {
+            moduleFile = moduleFile.replace('.', '/');
+            moduleFile = moduleFile + '.js';
+        }
 
+        create(moduleName, moduleFile);
+    }
 
-    // Returns the last part of namespace string
-    var getLastNamespacePart = function (ns) {
-        return ns.substr(ns.lastIndexOf(".") + 1);
-    };
+    var onLoad = function(event) {
+        var target = (event.currentTarget || event.srcElement),
+            name;
+
+        //Check if the script is realy loaded and executed ! (Fuck you IE with your "Loaded but not realy, wait to be completed")
+        if (event.type !== "load" && target.readyState != "complete") {
+            return;
+        }
+
+        name = target.getAttribute('data-module');  
+        target.setAttribute('data-loaded', true);
+
+        // Old browser need to use the detachEvent method
+        if (target.attachEvent) {
+            target.detachEvent('onreadystatechange', onLoad);
+        } else {
+            target.removeEventListener('load', onLoad);
+        }
+
+        checkModuleLoaded();
+    }
+
+    var attachEvents = function(script) {
+        if (script.attachEvent) {
+            script.attachEvent('onreadystatechange', onLoad);
+        } else {
+            script.addEventListener('load', onLoad, false);
+        }
+    }
+
+    var checkScripts = function(moduleName) {
+        var script = false;
+
+        _.each(document.getElementsByTagName('script'), function (elem) {
+            if (elem.getAttribute('data-module') && elem.getAttribute('data-module') === moduleName) {
+                script = elem;
+                return false;
+            }
+        });
+
+        return script;
+    }
+
+    var create = function (moduleName, moduleFile) {
+        //SetTimeout prevent the "OMG RUN, CREATE THE SCRIPT ELEMENT, YOU FOOL" browser rush
+        setTimeout(function(){
+            var script = checkScripts(moduleName);
+
+            if (script) {
+                return;
+            }
+
+            script = document.createElement('script');
+
+            script.async = true;
+            script.type = "text/javascript";
+            script.src = moduleFile;
+            script.setAttribute('data-module', moduleName);
+            script.setAttribute('data-loaded', false);
+
+            if (baseElement) {
+                //prevent IE 6-8 bug (script executed before appenchild execution. Yeah, that's realy SUCK)
+                baseElement.parentNode.insertBefore(script, baseElement);
+            } else {
+                head.appendChild(script);
+            }
+
+            attachEvents(script);
+        }, 0);
+    }
 
     // Defines class and calls registered callbacks if necessary
-    XF.define = XF.defineComponent = function(ns, def) {
-        var namespace,
-            shortNs;
+    XF.define = XF.require = XF.defineComponent = function(ns, deps, def) {
 
-        var compStatus = registeredComponents[ns];
-        if(!compStatus) {
-            compStatus = registeredComponents[ns] = new ComponentStatus(null);
+        if (typeof ns !== "string") {
+            def = deps;
+            deps = ns;
+            ns = XF.utils.uniqueID();
         }
 
-        registeredComponents[ns].loading = false;
-        registeredComponents[ns].loaded = true;
-        registeredComponents[ns].compDef = def;
-
-        namespace = createNamespace(ns, registeredComponents[ns].compDef);
-
-        while(compStatus.callbacks.length) {
-            compStatus.callbacks.pop()(compStatus.compDef);
+        if (typeof deps !== "object") {
+            def = deps;
+            deps = [];
         }
+        
 
-        // TODO: uncomment and solve the problem with window.DOMobject
-        //shortNs = getLastNamespacePart(ns);
-        //console.log('SHORT', shortNs);
-        //if (shortNs !== ns) {
-            //XF.define(shortNs, registeredComponents[ns].compDef);
-        //}
+        if (waitingModules[ns] == undefined) {
+            waitingModules[ns] = [ns, deps, def];
+            
+            checkModuleLoaded();
+
+            if (deps.length) {
+                _.each(deps, parseFiles);
+            }
+        }
     };
 
     // Returns all registered components
-    XF.getRegisteredComponents = function () {
-        return registeredComponents;
-    };
-
-    // Should invoke component loading & call callback function as soon as component would be available
-    XF.requireComponent = function(compName, callback) {
-        getComponent(compName, callback);
+    XF.getRegisteredModules = function () {
+        return registeredModules;
     };
 
     // Stores custom options for XF.Component or its subclasses instances
@@ -503,6 +483,8 @@
 XF.App = function(options) {
     options = options || {};
     options.device = options.device || {};
+
+    this.initialize = options.initialize || this.initialize;
 
     // options.settings
     _.extend(XF.settings, options.settings);
@@ -1707,7 +1689,7 @@ XF.Model = BB.Model.extend({
             if(this.component.options.autorender) {
                 if (this.component.collection) {
                     this.listenTo(this.component.collection, 'fetched', this.refresh);
-                }else if (this.model) {
+                }else if (this.component.model) {
                     this.listenTo(this.component.model, 'fetched', this.refresh);
                 }
             }
@@ -1740,7 +1722,7 @@ XF.Model = BB.Model.extend({
             // Sorry, BB extend makes all properties static
             this._initProperties();
 
-            this.setElement('[data-id=' + options.attributes['data-id'] + ']');
+            this.setElement('[data-id=' + options.attributes['data-id'] + ']', false);
 
 
             if (options.component) {
@@ -1850,7 +1832,7 @@ XF.Model = BB.Model.extend({
                 data = this.component.model.toJSON();
             }
 
-            return this.template.compiled({data: data});
+            return this.template.compiled({data: data, options: this.component.options});
         },
 
         /**
