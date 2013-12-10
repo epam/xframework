@@ -43,21 +43,19 @@ module.exports = function (grunt) {
 
         grunt.initConfig({
             pkg: grunt.file.readJSON('package.json'),
-            concat: {
-                options: {
-                    separator: '\n',
-                    banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n;(function (window, $, BB) {',
-                    footer: '}).call(this, window, $, Backbone); \n\n' + license
-                },
-                dist: {
-                    src: jsSources,
-                    dest: 'js/xf.js'
+            build: {
+                all: {
+                    dest: "js/xf.js",
+                    minimum: [
+                        "core"
+                    ]
                 }
             },
+        
             uglify: {
                 dist: {
                     files: {
-                        'js/xf.min.js': ['<%= concat.dist.dest %>']
+                        'js/xf.min.js': ['<%= build.all.dest %>']
                     }
                 }
             },
@@ -88,14 +86,6 @@ module.exports = function (grunt) {
                     files: {
                         "styles/xf.min.css" : ["styles/xf.css"]
                     }
-                }               
-            },
-            bower: {
-                install: {
-                    options: {
-                        targetDir: "bower_modules",
-                        cleanup: true
-                    }
                 }
             }
         });
@@ -103,11 +93,19 @@ module.exports = function (grunt) {
         grunt.loadNpmTasks('grunt-contrib-concat');
         grunt.loadNpmTasks('grunt-contrib-less');
         grunt.loadNpmTasks('grunt-recess');
+        
+
+
+        grunt.loadNpmTasks('grunt-bower-task');
+
+
+        // Load grunt tasks from NPM packages
+        require( "load-grunt-tasks" )( grunt );
 
         // Integrate jQuery specific tasks
         grunt.loadTasks( "build/tasks" );
         
-        grunt.task.run(['concat', 'uglify', 'less', 'recess']);
+        grunt.task.run(['build', 'uglify', 'less', 'recess']);
             
     });
 
@@ -151,12 +149,10 @@ module.exports = function (grunt) {
         grunt.task.run(['jshint', 'qunit', 'recess']);
     });
 
-    grunt.loadNpmTasks('grunt-bower-task');
 
-
-    // Load grunt tasks from NPM packages
-    require( "load-grunt-tasks" )( grunt );
     grunt.registerTask('install', ['bower']);
+
+
     grunt.registerTask('default', ['build']);
 
 };

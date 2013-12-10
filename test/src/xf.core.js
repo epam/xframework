@@ -18,7 +18,7 @@ $(function () {
     
     test("required component", 1, function() {
         
-        XF.requireComponent('test', function () {
+        XF.require('test', function () {
             required = true;
         });
         
