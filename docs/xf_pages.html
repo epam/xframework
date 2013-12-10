@@ -1,0 +1,98 @@
+<h2>XF.pages</h2>
+
+<p><code>XF.pages</code> drives the appearance of the pages sticking together with the router. It has some basic animations for switching pages such like <code>slideleft</code>, <code>slideright</code>, <code>fade</code> and <code>none</code>. Not so much for now but keep in mind that it is possible to define your own animation to use it together with <code>XF.pages</code>.</p>
+
+<p>To create a page you just need to make a <code>&lt;div&gt;</code> with necessary classes):</p>
+
+<div class="highlight"><pre lang="html">&lt;div class=&quot;xf-page&quot; id=&quot;books&quot;&gt;&lt;/div&gt;
+</pre></div>
+
+<p><code>id</code> is used to make page switching work together with the router. It should be equal to first url fragment of the route (e.g. <code>books/:cat(/:subcat)</code>) or the name of the handler (e.g. <code>showBooksCategory</code>). In this case the page with such id attribute will be shown automatically when the route (e.g. <code>books/fiction</code>) will be triggered.</p>
+
+<p>To show the page without changing the url or using route binding:</p>
+
+<div class="highlight"><pre lang="javascript">XF.trigger('pages:show', 'books', 'fade');
+
+// …directly
+XF.pages.show('books', 'fade');
+</pre></div>
+
+<p>To define the default animation type for all device types it's needed to set up the necessary properties on the start of app:</p>
+
+<div class="highlight"><pre lang="javascript">var app = new MyApp({
+        // …
+        // other settings for the application
+        animations: {
+            standardAnimation: 'slideleft' // 'slideleft' is default
+        }
+});
+</pre></div>
+
+<p>If you want to create your own animation type and use it for page switching you (please care about necessary CSS animations in <code>xf.animations.less</code> file):</p>
+
+<div class="highlight"><pre lang="javascript">var app = new MyApp({
+        // …
+        // other settings for the application
+        animations: {
+            types: {
+                'myOwnAnimation': {
+                    fallback: function (fromPage, toPage) {
+                        // fallback to JS animation for old legacy browsers
+                        /// …
+                    }
+                }
+            }
+        }
+});
+</pre></div>
+
+<p>To define the default animation for each of device types it's needed to pass such parameters together with device options on the start of application or set it in the runtime:</p>
+
+<div class="highlight"><pre lang="javascript">var app = new MyApp({
+        // …
+        // other settings for the application
+    device: {
+                types : [{
+            name : 'tablet',
+            range : {
+                max : 1024,
+                min : 569
+            },
+            templatePath : 'tablet/',
+                        defaultAnimation: 'fade' // 'fade' for tablet devices
+        }, {
+            name : 'phone',
+            range : {
+                max : 568,
+                min : null
+            },
+            templatePath : 'phone/'
+                        // 'slide left' will be used for device type 'phone'
+        }]
+    }
+});
+
+XF.trigger('pages:animation:default', 'fade');
+
+// …or not so elegant way
+XF.setDefaultAnimationType('fade');
+</pre></div>
+
+<p>The situations if changing of the next animation type for the page is needed are not so uncommon, e.g. back button tap should force <code>slide right</code> animation instead of <code>slideleft</code>. In such cases there are some ways to do it:</p>
+
+<ul>
+<li>Define <code>data-animation</code> attribute on the element with <code>data-href</code>:</li>
+</ul>
+
+<div class="highlight"><pre lang="html">&lt;a data-href=&quot;books/&quot; data-animations=&quot;slideright&quot;&gt;Back&lt;/a&gt;
+</pre></div>
+
+<ul>
+<li>Set the next animation type programmatically:</li>
+</ul>
+
+<div class="highlight"><pre lang="javascript">XF.trigger('pages:animation:next', 'slideright');
+
+// …or not so elegant way
+XF.setNextAnimationType('slideright');
+</pre></div>

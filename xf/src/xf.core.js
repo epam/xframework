@@ -249,7 +249,7 @@ define([
                 
             }
         });
-    }
+    };
 
     var getModuleNameFromFile = function (file) {
         var moduleName = file.split(/\//);
@@ -274,7 +274,7 @@ define([
         }
 
         create(moduleName, moduleFile);
-    }
+    };
 
     var onLoad = function(event) {
         var target = (event.currentTarget || event.srcElement),
@@ -296,7 +296,7 @@ define([
         }
 
         checkModuleLoaded();
-    }
+    };
 
     var attachEvents = function(script) {
         if (script.attachEvent) {
@@ -304,7 +304,7 @@ define([
         } else {
             script.addEventListener('load', onLoad, false);
         }
-    }
+    };
 
     var checkScripts = function(moduleName) {
         var script = false;
@@ -317,7 +317,7 @@ define([
         });
 
         return script;
-    }
+    };
 
     var create = function (moduleName, moduleFile) {
         //SetTimeout prevent the "OMG RUN, CREATE THE SCRIPT ELEMENT, YOU FOOL" browser rush
@@ -345,7 +345,7 @@ define([
 
             attachEvents(script);
         }, 0);
-    }
+    };
 
     // Defines class and calls registered callbacks if necessary
     XF.define = XF.require = XF.defineComponent = function(ns, deps, def) {
@@ -362,7 +362,7 @@ define([
         }
         
 
-        if (waitingModules[ns] == undefined) {
+        if (waitingModules[ns] === undefined) {
             waitingModules[ns] = [ns, deps, def];
             
             checkModuleLoaded();

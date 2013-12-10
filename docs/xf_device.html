@@ -1,0 +1,34 @@
+<h2>XF.device</h2>
+
+<p><code>XF.device</code> contains the information about current user device app was launched:</p>
+
+<ul>
+<li><code>XF.device.supports.touchEvents</code></li>
+<li><code>XF.device.supports.pointerEvents</code></li>
+<li><code>XF.device.supports.cssAnimations</code></li>
+<li><code>XF.device.isMobile</code>. It was a necessary trick to detect mobile OS's using <code>navigator.userAgent</code>.</li>
+<li><code>XF.device.type</code> is a selected type of devices from specified in options passed on the start of application. Based on this selected device type the necessary template for the component will be loaded.</li>
+</ul>
+
+<div class="highlight"><pre lang="javascript">var app = new MyApp({
+        // …
+        // other settings for the application
+    device: {
+                types : [{
+            name : 'tablet',
+            range : {
+                max : 1024,
+                min : 569
+            },
+            templatePath : 'tablet/' // template path for tablet devices (by default it will be tmpl/tablet/componentName.tmpl)
+        }, {
+            name : 'phone',
+            range : {
+                max : 568,
+                min : null
+            },
+            templatePath : 'phone/' // path to templates for phones (by default it     will be tmpl/phone/componentName.tmpl)
+        }]
+    }
+});
+</pre></div>
