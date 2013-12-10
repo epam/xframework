@@ -9,6 +9,8 @@ XF.App = function(options) {
     options = options || {};
     options.device = options.device || {};
 
+    this.initialize = options.initialize || this.initialize;
+
     // options.settings
     _.extend(XF.settings, options.settings);
 

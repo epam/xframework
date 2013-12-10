@@ -63,3 +63,6 @@ tmpl/phone/root.tmpl
 
 tmpl/tablet/root.tmpl
 .DS_Store
+npm-debug.log
+
+js/lib

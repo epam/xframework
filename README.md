@@ -17,7 +17,6 @@ XFramework makes it easy to reuse the application logic and provide various layo
 
 XFramework is designed to be extremely modular, flexible, fast, and easy to use. To develop an app in X-Framework a developer should be familiar with common web technologies such as HTML/CSS/JS, LESS for editing styles, Handlebars-style templating and have an understanding of how MV* architecture works. Experience using Backbone.js, Angular.js, Ember.js, jQuery Mobile or other framework will be helpful.
 
-*TODO: update!*
 XFramework currently features:
 
 * TOTALLY CROSS-PLATFORM. XF supports all the popular devices and platroms. It is built in the way that allows you easily to change templates for each of the platforms without huge effort.
@@ -30,12 +29,6 @@ XFramework currently features:
 
 ## Supported Platforms and Browsers
 
-Mobile phones and tablets:
-
-* iOS 5+: Mobile Safari, Chrome for Mobile, UC Browser on iPad 2 (iOS 5.1), iPhone 4S (iOS 5.1), iPhone 5 (iOS 5.1), iPad 3 (iOS 5.1)
-* Android 2.3.3+: Android Browser, Opera Mobile, Chrome for Mobile, Firefox Mobile on Motorola Droid 3 (Android 2.3.4), HTC Inspire 4G (Android 2.3.3), ASUS Nexus 7 (Android 4.1), Samsung Nexus S (Android 2.3.4), Sony Ericsson Xperia X10 (Android 2.3.3)
-* BlackBerry OS 6+: BlackBerry Browser on BlackBerry Torch 9800 (BlackBerry OS 6.0)
-
 Desktop:
 
 * Internet Explorer 8+
@@ -43,6 +36,14 @@ Desktop:
 * Safari 5+
 * Opera 11+
 * Chrome 18+
+
+Mobile phones and tablets:
+
+* iOS 5+: Mobile Safari, Chrome for Mobile, UC Browser on iPad 2 (iOS 5.1), iPhone 4S (iOS 5.1), iPhone 5 (iOS 5.1), iPad 3 (iOS 5.1)
+* Android 2.3.3+: Android Browser, Opera Mobile, Chrome for Mobile, Firefox Mobile on Motorola Droid 3 (Android 2.3.4), HTC Inspire 4G (Android 2.3.3), ASUS Nexus 7 (Android 4.1), Samsung Nexus S (Android 2.3.4), Sony Ericsson Xperia X10 (Android 2.3.3)
+* BlackBerry OS 6+: BlackBerry Browser on BlackBerry Torch 9800 (BlackBerry OS 6.0)
+* Windows Phone 7.5+
+
 
 It doesn't mean that another browsers or platforms are not supported. We just don't have a possibility to test XF across all existing platforms and browsers.
 
@@ -440,18 +441,24 @@ There's a way to customize the component with the starting options from outside:
 
 ```html
 	<div data-component="categoryList" data-id="categoryListBooks">
-			This content will be shown while component is loading...
-			<script>
-				XF.setOptionsByID('categoryListBooks',
-					{
-						currentPage: 2
-					}
-				);
-			</script>
-		</div>
+		This content will be shown while component is loading...
+		<script>
+			XF.setOptionsByID('categoryListBooks',
+				{
+					currentPage: 2
+				}
+			);
+		</script>
+	</div>
 ```
 
 You can use `XF.setOptionsByID` method in the place you decided but before component instance was created.
+
+If it's needed to load component only on one device type attribute can be used:
+
+```html
+	<div data-component="categoryList" data-id="categoryListBooks" data-device-type="desktop"></div>
+```
 
 ## Component creation
 
@@ -467,34 +474,62 @@ First of all, you will need a JavaScript file which defines component's logic an
 ```javascript
 XF.define(
 	'MyApp.components.categoryList', // just 'categoryList' is fine as well
-	XF.Component.extend({
-		construct: function () {
-			// will be called on the start of construction
-		},
+	function () {
+		return XF.Component.extend({
+			construct: function () {
+				// will be called on the start of construction
+			},
 
-		initialize: function () {
-			// this method will be called after component construction
-		},
-
-		// for more flexibility you can define Views in separate files
-		View: XF.View.extend({
 			initialize: function () {
+				// this method will be called after component construction
+			},
 
-			}
-		}),
+			// for more flexibility you can define Views in separate files
+			View: XF.View.extend({
+				initialize: function () {
 
-		// for more flexibility you can define Collections in separate files
-		Collection: XF.Collection.extend({
-			url: 'books.json',
-			initialize: function () {
+				}
+			}),
 
-			}
-		})
-	})
+			// for more flexibility you can define Collections in separate files
+			Collection: XF.Collection.extend({
+				url: 'books.json',
+				initialize: function () {
+
+				}
+			})
+		});
+	}
 );
 ```
 
-This call defines a new component via two arguments: component name and component class.
+This call defines a new component using component name and component class.
+
+`XF.define` uses AMD API, so it is possible to define dependencies as well.
+
+```javascript
+XF.define(
+	'categoryList', 
+	['js/views/categoryView.js', 'js/collections/categoryCollection.js'],
+	function (categoryView, categoryCollection) {
+		return XF.Component.extend({
+			construct: function () {
+				// will be called on the start of construction
+			},
+
+			initialize: function () {
+				// this method will be called after component construction
+			},
+
+			// for more flexibility you can define Views in separate files
+			View: categoryView,
+
+			// for more flexibility you can define Collections in separate files
+			Collection: categoryCollection
+		});
+	}
+);
+```
 
 **Component name**: used to setup a placeholder (-s) for instance (-s) of the component and should be unique within the application.
 
