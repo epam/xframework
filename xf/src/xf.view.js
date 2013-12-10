@@ -31,7 +31,7 @@ define([
             if(this.component.options.autorender) {
                 if (this.component.collection) {
                     this.listenTo(this.component.collection, 'fetched', this.refresh);
-                }else if (this.model) {
+                }else if (this.component.model) {
                     this.listenTo(this.component.model, 'fetched', this.refresh);
                 }
             }
@@ -64,7 +64,7 @@ define([
             // Sorry, BB extend makes all properties static
             this._initProperties();
 
-            this.setElement('[data-id=' + options.attributes['data-id'] + ']');
+            this.setElement('[data-id=' + options.attributes['data-id'] + ']', false);
 
 
             if (options.component) {
@@ -174,7 +174,7 @@ define([
                 data = this.component.model.toJSON();
             }
 
-            return this.template.compiled({data: data});
+            return this.template.compiled({data: data, options: this.component.options});
         },
 
         /**
