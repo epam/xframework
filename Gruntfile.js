@@ -7,7 +7,18 @@ module.exports = function(grunt) {
                 options: {
                     jshintrc: '.jshintrc'
                 },
-                files: ['Gruntfile.js', 'package.json', 'xf/src/*.js', 'xf/ui/*.js', 'js/xf.js', 'test/components/test.js', 'test/src/*.js', 'test/ui/*.js', 'test/lib/run-qunit.js', 'test/*.js']
+                files: [
+                    'Gruntfile.js', 
+                    'package.json', 
+                    'xf/src/*.js', 
+                    'xf/ui/*.js', 
+                    'js/xf.js', 
+                    'test/components/test.js', 
+                    'test/src/*.js', 
+                    'test/ui/*.js', 
+                    'test/lib/run-qunit.js', 
+                    'test/*.js'
+                ]
             },
             recess: {
                 options: {
