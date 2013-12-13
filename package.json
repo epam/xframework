@@ -10,6 +10,7 @@
     "grunt-contrib-less": "latest",
     "grunt-contrib-qunit": "latest",
     "grunt-recess": "latest",
+    "grunt-processhtml": "latest",
     "underscore.string": "latest",
     "requirejs": "latest",
     "grunt-bower-task": "latest",
