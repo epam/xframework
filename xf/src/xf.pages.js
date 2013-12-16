@@ -8,7 +8,7 @@ define([
     /* jshint -W004 */
     // Root DOM Object for starting the application
     // TODO: should be moved to app settings
-    // TODO(jauhen): See xf.core for same variable.
+    // TODO(jauhen): See app/start.jd for same variable.
     var rootDOMObject = $('body');
     /* jshint +W004 */
 
