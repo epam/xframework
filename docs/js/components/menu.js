@@ -95,8 +95,8 @@ $(function(){
 
 
 	XF.define(
-		'menu',
-		 XF.Component.extend(extending, {})
+		'menu', [],
+		 function() {return XF.Component.extend(extending, {})}
 	);
 
 });
