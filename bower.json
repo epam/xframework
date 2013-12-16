@@ -6,6 +6,7 @@
     "backbone": "latest",
     "underscore": "latest",
     "requirejs": "latest",
+    "sinonjs": "latest",
     "xframework": "https://github.com/epam/xframework.git"
   },
   "homepage": "http://xframeworkjs.org",
@@ -19,18 +20,23 @@
     "node_modules",
     "bower_modules",
     ".",
-    "test",
-    "tests"
+    "test"
   ],
   "exportsOverride": {
     "backbone": {
       ".": "backbone.js"
+    },
+    "jquery": {
+      ".": "jquery.js"
     },
     "underscore": {
       ".": "underscore.js"
     },
     "requirejs": {
       ".": "require.js"
+    },
+    "sinonjs": {
+      ".": "sinon.js"
     }
   }
 }
