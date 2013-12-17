@@ -3,6 +3,7 @@ $(function() {
     module("XF.device", {});
 
     test('window size', 2, function () {
+        XF.device.init();
         var size = {
             width: $(window).width(),
             height: $(window).height()
