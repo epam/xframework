@@ -16,23 +16,28 @@
     <body>
         <div id="qunit"></div>
         <div id="qunit-fixture"></div>
-        <script src="http://docs.xframeworkjs.org/js/lib/jquery.js"></script>
+        <script src="../bower_modules/jquery/jquery.js"></script>
+        <script src="../bower_modules/underscore/underscore.js"></script>
+        <script src="../bower_modules/backbone/backbone.js"></script>
         <script src="./lib/qunit-1.12.0.js"></script>
-        <script src="http://docs.xframeworkjs.org/js/lib/underscore.js"></script>
-        <script src="http://docs.xframeworkjs.org/js/lib/backbone.js"></script>
+        <script>
+            QUnit.config.autostart = false;
+        </script>
+        
         <script src="../js/xf.js"></script>
         <script src="./src/xf.app.js"></script>
-        <script src="./src/xf.core.js"></script>
         <script src="./src/xf.device.js"></script>
-        <script src="./src/xf.settings.js"></script>
         <script src="./src/xf.pages.js"></script>
         <script src="./src/xf.storage.js"></script>
-        <script src="./src/xf.router.js"></script>
+        <!--<script src="./src/xf.router.js"></script>-->
         <script src="./src/xf.component.js"></script>
         <script src="./src/xf.collection.js"></script>
         <script src="./src/xf.model.js"></script>
         <script src="./src/xf.touch.js"></script>
         <script src="./src/xf.ui.js"></script>
+
+        <script data-main="main.js" src="../bower_modules/requirejs/require.js"></script>
+
     </body>
 
 </html>

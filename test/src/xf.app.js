@@ -1,5 +1,9 @@
 $(function () {
-    App = new XF.App({
+
+    XF.router = null;
+    Backbone.History.started = false;
+
+    var App = new XF.App({
         settings: {
             applicationVersion: '1.1',
             noCache: true,
