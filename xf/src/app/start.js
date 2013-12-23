@@ -1,30 +1,22 @@
 define([
     '../xf.core',
-    'jquery',
     'underscore',
+    '../dom/dom',
     '../xf.device',
     '../xf.storage',
     '../xf.touch',
     '../xf.ui',
     '../xf.router',
     '../xf.pages'
-], function (XF, $, _) {
+], function (XF, _, Dom) {
 
+// TODO(Jauhen): Consider this function as part of XF.App.
 /**
  * A module create AppStart function that would be ran during XF.App call.
  * @exports AppStart
  */
 
 var AppStart = (function() {
-
-    // TODO: should be moved to app settings
-    // TODO(Jauhen): See xf.pages for same variable.
-    /**
-     * @type {jQuery} Root DOM Object for starting the application.
-     * @private
-     */
-    var _rootDomObject = $('body');
-
 
     /**
      * Creates router and pass parameters to Backbone.Router.
@@ -40,6 +32,7 @@ var AppStart = (function() {
     };
 
 
+    // TODO(Jauhen): Move this function to pages.init.
     /**
      * Makes each element with `data-href` attribute tappable (touchable,
      * clickable). It will work with application routes and pages.
@@ -48,15 +41,14 @@ var AppStart = (function() {
      * @private
      */
     var _placeAnchorHooks = function() {
-        _rootDomObject.on('tap click', '[data-href]', function() {
-            var animationType = $(this).data('animation') || null;
+        Dom.root.on('tap click', '[data-href]', function() {
+            var element = Dom(this);
+            var animationType = element.data('animation') || null;
             if (animationType) {
                 XF.trigger('pages:animation:next', animationType);
             }
 
-            XF.router.navigate(
-                    $(this).data('href'),
-                    {trigger: true});
+            XF.router.navigate(element.data('href'), {trigger: true});
         });
     };
 
@@ -113,7 +105,7 @@ var AppStart = (function() {
         XF.pages.init(options.animations);
 
         // Initializes all components.
-        XF.loadChildComponents(_rootDomObject);
+        XF.loadChildComponents(Dom.root);
         XF.on('xf:loadChildComponents', XF.loadChildComponents);
 
         // Fires events binded on application start.

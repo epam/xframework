@@ -1,5 +1,233 @@
-/*! X-Framework 16-12-2013 */
+/*! X-Framework 23-12-2013 */
 ;(function (window, $, BB) {
+
+
+    /**
+     * Adapter to wrap jQuery or jQuery like libraries.
+     * @exports Dom
+     */
+
+    var Dom = (function() {
+
+        /**
+         * jQueryWrapper is an object with private field _element which store
+         * actual jQuery object. This constructor is supposed to be used as
+         * function like: var domElement = Dom('.class').
+         *
+         * @param {jQueryWrapper|Element|$|string|undefined} element Object to
+         *      be wrapped, can be any of type.
+         * @returns {jQueryWrapper}
+         * @constructor
+         */
+        var jQueryWrapper = function(element) {
+            if (element !== undefined) {
+                if (element instanceof jQueryWrapper) {
+                    return element;
+                }
+                var result = new jQueryWrapper();
+                result._element = $(element);
+                return result;
+            }
+        };
+
+        /**
+         * Methods of Dom object that applied to element.
+         */
+        jQueryWrapper.prototype = {
+            /** Wrapper around jQuery.fn.attr. */
+            attr: function(attributeName) {
+                return this._element.attr(attributeName);
+            },
+            /** Wrapper around jQuery.fn.data. */
+            data: function(key, value) {
+                if (value !== undefined) {
+                    this._element.data(key, value);
+                    return this;
+                }
+                return this._element.data(key);
+            },
+            /** Wrapper around jQuery.fn.is. */
+            is: function(selector) {
+                return this._element.is(selector);
+            },
+            /** Wrapper around jQuery.fn.find. */
+            find: function(selector) {
+                return jQueryWrapper(this._element.find(selector));
+            },
+            /** Wrapper around jQuery.fn.eq. */
+            eq: function(number) {
+                return jQueryWrapper(this._element.eq(number));
+            },
+            /** Wrapper around jQuery.fn.parent. */
+            parent: function() {
+                return jQueryWrapper(this._element.parent());
+            },
+            /** Wrapper around jQuery.fn.filter. */
+            filter: function(selector) {
+                return jQueryWrapper(this._element.filter(selector));
+            },
+            /** Wrapper around jQuery.fn.first. */
+            first: function() {
+                return jQueryWrapper(this._element.first());
+            },
+            /** Wrapper around jQuery.fn.append. */
+            append: function(content) {
+                this._element.append(content);
+                return this;
+            },
+            /** Wrapper around jQuery.fn.get. */
+            get: function(number) {
+                return this._element.get(number);
+            },
+            /** Wrapper around jQuery.fn.size. */
+            size: function() {
+                return this._element.size();
+            },
+            /** Wrapper around jQuery.fn.each. */
+            each: function(callback) {
+                this._element.each(callback);
+            },
+
+
+
+            /** Wrapper around jQuery.fn.on. */
+            on: function(events, selector, data, handler) {
+                this._element.on(events, selector, data, handler);
+                return this;
+            },
+            /** Wrapper around jQuery.fn.bind. */
+            bind: function(eventType, eventData, handler) {
+                this._element.bind(eventType, eventData, handler);
+                return this;
+            },
+            /** Wrapper around jQuery.fn.unbind. */
+            unbind: function(eventType, handler) {
+                this._element.unbind(eventType, handler);
+                return this;
+            },
+            /** Wrapper around jQuery.fn.trigger. */
+            trigger: function(eventType) {
+                this._element.trigger(eventType);
+                return this;
+            },
+            /** Creates listener for animation end event. */
+            animationEnd: function (callback) {
+                var animationEndEvents = 'webkitAnimationEnd oAnimationEnd ' +
+                        'msAnimationEnd animationend';
+
+                this._element.one(animationEndEvents, callback);
+
+                return this;
+            },
+
+
+
+            /** Wrapper around jQuery.fn.addClass. */
+            addClass: function(className) {
+                this._element.addClass(className);
+                return this;
+            },
+            /** Wrapper around jQuery.fn.removeClass. */
+            removeClass: function(className) {
+                this._element.removeClass(className);
+                return this;
+            },
+            /** Wrapper around jQuery.fn.height. */
+            height: function(height) {
+                if (height !== undefined) {
+                    this._element.height(height);
+                    return this;
+                }
+                return this._element.height();
+            },
+            /** Wrapper around jQuery.fn.width. */
+            width: function(width) {
+                if (width !== undefined) {
+                    this._element.width(width);
+                    return this;
+                }
+                return this._element.width();
+            }
+        };
+
+        /**
+         * Static method of wrapper object.
+         */
+
+        /**
+         * @type {jQueryWrapper} Root DOM Object for starting the application.
+         * @private
+         */
+        jQueryWrapper.root = jQueryWrapper('body');
+
+        /**
+         * Wraps jQuery.ajax routine.
+         * @param {Object} params Object to be passed into jQuery.ajax.
+         */
+        jQueryWrapper.ajax = function(params) {
+            $.ajax(params);
+        };
+
+        /**
+         * Delays a function to execute when the DOM is fully loaded.
+         * @param {Function} callback Function to be executed.
+         */
+        jQueryWrapper.ready = function(callback) {
+            $(callback);
+        };
+
+        jQueryWrapper.viewport = {
+            /** @returns {number} Height of viewport. */
+            height: function() {
+                return $(window).height();
+            },
+            /** @returns {number} Width of viewport. */
+            width: function() {
+                return $(window).width();
+            }
+        };
+
+        /**
+         * Binds a function to execute on window scroll.
+         * @param {Function} callback Function to be executed.
+         */
+        jQueryWrapper.onscroll = function(callback) {
+            $(window).bind('scroll', callback);
+        };
+
+        /** Creates method in $.fn for different animation events. */
+        jQueryWrapper.bindAnimations = function() {
+            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown',
+                'tap'],
+                    function(index, key){
+                        $.fn[key] = function(callback) {
+                            return this.bind(key, callback);
+                        };
+                    });
+        };
+
+        /**
+         * Enchants jQuery DOM manipulations method to fire XF event listener.
+         *
+         * @param {string} selector Selector for child elements, whose presents
+         *      in changed DOM element should fire a callback.
+         * @param {Function} callback Function to be called.
+         */
+        jQueryWrapper.trackDomChanges = function(selector, callback) {
+            $.each(['show', 'html', 'append', 'prepend'], function(index, key) {
+                var oldHandler = $.fn[key];
+                $.fn[key] = function() {
+                    var res = oldHandler.apply(this, arguments);
+                    if ($(this).find(selector).length) {
+                        callback(this);
+                    }
+                    return res;
+                };
+            });
+        };
+
+        return jQueryWrapper;
+    })();
 
 
     // Namespaceolds visible functionality of the framework
@@ -60,7 +288,7 @@
     // Searching for pages inside every component
     // Pages should be on the one level and can be started only once
     var onComponentRender = function (compID) {
-        var compObj = $(XF.getComponentByID(compID).selector());
+        var compObj = Dom(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
             if (!XF.pages.status.started) {
@@ -74,19 +302,20 @@
 
     // Loads component definitions for each visible component placeholder found
     // Searches inside DOMObject passed
-    var loadChildComponents = XF.loadChildComponents = function(DOMObject) {
-        if ($(DOMObject).attr('data-component')) {
-            if ($(DOMObject).is(':visible') && ( !$(DOMObject).attr('data-device-type') || $(DOMObject).attr('data-device-type') == XF.device.type.name )) {
-                var compID = $(DOMObject).attr('data-id');
-                var compName = $(DOMObject).attr('data-component');
+    // TODO(Jauhen): now DOM Element is passed, need to pass direct jQuery/Dom object.
+    XF.loadChildComponents = function(DOMObject) {
+        if (Dom(DOMObject).attr('data-component')) {
+            if (Dom(DOMObject).is(':visible') && ( !Dom(DOMObject).attr('data-device-type') || Dom(DOMObject).attr('data-device-type') == XF.device.type.name )) {
+                var compID = Dom(DOMObject).attr('data-id');
+                var compName = Dom(DOMObject).attr('data-component');
                 loadChildComponent(compID, compName);
             }
         }
 
-        $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
-            if (!$(obj).attr('data-device-type') || $(obj).attr('data-device-type') == XF.device.type.name) {
-                var compID = $(obj).attr('data-id');
-                var compName = $(obj).attr('data-component');
+        Dom(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
+            if (!Dom(obj).attr('data-device-type') || Dom(obj).attr('data-device-type') == XF.device.type.name) {
+                var compID = Dom(obj).attr('data-id');
+                var compName = Dom(obj).attr('data-component');
                 if (compID && compName) {
                     loadChildComponent(compID, compName);
                 }
@@ -308,6 +537,13 @@
     XF.history = BB.history;
 
 
+
+    Dom.trackDomChanges('[data-component]',
+            function(element) {
+                XF.trigger('xf:loadChildComponents', element);
+            });
+
+
 /**
 Instance of {@link XF.DeviceClass}
 @static
@@ -445,8 +681,8 @@ Detectes device type (basicaly, chooses most applicable type from the {@link XF.
 */
 detectType : function() {
 
-    this.size.width = $(window).width();
-    this.size.height = $(window).height();
+    this.size.width = Dom.viewport.width();
+    this.size.height = Dom.viewport.height();
 
     console.log('XF.DeviceClass :: detectType - width = "' + this.size.width + '"');
     console.log('XF.DeviceClass :: detectType - height = "' + this.size.height + '"');
@@ -615,7 +851,7 @@ Returns current orientation of the device (ORIENTATION_PORTRAIT | ORIENTATION_LA
 */
 getOrientation : function() {
     var isPortrait = true, elem = document.documentElement;
-    if ( $.support !== undefined ) {
+    if ( false ) {
         //TODO: uncomment and solve
         //isPortrait = portrait_map[ window.orientation ];
     } else {
@@ -646,11 +882,11 @@ Returns viewport $ object
 getViewport : function() {
     // if there's no explicit viewport make body the viewport
     //var vp = $('.xf-viewport, .viewport') ;
-    var vp = $('body').addClass('xf-viewport');
-    if (!vp[0]) {
-        vp = $('.xf-page').eq(0);
+    var vp = Dom.root.addClass('xf-viewport');
+    if (!vp.get(0)) {
+        vp = Dom('.xf-page').eq(0);
         if (!vp.length) {
-            vp = $('body');
+            vp = Dom.root;
         } else {
             vp = vp.parent();
         }
@@ -926,14 +1162,14 @@ getViewport : function() {
             };
 
             // Events binding
-            $(document).ready(function () {
+            Dom.ready(function () {
                 var now,
                     delta;
 
-                $(document.body).bind(eventsHandler[eventType].start, function (e) { // Pointer / Touch start event
+                Dom.root.bind(eventsHandler[eventType].start, function (e) { // Pointer / Touch start event
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
-                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
+                    touchHandler.el = Dom(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
                     touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
                     touchHandler.last = now;
@@ -964,22 +1200,19 @@ getViewport : function() {
                         touchHandler.el.trigger('tap');
 
                         // Unbind click event if tap
-                        $(document.body).unbind('click');
+                        // TODO(Jauhen): Add event namespaces here.
+                        Dom.root.unbind('click');
                         touchHandler.el.unbind('click');
                         
                     }
                 });
 
                 // Cancel all handlers if window scroll
-                $(window).bind('scroll', cancelAll);
+                Dom.onscroll(cancelAll);
             });
 
             // List of new events
-            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i, key){
-                $.fn[key] = function (callback) {
-                    return this.bind(key, callback);
-                };
-            });
+            Dom.bindAnimations();
         }
 
     };
@@ -2592,13 +2825,6 @@ XF.ui.input = {
 
 
 
-    /* jshint -W004 */
-    // Root DOM Object for starting the application
-    // TODO: should be moved to app settings
-    // TODO(jauhen): See app/start.js for same variable.
-    var rootDOMObject = $('body');
-    /* jshint +W004 */
-
     /**
      XF.pages
      @static
@@ -2642,20 +2868,20 @@ XF.ui.input = {
                 },
                 'fade': {
                     fallback: function (fromPage, toPage) {
-                        $(fromPage).removeClass(this.activePageClass);
-                        $(toPage).addClass(this.activePageClass);
+                        fromPage.removeClass(this.activePageClass);
+                        toPage.addClass(this.activePageClass);
                     }
                 },
                 'slideleft': {
                     fallback: function (fromPage, toPage) {
-                        $(fromPage).removeClass(this.activePageClass);
-                        $(toPage).addClass(this.activePageClass);
+                        fromPage.removeClass(this.activePageClass);
+                        toPage.addClass(this.activePageClass);
                     }
                 },
                 'slideright': {
                     fallback: function (fromPage, toPage) {
-                        $(fromPage).removeClass(this.activePageClass);
-                        $(toPage).addClass(this.activePageClass);
+                        fromPage.removeClass(this.activePageClass);
+                        toPage.addClass(this.activePageClass);
                     }
                 }
             }
@@ -2701,9 +2927,9 @@ XF.ui.input = {
                 return;
             }
 
-            jqObj = jqObj || $('body');
+            jqObj = jqObj || Dom.root;
             var pages =  jqObj.find(' .' + this.pageClass);
-            if (pages.length) {
+            if (pages.size()) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
                 if(preselectedAP.length) {
                     this.activePage = preselectedAP;
@@ -2739,17 +2965,17 @@ XF.ui.input = {
             }
 
             if (page === '') {
-                var pages =  rootDOMObject.find(' .' + this.pageClass);
-                if (pages.length) {
+                var pages =  Dom.root.find(' .' + this.pageClass);
+                if (pages.size()) {
                     this.show(pages.first());
                 }
                 return;
             }
 
-            var jqPage = (page instanceof $) ? page : $('.' + XF.pages.pageClass + '#' + page);
+            var jqPage = (page instanceof Dom) ? page : Dom('.' + XF.pages.pageClass + '#' + page);
 
             // preventing animation when the page is already shown
-            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
+            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.size()) {
                 return;
             }
             console.log('XF.pages :: showing page', jqPage.attr('id'));
@@ -2795,10 +3021,10 @@ XF.ui.input = {
                 }
             }
 
-            XF.trigger('ui:enhance', $(this.activePage));
+            XF.trigger('ui:enhance', this.activePage);
 
             // looking for components inside the page
-            XF.loadChildComponents(this.activePage[0]);
+            XF.loadChildComponents(this.activePage);
         }
     };
 
@@ -2830,7 +3056,7 @@ XF.ui.input = {
         start : function(options) {
             this.bindAnyRoute();
             XF.history.start(options);
-            XF.trigger('ui:enhance', $('body'));
+            XF.trigger('ui:enhance', Dom.root);
         },
 
 
@@ -2859,116 +3085,107 @@ XF.ui.input = {
     });
 
 
-/**
- * A module create AppStart function that would be ran during XF.App call.
- * @exports AppStart
- */
-
-var AppStart = (function() {
-
-    // TODO: should be moved to app settings
-    // TODO(Jauhen): See xf.pages for same variable.
     /**
-     * @type {jQuery} Root DOM Object for starting the application.
-     * @private
+     * A module create AppStart function that would be ran during XF.App call.
+     * @exports AppStart
      */
-    var _rootDomObject = $('body');
+
+    var AppStart = (function() {
+
+        /**
+         * Creates router and pass parameters to Backbone.Router.
+         * @param {Object} options Router settings.
+         * @private
+         */
+        var _createRouter = function(options) {
+            if (XF.router) {
+                throw 'XF.createRouter can be called only once.';
+            } else {
+                XF.router = new (XF.Router.extend(options))();
+            }
+        };
 
 
-    /**
-     * Creates router and pass parameters to Backbone.Router.
-     * @param {Object} options Router settings.
-     * @private
-     */
-    var _createRouter = function(options) {
-        if (XF.router) {
-            throw 'XF.createRouter can be called only once.';
-        } else {
-            XF.router = new (XF.Router.extend(options))();
-        }
-    };
+        // TODO(Jauhen): Move this function to pages.init.
+        /**
+         * Makes each element with `data-href` attribute tappable (touchable,
+         * clickable). It will work with application routes and pages.
+         * `data-animation` on such element will set the next animation type for
+         * the page.
+         * @private
+         */
+        var _placeAnchorHooks = function() {
+            Dom.root.on('tap click', '[data-href]', function() {
+                var element = Dom(this);
+                var animationType = element.data('animation') || null;
+                if (animationType) {
+                    XF.trigger('pages:animation:next', animationType);
+                }
+
+                XF.router.navigate(element.data('href'), {trigger: true});
+            });
+        };
 
 
-    /**
-     * Makes each element with `data-href` attribute tappable (touchable,
-     * clickable). It will work with application routes and pages.
-     * `data-animation` on such element will set the next animation type for
-     * the page.
-     * @private
-     */
-    var _placeAnchorHooks = function() {
-        _rootDomObject.on('tap click', '[data-href]', function() {
-            var animationType = $(this).data('animation') || null;
-            if (animationType) {
-                XF.trigger('pages:animation:next', animationType);
+        // TODO(Jauhen): replace Object in param with more specific type.
+        // See http://usejsdoc.org/tags-typedef.html for details.
+        /**
+         * Initialises all necessary objects and runs initial page.
+         * This function is called from XF.App.
+         *
+         * @param {Object=} options Setting of application.
+         * @param {Object=} options.animations Page transitions settings,
+         *          see XF.pages for details.
+         * @param {Object=} options.device Tweaks for different device types,
+         *          see XF.devices for details.
+         * @param {Object=} options.history Object to be passed into
+         *          Backbone.history.start.
+         * @param {Object=} options.router Object to be passed into Backbone.Router.
+         *          from XF.settings.
+         */
+        return function(options) {
+            // Fills missing options with default settings.
+            _.defaults(options, {
+                animations: {},
+                device: {},
+                history: {pushState: false},
+                router: {}
+            });
+            _.defaults(options.animations, {standardAnimation: ''});
+
+            // Initializes XF objects.
+            XF.device.init(options.device.types);
+            XF.storage.init();
+            if (_.has(XF, 'touch')) {
+                XF.touch.init();
+            }
+            if (_.has(XF, 'ui')) {
+                XF.ui.init();
             }
 
-            XF.router.navigate(
-                    $(this).data('href'),
-                    {trigger: true});
-        });
-    };
+            // Rewrites animations settings with specific animation for current
+            // device.
+            if (XF.device.type && _.has(XF.device.type, 'defaultAnimation')) {
+                options.animations.standardAnimation =
+                        XF.device.type.defaultAnimation;
+            }
 
+            // Creates router and initializes it.
+            _createRouter(options.router);
 
-    // TODO(Jauhen): replace Object in param with more specific type.
-    // See http://usejsdoc.org/tags-typedef.html for details.
-    /**
-     * Initialises all necessary objects and runs initial page.
-     * This function is called from XF.App.
-     *
-     * @param {Object=} options Setting of application.
-     * @param {Object=} options.animations Page transitions settings,
-     *          see XF.pages for details.
-     * @param {Object=} options.device Tweaks for different device types,
-     *          see XF.devices for details.
-     * @param {Object=} options.history Object to be passed into
-     *          Backbone.history.start.
-     * @param {Object=} options.router Object to be passed into Backbone.Router.
-     *          from XF.settings.
-     */
-    return function(options) {
-        // Fills missing options with default settings.
-        _.defaults(options, {
-            animations: {},
-            device: {},
-            history: {pushState: false},
-            router: {}
-        });
-        _.defaults(options.animations, {standardAnimation: ''});
+            _placeAnchorHooks();
 
-        // Initializes XF objects.
-        XF.device.init(options.device.types);
-        XF.storage.init();
-        if (_.has(XF, 'touch')) {
-            XF.touch.init();
-        }
-        if (_.has(XF, 'ui')) {
-            XF.ui.init();
-        }
+            XF.router.start(options.history);
+            XF.pages.init(options.animations);
 
-        // Rewrites animations settings with specific animation for current
-        // device.
-        if (XF.device.type && _.has(XF.device.type, 'defaultAnimation')) {
-            options.animations.standardAnimation =
-                    XF.device.type.defaultAnimation;
-        }
+            // Initializes all components.
+            XF.loadChildComponents(Dom.root);
+            XF.on('xf:loadChildComponents', XF.loadChildComponents);
 
-        // Creates router and initializes it.
-        _createRouter(options.router);
-
-        _placeAnchorHooks();
-
-        XF.router.start(options.history);
-        XF.pages.init(options.animations);
-
-        // Initializes all components.
-        XF.loadChildComponents(_rootDomObject);
-        XF.on('xf:loadChildComponents', XF.loadChildComponents);
-
-        // Fires events binded on application start.
-        XF.trigger('app:started');
-    };
-})();
+            // Fires events binded on application start.
+            XF.trigger('app:started');
+        };
+    })();
 
 
 XF.App = function(options) {
@@ -3141,10 +3358,11 @@ XF.Collection = BB.Collection.extend({
         }
         _.omit(options, 'component');
         
-        this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
+        this.url = this.url ||
+                XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
 
         if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
-            $(this.component.selector()).bind('show', _.bind(this.refresh, this));
+            Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
         this.ajaxSettings = this.ajaxSettings || _.defaults({}, XF.settings.property('ajaxSettings'));
@@ -3244,7 +3462,7 @@ XF.Model = BB.Model.extend({
         this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
 
         if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
-            $(this.component.selector()).bind('show', _.bind(this.refresh, this));
+            Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
         this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
@@ -3417,7 +3635,7 @@ XF.Model = BB.Model.extend({
 
                 var $this = this;
 
-                $.ajax({
+                Dom.ajax({
                     url: url,
                     complete : function(jqXHR, textStatus) {
                         if(!$this.component) {
@@ -3755,59 +3973,6 @@ XF.Model = BB.Model.extend({
      @static
      */
     XF.Component.extend = BB.Model.extend;
-
-
-    /* $ hooks */
-
-    var _oldhide = $.fn.hide;
-    /** @ignore */
-    $.fn.hide = function(speed, callback) {
-        var res = _oldhide.apply(this,arguments);
-        //$(this).trigger('hide');
-        return res;
-    };
-
-    var _oldshow = $.fn.show;
-    /** @ignore */
-    $.fn.show = function(speed, callback) {
-        var res = _oldshow.apply(this, arguments);
-        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
-        return res;
-    };
-
-    var _oldhtml = $.fn.html;
-    /** @ignore */
-    $.fn.html = function(a) {
-        var res = _oldhtml.apply(this, arguments);
-        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
-        return res;
-    };
-
-    var _oldappend = $.fn.append;
-    /** @ignore */
-    $.fn.append = function() {
-        var res = _oldappend.apply(this, arguments);
-        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
-        return res;
-    };
-
-    var _oldprepend = $.fn.prepend;
-    /** @ignore */
-    $.fn.prepend = function() {
-        var res = _oldprepend.apply(this, arguments);
-        if ($(this).find('[data-component]').length) XF.trigger('xf:loadChildComponents', this);
-        return res;
-    };
-
-    $.fn.animationEnd = function (callback) {
-        var animationEndEvents = 'webkitAnimationEnd oAnimationEnd msAnimationEnd animationend';
-
-        $(this).one(animationEndEvents, callback);
-
-        return this;
-    };
-
-
 
 
 }).call(this, window, $, Backbone); 

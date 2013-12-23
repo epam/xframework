@@ -6,6 +6,7 @@
     "backbone": "latest",
     "underscore": "latest",
     "requirejs": "latest",
+    "requirejs-text": "latest",
     "sinonjs": "latest",
     "xframework": "https://github.com/epam/xframework.git"
   },
@@ -34,6 +35,9 @@
     },
     "requirejs": {
       ".": "require.js"
+    },
+    "requirejs-text": {
+      ".": "text.js"
     },
     "sinonjs": {
       ".": "sinon.js"

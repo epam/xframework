@@ -1,8 +1,8 @@
 define([
-    'jquery',
     'underscore',
-    'backbone'
-], function ($, _, BB) {
+    'backbone',
+    './dom/dom'
+], function (_, BB, Dom) {
 
     // Namespaceolds visible functionality of the framework
     var XF = window.XF = window.XF || {};
@@ -62,7 +62,7 @@ define([
     // Searching for pages inside every component
     // Pages should be on the one level and can be started only once
     var onComponentRender = function (compID) {
-        var compObj = $(XF.getComponentByID(compID).selector());
+        var compObj = Dom(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
             if (!XF.pages.status.started) {
@@ -76,19 +76,20 @@ define([
 
     // Loads component definitions for each visible component placeholder found
     // Searches inside DOMObject passed
-    var loadChildComponents = XF.loadChildComponents = function(DOMObject) {
-        if ($(DOMObject).attr('data-component')) {
-            if ($(DOMObject).is(':visible') && ( !$(DOMObject).attr('data-device-type') || $(DOMObject).attr('data-device-type') == XF.device.type.name )) {
-                var compID = $(DOMObject).attr('data-id');
-                var compName = $(DOMObject).attr('data-component');
+    // TODO(Jauhen): now DOM Element is passed, need to pass direct jQuery/Dom object.
+    XF.loadChildComponents = function(DOMObject) {
+        if (Dom(DOMObject).attr('data-component')) {
+            if (Dom(DOMObject).is(':visible') && ( !Dom(DOMObject).attr('data-device-type') || Dom(DOMObject).attr('data-device-type') == XF.device.type.name )) {
+                var compID = Dom(DOMObject).attr('data-id');
+                var compName = Dom(DOMObject).attr('data-component');
                 loadChildComponent(compID, compName);
             }
         }
 
-        $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
-            if (!$(obj).attr('data-device-type') || $(obj).attr('data-device-type') == XF.device.type.name) {
-                var compID = $(obj).attr('data-id');
-                var compName = $(obj).attr('data-component');
+        Dom(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
+            if (!Dom(obj).attr('data-device-type') || Dom(obj).attr('data-device-type') == XF.device.type.name) {
+                var compID = Dom(obj).attr('data-id');
+                var compName = Dom(obj).attr('data-component');
                 if (compID && compName) {
                     loadChildComponent(compID, compName);
                 }
@@ -308,6 +309,13 @@ define([
 
     // Linking Backbone.history to XF.history
     XF.history = BB.history;
+
+
+
+    Dom.trackDomChanges('[data-component]',
+            function(element) {
+                XF.trigger('xf:loadChildComponents', element);
+            });
 
     return XF;
 });

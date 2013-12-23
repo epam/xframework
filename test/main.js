@@ -4,7 +4,8 @@ require.config({
         jquery: './../bower_modules/jquery/jquery',
         underscore: './../bower_modules/underscore/underscore',
         backbone: './../bower_modules/backbone/backbone',
-        sinon: './../bower_modules/sinonjs/sinon'
+        sinon: './../bower_modules/sinonjs/sinon',
+        text : './../bower_modules/requirejs-text/text'
     },
     shim: {
         'jquery': {
@@ -28,7 +29,8 @@ require.config({
 });
 
 requirejs([
-    'src/app/start'
+    'src/app/start',
+    'src/dom/dom'
 ], function(/* remember: the test modules don't export anything */) {
 
     // All the test files have been loaded, and all the tests have been
