@@ -5,6 +5,8 @@ XFramework
 
 [![Dependency Status](https://gemnasium.com/epam/xframework.png)](https://gemnasium.com/epam/xframework)
 
+[![Coverage Status](https://coveralls.io/repos/larchanka/xframework/badge.png)](https://coveralls.io/r/larchanka/xframework)
+
 # Getting started
 
 ## What is XFramework?
