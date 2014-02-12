@@ -30,65 +30,65 @@ if (!window.console) {
 </script>
 <script type="text/javascript">
 $(function(){
-    XF.start({
+    XF.define('App', function () {
+        return new XF.App({
 
-        settings: {
-            applicationVersion: '1.1'+ Math.random(),
-            noCache: true,
-            componentUrlPrefix: 'js/components/',
-            templateUrlPrefix: 'tmpl/',
-            dataUrlPrefix: 'mocks/'
+            settings: {
+                applicationVersion: '1.1'+ Math.random(),
+                noCache: true,
+                componentUrlPrefix: 'js/components/',
+                templateUrlPrefix: 'tmpl/',
+                dataUrlPrefix: 'mocks/'
 
-        },
-
-        animations: {
-        default: 'slideleft',
-        types: {
-
-        }
-    },
-
-    device: {
-        types : [{
-            name : 'tablet',
-            range : {
-                max : null,
-                min : 569
             },
-            templatePath : 'tablet/',
-            fallBackTo : 'default'
-        }, {
-            name : 'mobile',
-            range : {
-                max : 568,
-                min : null
+
+            animations: {
+            default: 'slideleft',
+            types: {
+
             },
-            templatePath : 'mobile/',
-            fallBackTo : 'default'
-        }]
-    },
+            device: {
+                types : [{
+                    name : 'tablet',
+                    range : {
+                        max : null,
+                        min : 569
+                    },
+                    templatePath : 'tablet/',
+                    fallBackTo : 'default'
+                }, {
+                    name : 'mobile',
+                    range : {
+                        max : 568,
+                        min : null
+                    },
+                    templatePath : 'mobile/',
+                    fallBackTo : 'default'
+                }]
+            },
 
-    router: {
-        routes: {
-            '': 			'home',
-            '/': 			'home',
-            'page2':	    'home',
-            'page1':        'home'
-        },
+            router: {
+                routes: {
+                    '': 			'home',
+                    '/': 			'home',
+                    'page1':	    'home',
+                    'page2':        'home'
+                },
 
-        home: function () {
-        },
+                home: function () {
+                },
 
-        page2: function () {
-            "use strict";
-        },
+                page1: function () {
+                    "use strict";
+                },
 
-        page1: function () {
-            "use strict";
-        }
-    }
+                page2: function () {
+                    "use strict";
+                }
+            }
 
-});
+        });
+    });
 
 });
 </script>
