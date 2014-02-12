@@ -43,48 +43,46 @@ $(function(){
             },
 
             animations: {
-            default: 'slideleft',
-            types: {
-
+                default: 'slideleft'
             },
             device: {
-                types : [{
-                    name : 'tablet',
-                    range : {
-                        max : null,
-                        min : 569
-                    },
-                    templatePath : 'tablet/',
-                    fallBackTo : 'default'
-                }, {
-                    name : 'mobile',
-                    range : {
-                        max : 568,
-                        min : null
-                    },
-                    templatePath : 'mobile/',
-                    fallBackTo : 'default'
-                }]
+            types : [{
+                name : 'tablet',
+                range : {
+                    max : null,
+                    min : 569
+                },
+                templatePath : 'tablet/',
+                fallBackTo : 'default'
+            }, {
+                name : 'mobile',
+                range : {
+                    max : 568,
+                    min : null
+                },
+                templatePath : 'mobile/',
+                fallBackTo : 'default'
+            }]
             },
 
             router: {
-                routes: {
-                    '': 			'home',
-                    '/': 			'home',
-                    'page1':	    'home',
-                    'page2':        'home'
-                },
+            routes: {
+                '': 			'home',
+                '/': 			'home',
+                'page1':	    'home',
+                'page2':        'home'
+            },
 
-                home: function () {
-                },
+            home: function () {
+            },
 
-                page1: function () {
-                    "use strict";
-                },
+            page1: function () {
+                "use strict";
+            },
 
-                page2: function () {
-                    "use strict";
-                }
+            page2: function () {
+                "use strict";
+            }
             }
 
         });
