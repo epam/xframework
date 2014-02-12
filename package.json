@@ -11,6 +11,7 @@
     "grunt-contrib-qunit": "latest",
     "grunt-recess": "latest",
     "grunt-processhtml": "latest",
+    "grunt-karma-coveralls": "latest",
     "underscore.string": "latest",
     "requirejs": "latest",
     "grunt-bower-task": "latest",

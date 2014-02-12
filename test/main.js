@@ -1,4 +1,4 @@
-requirejs.config({
+require.config({
     urlArgs: 'now=' + Date.now(),
     paths: {
         jquery: './../bower_modules/jquery/jquery',

@@ -92,6 +92,7 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-bower-task');
+    grunt.loadNpmTasks('grunt-karma-coveralls');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -144,6 +145,12 @@ module.exports = function(grunt) {
                     "styles/xf.min.css": ["styles/xf.css"]
                 }
             }
+        },
+        coveralls: {
+            options: {
+                debug: true,
+                coverage_dir: './'
+            }
         }
     });
 
@@ -155,6 +162,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask('install', ['bower']);
 
-    grunt.registerTask('default', ['build', 'uglify', 'less', 'recess']);
+    grunt.registerTask('default', ['build', 'uglify', 'less', 'recess', 'coveralls']);
 
 }; 
