@@ -2,8 +2,9 @@ define([
     './xf.core',
     'underscore',
     'backbone',
+    './app/start',
     './xf.settings'
-], function(XF, _, BB) {
+], function(XF, _, BB, AppStart) {
 
 XF.App = function(options) {
     options = options || {};
@@ -16,7 +17,7 @@ XF.App = function(options) {
 
     this.initialize();
 
-    XF.start(options);
+    AppStart(options);
 };
 
 
