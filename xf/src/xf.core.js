@@ -1,13 +1,8 @@
 define([
-    'jquery',
     'underscore',
-    'backbone'
-], function ($, _, BB) {
-
-    // Root DOM Object for starting the application
-    // TODO: should be moved to app settings
-    // TODO(jauhen): See xf.pages for same variable.
-    var rootDOMObject = $('body');
+    'backbone',
+    './dom/dom'
+], function (_, BB, Dom) {
 
     // Namespaceolds visible functionality of the framework
     var XF = window.XF = window.XF || {};
@@ -29,7 +24,7 @@ define([
 
     // Listening to all global XF events to push them to necessary component if it's constructed
     XF.on('all', function (eventName) {
-        var compEventSplitter = /\:/,
+        var compEventSplitter = /:/,
             parts;
 
         if (!compEventSplitter.test(eventName)) {
@@ -67,7 +62,7 @@ define([
     // Searching for pages inside every component
     // Pages should be on the one level and can be started only once
     var onComponentRender = function (compID) {
-        var compObj = $(XF.getComponentByID(compID).selector());
+        var compObj = Dom(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
             if (!XF.pages.status.started) {
@@ -76,95 +71,25 @@ define([
         }
     };
 
-    //
-    XF.start = function(options) {
-        // initializing XF.device
-        options.device = options.device || {};
-        XF.device.init(options.device.types);
-
-        options = options || {};
-        options.history = options.history || { pushState: false };
-
-        // initializing XF.storage
-        XF.storage.init();
-
-
-        // initializing XF.touch
-        if ('touch' in XF) {
-            XF.touch.init();
-        }
-
-        // options.router
-        options.router = options.router || {};
-        createRouter(options.router);
-
-        placeAnchorHooks();
-
-        if (_.has(XF, 'ui')) {
-            XF.ui.init();
-        }
-
-        XF.router.start(options.history);
-
-        options.animations = options.animations || {};
-        options.animations.standardAnimation = options.animations.standardAnimation || '';
-
-        if (_.has(XF.device.type, 'defaultAnimation')) {
-            options.animations.standardAnimation = XF.device.type.defaultAnimation;
-            console.log('Options.animations', options.animations);
-        }
-
-        XF.pages.init(options.animations);
-
-        //XF.pages.start();
-        loadChildComponents(rootDOMObject);
-
-        XF.on('xf:loadChildComponents', XF.loadChildComponents);
-        XF.trigger('app:started');
-    };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    // Router creation from XF.Router
-    // Passing parameters with routes to constructor
-    var createRouter = function(options) {
-        if(XF.router) {
-            throw 'XF.createRouter can be called only ONCE!';
-        } else {
-            XF.router = new (XF.Router.extend(options))();
-        }
-    };
-
-
-    // Making each element with `data-href` attribute tappable (touchable, clickable)
-    // It will work with application routes and pages
-    // `data-animation` on such element will set the next animation type for the page
-    var placeAnchorHooks = function() {
-        $('body').on('tap click', '[data-href]', function() {
-            var animationType = $(this).data('animation') || null;
-            if (animationType) {
-                XF.trigger('pages:animation:next', animationType);
-            }
-            XF.router.navigate( $(this).data('href'), {trigger: true} );
-        });
-    };
-
     // Loads component definitions for each visible component placeholder found
     // Searches inside DOMObject passed
-    var loadChildComponents = XF.loadChildComponents = function(DOMObject) {
-        if ($(DOMObject).attr('data-component')) {
-            if ($(DOMObject).is(':visible') && ( !$(DOMObject).attr('data-device-type') || $(DOMObject).attr('data-device-type') == XF.device.type.name )) {
-                var compID = $(DOMObject).attr('data-id');
-                var compName = $(DOMObject).attr('data-component');
+    // TODO(Jauhen): now DOM Element is passed, need to pass direct jQuery/Dom object.
+    XF.loadChildComponents = function(DOMObject) {
+        if (Dom(DOMObject).attr('data-component')) {
+            if (Dom(DOMObject).is(':visible') && ( !Dom(DOMObject).attr('data-device-type') || Dom(DOMObject).attr('data-device-type') == XF.device.type.name )) {
+                var compID = Dom(DOMObject).attr('data-id');
+                var compName = Dom(DOMObject).attr('data-component');
                 loadChildComponent(compID, compName);
             }
         }
 
-        $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
-            if (!$(obj).attr('data-device-type') || $(obj).attr('data-device-type') == XF.device.type.name) {
-                var compID = $(obj).attr('data-id');
-                var compName = $(obj).attr('data-component');
+        Dom(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
+            if (!Dom(obj).attr('data-device-type') || Dom(obj).attr('data-device-type') == XF.device.type.name) {
+                var compID = Dom(obj).attr('data-id');
+                var compName = Dom(obj).attr('data-component');
                 if (compID && compName) {
                     loadChildComponent(compID, compName);
                 }
@@ -184,17 +109,8 @@ define([
         });
     };
 
-
-
     // Stores instances of XF.Component and its subclasses
     var components = {};
-
-    
-
-    // Loads component definition if necessary and passes it to callback function
-    var getComponent = function(compName, callback) {
-
-    };
 
     // Returns component instance by its id
     XF.getComponentByID = function(compID) {
@@ -393,6 +309,13 @@ define([
 
     // Linking Backbone.history to XF.history
     XF.history = BB.history;
+
+
+
+    Dom.trackDomChanges('[data-component]',
+            function(element) {
+                XF.trigger('xf:loadChildComponents', element);
+            });
 
     return XF;
 });

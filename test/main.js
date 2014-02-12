@@ -1,9 +1,11 @@
-/* ExcludeStart */
 require.config({
+    urlArgs: 'now=' + Date.now(),
     paths: {
         jquery: './../bower_modules/jquery/jquery',
         underscore: './../bower_modules/underscore/underscore',
-        backbone: './../bower_modules/backbone/backbone'
+        backbone: './../bower_modules/backbone/backbone',
+        sinon: './../bower_modules/sinonjs/sinon',
+        text : './../bower_modules/requirejs-text/text'
     },
     shim: {
         'jquery': {
@@ -19,28 +21,19 @@ require.config({
         },
         'underscore': {
             exports: '_'
+        },
+        'sinon': {
+            exports: 'sinon'
         }
     }
 });
-/* ExcludeEnd */
 
-define([
-    './xf.core',
-    './xf.app',
-    './xf.touch',
-    './xf.router',
-    './xf.utils',
-    './xf.pages',
-    './xf.settings',
-    './xf.storage',
-    './xf.device',
-    './xf.collection',
-    './xf.model',
-    './xf.view',
-    './xf.component',
-    './xf.ui',
-    'underscore'
-], function(XF) {
+requirejs([
+    'src/app/start',
+    'src/dom/dom'
+], function(/* remember: the test modules don't export anything */) {
 
-    return XF;
+    // All the test files have been loaded, and all the tests have been
+    // defined--we're ready to start testing!
+    QUnit.start();
 });

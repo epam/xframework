@@ -1,16 +1,9 @@
 define([
     './xf.core',
-    'jquery',
     'underscore',
+    './dom/dom',
     './xf.device'
-], function(XF, $, _) {
-
-    /* jshint -W004 */
-    // Root DOM Object for starting the application
-    // TODO: should be moved to app settings
-    // TODO(jauhen): See xf.core for same variable.
-    var rootDOMObject = $('body');
-    /* jshint +W004 */
+], function(XF, _, Dom) {
 
     /**
      XF.pages
@@ -55,20 +48,20 @@ define([
                 },
                 'fade': {
                     fallback: function (fromPage, toPage) {
-                        $(fromPage).removeClass(this.activePageClass);
-                        $(toPage).addClass(this.activePageClass);
+                        fromPage.removeClass(this.activePageClass);
+                        toPage.addClass(this.activePageClass);
                     }
                 },
                 'slideleft': {
                     fallback: function (fromPage, toPage) {
-                        $(fromPage).removeClass(this.activePageClass);
-                        $(toPage).addClass(this.activePageClass);
+                        fromPage.removeClass(this.activePageClass);
+                        toPage.addClass(this.activePageClass);
                     }
                 },
                 'slideright': {
                     fallback: function (fromPage, toPage) {
-                        $(fromPage).removeClass(this.activePageClass);
-                        $(toPage).addClass(this.activePageClass);
+                        fromPage.removeClass(this.activePageClass);
+                        toPage.addClass(this.activePageClass);
                     }
                 }
             }
@@ -114,9 +107,9 @@ define([
                 return;
             }
 
-            jqObj = jqObj || $('body');
+            jqObj = jqObj || Dom.root;
             var pages =  jqObj.find(' .' + this.pageClass);
-            if (pages.length) {
+            if (pages.size()) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
                 if(preselectedAP.length) {
                     this.activePage = preselectedAP;
@@ -152,17 +145,17 @@ define([
             }
 
             if (page === '') {
-                var pages =  rootDOMObject.find(' .' + this.pageClass);
-                if (pages.length) {
+                var pages =  Dom.root.find(' .' + this.pageClass);
+                if (pages.size()) {
                     this.show(pages.first());
                 }
                 return;
             }
 
-            var jqPage = (page instanceof $) ? page : $('.' + XF.pages.pageClass + '#' + page);
+            var jqPage = (page instanceof Dom) ? page : Dom('.' + XF.pages.pageClass + '#' + page);
 
             // preventing animation when the page is already shown
-            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.length) {
+            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.size()) {
                 return;
             }
             console.log('XF.pages :: showing page', jqPage.attr('id'));
@@ -208,10 +201,10 @@ define([
                 }
             }
 
-            XF.trigger('ui:enhance', $(this.activePage));
+            XF.trigger('ui:enhance', this.activePage);
 
             // looking for components inside the page
-            XF.loadChildComponents(this.activePage[0]);
+            XF.loadChildComponents(this.activePage);
         }
     };
 

@@ -181,7 +181,7 @@ module.exports = function( grunt ) {
 
                 // Exclude second inclusion of xf.* modules, required by xf.ui components.
                 // TODO(jauhen): Move xf/ui folder to proper location to avoid this hack.
-                ['-../src/xf.core', '-../src/xf.utils', '-../src/xf.device'].forEach(function (module) {
+                ['-../src/xf.core', '-../src/xf.utils', '-../src/xf.device', '-../src/dom/dom'].forEach(function (module) {
                    excluder(module);
                 });
 

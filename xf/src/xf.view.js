@@ -1,12 +1,12 @@
 define([
     './xf.core',
-    'jquery',
     'underscore',
     'backbone',
+    './dom/dom',
     './xf.settings',
     './xf.storage',
     './xf.device'
-], function(XF, $, _, BB) {
+], function(XF, _, BB, Dom) {
 
     /**
      Implements view workaround flow.
@@ -123,7 +123,7 @@ define([
 
                 var $this = this;
 
-                $.ajax({
+                Dom.ajax({
                     url: url,
                     complete : function(jqXHR, textStatus) {
                         if(!$this.component) {
