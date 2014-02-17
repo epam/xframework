@@ -4,11 +4,6 @@ define([
     'backbone'
 ], function ($, _, BB) {
 
-    // Root DOM Object for starting the application
-    // TODO: should be moved to app settings
-    // TODO(jauhen): See xf.pages for same variable.
-    var rootDOMObject = $('body');
-
     // Namespaceolds visible functionality of the framework
     var XF = window.XF = window.XF || {};
 
@@ -29,7 +24,7 @@ define([
 
     // Listening to all global XF events to push them to necessary component if it's constructed
     XF.on('all', function (eventName) {
-        var compEventSplitter = /\:/,
+        var compEventSplitter = /:/,
             parts;
 
         if (!compEventSplitter.test(eventName)) {
@@ -76,79 +71,8 @@ define([
         }
     };
 
-    //
-    XF.start = function(options) {
-        // initializing XF.device
-        options.device = options.device || {};
-        XF.device.init(options.device.types);
-
-        options = options || {};
-        options.history = options.history || { pushState: false };
-
-        // initializing XF.storage
-        XF.storage.init();
-
-
-        // initializing XF.touch
-        if ('touch' in XF) {
-            XF.touch.init();
-        }
-
-        // options.router
-        options.router = options.router || {};
-        createRouter(options.router);
-
-        placeAnchorHooks();
-
-        if (_.has(XF, 'ui')) {
-            XF.ui.init();
-        }
-
-        XF.router.start(options.history);
-
-        options.animations = options.animations || {};
-        options.animations.standardAnimation = options.animations.standardAnimation || '';
-
-        if (_.has(XF.device.type, 'defaultAnimation')) {
-            options.animations.standardAnimation = XF.device.type.defaultAnimation;
-            console.log('Options.animations', options.animations);
-        }
-
-        XF.pages.init(options.animations);
-
-        //XF.pages.start();
-        loadChildComponents(rootDOMObject);
-
-        XF.on('xf:loadChildComponents', XF.loadChildComponents);
-        XF.trigger('app:started');
-    };
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    // Router creation from XF.Router
-    // Passing parameters with routes to constructor
-    var createRouter = function(options) {
-        if(XF.router) {
-            throw 'XF.createRouter can be called only ONCE!';
-        } else {
-            XF.router = new (XF.Router.extend(options))();
-        }
-    };
-
-
-    // Making each element with `data-href` attribute tappable (touchable, clickable)
-    // It will work with application routes and pages
-    // `data-animation` on such element will set the next animation type for the page
-    var placeAnchorHooks = function() {
-        $('body').on('tap click', '[data-href]', function() {
-            var animationType = $(this).data('animation') || null;
-            if (animationType) {
-                XF.trigger('pages:animation:next', animationType);
-            }
-            XF.router.navigate( $(this).data('href'), {trigger: true} );
-        });
-    };
 
     // Loads component definitions for each visible component placeholder found
     // Searches inside DOMObject passed
@@ -184,17 +108,8 @@ define([
         });
     };
 
-
-
     // Stores instances of XF.Component and its subclasses
     var components = {};
-
-    
-
-    // Loads component definition if necessary and passes it to callback function
-    var getComponent = function(compName, callback) {
-
-    };
 
     // Returns component instance by its id
     XF.getComponentByID = function(compID) {
