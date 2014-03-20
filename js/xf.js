@@ -1,6 +1,7 @@
 /*! X-Framework 20-03-2014 */
 ;(function (window, $, BB) {
 
+
     /**
      * Adapter to wrap jQuery or jQuery like libraries.
      * @exports Dom
@@ -3054,17 +3055,19 @@ XF.ui.input = {
      */
     XF.Router = BB.Router;
 
-    _.extend(XF.Router.prototype, /** @lends XF.Router.prototype */{
+    _.extend(XF.Router.prototype, /** @lends XF.Router.prototype */ {
 
 
         /**
          Initiates Rounting & history listening
          @private
          */
-        start : function(options) {
+        start: function(options) {
             this.bindAnyRoute();
             XF.history.start(options);
-            XF.trigger('ui:enhance', Dom.root);
+
+            // TODO pass Dom.root element instead of $(body)
+            XF.trigger('ui:enhance', $('body'));
         },
 
 
@@ -3072,8 +3075,8 @@ XF.ui.input = {
          Binds a callback to any route
          @param {Function} callback A function to be called when any route is visited
          */
-        bindAnyRoute : function() {
-            this.on('route', function (e) {
+        bindAnyRoute: function() {
+            this.on('route', function(e) {
                 console.log('XF.router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
                 if (XF.pages) {
                     XF.pages.show(this.getPageNameFromFragment(XF.history.fragment));
@@ -3086,8 +3089,8 @@ XF.ui.input = {
          @param String fragment
          @return String
          */
-        getPageNameFromFragment : function(fragment) {
-            var parts = fragment.replace(/^\/+/,'').replace(/\/+$/,'').split('/');
+        getPageNameFromFragment: function(fragment) {
+            var parts = fragment.replace(/^\/+/, '').replace(/\/+$/, '').split('/');
             return parts[0];
         }
     });
@@ -3986,7 +3989,6 @@ XF.Model = BB.Model.extend({
      @static
      */
     XF.Component.extend = BB.Model.extend;
-
 
 
 }).call(this, window, $, Backbone); 
