@@ -8,4 +8,4 @@ before_script:
   - npm install nws -g
   - nws -p 9292 &
   - sleep 5
-script: grunt test --verbose --force && mocha && phantomjs test/ui/xf.ui.button.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.fieldset.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.dialog.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.list.js http://localhost:9292/test/test.html
+script: grunt bower && grunt test --verbose --force && mocha && phantomjs test/ui/xf.ui.button.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.fieldset.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.dialog.js http://localhost:9292/test/test.html && phantomjs test/ui/xf.ui.list.js http://localhost:9292/test/test.html
