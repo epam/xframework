@@ -45,14 +45,15 @@
             onComponentRender(compID);
         }
 
-        if (!XF.getComponentByID(compID)) {
-            var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []);
-            events.push(eventName);
-            XF.on('component:' + compID + ':constructed', function () {
-                _.each(events, function (e) {
-                    XF.trigger(e);
-                });
-            });
+        if (!XF.getComponentByID(compID)) { 
+            var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []); 
+
+            events.push(arguments); 
+            XF.on('component:' + compID + ':constructed', function () { 
+                _.each(events, function (e) { 
+                    XF.trigger.apply(XF, e); 
+                }); 
+            }); 
         }
 
     });
