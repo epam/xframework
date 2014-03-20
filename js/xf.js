@@ -1,6 +1,5 @@
-/*! X-Framework 23-12-2013 */
+/*! X-Framework 20-03-2014 */
 ;(function (window, $, BB) {
-
 
     /**
      * Adapter to wrap jQuery or jQuery like libraries.
@@ -240,8 +239,10 @@
 
     // XF.navigate is a syntax sugar for navigating between routes with event dispatching
     // Needed to make pages switching automatically
-    XF.navigate = function (fragment) {
-        XF.router.navigate(fragment, {trigger: true});
+    XF.navigate = function(fragment) {
+        XF.router.navigate(fragment, {
+            trigger: true
+        });
     };
 
     // Event bidnings for global XF commands
@@ -249,7 +250,7 @@
 
 
     // Listening to all global XF events to push them to necessary component if it's constructed
-    XF.on('all', function (eventName) {
+    XF.on('all', function(eventName) {
         var compEventSplitter = /:/,
             parts;
 
@@ -276,8 +277,8 @@
         if (!XF.getComponentByID(compID)) {
             var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []);
             events.push(eventName);
-            XF.on('component:' + compID + ':constructed', function () {
-                _.each(events, function (e) {
+            XF.on('component:' + compID + ':constructed', function() {
+                _.each(events, function(e) {
                     XF.trigger(e);
                 });
             });
@@ -287,7 +288,7 @@
 
     // Searching for pages inside every component
     // Pages should be on the one level and can be started only once
-    var onComponentRender = function (compID) {
+    var onComponentRender = function(compID) {
         var compObj = Dom(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
@@ -305,7 +306,7 @@
     // TODO(Jauhen): now DOM Element is passed, need to pass direct jQuery/Dom object.
     XF.loadChildComponents = function(DOMObject) {
         if (Dom(DOMObject).attr('data-component')) {
-            if (Dom(DOMObject).is(':visible') && ( !Dom(DOMObject).attr('data-device-type') || Dom(DOMObject).attr('data-device-type') == XF.device.type.name )) {
+            if (Dom(DOMObject).is(':visible') && (!Dom(DOMObject).attr('data-device-type') || Dom(DOMObject).attr('data-device-type') == XF.device.type.name)) {
                 var compID = Dom(DOMObject).attr('data-id');
                 var compName = Dom(DOMObject).attr('data-component');
                 loadChildComponent(compID, compName);
@@ -327,7 +328,7 @@
     // Loads component definition and creates its instance
     var loadChildComponent = function(compID, compName) {
         XF.define([XF.settings.property('componentUrl')(compName)], function(compDef) {
-            if(!components[compID] && _.isFunction(compDef)) {
+            if (!components[compID] && _.isFunction(compDef)) {
                 var compInst = new compDef(compName, compID);
                 components[compID] = compInst;
                 compInst._constructor();
@@ -344,9 +345,9 @@
     };
 
     // Removes component instances with ids in array `ids` from `components`
-    XF._removeComponents = function (ids) {
+    XF._removeComponents = function(ids) {
         if (!_.isEmpty(ids)) {
-            _.each(ids, function (id) {
+            _.each(ids, function(id) {
                 components = _.omit(components, id);
             });
         }
@@ -355,24 +356,24 @@
 
     /* DEFINE */
 
-    
+
     var registeredModules = {};
     var waitingModules = {};
     var baseElement = document.getElementsByTagName('base')[0];
     var head = document.getElementsByTagName('head')[0];
 
-    var checkModuleLoaded = function () {
+    var checkModuleLoaded = function() {
         console.log(waitingModules);
-        
-        _.each(waitingModules, function (module, ns) {
-            console.log(module, ns);
-            
-            var name         = module[0],
-                dependencies = module[1],
-                exec         = module[2],
-                args         = [];
 
-            _.each(dependencies, function (dependency, n) {
+        _.each(waitingModules, function(module, ns) {
+            console.log(module, ns);
+
+            var name = module[0],
+                dependencies = module[1],
+                exec = module[2],
+                args = [];
+
+            _.each(dependencies, function(dependency, n) {
                 var depName = getModuleNameFromFile(dependency);
                 if (registeredModules[depName] !== undefined) {
                     console.log(depName, registeredModules[depName]);
@@ -381,25 +382,25 @@
             });
 
             if (dependencies.length === args.length || dependencies.length === 0) {
-                
+
                 console.log('NAME', name);
                 if (name !== null) {
                     console.log('EXEC', name);
                     delete waitingModules[name];
                     registeredModules[name] = exec.apply(this, args);
                 }
-                
+
             }
         });
     };
 
-    var getModuleNameFromFile = function (file) {
+    var getModuleNameFromFile = function(file) {
         var moduleName = file.split(/\//);
         return moduleName[moduleName.length - 1].replace('.js', '');
     };
 
-    var parseFiles = function (file) {
-        
+    var parseFiles = function(file) {
+
         var moduleName = getModuleNameFromFile(file);
         var moduleFile = file.push ? file[1] : file;
         console.log('parse files', file, moduleFile, moduleName);
@@ -427,7 +428,7 @@
             return;
         }
 
-        name = target.getAttribute('data-module');  
+        name = target.getAttribute('data-module');
         target.setAttribute('data-loaded', true);
 
         // Old browser need to use the detachEvent method
@@ -451,7 +452,7 @@
     var checkScripts = function(moduleName) {
         var script = false;
 
-        _.each(document.getElementsByTagName('script'), function (elem) {
+        _.each(document.getElementsByTagName('script'), function(elem) {
             if (elem.getAttribute('data-module') && elem.getAttribute('data-module') === moduleName) {
                 script = elem;
                 return false;
@@ -461,9 +462,9 @@
         return script;
     };
 
-    var create = function (moduleName, moduleFile) {
+    var create = function(moduleName, moduleFile) {
         //SetTimeout prevent the "OMG RUN, CREATE THE SCRIPT ELEMENT, YOU FOOL" browser rush
-        setTimeout(function(){
+        setTimeout(function() {
             var script = checkScripts(moduleName);
 
             if (script) {
@@ -502,11 +503,11 @@
             def = deps;
             deps = [];
         }
-        
+
 
         if (waitingModules[ns] === undefined) {
             waitingModules[ns] = [ns, deps, def];
-            
+
             checkModuleLoaded();
 
             if (deps.length) {
@@ -516,7 +517,7 @@
     };
 
     // Returns all registered components
-    XF.getRegisteredModules = function () {
+    XF.getRegisteredModules = function() {
         return registeredModules;
     };
 
@@ -539,9 +540,9 @@
 
 
     Dom.trackDomChanges('[data-component]',
-            function(element) {
-                XF.trigger('xf:loadChildComponents', element);
-            });
+        function(element) {
+            XF.trigger('xf:loadChildComponents', element);
+        });
 
 
 /**
@@ -2841,14 +2842,14 @@ XF.ui.input = {
          @type String
          @default 'xf-page'
          */
-        pageClass : 'xf-page',
+        pageClass: 'xf-page',
 
         /**
          CSS class used to identify active page
          @type String
          @default 'xf-page-active'
          */
-        activePageClass : 'xf-page-active',
+        activePageClass: 'xf-page-active',
 
         /**
          Animation types for page switching ('fade', 'slide', 'none')
@@ -2859,27 +2860,27 @@ XF.ui.input = {
             standardAnimation: 'slideleft',
             next: null,
 
-            types : {
+            types: {
                 'none': {
-                    fallback: function (fromPage, toPage) {
+                    fallback: function(fromPage, toPage) {
                         fromPage.removeClass(this.activePageClass);
                         toPage.addClass(this.activePageClass);
                     }
                 },
                 'fade': {
-                    fallback: function (fromPage, toPage) {
+                    fallback: function(fromPage, toPage) {
                         fromPage.removeClass(this.activePageClass);
                         toPage.addClass(this.activePageClass);
                     }
                 },
                 'slideleft': {
-                    fallback: function (fromPage, toPage) {
+                    fallback: function(fromPage, toPage) {
                         fromPage.removeClass(this.activePageClass);
                         toPage.addClass(this.activePageClass);
                     }
                 },
                 'slideright': {
-                    fallback: function (fromPage, toPage) {
+                    fallback: function(fromPage, toPage) {
                         fromPage.removeClass(this.activePageClass);
                         toPage.addClass(this.activePageClass);
                     }
@@ -2892,7 +2893,7 @@ XF.ui.input = {
          @type $
          @private
          */
-        activePage : null,
+        activePage: null,
 
         /**
          Saves current active page name
@@ -2905,33 +2906,33 @@ XF.ui.input = {
          Initialises pages: get current active page and binds necessary routes handling
          @private
          */
-        init : function(animations) {
+        init: function(animations) {
             XF.on('pages:show', _.bind(XF.pages.show, XF.pages));
             XF.on('pages:animation:next', _.bind(XF.pages.setNextAnimationType, XF.pages));
             XF.on('pages:animation:default', _.bind(XF.pages.setDefaultAnimationType, XF.pages));
             XF.on('pages:start', _.bind(XF.pages.start, XF.pages));
 
-            if (_.has(animations, 'types') ) {
+            if (_.has(animations, 'types')) {
                 _.extend(this.animations.types, animations.types);
             }
 
-            if (_.has(animations, 'standardAnimation') ) {
+            if (_.has(animations, 'standardAnimation')) {
                 this.setDefaultAnimationType(animations.standardAnimation);
             }
 
             this.start();
         },
 
-        start: function (jqObj) {
+        start: function(jqObj) {
             if (this.status.started) {
                 return;
             }
 
             jqObj = jqObj || Dom.root;
-            var pages =  jqObj.find(' .' + this.pageClass);
+            var pages = jqObj.find(' .' + this.pageClass);
             if (pages.size()) {
                 var preselectedAP = pages.filter('.' + this.activePageClass);
-                if(preselectedAP.length) {
+                if (preselectedAP.length) {
                     this.activePage = preselectedAP;
                     this.activePageName = preselectedAP.attr('id');
                 } else {
@@ -2943,13 +2944,13 @@ XF.ui.input = {
             }
         },
 
-        setDefaultAnimationType: function (animationType) {
+        setDefaultAnimationType: function(animationType) {
             if (XF.pages.animations.types[animationType]) {
                 XF.pages.animations.standardAnimation = animationType;
             }
         },
 
-        setNextAnimationType: function (animationType) {
+        setNextAnimationType: function(animationType) {
             if (XF.pages.animations.types[animationType]) {
                 XF.pages.animations.next = animationType;
             }
@@ -2959,13 +2960,13 @@ XF.ui.input = {
          Executes animation sequence for switching
          @param $ jqPage
          */
-        show : function(page, animationType){
+        show: function(page, animationType) {
             if (page === this.activePageName) {
                 return;
             }
 
             if (page === '') {
-                var pages =  Dom.root.find(' .' + this.pageClass);
+                var pages = Dom.root.find(' .' + this.pageClass);
                 if (pages.size()) {
                     this.show(pages.first());
                 }
@@ -2974,8 +2975,14 @@ XF.ui.input = {
 
             var jqPage = (page instanceof Dom) ? page : Dom('.' + XF.pages.pageClass + '#' + page);
 
+            if (!_.isUndefined(jqPage.attr('data-device-type'))) {
+                if (jqPage.attr('data-device-type') !== XF.device.type.name) {
+                    return;
+                }
+            }
+
             // preventing animation when the page is already shown
-            if( (this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.size()) {
+            if ((this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.size()) {
                 return;
             }
             console.log('XF.pages :: showing page', jqPage.attr('id'));
@@ -2986,7 +2993,7 @@ XF.ui.input = {
             if (this.animations.next) {
                 animationType = (this.animations.types[this.animations.next] ? this.animations.next : this.animations.standardAnimation);
                 this.animations.next = null;
-            }else {
+            } else {
                 animationType = (this.animations.types[animationType] ? animationType : this.animations.standardAnimation);
             }
 
@@ -3000,18 +3007,18 @@ XF.ui.input = {
                 if (_.isFunction(this.animations.types[animationType]['fallback'])) {
                     _.bind(this.animations.types[animationType].fallback, this)(fromPage, toPage);
                 }
-            }else{
+            } else {
                 if (fromPage) {
                     viewport.addClass('xf-viewport-transitioning');
 
-                    fromPage.height(viewport.height()).addClass('out '+ animationType);
-                    toPage.height(viewport.height()).addClass('in '+ animationType + ' ' + this.activePageClass);
-                    fromPage.animationEnd(function(){
+                    fromPage.height(viewport.height()).addClass('out ' + animationType);
+                    toPage.height(viewport.height()).addClass('in ' + animationType + ' ' + this.activePageClass);
+                    fromPage.animationEnd(function() {
                         fromPage.height('').removeClass(animationType + ' out in');
                         fromPage.removeClass(XF.pages.activePageClass);
                     });
 
-                    toPage.animationEnd(function(){
+                    toPage.animationEnd(function() {
                         toPage.height('').removeClass(animationType + ' out in');
                         viewport.removeClass('xf-viewport-transitioning');
                     });
@@ -3085,13 +3092,13 @@ XF.ui.input = {
     });
 
 
+    // TODO(Jauhen): Consider this function as part of XF.App.
     /**
      * A module create AppStart function that would be ran during XF.App call.
      * @exports AppStart
      */
 
     var AppStart = (function() {
-
         /**
          * Creates router and pass parameters to Backbone.Router.
          * @param {Object} options Router settings.
@@ -3101,12 +3108,10 @@ XF.ui.input = {
             if (XF.router) {
                 throw 'XF.createRouter can be called only once.';
             } else {
-                XF.router = new (XF.Router.extend(options))();
+                XF.router = new(XF.Router.extend(options))();
             }
         };
 
-
-        // TODO(Jauhen): Move this function to pages.init.
         /**
          * Makes each element with `data-href` attribute tappable (touchable,
          * clickable). It will work with application routes and pages.
@@ -3118,11 +3123,14 @@ XF.ui.input = {
             Dom.root.on('tap click', '[data-href]', function() {
                 var element = Dom(this);
                 var animationType = element.data('animation') || null;
+
                 if (animationType) {
                     XF.trigger('pages:animation:next', animationType);
                 }
 
-                XF.router.navigate(element.data('href'), {trigger: true});
+                XF.router.navigate(element.data('href'), {
+                    trigger: true
+                });
             });
         };
 
@@ -3148,10 +3156,14 @@ XF.ui.input = {
             _.defaults(options, {
                 animations: {},
                 device: {},
-                history: {pushState: false},
+                history: {
+                    pushState: false
+                },
                 router: {}
             });
-            _.defaults(options.animations, {standardAnimation: ''});
+            _.defaults(options.animations, {
+                standardAnimation: ''
+            });
 
             // Initializes XF objects.
             XF.device.init(options.device.types);
@@ -3167,7 +3179,7 @@ XF.ui.input = {
             // device.
             if (XF.device.type && _.has(XF.device.type, 'defaultAnimation')) {
                 options.animations.standardAnimation =
-                        XF.device.type.defaultAnimation;
+                    XF.device.type.defaultAnimation;
             }
 
             // Creates router and initializes it.
@@ -3973,6 +3985,7 @@ XF.Model = BB.Model.extend({
      @static
      */
     XF.Component.extend = BB.Model.extend;
+
 
 
 }).call(this, window, $, Backbone); 

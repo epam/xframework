@@ -1,46 +1,45 @@
 {
-  "name": "xframework",
-  "version": "0.9.1",
-  "devDependencies": {
-    "jquery": "latest",
-    "backbone": "latest",
-    "underscore": "latest",
-    "requirejs": "latest",
-    "requirejs-text": "latest",
-    "sinonjs": "latest",
-    "xframework": "https://github.com/epam/xframework.git"
-  },
-  "homepage": "http://xframeworkjs.org",
-  "authors": [
-    "EPAM"
-  ],
-  "main": "js/xf.js",
-  "license": "BSD",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_modules",
-    ".",
-    "test"
-  ],
-  "exportsOverride": {
-    "backbone": {
-      ".": "backbone.js"
+    "name": "xframework",
+    "version": "0.9.1",
+    "devDependencies": {
+        "jquery": "latest",
+        "backbone": "latest",
+        "underscore": "latest",
+        "requirejs": "latest",
+        "requirejs-text": "latest",
+        "sinonjs": "latest",
+        "xframework": "https://github.com/epam/xframework.git"
     },
-    "jquery": {
-      ".": "jquery.js"
-    },
-    "underscore": {
-      ".": "underscore.js"
-    },
-    "requirejs": {
-      ".": "require.js"
-    },
-    "requirejs-text": {
-      ".": "text.js"
-    },
-    "sinonjs": {
-      ".": "sinon.js"
+    "homepage": "http://xframeworkjs.org",
+    "authors": [
+        "EPAM"
+    ],
+    "main": "js/xf.js",
+    "license": "BSD",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_modules",
+        ".",
+        "test"
+    ],
+    "exportsOverride": {
+        "backbone": {
+            ".": "backbone.js"
+        },
+        "jquery": {
+            ".": "jquery.js"
+        },
+        "underscore": {
+            ".": "underscore.js"
+        },
+        "requirejs": {
+            ".": "require.js"
+        },
+        "requirejs-text": {
+            ".": "text.js"
+        },
+        "sinonjs": {
+            ".": "sinon.js"
+        }
     }
-  }
-}

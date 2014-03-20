@@ -1,4 +1,3 @@
-
 module.exports = function(grunt) {
 
     grunt.registerTask('test', "XFramework qunit test", function() {
@@ -8,16 +7,16 @@ module.exports = function(grunt) {
                     jshintrc: '.jshintrc'
                 },
                 files: [
-                'Gruntfile.js', 
-                'package.json', 
-                'xf/src/*.js', 
-                'xf/ui/*.js', 
-                'js/xf.js', 
-                'test/components/test.js', 
-                'test/src/*.js', 
-                'test/ui/*.js', 
-                'test/lib/run-qunit.js', 
-                'test/*.js'
+                    'Gruntfile.js',
+                    'package.json',
+                    'xf/src/*.js',
+                    'xf/ui/*.js',
+                    'js/xf.js',
+                    'test/components/test.js',
+                    'test/src/*.js',
+                    'test/ui/*.js',
+                    'test/lib/run-qunit.js',
+                    'test/*.js'
                 ]
             },
             recess: {
@@ -38,7 +37,7 @@ module.exports = function(grunt) {
         grunt.loadNpmTasks('grunt-recess');
         grunt.task.run(['jshint', 'qunit', 'recess']);
     });
-    
+
     grunt.registerTask('appbuild', "XFramework: application build", function() {
         grunt.initConfig({
             uglify: {
@@ -50,10 +49,10 @@ module.exports = function(grunt) {
                 lib: {
                     files: {
                         'prod/js/lib.min.js': [
-                        'js/lib/jquery/jquery.js', 
-                        'js/lib/underscore/underscore.js',
-                        'js/lib/backbone/backbone.js',
-                        'js/lib/requirejs/requirejs.js'
+                            'js/lib/jquery/dist/jquery.js',
+                            'js/lib/underscore/underscore.js',
+                            'js/lib/backbone/backbone.js',
+                            'js/lib/requirejs/requirejs.js'
                         ]
                     }
                 }
@@ -157,4 +156,4 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', ['build', 'uglify', 'less', 'recess']);
 
-}; 
+};
