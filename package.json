@@ -21,7 +21,7 @@
         "url": "git://github.com/epam/xframework.git"
     },
     "scripts": {
-        "test": "mocha"
+        "test": "grunt test"
     },
     "description": "ERROR: No README data found!",
     "main": "Gruntfile.js",

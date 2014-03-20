@@ -1,8 +1,8 @@
 define([
     './xf.core',
-    'jquery',
-    'underscore'
-], function(XF, $, _) {
+    'underscore',
+    './dom/dom'
+], function(XF, _, Dom) {
 
 /**
 Instance of {@link XF.DeviceClass}
@@ -141,8 +141,8 @@ Detectes device type (basicaly, chooses most applicable type from the {@link XF.
 */
 detectType : function() {
 
-    this.size.width = $(window).width();
-    this.size.height = $(window).height();
+    this.size.width = Dom.viewport.width();
+    this.size.height = Dom.viewport.height();
 
     console.log('XF.DeviceClass :: detectType - width = "' + this.size.width + '"');
     console.log('XF.DeviceClass :: detectType - height = "' + this.size.height + '"');
@@ -311,7 +311,7 @@ Returns current orientation of the device (ORIENTATION_PORTRAIT | ORIENTATION_LA
 */
 getOrientation : function() {
     var isPortrait = true, elem = document.documentElement;
-    if ( $.support !== undefined ) {
+    if ( false ) {
         //TODO: uncomment and solve
         //isPortrait = portrait_map[ window.orientation ];
     } else {
@@ -342,11 +342,11 @@ Returns viewport $ object
 getViewport : function() {
     // if there's no explicit viewport make body the viewport
     //var vp = $('.xf-viewport, .viewport') ;
-    var vp = $('body').addClass('xf-viewport');
-    if (!vp[0]) {
-        vp = $('.xf-page').eq(0);
+    var vp = Dom.root.addClass('xf-viewport');
+    if (!vp.get(0)) {
+        vp = Dom('.xf-page').eq(0);
         if (!vp.length) {
-            vp = $('body');
+            vp = Dom.root;
         } else {
             vp = vp.parent();
         }
