@@ -1,8 +1,8 @@
 define([
-    'jquery',
     'underscore',
-    'backbone'
-], function ($, _, BB) {
+    'backbone',
+    './dom/dom'
+], function(_, BB, Dom) {
 
     // Namespaceolds visible functionality of the framework
     var XF = window.XF = window.XF || {};
@@ -14,8 +14,10 @@ define([
 
     // XF.navigate is a syntax sugar for navigating between routes with event dispatching
     // Needed to make pages switching automatically
-    XF.navigate = function (fragment) {
-        XF.router.navigate(fragment, {trigger: true});
+    XF.navigate = function(fragment) {
+        XF.router.navigate(fragment, {
+            trigger: true
+        });
     };
 
     // Event bidnings for global XF commands
@@ -23,7 +25,7 @@ define([
 
 
     // Listening to all global XF events to push them to necessary component if it's constructed
-    XF.on('all', function (eventName) {
+    XF.on('all', function(eventName) {
         var compEventSplitter = /:/,
             parts;
 
@@ -49,10 +51,11 @@ define([
 
         if (!XF.getComponentByID(compID)) {
             var events = XF._defferedCompEvents[compID] || (XF._defferedCompEvents[compID] = []);
-            events.push(eventName);
-            XF.on('component:' + compID + ':constructed', function () {
-                _.each(events, function (e) {
-                    XF.trigger(e);
+
+            events.push(arguments);
+            XF.on('component:' + compID + ':constructed', function() {
+                _.each(events, function(e) {
+                    XF.trigger.apply(XF, e);
                 });
             });
         }
@@ -61,8 +64,8 @@ define([
 
     // Searching for pages inside every component
     // Pages should be on the one level and can be started only once
-    var onComponentRender = function (compID) {
-        var compObj = $(XF.getComponentByID(compID).selector());
+    var onComponentRender = function(compID) {
+        var compObj = Dom(XF.getComponentByID(compID).selector());
 
         if (_.has(XF, 'pages')) {
             if (!XF.pages.status.started) {
@@ -76,19 +79,20 @@ define([
 
     // Loads component definitions for each visible component placeholder found
     // Searches inside DOMObject passed
-    var loadChildComponents = XF.loadChildComponents = function(DOMObject) {
-        if ($(DOMObject).attr('data-component')) {
-            if ($(DOMObject).is(':visible') && ( !$(DOMObject).attr('data-device-type') || $(DOMObject).attr('data-device-type') == XF.device.type.name )) {
-                var compID = $(DOMObject).attr('data-id');
-                var compName = $(DOMObject).attr('data-component');
+    // TODO(Jauhen): now DOM Element is passed, need to pass direct jQuery/Dom object.
+    XF.loadChildComponents = function(DOMObject) {
+        if (Dom(DOMObject).attr('data-component')) {
+            if (Dom(DOMObject).is(':visible') && (!Dom(DOMObject).attr('data-device-type') || Dom(DOMObject).attr('data-device-type') == XF.device.type.name)) {
+                var compID = Dom(DOMObject).attr('data-id');
+                var compName = Dom(DOMObject).attr('data-component');
                 loadChildComponent(compID, compName);
             }
         }
 
-        $(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
-            if (!$(obj).attr('data-device-type') || $(obj).attr('data-device-type') == XF.device.type.name) {
-                var compID = $(obj).attr('data-id');
-                var compName = $(obj).attr('data-component');
+        Dom(DOMObject).find('[data-component][data-cache=true],[data-component]:visible').each(function(ind, obj) {
+            if (!Dom(obj).attr('data-device-type') || Dom(obj).attr('data-device-type') == XF.device.type.name) {
+                var compID = Dom(obj).attr('data-id');
+                var compName = Dom(obj).attr('data-component');
                 if (compID && compName) {
                     loadChildComponent(compID, compName);
                 }
@@ -100,7 +104,7 @@ define([
     // Loads component definition and creates its instance
     var loadChildComponent = function(compID, compName) {
         XF.define([XF.settings.property('componentUrl')(compName)], function(compDef) {
-            if(!components[compID] && _.isFunction(compDef)) {
+            if (!components[compID] && _.isFunction(compDef)) {
                 var compInst = new compDef(compName, compID);
                 components[compID] = compInst;
                 compInst._constructor();
@@ -117,9 +121,9 @@ define([
     };
 
     // Removes component instances with ids in array `ids` from `components`
-    XF._removeComponents = function (ids) {
+    XF._removeComponents = function(ids) {
         if (!_.isEmpty(ids)) {
-            _.each(ids, function (id) {
+            _.each(ids, function(id) {
                 components = _.omit(components, id);
             });
         }
@@ -128,24 +132,24 @@ define([
 
     /* DEFINE */
 
-    
+
     var registeredModules = {};
     var waitingModules = {};
     var baseElement = document.getElementsByTagName('base')[0];
     var head = document.getElementsByTagName('head')[0];
 
-    var checkModuleLoaded = function () {
+    var checkModuleLoaded = function() {
         console.log(waitingModules);
-        
-        _.each(waitingModules, function (module, ns) {
-            console.log(module, ns);
-            
-            var name         = module[0],
-                dependencies = module[1],
-                exec         = module[2],
-                args         = [];
 
-            _.each(dependencies, function (dependency, n) {
+        _.each(waitingModules, function(module, ns) {
+            console.log(module, ns);
+
+            var name = module[0],
+                dependencies = module[1],
+                exec = module[2],
+                args = [];
+
+            _.each(dependencies, function(dependency, n) {
                 var depName = getModuleNameFromFile(dependency);
                 if (registeredModules[depName] !== undefined) {
                     console.log(depName, registeredModules[depName]);
@@ -154,25 +158,25 @@ define([
             });
 
             if (dependencies.length === args.length || dependencies.length === 0) {
-                
+
                 console.log('NAME', name);
                 if (name !== null) {
                     console.log('EXEC', name);
                     delete waitingModules[name];
                     registeredModules[name] = exec.apply(this, args);
                 }
-                
+
             }
         });
     };
 
-    var getModuleNameFromFile = function (file) {
+    var getModuleNameFromFile = function(file) {
         var moduleName = file.split(/\//);
         return moduleName[moduleName.length - 1].replace('.js', '');
     };
 
-    var parseFiles = function (file) {
-        
+    var parseFiles = function(file) {
+
         var moduleName = getModuleNameFromFile(file);
         var moduleFile = file.push ? file[1] : file;
         console.log('parse files', file, moduleFile, moduleName);
@@ -200,7 +204,7 @@ define([
             return;
         }
 
-        name = target.getAttribute('data-module');  
+        name = target.getAttribute('data-module');
         target.setAttribute('data-loaded', true);
 
         // Old browser need to use the detachEvent method
@@ -224,7 +228,7 @@ define([
     var checkScripts = function(moduleName) {
         var script = false;
 
-        _.each(document.getElementsByTagName('script'), function (elem) {
+        _.each(document.getElementsByTagName('script'), function(elem) {
             if (elem.getAttribute('data-module') && elem.getAttribute('data-module') === moduleName) {
                 script = elem;
                 return false;
@@ -234,9 +238,9 @@ define([
         return script;
     };
 
-    var create = function (moduleName, moduleFile) {
+    var create = function(moduleName, moduleFile) {
         //SetTimeout prevent the "OMG RUN, CREATE THE SCRIPT ELEMENT, YOU FOOL" browser rush
-        setTimeout(function(){
+        setTimeout(function() {
             var script = checkScripts(moduleName);
 
             if (script) {
@@ -275,11 +279,11 @@ define([
             def = deps;
             deps = [];
         }
-        
+
 
         if (waitingModules[ns] === undefined) {
             waitingModules[ns] = [ns, deps, def];
-            
+
             checkModuleLoaded();
 
             if (deps.length) {
@@ -289,7 +293,7 @@ define([
     };
 
     // Returns all registered components
-    XF.getRegisteredModules = function () {
+    XF.getRegisteredModules = function() {
         return registeredModules;
     };
 
@@ -308,6 +312,13 @@ define([
 
     // Linking Backbone.history to XF.history
     XF.history = BB.history;
+
+
+
+    Dom.trackDomChanges('[data-component]',
+        function(element) {
+            XF.trigger('xf:loadChildComponents', element);
+        });
 
     return XF;
 });

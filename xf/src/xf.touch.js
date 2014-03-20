@@ -1,8 +1,8 @@
 define([
     './xf.core',
-    'jquery',
+    './dom/dom',
     './xf.device'
-], function(XF, $) {
+], function(XF, Dom) {
 
     // Method announces touchevents for elements
     XF.touch = {
@@ -62,14 +62,14 @@ define([
             };
 
             // Events binding
-            $(document).ready(function () {
+            Dom.ready(function () {
                 var now,
                     delta;
 
-                $(document.body).bind(eventsHandler[eventType].start, function (e) { // Pointer / Touch start event
+                Dom.root.bind(eventsHandler[eventType].start, function (e) { // Pointer / Touch start event
                     now = Date.now();
                     delta = now - (touchHandler.last || now);
-                    touchHandler.el = $(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
+                    touchHandler.el = Dom(parentIfText(isTouch ? e.originalEvent.targetTouches[0].target : e.originalEvent.target));
                     touchHandler.x1 = isTouch ? e.originalEvent.targetTouches[0].clientX : e.originalEvent.clientX;
                     touchHandler.y1 = isTouch ? e.originalEvent.targetTouches[0].clientY : e.originalEvent.clientY;
                     touchHandler.last = now;
@@ -100,22 +100,19 @@ define([
                         touchHandler.el.trigger('tap');
 
                         // Unbind click event if tap
-                        $(document.body).unbind('click');
+                        // TODO(Jauhen): Add event namespaces here.
+                        Dom.root.unbind('click');
                         touchHandler.el.unbind('click');
                         
                     }
                 });
 
                 // Cancel all handlers if window scroll
-                $(window).bind('scroll', cancelAll);
+                Dom.onscroll(cancelAll);
             });
 
             // List of new events
-            $.each(['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap'], function (i, key){
-                $.fn[key] = function (callback) {
-                    return this.bind(key, callback);
-                };
-            });
+            Dom.bindAnimations();
         }
 
     };

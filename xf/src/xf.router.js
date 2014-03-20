@@ -1,10 +1,10 @@
 define([
     './xf.core',
-    'jquery',
     'underscore',
     'backbone',
+    './dom/dom',
     './xf.pages'
-], function(XF, $, _, BB) {
+], function(XF, _, BB, Dom) {
 
     /**
      Instance of {@link XF.RouterClass}
@@ -33,7 +33,7 @@ define([
         start : function(options) {
             this.bindAnyRoute();
             XF.history.start(options);
-            XF.trigger('ui:enhance', $('body'));
+            XF.trigger('ui:enhance', Dom.root);
         },
 
 

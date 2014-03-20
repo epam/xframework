@@ -1,10 +1,10 @@
 define([
     './xf.core',
-    'jquery',
     'underscore',
     'backbone',
+    './dom/dom',
     './xf.settings'
-], function (XF, $, _, BB) {
+], function (XF, _, BB, Dom) {
 
 XF.Collection = BB.Collection.extend({
 
@@ -42,10 +42,11 @@ XF.Collection = BB.Collection.extend({
         }
         _.omit(options, 'component');
         
-        this.url = this.url || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
+        this.url = this.url ||
+                XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
 
         if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
-            $(this.component.selector()).bind('show', _.bind(this.refresh, this));
+            Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
         }
 
         this.ajaxSettings = this.ajaxSettings || _.defaults({}, XF.settings.property('ajaxSettings'));

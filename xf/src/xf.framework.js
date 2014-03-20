@@ -39,7 +39,6 @@ define([
     './xf.view',
     './xf.component',
     './xf.ui',
-    './xf.jquery.hooks',
     'underscore'
 ], function(XF) {
 
