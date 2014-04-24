@@ -45,7 +45,7 @@ define([
          */
         bindAnyRoute: function() {
             this.on('route', function(e) {
-                console.log('XF.router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
+                XF.log('router: navigating to "' + this.getPageNameFromFragment(XF.history.fragment) + '"');
                 if (XF.pages) {
                     XF.pages.show(this.getPageNameFromFragment(XF.history.fragment));
                 }

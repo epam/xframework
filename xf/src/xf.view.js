@@ -17,7 +17,7 @@ define([
 
     XF.View = BB.View.extend({
 
-        url: function () {
+        url: function() {
             return XF.settings.property('templateUrlPrefix') + XF.device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
         },
 
@@ -27,11 +27,11 @@ define([
          @type Boolean
          */
 
-        _bindListeners: function () {
-            if(this.component.options.autorender) {
+        _bindListeners: function() {
+            if (this.component.options.autorender) {
                 if (this.component.collection) {
                     this.listenTo(this.component.collection, 'fetched', this.refresh);
-                }else if (this.component.model) {
+                } else if (this.component.model) {
                     this.listenTo(this.component.model, 'fetched', this.refresh);
                 }
             }
@@ -39,7 +39,7 @@ define([
             this.on('refresh', this.refresh, this);
         },
 
-        _initProperties: function () {
+        _initProperties: function() {
             var template = {
                 src: null,
                 compiled: null,
@@ -47,9 +47,7 @@ define([
             };
 
             this.template = this.template || {};
-            console.log('VIEW OPTIONS', this.template);
             this.template = _.defaults(this.template, template);
-            console.log('VIEW OPTIONS', this.template);
 
             this.status = {
                 loaded: false,
@@ -60,7 +58,7 @@ define([
             this.component = null;
         },
 
-        constructor: function (options) {
+        constructor: function(options) {
             // Sorry, BB extend makes all properties static
             this._initProperties();
 
@@ -79,15 +77,15 @@ define([
             BB.View.apply(this, arguments);
         },
 
-        initialize: function () {
+        initialize: function() {
 
         },
 
-        construct: function () {
+        construct: function() {
 
         },
 
-        load: function () {
+        load: function() {
 
             if (this.template.src) {
                 this.status.loading = false;
@@ -98,7 +96,7 @@ define([
 
             var url = (_.isFunction(this.url)) ? this.url() : this.url;
 
-            if(!url) {
+            if (!url) {
                 this.status.loadingFailed = true;
                 this.trigger('loaded');
                 return;
@@ -106,7 +104,7 @@ define([
 
             // trying to get template from cache
             if (!XF.settings.noCache) {
-                if(this.template.cache && _.has(XF, 'storage')) {
+                if (this.template.cache && _.has(XF, 'storage')) {
                     var cachedTemplate = XF.storage.get(url);
                     if (cachedTemplate) {
                         this.template.src = cachedTemplate;
@@ -117,7 +115,7 @@ define([
                 }
             }
 
-            if(!this.status.loaded && !this.status.loading) {
+            if (!this.status.loaded && !this.status.loading) {
 
                 this.status.loading = true;
 
@@ -125,16 +123,16 @@ define([
 
                 Dom.ajax({
                     url: url,
-                    complete : function(jqXHR, textStatus) {
-                        if(!$this.component) {
+                    complete: function(jqXHR, textStatus) {
+                        if (!$this.component) {
                             throw 'XF.View "component" linkage lost';
                         }
-                        if(textStatus == 'success') {
+                        if (textStatus == 'success') {
                             var template = jqXHR.responseText;
 
                             // saving template into cache if the option is turned on
                             if (!XF.settings.noCache) {
-                                if($this.template.cache && _.has(XF, 'storage')) {
+                                if ($this.template.cache && _.has(XF, 'storage')) {
                                     XF.storage.set(url, template);
                                 }
                             }
@@ -164,46 +162,47 @@ define([
         getMarkup: function() {
             var data = {};
 
-            if(!this.template.compiled) {
+            if (!this.template.compiled) {
                 this.template.compiled = _.template(this.template.src);
             }
 
             if (this.component.collection) {
                 data = this.component.collection.toJSON();
-            }else if (this.component.model) {
+            } else if (this.component.model) {
                 data = this.component.model.toJSON();
             }
 
-            return this.template.compiled({data: data, options: this.component.options});
+            return this.template.compiled({
+                data: data,
+                options: this.component.options
+            });
         },
 
         /**
          HOOK: override to add logic before template load
          */
-        beforeLoadTemplate : function() {},
+        beforeLoadTemplate: function() {},
 
 
         /**
          HOOK: override to add logic after template load
          */
-        afterLoadTemplate : function() {},
+        afterLoadTemplate: function() {},
 
         /**
          HOOK: override to add logic for the case when it's impossible to load template
          */
-        afterLoadTemplateFailed : function() {
-            console.log('XF.View :: afterLoadTemplateFailed - could not load template for "' + this.component.id + '"');
-            console.log('XF.View :: afterLoadTemplateFailed - @dev: verify XF.device.types settings & XF.View :: getTemplate URL overrides');
+        afterLoadTemplateFailed: function() {
+            XF.log('view: could not load template for "' + this.component.id + '"');
         },
 
         /**
          Renders component into placeholder + calling all the necessary hooks & events
          */
         refresh: function() {
-            console.log(this.component.id, 'REFRESHED VIEW');
+
             if (this.status.loaded && this.template.src) {
                 if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
-                    console.log(this.component.id, 'RENDERED VIEW', this.component.collection);
                     this.beforeRender();
                     this.render();
                     this.afterRender();
@@ -214,20 +213,20 @@ define([
         /**
          HOOK: override to add logic before render
          */
-        beforeRender : function() {},
+        beforeRender: function() {},
 
 
         /**
          Identifies current render vesion
          @private
          */
-        renderVersion : 0,
+        renderVersion: 0,
 
         /**
          Renders component into placeholder
          @private
          */
-        render : function() {
+        render: function() {
             if (this.component) {
                 this.component._removeChildComponents();
             }
@@ -236,7 +235,6 @@ define([
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
 
-            console.log('RENDERED', this.component.id);
             this.trigger('rendered');
 
             return this;
@@ -246,7 +244,7 @@ define([
         /**
          HOOK: override to add logic after render
          */
-        afterRender : function() {}
+        afterRender: function() {}
 
     });
 

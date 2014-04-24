@@ -77,8 +77,14 @@ define([
                 history: {
                     pushState: false
                 },
-                router: {}
+                router: {},
+                debug: true
             });
+
+            if (_.has(XF, 'log')) {
+                XF.log.enabled = options.debug;
+            }
+
             _.defaults(options.animations, {
                 standardAnimation: ''
             });
