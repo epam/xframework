@@ -3220,36 +3220,40 @@ XF.ui.input = {
     })();
 
 
-XF.App = function(options) {
-    options = options || {};
-    options.device = options.device || {};
+    XF.App = function(options) {
+        var extOptions;
 
-    this.initialize = options.initialize || this.initialize;
+        options = options || {};
+        options.device = options.device || {};
+        extOptions = _.clone(options);
 
-    // options.settings
-    _.extend(XF.settings, options.settings);
+        // options.settings
+        _.extend(XF.settings, options.settings);
 
-    this.initialize();
+        extOptions = _.omit(extOptions, ['settings', 'device', 'animations', 'router', 'debug', 'history']);
+        _.extend(this, extOptions);
 
-    AppStart(options);
-};
+        this.initialize();
 
-
-_.extend(XF.App.prototype, XF.Events);
-
-_.extend(XF.App.prototype, /** @lends XF.App.prototype */{
-    initialize: function () {
+        AppStart(options);
+    };
 
 
-    }
-});
+    _.extend(XF.App.prototype, XF.Events);
 
-/**
+    _.extend(XF.App.prototype, /** @lends XF.App.prototype */ {
+        initialize: function() {
+
+
+        }
+    });
+
+    /**
  This method allows to extend XF.App with saving the whole prototype chain
  @function
  @static
  */
-XF.App.extend = BB.Model.extend;
+    XF.App.extend = BB.Model.extend;
 
 
     /**
