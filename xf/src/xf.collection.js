@@ -18,7 +18,7 @@ define([
             if (!_.has(this, 'root')) {
                 this.root = null;
             }
-            if (!_.has(this, 'ajaxSettings')) {
+            if (typeof this['ajaxSettings'] == 'undefined') {
                 this.ajaxSettings = null;
             }
             this.component = null;
