@@ -103,7 +103,9 @@ define([
             }
 
             // trying to get template from cache
+            console.log(111, XF.settings.noCache);
             if (!XF.settings.noCache) {
+                console.log(this.template.cache, _.has(XF, 'storage'));
                 if (this.template.cache && _.has(XF, 'storage')) {
                     var cachedTemplate = XF.storage.get(url);
                     if (cachedTemplate) {

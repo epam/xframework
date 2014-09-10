@@ -66,3 +66,7 @@ tmpl/tablet/root.tmpl
 npm-debug.log
 
 js/lib
+
+index2.html
+
+xf/src/xf.storage-w-collections.js

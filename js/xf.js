@@ -1,6 +1,5 @@
-/*! X-Framework 24-04-2014 */
+/*! X-Framework 19-05-2014 */
 ;(function (window, $, BB) {
-
 
     /**
      * Adapter to wrap jQuery or jQuery like libraries.
@@ -973,6 +972,8 @@ Returns viewport $ object
          */
         templateUrlPostfix: '.tmpl',
 
+        templateCollectionName: 'xf-templates',
+        templateCollectionSeparator: ',',
 
         /**
          Used by default Data URL formatter: prefix + component_name + postfix
@@ -1044,15 +1045,33 @@ Returns viewport $ object
                 // cache is disable for the whole site manualy
                 XF.log('storage: cache is disabled for the whole app manually — clearing storage');
                 this.set('appVersion', XF.settings.property('appVersion'));
+
+                this._clearTemplateCache();
             } else if (appVersion && appVersion == XF.settings.property('appVersion')) {
                 // same version is cached - useing it as much as possible
-                XF.log('storage: same version is cached');
+                XF.log('storage: same app version is cached');
             } else {
                 // wrong or no version cached - clearing storage
-                XF.log('storage: no version cached — clearing storage');
-                this.clear();
+                XF.log('storage: no version cached — clearing stored templates');
+
+                this._clearTemplateCache();
+
                 this.set('appVersion', XF.settings.property('appVersion'));
             }
+        },
+
+        _clearTemplateCache: function() {
+            var cName = XF.settings.property('templateCollectionName'),
+                cSeparator = XF.settings.property('templateCollectionSeparator'),
+                collection = XF.storage.get() || '';
+
+            collection = (!_.isEmpty(collection)) ? collection.split(cSeparator) : [];
+
+            _.each(collection, _.bind(function(i) {
+                this.remove(i);
+            }, this));
+
+            this.set(cName, '');
         },
 
         /**
@@ -1086,6 +1105,25 @@ Returns viewport $ object
                 try {
                     this.storage.setItem(key, value);
                     result = true;
+                } catch (e) {
+                    result = false;
+                }
+            } else {
+                result = false;
+            }
+            return result;
+        },
+
+        /**
+         Removes the value stored in cache under appropriate key
+         @param {String} key
+         @return {Boolean}
+         */
+        remove: function(key) {
+            var result = true;
+            if (this.isAvailable) {
+                try {
+                    result = this.storage.removeItem(key);
                 } catch (e) {
                     result = false;
                 }
@@ -3259,15 +3297,10 @@ XF.ui.input = {
     /**
      @namespace Holds all the reusable util functions
      */
-    XF.utils = {};
-
-    /**
-     @namespace Holds all the reusable util functions related to Adress Bar
-     */
-    XF.utils.addressBar = {};
-
-    XF.utils.uniqueID = function() {
-        return 'xf-' + Math.floor(Math.random() * 100000);
+    XF.utils = {
+        uniqueID: function() {
+            return 'xf-' + Math.floor(Math.random() * 100000);
+        }
     };
 
 
@@ -3283,7 +3316,7 @@ XF.ui.input = {
             if (!_.has(this, 'root')) {
                 this.root = null;
             }
-            if (!_.has(this, 'ajaxSettings')) {
+            if (typeof this['ajaxSettings'] == 'undefined') {
                 this.ajaxSettings = null;
             }
             this.component = null;
@@ -3372,100 +3405,100 @@ XF.ui.input = {
     });
 
 
-XF.Model = BB.Model.extend({
+    XF.Model = BB.Model.extend({
 
-    _initProperties: function () {
-        this.status = {
-            loaded: false,
-            loading: false,
-            loadingFailed: false
-        };
-
-        if (!_.has(this, 'root')) {
-            this.root = null;
-        }
-        if (!_.has(this, 'ajaxSettings')) {
-            this.ajaxSettings = null;
-        }
-        this.component = null;
-    },
-
-    _bindListeners: function () {
-        this.on('refresh', this.refresh, this);
-    },
-
-    constructor: function (attributes, options) {
-        this._initProperties();
-        this._bindListeners();
-        
-        if (!options) {
-            options = {};
-        }
-
-        if (options.component) {
-            this.component = options.component;
-        }
-        _.omit(options, 'component');
-
-        this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
-
-        if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
-            Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
-        }
-
-        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
-
-        if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
-            var onSuccess = this.ajaxSettings.success,
-                onDataLoaded = _.bind(this._onDataLoaded, this);
-            this.ajaxSettings.success = function () {
-                onDataLoaded();
-                onSuccess();
+        _initProperties: function() {
+            this.status = {
+                loaded: false,
+                loading: false,
+                loadingFailed: false
             };
-        }else{
-            this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
-        }
 
-        BB.Model.apply(this, arguments);
-    },
+            if (!_.has(this, 'root')) {
+                this.root = null;
+            }
+            if (typeof this['ajaxSettings'] == 'undefined') {
+                this.ajaxSettings = null;
+            }
+            this.component = null;
+        },
 
-    /**
+        _bindListeners: function() {
+            this.on('refresh', this.refresh, this);
+        },
+
+        constructor: function(attributes, options) {
+            this._initProperties();
+            this._bindListeners();
+
+            if (!options) {
+                options = {};
+            }
+
+            if (options.component) {
+                this.component = options.component;
+            }
+            _.omit(options, 'component');
+
+            this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
+
+            if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
+                Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
+            }
+
+            this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
+
+            if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
+                var onSuccess = this.ajaxSettings.success,
+                    onDataLoaded = _.bind(this._onDataLoaded, this);
+                this.ajaxSettings.success = function() {
+                    onDataLoaded();
+                    onSuccess();
+                };
+            } else {
+                this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
+            }
+
+            BB.Model.apply(this, arguments);
+        },
+
+        /**
      Constructs model instance
      @private
      */
-    initialize : function() {
+        initialize: function() {
 
-    },
+        },
 
-    construct: function () {
+        construct: function() {
 
-    },
+        },
 
-    /**
+        /**
      Refreshes data from backend if necessary
      @private
      */
-    refresh : function () {
-        this.status.loaded = false;
-        this.status.loading = true;
+        refresh: function() {
+            this.status.loaded = false;
+            this.status.loading = true;
 
-        this.fetch(this.ajaxSettings);
-    },
+            this.fetch(this.ajaxSettings);
+        },
 
-    fetch: function (options) {
-        options = _.defaults(options || {}, this.ajaxSettings);
+        fetch: function(options) {
+            options = _.defaults(options || {}, this.ajaxSettings);
 
-        return Backbone.Collection.prototype.fetch.call(this, options);
-    },
+            return Backbone.Collection.prototype.fetch.call(this, options);
+        },
 
-    _onDataLoaded: function () {
-        this.status.loaded = true;
-        this.status.loading = false;
+        _onDataLoaded: function() {
+            this.status.loaded = true;
+            this.status.loading = false;
 
-        this.trigger('fetched');
-    }
+            this.trigger('fetched');
+        }
 
-});
+    });
 
 
     /**
@@ -3563,7 +3596,9 @@ XF.Model = BB.Model.extend({
             }
 
             // trying to get template from cache
+            console.log(111, XF.settings.noCache);
             if (!XF.settings.noCache) {
+                console.log(this.template.cache, _.has(XF, 'storage'));
                 if (this.template.cache && _.has(XF, 'storage')) {
                     var cachedTemplate = XF.storage.get(url);
                     if (cachedTemplate) {
@@ -3924,6 +3959,7 @@ XF.Model = BB.Model.extend({
      @static
      */
     XF.Component.extend = BB.Model.extend;
+
 
 
 }).call(this, window, $, Backbone); 

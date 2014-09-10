@@ -62,6 +62,8 @@ define([
          */
         templateUrlPostfix: '.tmpl',
 
+        templateCollectionName: 'xf-templates',
+        templateCollectionSeparator: ',',
 
         /**
          Used by default Data URL formatter: prefix + component_name + postfix
