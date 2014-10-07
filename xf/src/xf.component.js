@@ -54,13 +54,13 @@ define([
 
     _.extend(XF.Component.prototype, XF.Events);
 
-    _.extend(XF.Component.prototype, /** @lends XF.Component.prototype */{
+    _.extend(XF.Component.prototype, /** @lends XF.Component.prototype */ {
 
         /**
          Object containing has-map of component options that can be different for each instance & should be set with {@link XF.setOptionsByID}
          @type Object
          */
-        defaults : {
+        defaults: {
             autoload: true,
             autorender: true,
             updateOnShow: false
@@ -74,7 +74,7 @@ define([
          Returns component selector
          @return {String} Selector string that can be used for $.find() for example
          */
-        selector : function() {
+        selector: function() {
             return '[data-id=' + this.id + ']';
         },
 
@@ -109,9 +109,9 @@ define([
          Instance of {@link XF.View} or its subclass
          @type XF.View
          */
-        view : null,
+        view: null,
 
-        _bindListeners: function () {
+        _bindListeners: function() {
             XF.on('component:' + this.id + ':refresh', this.refresh, this);
             this.listenTo(this, 'refresh', this.refresh);
         },
@@ -121,23 +121,22 @@ define([
          @private
          */
 
-        initialize: function () {
+        initialize: function() {
 
         },
 
-        construct: function () {
+        construct: function() {
 
         },
 
-        _constructor: function () {
-            this.construct();
-            XF.trigger('component:' + this.id + ':constructed');
+        _constructor: function() {
+
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
                     component: this
                 });
                 this.collection.construct();
-            }else if (this.Model) {
+            } else if (this.Model) {
                 this.model = new this.Model({}, {
                     component: this
                 });
@@ -154,7 +153,7 @@ define([
 
                 if (this.collection) {
                     params.collection = this.collection;
-                }else if (this.model) {
+                } else if (this.model) {
                     params.model = this.model;
                 }
 
@@ -164,26 +163,32 @@ define([
 
             this._bindListeners();
 
+            this.construct();
+            XF.trigger('component:' + this.id + ':constructed');
+
+            // TODO: decide where to place it
             this.initialize();
 
             if (this.view) {
                 this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-                this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
+                this.view.on('rendered', _.bind(function() {
+                    XF.trigger('component:' + this.id + ':rendered');
+                }, this));
             }
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
-            }else if (this.model && this.options.autoload) {
+            } else if (this.model && this.options.autoload) {
                 this.model.refresh();
-            }else if (this.view) {
+            } else if (this.view) {
                 this.view.refresh();
             }
         },
 
-        _removeChildComponents: function () {
+        _removeChildComponents: function() {
             if (this.view) {
                 var ids = [];
-                this.view.$el.find('[data-component]').each(function () {
+                this.view.$el.find('[data-component]').each(function() {
                     ids.push($(this).data('id'));
                 });
                 XF._removeComponents(ids);
@@ -195,12 +200,12 @@ define([
          Refreshes data and then rerenders view
          @private
          */
-        refresh : function() {
+        refresh: function() {
             if (this.collection && !this.collection.status.loading) {
                 this.collection.refresh();
-            }else if (this.model && !this.model.status.loading) {
+            } else if (this.model && !this.model.status.loading) {
                 this.model.refresh();
-            }else if (this.view && !this.view.status.loading) {
+            } else if (this.view && !this.view.status.loading) {
                 this.view.refresh();
             }
         }

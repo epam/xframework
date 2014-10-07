@@ -1,6 +1,5 @@
-/*! X-Framework 20-03-2014 */
+/*! X-Framework 19-05-2014 */
 ;(function (window, $, BB) {
-
 
     /**
      * Adapter to wrap jQuery or jQuery like libraries.
@@ -365,10 +364,8 @@
     var head = document.getElementsByTagName('head')[0];
 
     var checkModuleLoaded = function() {
-        console.log(waitingModules);
 
         _.each(waitingModules, function(module, ns) {
-            console.log(module, ns);
 
             var name = module[0],
                 dependencies = module[1],
@@ -378,16 +375,14 @@
             _.each(dependencies, function(dependency, n) {
                 var depName = getModuleNameFromFile(dependency);
                 if (registeredModules[depName] !== undefined) {
-                    console.log(depName, registeredModules[depName]);
                     args.push(registeredModules[depName]);
                 }
             });
 
             if (dependencies.length === args.length || dependencies.length === 0) {
 
-                console.log('NAME', name);
                 if (name !== null) {
-                    console.log('EXEC', name);
+                    XF.log('core: executing module "' + name + '"');
                     delete waitingModules[name];
                     registeredModules[name] = exec.apply(this, args);
                 }
@@ -405,7 +400,6 @@
 
         var moduleName = getModuleNameFromFile(file);
         var moduleFile = file.push ? file[1] : file;
-        console.log('parse files', file, moduleFile, moduleName);
 
         //Don't load module already loaded
         if (registeredModules[moduleName]) {
@@ -547,236 +541,253 @@
         });
 
 
-/**
+    var logMap = ['log', 'warn', 'error', 'info'],
+        logPrefix = 'XF >> ',
+        console = window.console || {};
+
+    XF.log = function(log) {
+        if (_.isFunction(console['log']) && XF.log.enabled) {
+            console.log(logPrefix + log);
+        }
+    };
+
+    XF.log.enabled = true;
+
+    _.each(logMap, function(type) {
+
+        XF.log[type] = function(log) {
+            if (_.isFunction(console[type]) && XF.log.enabled) {
+                console[type](logPrefix + log);
+            }
+        };
+
+    });
+
+
+    /**
 Instance of {@link XF.DeviceClass}
 @static
 @private
 @type {Object}
 */
-XF.device = {
+    XF.device = {
 
-    /**
+        /**
     Contains device viewport size: {width; height}
     @type Object
     */
-    size: {
-        width: 0,
-        height: 0
-    },
+        size: {
+            width: 0,
+            height: 0
+        },
 
-    isMobile: ( /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test((navigator.userAgent||navigator.vendor||window.opera).toLowerCase() ) ),
+        isMobile: (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test((navigator.userAgent || navigator.vendor || window.opera).toLowerCase())),
 
-    isIOS: (
-        /iphone|ipod|ipad/i.test((navigator.userAgent||navigator.vendor||window.opera).toLowerCase() )
-    ),
+        isIOS: (
+            /iphone|ipod|ipad/i.test((navigator.userAgent || navigator.vendor || window.opera).toLowerCase())
+        ),
 
 
-    /**
+        /**
     Array of device types to be chosen from (can be set via {@link XF.start} options)
     @type Object
     @private
     */
-    types: [
-    {
-        name : 'desktop',
-        range : {
-            max : null,
-            min : 1025
-        },
-        templatePath : 'desktop/',
-        fallBackTo : 'tablet'
-    }, {
-        name : 'tablet',
-        range : {
-            max : 1024,
-            min : 480
-        },
-        templatePath : 'tablet/',
-        fallBackTo : 'mobile'
-    }, {
-        name : 'mobile',
-        range : {
-            max : 480,
-            min : null
-        },
-        templatePath : 'mobile/',
-        fallBackTo : 'default'
-    }
-    ],
+        types: [{
+            name: 'desktop',
+            range: {
+                max: null,
+                min: 1025
+            },
+            templatePath: 'desktop/',
+            fallBackTo: 'tablet'
+        }, {
+            name: 'tablet',
+            range: {
+                max: 1024,
+                min: 480
+            },
+            templatePath: 'tablet/',
+            fallBackTo: 'mobile'
+        }, {
+            name: 'mobile',
+            range: {
+                max: 480,
+                min: null
+            },
+            templatePath: 'mobile/',
+            fallBackTo: 'default'
+        }],
 
-    /**
+        /**
     Default device type that would be used when none other worked (covers all the viewport sizes)
     @type Object
     @private
     */
-defaultType: {
-    name : 'default',
-    range : {
-        min : null,
-        max : null
-    },
-    templatePath : '',
-    fallBackTo : null
-},
+        defaultType: {
+            name: 'default',
+            range: {
+                min: null,
+                max: null
+            },
+            templatePath: '',
+            fallBackTo: null
+        },
 
-/**
+        /**
 Detected device type that would be used to define template path
 @type Object
 @private
 */
-type: this.defaultType,
+        type: this.defaultType,
 
 
 
-/**
+        /**
 Initializes {@link XF.device} instance (runs detection methods)
 @param {Array} types rray of device types to be choosen from
 */
-init : function(types) {
-    this.types = types || this.types;
-    this.detectType();
-    this.detectTouchable();
-},
+        init: function(types) {
+            this.types = types || this.types;
+            this.detectType();
+            this.detectTouchable();
+        },
 
-supports: {
-    /**
+        supports: {
+            /**
     A flag indicates whether the device is supporting Touch events or not
     @type Boolean
     */
-    touchEvents: false,
+            touchEvents: false,
 
-    /**
+            /**
     A flag indicates whether the device is supporting pointer events or not
     @type Boolean
     */
-    pointerEvents: window.navigator.msPointerEnabled,
+            pointerEvents: window.navigator.msPointerEnabled,
 
-    /**
+            /**
     A flag indicates whether the device is supporting CSS3 animations or not
     @type Boolean
     */
-    cssAnimations: (function () {
-        var domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
-        elm = document.createElement('div');
+            cssAnimations: (function() {
+                var domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+                    elm = document.createElement('div');
 
-        if (elm.style.animationName) {
-            return {
-                prefix: ''
-            };
-        }
+                if (elm.style.animationName) {
+                    return {
+                        prefix: ''
+                    };
+                }
 
-        for (var i = 0; i < domPrefixes.length; i++) {
-            if (elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined) {
-                return {
-                    prefix: '-' + domPrefixes[i].toLowerCase() + '-'
-                };
-            }
-        }
+                for (var i = 0; i < domPrefixes.length; i++) {
+                    if (elm.style[domPrefixes[i] + 'AnimationName'] !== undefined) {
+                        return {
+                            prefix: '-' + domPrefixes[i].toLowerCase() + '-'
+                        };
+                    }
+                }
 
-        return false;
+                return false;
 
-    }())
-},
+            }())
+        },
 
-/**
+        /**
 Detectes device type (basicaly, chooses most applicable type from the {@link XF.DeviceClass#types} list)
 @private
 */
-detectType : function() {
+        detectType: function() {
 
-    this.size.width = Dom.viewport.width();
-    this.size.height = Dom.viewport.height();
+            this.size.width = Dom.viewport.width();
+            this.size.height = Dom.viewport.height();
 
-    console.log('XF.DeviceClass :: detectType - width = "' + this.size.width + '"');
-    console.log('XF.DeviceClass :: detectType - height = "' + this.size.height + '"');
+            XF.log('device: width is "' + this.size.width + '"');
+            XF.log('device: height is "' + this.size.height + '"');
 
-    var maxSide = Math.max(this.size.width, this.size.height);
+            var maxSide = Math.max(this.size.width, this.size.height);
 
-    console.log('XF.DeviceClass :: detectType - maxSide = "' + maxSide + '"');
+            XF.log('device: maximum device side size is "' + maxSide + '"');
 
-    var res = null;
-    _.each(this.types, function(type) {
-        try {
-            if(
-                (!type.range.min || (type.range.min && maxSide > type.range.min)) &&
-                (!type.range.max || (type.range.max && maxSide < type.range.max))
-            ) {
-                res = type;
+            var res = null;
+            _.each(this.types, function(type) {
+                try {
+                    if (
+                        (!type.range.min || (type.range.min && maxSide > type.range.min)) &&
+                        (!type.range.max || (type.range.max && maxSide < type.range.max))
+                    ) {
+                        res = type;
+                    }
+                } catch (e) {
+                    XF.log('device: cannot select device type. Please verify your app settings.');
+                }
+            });
+
+            if (res) {
+
+                this.type = res;
+
+            } else {
+
+                this.type = this.defaultType;
+
+                XF.log('device: cannot select device type. Please verify your app settings.');
             }
-        } catch (e) {
-            console.log('XF.DeviceClass :: detectType - bad type detected - skipping');
-            console.log('XF.DeviceClass :: detectType - @dev: plz verify types list');
-        }
-    });
 
-    if(res) {
+            XF.log('device: selected device type is "' + this.type.name + '"');
+        },
 
-        this.type = res;
-
-    } else {
-
-        this.type = this.defaultType;
-
-        console.log('XF.DeviceClass :: detectType - could not choose any of device type');
-        console.log('XF.DeviceClass :: detectType - drop back to this.defaultType');
-        console.log('XF.DeviceClass :: detectType - @dev: plz verify types list');
-    }
-
-    console.log('XF.DeviceClass :: detectType - selected type "' + this.type.name + '"');
-},
-
-/**
+        /**
 Chooses device type by ot's name
 @param {String} typeName Value of 'name' property of the type that should be returnd
 @return {Object} device type
 */
-getTypeByName : function(typeName) {
-    var res = null;
-    _.each(this.types, function(type) {
-        try {
-            if(type.name == typeName) {
-                res = type;
-            }
-        } catch (e) {
-            console.log('XF.DeviceClass :: getTypeByName - bad type name - skipping');
-            console.log('XF.DeviceClass :: getTypeByName - @dev: plz verify types list');
-        }
-    });
+        getTypeByName: function(typeName) {
+            var res = null;
+            _.each(this.types, function(type) {
+                try {
+                    if (type.name == typeName) {
+                        res = type;
+                    }
+                } catch (e) {
+                    XF.log('device: cannot select device type. Please verify your app settings.');
+                }
+            });
 
-    return res;
-},
+            return res;
+        },
 
-/**
+        /**
 Detectes whether the device is supporting Touch events or not
 @private
 */
-detectTouchable : function() {
+        detectTouchable: function() {
 
-    var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
-    var style = ['@media (',prefixes.join('touch-enabled),('),'app_device_test',')', '{#touch{top:9px;position:absolute}}'].join('');
+            var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
+            var style = ['@media (', prefixes.join('touch-enabled),('), 'app_device_test', ')', '{#touch{top:9px;position:absolute}}'].join('');
 
-    var $this = this;
+            var $this = this;
 
-    this.injectElementWithStyles(style, function( node, rule ) {
-        var style = document.styleSheets[document.styleSheets.length - 1],
-        // IE8 will bork if you create a custom build that excludes both fontface and generatedcontent tests.
-        // So we check for cssRules and that there is a rule available
-        // More here: github.com/Modernizr/Modernizr/issues/288 & github.com/Modernizr/Modernizr/issues/293
-        cssText = style ? (style.cssRules && style.cssRules[0] ? style.cssRules[0].cssText : style.cssText || '') : '',
-        children = node.childNodes,
-        hashTouch = children[0];
+            this.injectElementWithStyles(style, function(node, rule) {
+                var style = document.styleSheets[document.styleSheets.length - 1],
+                    // IE8 will bork if you create a custom build that excludes both fontface and generatedcontent tests.
+                    // So we check for cssRules and that there is a rule available
+                    // More here: github.com/Modernizr/Modernizr/issues/288 & github.com/Modernizr/Modernizr/issues/293
+                    cssText = style ? (style.cssRules && style.cssRules[0] ? style.cssRules[0].cssText : style.cssText || '') : '',
+                    children = node.childNodes,
+                    hashTouch = children[0];
 
-        $this.supports.touchEvents = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch || (hashTouch && hashTouch.offsetTop) === 9;
+                $this.supports.touchEvents = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch || (hashTouch && hashTouch.offsetTop) === 9;
 
-    }, 1, ['touch']);
+            }, 1, ['touch']);
 
-    console.log('XF.device :: detectTouchable - device IS ' + (this.supports.touchEvents ? '' : 'NOT ') + 'touchable');
+            XF.log('device: device is ' + (this.supports.touchEvents ? '' : 'not ') + 'touchable');
 
-},
+        },
 
 
 
-/**
+        /**
 Inject element with style element and some CSS rules. Used for some detect* methods
 @param String rule Node styles to be applied
 @param Function callback Test validation Function
@@ -784,120 +795,121 @@ Inject element with style element and some CSS rules. Used for some detect* meth
 @param Array testnames Array with test names
 @private
 */
-injectElementWithStyles : function(rule, callback, nodes, testnames) {
+        injectElementWithStyles: function(rule, callback, nodes, testnames) {
 
-    var style, ret, node,
-    div = document.createElement('div'),
-    // After page load injecting a fake body doesn't work so check if body exists
-    body = document.body,
-    // IE6 and 7 won't return offsetWidth or offsetHeight unless it's in the body element, so we fake it.
-    fakeBody = body ? body : document.createElement('body');
+            var style, ret, node,
+                div = document.createElement('div'),
+                // After page load injecting a fake body doesn't work so check if body exists
+                body = document.body,
+                // IE6 and 7 won't return offsetWidth or offsetHeight unless it's in the body element, so we fake it.
+                fakeBody = body ? body : document.createElement('body');
 
-    if (parseInt(nodes, 10)) {
-        // In order not to give false positives we create a node for each test
-        // This also allows the method to scale for unspecified uses
-        while (nodes--) {
-            node = document.createElement('div');
-            node.id = testnames ? testnames[nodes] : 'app_device_test' + (nodes + 1);
-            div.appendChild(node);
-        }
-    }
+            if (parseInt(nodes, 10)) {
+                // In order not to give false positives we create a node for each test
+                // This also allows the method to scale for unspecified uses
+                while (nodes--) {
+                    node = document.createElement('div');
+                    node.id = testnames ? testnames[nodes] : 'app_device_test' + (nodes + 1);
+                    div.appendChild(node);
+                }
+            }
 
-    // <style> elements in IE6-9 are considered 'NoScope' elements and therefore will be removed
-    // when injected with innerHTML. To get around this you need to prepend the 'NoScope' element
-    // with a 'scoped' element, in our case the soft-hyphen entity as it won't mess with our measurements.
-    // msdn.microsoft.com/en-us/library/ms533897%28VS.85%29.aspx
-    // Documents served as xml will throw if using &shy; so use xml friendly encoded version. See issue #277
-    style = ['&#173;','<style>', rule, '</style>'].join('');
-    div.id = 'app_device_test';
-    // IE6 will false positive on some tests due to the style element inside the test div somehow interfering offsetHeight, so insert it into body or fakebody.
-    // Opera will act all quirky when injecting elements in documentElement when page is served as xml, needs fakebody too. #270
-    fakeBody.innerHTML += style;
-    fakeBody.appendChild(div);
-    
-    if (!body){
-        //avoid crashing IE8, if background image is used
-        fakeBody.style.background = '';
-        docElement.appendChild(fakeBody);
-    }
+            // <style> elements in IE6-9 are considered 'NoScope' elements and therefore will be removed
+            // when injected with innerHTML. To get around this you need to prepend the 'NoScope' element
+            // with a 'scoped' element, in our case the soft-hyphen entity as it won't mess with our measurements.
+            // msdn.microsoft.com/en-us/library/ms533897%28VS.85%29.aspx
+            // Documents served as xml will throw if using &shy; so use xml friendly encoded version. See issue #277
+            style = ['&#173;', '<style>', rule, '</style>'].join('');
+            div.id = 'app_device_test';
+            // IE6 will false positive on some tests due to the style element inside the test div somehow interfering offsetHeight, so insert it into body or fakebody.
+            // Opera will act all quirky when injecting elements in documentElement when page is served as xml, needs fakebody too. #270
+            fakeBody.innerHTML += style;
+            fakeBody.appendChild(div);
 
-    ret = callback(div, rule);
-    
-    // If this is done after page load we don't want to remove the body so check if body exists
-    if (!body) {
-        fakeBody.parentNode.removeChild(fakeBody);
-    } else {
-        div.parentNode.removeChild(div);
-    }
+            if (!body) {
+                //avoid crashing IE8, if background image is used
+                fakeBody.style.background = '';
+                docElement.appendChild(fakeBody);
+            }
 
-    return !!ret;
-},
+            ret = callback(div, rule);
 
-/**
+            // If this is done after page load we don't want to remove the body so check if body exists
+            if (!body) {
+                fakeBody.parentNode.removeChild(fakeBody);
+            } else {
+                div.parentNode.removeChild(div);
+            }
+
+            return !!ret;
+        },
+
+        /**
 Stores identifier for portrait orientation
 @constant
 @type String
 */
-ORIENTATION_PORTRAIT : 'portrait',
+        ORIENTATION_PORTRAIT: 'portrait',
 
-/**
+        /**
 Stores identifier for landscape orientation
 @constant
 @type String
 */
-ORIENTATION_LANDSCAPE : 'landscape',
+        ORIENTATION_LANDSCAPE: 'landscape',
 
 
-/**
+        /**
 Returns current orientation of the device (ORIENTATION_PORTRAIT | ORIENTATION_LANDSCAPE)
 @return String
 */
-getOrientation : function() {
-    var isPortrait = true, elem = document.documentElement;
-    if ( false ) {
-        //TODO: uncomment and solve
-        //isPortrait = portrait_map[ window.orientation ];
-    } else {
-        isPortrait = elem && elem.clientWidth / elem.clientHeight < 1.1;
-    }
-    return isPortrait ? this.ORIENTATION_PORTRAIT : this.ORIENTATION_LANDSCAPE;
-},
+        getOrientation: function() {
+            var isPortrait = true,
+                elem = document.documentElement;
+            if (false) {
+                //TODO: uncomment and solve
+                //isPortrait = portrait_map[ window.orientation ];
+            } else {
+                isPortrait = elem && elem.clientWidth / elem.clientHeight < 1.1;
+            }
+            return isPortrait ? this.ORIENTATION_PORTRAIT : this.ORIENTATION_LANDSCAPE;
+        },
 
-/**
+        /**
 Returns current screen height
 @return Number
 */
-getScreenHeight : function() {
-    var orientation     = this.getOrientation();
-    var port            = orientation === this.ORIENTATION_PORTRAIT;
-    var	winMin          = port ? 480 : 320;
-    var	screenHeight    = port ? screen.availHeight : screen.availWidth;
-    var	winHeight       = Math.max( winMin, $( window ).height() );
-    var	pageMin         = Math.min( screenHeight, winHeight );
+        getScreenHeight: function() {
+            var orientation = this.getOrientation();
+            var port = orientation === this.ORIENTATION_PORTRAIT;
+            var winMin = port ? 480 : 320;
+            var screenHeight = port ? screen.availHeight : screen.availWidth;
+            var winHeight = Math.max(winMin, $(window).height());
+            var pageMin = Math.min(screenHeight, winHeight);
 
-    return pageMin;
-},
+            return pageMin;
+        },
 
-/**
+        /**
 Returns viewport $ object
 @return $
 */
-getViewport : function() {
-    // if there's no explicit viewport make body the viewport
-    //var vp = $('.xf-viewport, .viewport') ;
-    var vp = Dom.root.addClass('xf-viewport');
-    if (!vp.get(0)) {
-        vp = Dom('.xf-page').eq(0);
-        if (!vp.length) {
-            vp = Dom.root;
-        } else {
-            vp = vp.parent();
+        getViewport: function() {
+            // if there's no explicit viewport make body the viewport
+            //var vp = $('.xf-viewport, .viewport') ;
+            var vp = Dom.root.addClass('xf-viewport');
+            if (!vp.get(0)) {
+                vp = Dom('.xf-page').eq(0);
+                if (!vp.length) {
+                    vp = Dom.root;
+                } else {
+                    vp = vp.parent();
+                }
+                vp.addClass('xf-viewport');
+            }
+            return vp.eq(0);
         }
-        vp.addClass('xf-viewport');
-    }
-    return vp.eq(0);
-}
-};
+    };
 
 
     /**
@@ -960,6 +972,8 @@ getViewport : function() {
          */
         templateUrlPostfix: '.tmpl',
 
+        templateCollectionName: 'xf-templates',
+        templateCollectionSeparator: ',',
 
         /**
          Used by default Data URL formatter: prefix + component_name + postfix
@@ -1012,7 +1026,7 @@ getViewport : function() {
         /**
          Runs accessibility test for localStorage & clears it if the applicationVersion is too old
          */
-        init : function() {
+        init: function() {
 
             this.storage = window.localStorage;
 
@@ -1021,25 +1035,43 @@ getViewport : function() {
                 this.storage.setItem('check', 'check');
                 this.storage.removeItem('check');
                 this.isAvailable = true;
-            } catch(e) {
+            } catch (e) {
                 this.isAvailable = false;
             }
 
             // clearing localStorage if stored version is different from current
             var appVersion = this.get('appVersion');
-            if(XF.settings.property('noCache')) {
+            if (XF.settings.property('noCache')) {
                 // cache is disable for the whole site manualy
-                console.log('XF.storage :: init - cache is disable for the whole app manually - clearing storage');
+                XF.log('storage: cache is disabled for the whole app manually — clearing storage');
                 this.set('appVersion', XF.settings.property('appVersion'));
-            } else if(appVersion && appVersion == XF.settings.property('appVersion')) {
+
+                this._clearTemplateCache();
+            } else if (appVersion && appVersion == XF.settings.property('appVersion')) {
                 // same version is cached - useing it as much as possible
-                console.log('XF.storage :: init - same version is cached - using it as much as possible');
+                XF.log('storage: same app version is cached');
             } else {
                 // wrong or no version cached - clearing storage
-                console.log('XF.storage :: init - wrong or no version cached - clearing storage');
-                this.clear();
+                XF.log('storage: no version cached — clearing stored templates');
+
+                this._clearTemplateCache();
+
                 this.set('appVersion', XF.settings.property('appVersion'));
             }
+        },
+
+        _clearTemplateCache: function() {
+            var cName = XF.settings.property('templateCollectionName'),
+                cSeparator = XF.settings.property('templateCollectionSeparator'),
+                collection = XF.storage.get() || '';
+
+            collection = (!_.isEmpty(collection)) ? collection.split(cSeparator) : [];
+
+            _.each(collection, _.bind(function(i) {
+                this.remove(i);
+            }, this));
+
+            this.set(cName, '');
         },
 
         /**
@@ -1047,13 +1079,12 @@ getViewport : function() {
          @param {String} key
          @return {String}
          */
-        get : function(key) {
+        get: function(key) {
             var result;
-            if(this.isAvailable) {
+            if (this.isAvailable) {
                 try {
                     result = this.storage.getItem(key);
-                    console.log('XF.storage :: get - "' + key + '" = "' + result + '"');
-                } catch(e) {
+                } catch (e) {
                     result = null;
                 }
             } else {
@@ -1068,14 +1099,32 @@ getViewport : function() {
          @param {String} value
          @return {Boolean} success indicator
          */
-        set : function(key, value) {
+        set: function(key, value) {
             var result;
-            if(this.isAvailable) {
+            if (this.isAvailable) {
                 try {
                     this.storage.setItem(key, value);
                     result = true;
-                    console.log('XF.storage :: set - "' + key + '" = "' + value + '"');
-                } catch(e) {
+                } catch (e) {
+                    result = false;
+                }
+            } else {
+                result = false;
+            }
+            return result;
+        },
+
+        /**
+         Removes the value stored in cache under appropriate key
+         @param {String} key
+         @return {Boolean}
+         */
+        remove: function(key) {
+            var result = true;
+            if (this.isAvailable) {
+                try {
+                    result = this.storage.removeItem(key);
+                } catch (e) {
                     result = false;
                 }
             } else {
@@ -1088,14 +1137,13 @@ getViewport : function() {
          Clears localStorage
          @return {Boolean} success indicator
          */
-        clear : function() {
+        clear: function() {
             var result;
-            if(this.isAvailable) {
+            if (this.isAvailable) {
                 try {
                     this.storage.clear();
                     result = true;
-                    console.log('XF.storage :: clear');
-                } catch(e) {
+                } catch (e) {
                     result = false;
                 }
             } else {
@@ -2987,7 +3035,7 @@ XF.ui.input = {
             if ((this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.size()) {
                 return;
             }
-            console.log('XF.pages :: showing page', jqPage.attr('id'));
+            XF.log('pages: showing page "' + jqPage.attr('id') + '"');
 
             var viewport = XF.device.getViewport();
             var screenHeight = XF.device.getScreenHeight();
@@ -3077,7 +3125,7 @@ XF.ui.input = {
          */
         bindAnyRoute: function() {
             this.on('route', function(e) {
-                console.log('XF.router :: route: ', this.getPageNameFromFragment(XF.history.fragment));
+                XF.log('router: navigating to "' + this.getPageNameFromFragment(XF.history.fragment) + '"');
                 if (XF.pages) {
                     XF.pages.show(this.getPageNameFromFragment(XF.history.fragment));
                 }
@@ -3163,8 +3211,14 @@ XF.ui.input = {
                 history: {
                     pushState: false
                 },
-                router: {}
+                router: {},
+                debug: true
             });
+
+            if (_.has(XF, 'log')) {
+                XF.log.enabled = options.debug;
+            }
+
             _.defaults(options.animations, {
                 standardAnimation: ''
             });
@@ -3204,336 +3258,247 @@ XF.ui.input = {
     })();
 
 
-XF.App = function(options) {
-    options = options || {};
-    options.device = options.device || {};
+    XF.App = function(options) {
+        var extOptions;
 
-    this.initialize = options.initialize || this.initialize;
+        options = options || {};
+        options.device = options.device || {};
+        extOptions = _.clone(options);
 
-    // options.settings
-    _.extend(XF.settings, options.settings);
+        // options.settings
+        _.extend(XF.settings, options.settings);
 
-    this.initialize();
+        extOptions = _.omit(extOptions, ['settings', 'device', 'animations', 'router', 'debug', 'history']);
+        _.extend(this, extOptions);
 
-    AppStart(options);
-};
+        this.initialize();
 
-
-_.extend(XF.App.prototype, XF.Events);
-
-_.extend(XF.App.prototype, /** @lends XF.App.prototype */{
-    initialize: function () {
+        AppStart(options);
+    };
 
 
-    }
-});
+    _.extend(XF.App.prototype, XF.Events);
 
-/**
+    _.extend(XF.App.prototype, /** @lends XF.App.prototype */ {
+        initialize: function() {
+
+
+        }
+    });
+
+    /**
  This method allows to extend XF.App with saving the whole prototype chain
  @function
  @static
  */
-XF.App.extend = BB.Model.extend;
+    XF.App.extend = BB.Model.extend;
 
 
     /**
      @namespace Holds all the reusable util functions
      */
-    XF.utils = {};
-
-    /**
-     @namespace Holds all the reusable util functions related to Adress Bar
-     */
-    XF.utils.addressBar = {};
-
-    XF.utils.uniqueID = function () {
-        return 'xf-' + Math.floor(Math.random()*100000);
+    XF.utils = {
+        uniqueID: function() {
+            return 'xf-' + Math.floor(Math.random() * 100000);
+        }
     };
 
-    _.extend(XF.utils.addressBar, /** @lends XF.utils.addressBar */{
 
-        /**
-         Saves scroll value in order to not re-calibrate everytime we call the hide url bar
-         @type Boolean
-         @private
-         */
-        BODY_SCROLL_TOP : false,
+    XF.Collection = BB.Collection.extend({
 
-        /**
-         Calculates current scroll value
-         @return Number
-         @private
-         */
-        getScrollTop : function(){
-            var win = window,
-                doc = document;
+        _initProperties: function() {
+            this.status = {
+                loaded: false,
+                loading: false,
+                loadingFailed: false
+            };
 
-            return win.pageYOffset || doc.compatMode === 'CSS1Compat' && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
+            if (!_.has(this, 'root')) {
+                this.root = null;
+            }
+            if (typeof this['ajaxSettings'] == 'undefined') {
+                this.ajaxSettings = null;
+            }
+            this.component = null;
+        },
+
+        _bindListeners: function() {
+            //this.on('change reset sync add', this.onDataChanged, this);
+            this.on('refresh', this.refresh, this);
+        },
+
+        constructor: function(models, options) {
+            this._initProperties();
+            this._bindListeners();
+
+            if (!options) {
+                options = {};
+            }
+
+            if (options.component) {
+                this.component = options.component;
+            }
+            _.omit(options, 'component');
+
+            this.url = this.url ||
+                XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
+
+            if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
+                Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
+            }
+
+            this.ajaxSettings = this.ajaxSettings || _.defaults({}, XF.settings.property('ajaxSettings'));
+
+            if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
+                var onDataLoaded = _.bind(this._onDataLoaded, this),
+                    onSuccess = this.ajaxSettings.success;
+
+                this.ajaxSettings.success = function() {
+                    onDataLoaded();
+                    onSuccess();
+                };
+            } else {
+                this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
+            }
+
+            BB.Collection.apply(this, arguments);
         },
 
         /**
-         Hides adress bar
-         */
-        hide : function(){
-            console.log('XF :: utils :: addressBar :: hide');
-            var win = window;
+     Constructs model instance
+     @private
+     */
+        initialize: function() {
 
-            // if there is a hash, or XF.utils.addressBar.BODY_SCROLL_TOP hasn't been set yet, wait till that happens
-            if( !location.hash && XF.utils.addressBar.BODY_SCROLL_TOP !== false){
-                win.scrollTo( 0, XF.utils.addressBar.BODY_SCROLL_TOP === 1 ? 0 : 1 );
-            }
+        },
 
+        construct: function() {
 
-            if (XF.device.isMobile) {
-                var css = document.documentElement.style;
-
-                css.height = '200%';
-                css.overflow = 'visible';
-
-                window.scrollTo(0, 1);
-
-                css.height = window.innerHeight + 'px';
-
-                return true;
-            }
         },
 
         /**
-         Hides adress bar on page load
-         */
-        hideOnLoad : function () {
-            console.log('XF :: utils :: addressBar :: hideOnLoad');
-            var win = window,
-                doc = win.document;
+     Refreshes data from backend if necessary
+     @private
+     */
+        refresh: function() {
+            this.status.loaded = false;
+            this.status.loading = true;
 
-            // If there's a hash, or addEventListener is undefined, stop here
-            if( !location.hash && win.addEventListener ) {
+            this.reset();
+            this.ajaxSettings.silent = false;
+            this.fetch(this.ajaxSettings);
+        },
 
-                //scroll to 1
-                window.scrollTo( 0, 1 );
-                XF.utils.addressBar.BODY_SCROLL_TOP = 1;
+        fetch: function(options) {
+            options = _.defaults(options || {}, this.ajaxSettings);
 
-                //reset to 0 on bodyready, if needed
-                bodycheck = setInterval(function() {
-                    if( doc.body ) {
-                        clearInterval( bodycheck );
-                        XF.utils.addressBar.BODY_SCROLL_TOP = XF.utils.addressBar.getScrollTop();
-                        //XF.utils.addressBar.hide();
-                    }
-                }, 15);
+            return Backbone.Collection.prototype.fetch.call(this, options);
+        },
 
-                win.addEventListener( 'load',
-                    function() {
-                        setTimeout(function() {
-                            //at load, if user hasn't scrolled more than 20 or so...
-                            if( XF.utils.addressBar.getScrollTop() < 20 ) {
-                                //reset to hide addr bar at onload
-                                //XF.utils.addressBar.hide();
-                            }
-                        }, 0);
-                    }
-                );
-            }
+        _onDataLoaded: function() {
+            this.status.loaded = true;
+            this.status.loading = false;
+
+            this.trigger('fetched');
         }
+
     });
 
 
-XF.Collection = BB.Collection.extend({
+    XF.Model = BB.Model.extend({
 
-    _initProperties: function () {
-        this.status = {
-            loaded: false,
-            loading: false,
-            loadingFailed: false
-        };
-
-        if (!_.has(this, 'root')) {
-            this.root = null;
-        }
-        if (!_.has(this, 'ajaxSettings')) {
-            this.ajaxSettings = null;
-        }
-        this.component = null;
-    },
-
-    _bindListeners: function () {
-        //this.on('change reset sync add', this.onDataChanged, this);
-        this.on('refresh', this.refresh, this);
-    },
-
-    constructor: function (models, options) {
-        this._initProperties();
-        this._bindListeners();
-        
-        if (!options) {
-            options = {};
-        }
-
-        if (options.component) {
-            this.component = options.component;
-        }
-        _.omit(options, 'component');
-        
-        this.url = this.url ||
-                XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
-
-        if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
-            Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
-        }
-
-        this.ajaxSettings = this.ajaxSettings || _.defaults({}, XF.settings.property('ajaxSettings'));
-
-        if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
-            var onDataLoaded = _.bind(this._onDataLoaded, this),
-                onSuccess = this.ajaxSettings.success;
-
-            this.ajaxSettings.success = function () {
-                onDataLoaded();
-                onSuccess();
+        _initProperties: function() {
+            this.status = {
+                loaded: false,
+                loading: false,
+                loadingFailed: false
             };
-        } else {
-            this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
-        }
 
-        BB.Collection.apply(this, arguments);
-    },
+            if (!_.has(this, 'root')) {
+                this.root = null;
+            }
+            if (typeof this['ajaxSettings'] == 'undefined') {
+                this.ajaxSettings = null;
+            }
+            this.component = null;
+        },
 
-    /**
+        _bindListeners: function() {
+            this.on('refresh', this.refresh, this);
+        },
+
+        constructor: function(attributes, options) {
+            this._initProperties();
+            this._bindListeners();
+
+            if (!options) {
+                options = {};
+            }
+
+            if (options.component) {
+                this.component = options.component;
+            }
+            _.omit(options, 'component');
+
+            this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
+
+            if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
+                Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
+            }
+
+            this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
+
+            if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
+                var onSuccess = this.ajaxSettings.success,
+                    onDataLoaded = _.bind(this._onDataLoaded, this);
+                this.ajaxSettings.success = function() {
+                    onDataLoaded();
+                    onSuccess();
+                };
+            } else {
+                this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
+            }
+
+            BB.Model.apply(this, arguments);
+        },
+
+        /**
      Constructs model instance
      @private
      */
-    initialize : function() {
+        initialize: function() {
 
-    },
+        },
 
-    construct: function () {
+        construct: function() {
 
-    },
+        },
 
-    /**
+        /**
      Refreshes data from backend if necessary
      @private
      */
-    refresh : function () {
-        this.status.loaded = false;
-        this.status.loading = true;
+        refresh: function() {
+            this.status.loaded = false;
+            this.status.loading = true;
 
-        this.reset();
-        this.ajaxSettings.silent = false;
-        this.fetch(this.ajaxSettings);
-    },
+            this.fetch(this.ajaxSettings);
+        },
 
-    fetch: function (options) {
-        options = _.defaults(options || {}, this.ajaxSettings);
+        fetch: function(options) {
+            options = _.defaults(options || {}, this.ajaxSettings);
 
-        return Backbone.Collection.prototype.fetch.call(this, options);
-    },
+            return Backbone.Collection.prototype.fetch.call(this, options);
+        },
 
-    _onDataLoaded: function () {
-        console.log('data loaded', this);
-        this.status.loaded = true;
-        this.status.loading = false;
+        _onDataLoaded: function() {
+            this.status.loaded = true;
+            this.status.loading = false;
 
-        this.trigger('fetched');
-    }
-
-});
-
-
-XF.Model = BB.Model.extend({
-
-    _initProperties: function () {
-        this.status = {
-            loaded: false,
-            loading: false,
-            loadingFailed: false
-        };
-
-        if (!_.has(this, 'root')) {
-            this.root = null;
-        }
-        if (!_.has(this, 'ajaxSettings')) {
-            this.ajaxSettings = null;
-        }
-        this.component = null;
-    },
-
-    _bindListeners: function () {
-        this.on('refresh', this.refresh, this);
-    },
-
-    constructor: function (attributes, options) {
-        this._initProperties();
-        this._bindListeners();
-        
-        if (!options) {
-            options = {};
+            this.trigger('fetched');
         }
 
-        if (options.component) {
-            this.component = options.component;
-        }
-        _.omit(options, 'component');
-
-        this.urlRoot = this.urlRoot || XF.settings.property('dataUrlPrefix').replace(/(\/$)/g, '') + '/' + (_.has(this, 'component') && this.component !== null && _.has(this.component, 'name') ? this.component.name + '/' : '');
-
-        if (_.has(this, 'component') && this.component !== null && this.component.options.updateOnShow) {
-            Dom(this.component.selector()).bind('show', _.bind(this.refresh, this));
-        }
-
-        this.ajaxSettings = this.ajaxSettings || XF.settings.property('ajaxSettings');
-
-        if (_.has(this.ajaxSettings, 'success') && _.isFunction(this.ajaxSettings.success)) {
-            var onSuccess = this.ajaxSettings.success,
-                onDataLoaded = _.bind(this._onDataLoaded, this);
-            this.ajaxSettings.success = function () {
-                onDataLoaded();
-                onSuccess();
-            };
-        }else{
-            this.ajaxSettings.success = _.bind(this._onDataLoaded, this);
-        }
-
-        BB.Model.apply(this, arguments);
-    },
-
-    /**
-     Constructs model instance
-     @private
-     */
-    initialize : function() {
-
-    },
-
-    construct: function () {
-
-    },
-
-    /**
-     Refreshes data from backend if necessary
-     @private
-     */
-    refresh : function () {
-        this.status.loaded = false;
-        this.status.loading = true;
-
-        this.fetch(this.ajaxSettings);
-    },
-
-    fetch: function (options) {
-        options = _.defaults(options || {}, this.ajaxSettings);
-
-        return Backbone.Collection.prototype.fetch.call(this, options);
-    },
-
-    _onDataLoaded: function () {
-        this.status.loaded = true;
-        this.status.loading = false;
-
-        this.trigger('fetched');
-    }
-
-});
+    });
 
 
     /**
@@ -3545,7 +3510,7 @@ XF.Model = BB.Model.extend({
 
     XF.View = BB.View.extend({
 
-        url: function () {
+        url: function() {
             return XF.settings.property('templateUrlPrefix') + XF.device.type.templatePath + this.component.name + XF.settings.property('templateUrlPostfix');
         },
 
@@ -3555,11 +3520,11 @@ XF.Model = BB.Model.extend({
          @type Boolean
          */
 
-        _bindListeners: function () {
-            if(this.component.options.autorender) {
+        _bindListeners: function() {
+            if (this.component.options.autorender) {
                 if (this.component.collection) {
                     this.listenTo(this.component.collection, 'fetched', this.refresh);
-                }else if (this.component.model) {
+                } else if (this.component.model) {
                     this.listenTo(this.component.model, 'fetched', this.refresh);
                 }
             }
@@ -3567,7 +3532,7 @@ XF.Model = BB.Model.extend({
             this.on('refresh', this.refresh, this);
         },
 
-        _initProperties: function () {
+        _initProperties: function() {
             var template = {
                 src: null,
                 compiled: null,
@@ -3575,9 +3540,7 @@ XF.Model = BB.Model.extend({
             };
 
             this.template = this.template || {};
-            console.log('VIEW OPTIONS', this.template);
             this.template = _.defaults(this.template, template);
-            console.log('VIEW OPTIONS', this.template);
 
             this.status = {
                 loaded: false,
@@ -3588,7 +3551,7 @@ XF.Model = BB.Model.extend({
             this.component = null;
         },
 
-        constructor: function (options) {
+        constructor: function(options) {
             // Sorry, BB extend makes all properties static
             this._initProperties();
 
@@ -3607,15 +3570,15 @@ XF.Model = BB.Model.extend({
             BB.View.apply(this, arguments);
         },
 
-        initialize: function () {
+        initialize: function() {
 
         },
 
-        construct: function () {
+        construct: function() {
 
         },
 
-        load: function () {
+        load: function() {
 
             if (this.template.src) {
                 this.status.loading = false;
@@ -3626,15 +3589,17 @@ XF.Model = BB.Model.extend({
 
             var url = (_.isFunction(this.url)) ? this.url() : this.url;
 
-            if(!url) {
+            if (!url) {
                 this.status.loadingFailed = true;
                 this.trigger('loaded');
                 return;
             }
 
             // trying to get template from cache
+            console.log(111, XF.settings.noCache);
             if (!XF.settings.noCache) {
-                if(this.template.cache && _.has(XF, 'storage')) {
+                console.log(this.template.cache, _.has(XF, 'storage'));
+                if (this.template.cache && _.has(XF, 'storage')) {
                     var cachedTemplate = XF.storage.get(url);
                     if (cachedTemplate) {
                         this.template.src = cachedTemplate;
@@ -3645,7 +3610,7 @@ XF.Model = BB.Model.extend({
                 }
             }
 
-            if(!this.status.loaded && !this.status.loading) {
+            if (!this.status.loaded && !this.status.loading) {
 
                 this.status.loading = true;
 
@@ -3653,16 +3618,16 @@ XF.Model = BB.Model.extend({
 
                 Dom.ajax({
                     url: url,
-                    complete : function(jqXHR, textStatus) {
-                        if(!$this.component) {
+                    complete: function(jqXHR, textStatus) {
+                        if (!$this.component) {
                             throw 'XF.View "component" linkage lost';
                         }
-                        if(textStatus == 'success') {
+                        if (textStatus == 'success') {
                             var template = jqXHR.responseText;
 
                             // saving template into cache if the option is turned on
                             if (!XF.settings.noCache) {
-                                if($this.template.cache && _.has(XF, 'storage')) {
+                                if ($this.template.cache && _.has(XF, 'storage')) {
                                     XF.storage.set(url, template);
                                 }
                             }
@@ -3692,46 +3657,47 @@ XF.Model = BB.Model.extend({
         getMarkup: function() {
             var data = {};
 
-            if(!this.template.compiled) {
+            if (!this.template.compiled) {
                 this.template.compiled = _.template(this.template.src);
             }
 
             if (this.component.collection) {
                 data = this.component.collection.toJSON();
-            }else if (this.component.model) {
+            } else if (this.component.model) {
                 data = this.component.model.toJSON();
             }
 
-            return this.template.compiled({data: data, options: this.component.options});
+            return this.template.compiled({
+                data: data,
+                options: this.component.options
+            });
         },
 
         /**
          HOOK: override to add logic before template load
          */
-        beforeLoadTemplate : function() {},
+        beforeLoadTemplate: function() {},
 
 
         /**
          HOOK: override to add logic after template load
          */
-        afterLoadTemplate : function() {},
+        afterLoadTemplate: function() {},
 
         /**
          HOOK: override to add logic for the case when it's impossible to load template
          */
-        afterLoadTemplateFailed : function() {
-            console.log('XF.View :: afterLoadTemplateFailed - could not load template for "' + this.component.id + '"');
-            console.log('XF.View :: afterLoadTemplateFailed - @dev: verify XF.device.types settings & XF.View :: getTemplate URL overrides');
+        afterLoadTemplateFailed: function() {
+            XF.log('view: could not load template for "' + this.component.id + '"');
         },
 
         /**
          Renders component into placeholder + calling all the necessary hooks & events
          */
         refresh: function() {
-            console.log(this.component.id, 'REFRESHED VIEW');
+
             if (this.status.loaded && this.template.src) {
                 if ((!this.component.collection && !this.component.model) || (this.component.collection && this.component.collection.status.loaded) || (this.component.model && this.component.model.status.loaded)) {
-                    console.log(this.component.id, 'RENDERED VIEW', this.component.collection);
                     this.beforeRender();
                     this.render();
                     this.afterRender();
@@ -3742,20 +3708,20 @@ XF.Model = BB.Model.extend({
         /**
          HOOK: override to add logic before render
          */
-        beforeRender : function() {},
+        beforeRender: function() {},
 
 
         /**
          Identifies current render vesion
          @private
          */
-        renderVersion : 0,
+        renderVersion: 0,
 
         /**
          Renders component into placeholder
          @private
          */
-        render : function() {
+        render: function() {
             if (this.component) {
                 this.component._removeChildComponents();
             }
@@ -3764,7 +3730,6 @@ XF.Model = BB.Model.extend({
             XF.trigger('ui:enhance', this.$el);
             this.renderVersion++;
 
-            console.log('RENDERED', this.component.id);
             this.trigger('rendered');
 
             return this;
@@ -3774,7 +3739,7 @@ XF.Model = BB.Model.extend({
         /**
          HOOK: override to add logic after render
          */
-        afterRender : function() {}
+        afterRender: function() {}
 
     });
 
@@ -3829,13 +3794,13 @@ XF.Model = BB.Model.extend({
 
     _.extend(XF.Component.prototype, XF.Events);
 
-    _.extend(XF.Component.prototype, /** @lends XF.Component.prototype */{
+    _.extend(XF.Component.prototype, /** @lends XF.Component.prototype */ {
 
         /**
          Object containing has-map of component options that can be different for each instance & should be set with {@link XF.setOptionsByID}
          @type Object
          */
-        defaults : {
+        defaults: {
             autoload: true,
             autorender: true,
             updateOnShow: false
@@ -3849,7 +3814,7 @@ XF.Model = BB.Model.extend({
          Returns component selector
          @return {String} Selector string that can be used for $.find() for example
          */
-        selector : function() {
+        selector: function() {
             return '[data-id=' + this.id + ']';
         },
 
@@ -3884,9 +3849,9 @@ XF.Model = BB.Model.extend({
          Instance of {@link XF.View} or its subclass
          @type XF.View
          */
-        view : null,
+        view: null,
 
-        _bindListeners: function () {
+        _bindListeners: function() {
             XF.on('component:' + this.id + ':refresh', this.refresh, this);
             this.listenTo(this, 'refresh', this.refresh);
         },
@@ -3896,23 +3861,22 @@ XF.Model = BB.Model.extend({
          @private
          */
 
-        initialize: function () {
+        initialize: function() {
 
         },
 
-        construct: function () {
+        construct: function() {
 
         },
 
-        _constructor: function () {
-            this.construct();
-            XF.trigger('component:' + this.id + ':constructed');
+        _constructor: function() {
+
             if (this.Collection) {
                 this.collection = new this.Collection({}, {
                     component: this
                 });
                 this.collection.construct();
-            }else if (this.Model) {
+            } else if (this.Model) {
                 this.model = new this.Model({}, {
                     component: this
                 });
@@ -3929,7 +3893,7 @@ XF.Model = BB.Model.extend({
 
                 if (this.collection) {
                     params.collection = this.collection;
-                }else if (this.model) {
+                } else if (this.model) {
                     params.model = this.model;
                 }
 
@@ -3939,26 +3903,32 @@ XF.Model = BB.Model.extend({
 
             this._bindListeners();
 
+            this.construct();
+            XF.trigger('component:' + this.id + ':constructed');
+
+            // TODO: decide where to place it
             this.initialize();
 
             if (this.view) {
                 this.view.listenToOnce(this.view, 'loaded', this.view.refresh);
-                this.view.on('rendered', _.bind(function () { XF.trigger('component:' + this.id + ':rendered'); }, this));
+                this.view.on('rendered', _.bind(function() {
+                    XF.trigger('component:' + this.id + ':rendered');
+                }, this));
             }
 
             if (this.collection && this.options.autoload) {
                 this.collection.refresh();
-            }else if (this.model && this.options.autoload) {
+            } else if (this.model && this.options.autoload) {
                 this.model.refresh();
-            }else if (this.view) {
+            } else if (this.view) {
                 this.view.refresh();
             }
         },
 
-        _removeChildComponents: function () {
+        _removeChildComponents: function() {
             if (this.view) {
                 var ids = [];
-                this.view.$el.find('[data-component]').each(function () {
+                this.view.$el.find('[data-component]').each(function() {
                     ids.push($(this).data('id'));
                 });
                 XF._removeComponents(ids);
@@ -3970,12 +3940,12 @@ XF.Model = BB.Model.extend({
          Refreshes data and then rerenders view
          @private
          */
-        refresh : function() {
+        refresh: function() {
             if (this.collection && !this.collection.status.loading) {
                 this.collection.refresh();
-            }else if (this.model && !this.model.status.loading) {
+            } else if (this.model && !this.model.status.loading) {
                 this.model.refresh();
-            }else if (this.view && !this.view.status.loading) {
+            } else if (this.view && !this.view.status.loading) {
                 this.view.refresh();
             }
         }
@@ -3989,6 +3959,7 @@ XF.Model = BB.Model.extend({
      @static
      */
     XF.Component.extend = BB.Model.extend;
+
 
 
 }).call(this, window, $, Backbone); 

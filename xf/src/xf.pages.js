@@ -164,7 +164,7 @@ define([
             if ((this.activePage && jqPage.attr('id') == this.activePage.attr('id')) || !jqPage.size()) {
                 return;
             }
-            console.log('XF.pages :: showing page', jqPage.attr('id'));
+            XF.log('pages: showing page "' + jqPage.attr('id') + '"');
 
             var viewport = XF.device.getViewport();
             var screenHeight = XF.device.getScreenHeight();

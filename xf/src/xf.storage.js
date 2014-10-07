@@ -26,7 +26,7 @@ define([
         /**
          Runs accessibility test for localStorage & clears it if the applicationVersion is too old
          */
-        init : function() {
+        init: function() {
 
             this.storage = window.localStorage;
 
@@ -35,25 +35,43 @@ define([
                 this.storage.setItem('check', 'check');
                 this.storage.removeItem('check');
                 this.isAvailable = true;
-            } catch(e) {
+            } catch (e) {
                 this.isAvailable = false;
             }
 
             // clearing localStorage if stored version is different from current
             var appVersion = this.get('appVersion');
-            if(XF.settings.property('noCache')) {
+            if (XF.settings.property('noCache')) {
                 // cache is disable for the whole site manualy
-                console.log('XF.storage :: init - cache is disable for the whole app manually - clearing storage');
+                XF.log('storage: cache is disabled for the whole app manually — clearing storage');
                 this.set('appVersion', XF.settings.property('appVersion'));
-            } else if(appVersion && appVersion == XF.settings.property('appVersion')) {
+
+                this._clearTemplateCache();
+            } else if (appVersion && appVersion == XF.settings.property('appVersion')) {
                 // same version is cached - useing it as much as possible
-                console.log('XF.storage :: init - same version is cached - using it as much as possible');
+                XF.log('storage: same app version is cached');
             } else {
                 // wrong or no version cached - clearing storage
-                console.log('XF.storage :: init - wrong or no version cached - clearing storage');
-                this.clear();
+                XF.log('storage: no version cached — clearing stored templates');
+
+                this._clearTemplateCache();
+
                 this.set('appVersion', XF.settings.property('appVersion'));
             }
+        },
+
+        _clearTemplateCache: function() {
+            var cName = XF.settings.property('templateCollectionName'),
+                cSeparator = XF.settings.property('templateCollectionSeparator'),
+                collection = XF.storage.get() || '';
+
+            collection = (!_.isEmpty(collection)) ? collection.split(cSeparator) : [];
+
+            _.each(collection, _.bind(function(i) {
+                this.remove(i);
+            }, this));
+
+            this.set(cName, '');
         },
 
         /**
@@ -61,13 +79,12 @@ define([
          @param {String} key
          @return {String}
          */
-        get : function(key) {
+        get: function(key) {
             var result;
-            if(this.isAvailable) {
+            if (this.isAvailable) {
                 try {
                     result = this.storage.getItem(key);
-                    console.log('XF.storage :: get - "' + key + '" = "' + result + '"');
-                } catch(e) {
+                } catch (e) {
                     result = null;
                 }
             } else {
@@ -82,14 +99,32 @@ define([
          @param {String} value
          @return {Boolean} success indicator
          */
-        set : function(key, value) {
+        set: function(key, value) {
             var result;
-            if(this.isAvailable) {
+            if (this.isAvailable) {
                 try {
                     this.storage.setItem(key, value);
                     result = true;
-                    console.log('XF.storage :: set - "' + key + '" = "' + value + '"');
-                } catch(e) {
+                } catch (e) {
+                    result = false;
+                }
+            } else {
+                result = false;
+            }
+            return result;
+        },
+
+        /**
+         Removes the value stored in cache under appropriate key
+         @param {String} key
+         @return {Boolean}
+         */
+        remove: function(key) {
+            var result = true;
+            if (this.isAvailable) {
+                try {
+                    result = this.storage.removeItem(key);
+                } catch (e) {
                     result = false;
                 }
             } else {
@@ -102,14 +137,13 @@ define([
          Clears localStorage
          @return {Boolean} success indicator
          */
-        clear : function() {
+        clear: function() {
             var result;
-            if(this.isAvailable) {
+            if (this.isAvailable) {
                 try {
                     this.storage.clear();
                     result = true;
-                    console.log('XF.storage :: clear');
-                } catch(e) {
+                } catch (e) {
                     result = false;
                 }
             } else {

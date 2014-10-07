@@ -139,10 +139,8 @@ define([
     var head = document.getElementsByTagName('head')[0];
 
     var checkModuleLoaded = function() {
-        console.log(waitingModules);
 
         _.each(waitingModules, function(module, ns) {
-            console.log(module, ns);
 
             var name = module[0],
                 dependencies = module[1],
@@ -152,16 +150,14 @@ define([
             _.each(dependencies, function(dependency, n) {
                 var depName = getModuleNameFromFile(dependency);
                 if (registeredModules[depName] !== undefined) {
-                    console.log(depName, registeredModules[depName]);
                     args.push(registeredModules[depName]);
                 }
             });
 
             if (dependencies.length === args.length || dependencies.length === 0) {
 
-                console.log('NAME', name);
                 if (name !== null) {
-                    console.log('EXEC', name);
+                    XF.log('core: executing module "' + name + '"');
                     delete waitingModules[name];
                     registeredModules[name] = exec.apply(this, args);
                 }
@@ -179,7 +175,6 @@ define([
 
         var moduleName = getModuleNameFromFile(file);
         var moduleFile = file.push ? file[1] : file;
-        console.log('parse files', file, moduleFile, moduleName);
 
         //Don't load module already loaded
         if (registeredModules[moduleName]) {

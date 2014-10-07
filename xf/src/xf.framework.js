@@ -26,6 +26,7 @@ require.config({
 
 define([
     './xf.core',
+    './xf.log',
     './xf.app',
     './xf.touch',
     './xf.router',
